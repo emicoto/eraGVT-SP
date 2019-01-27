@@ -1,0 +1,195 @@
+;【最終更新日】 2017/06/30
+;
+;このパッチのライセンスはeraGVT 別人改造版の最新のライセンスに準じます
+;もし取り込まれるのならこのテキストは不要です
+;口上は、選択肢の追加でRAND XのXを1つ増やして、ENDSELECTの前に新しいCASEを追加ください
+
+;================================================================================
+;【ガイダンス】キャラクターの性成長で分岐させる
+;
+;　IF (MESSAGE_BRANCH_F(TARGET) & 堕落)			自分から触手に犯されたいと感じている、ほぼ陥落している状態です。
+;　IF (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)		快楽に身体が屈して理性が働かなくなっている状態です。
+;　IF (MESSAGE_BRANCH_F(TARGET) & 性抵抗)		快楽に流されないよう必死に抗っている状態です。
+;　IF (MESSAGE_BRANCH_F(TARGET) & 絶望)			心が折れて戦意を失っている状態です。
+;　IF (MESSAGE_BRANCH_F(TARGET) & 苦戦)			余裕が無くなってきている状態です。
+;
+;　BASE:Ｃ結界耐久力	結界の耐久力が残っていると、該当する部位に触手は触れません。
+;　BASE:Ｖ結界耐久力	触れられていないため快楽も感じませんが、目の前に触手があるので嫌悪感や恐怖は感じます。
+;　BASE:Ａ結界耐久力	
+;　BASE:Ｂ結界耐久力	
+;
+;　TCVAR:2 == 体勢：奉仕する		奉仕フラグが立っている状態です。望むと望まざるとに関わらず、積極的に奉仕している状態です。
+;　TCVAR:2 == 体勢：Ｖ防御		Ｖ挿入防御フラグが立っている状態です。Ｖに挿入できませんが、触れられているので快楽は感じます。
+;
+;　IF CHECK_PREGNANT_F(TARGET) > 0	妊娠しているかどうかを判定します。正の値であれば妊娠中です。
+;
+;  絶頂状態の参照	NOWEXでそれぞれの「このターンに絶頂した回数」を参照することができます。
+;			0=Ｃ絶頂、1=Ｖ絶頂、2=Ａ絶頂、3=Ｂ絶頂です。例えばＶ絶頂した回数を参照したければ、NOWEX:1を参照してください。
+;
+;　挿入状態の参照	ユーザー定義変数 INSERT に現在挿入している個所が記録されています。
+;			なので、SIF (INSERT & 膣)などのように表記することで挿入中かどうかを判定することができます。
+;			ただしDIMで定義している定数の関係上、GETBITを使いたい場合には GETBIT (INSERT, 膣-1)と表記する必要があります。
+;
+;
+;
+;================================================================================
+;【ガイダンス】分岐（ランダム）の入り方
+
+SELECTCASE RAND:2
+	CASE 1
+		PRINTL 2
+	CASE 0
+		PRINTL 1
+ENDSELECT
+
+SELECTCASE RAND:3
+	CASE 2
+		PRINTL 3
+	CASE 1
+		PRINTL 2
+	CASE 0
+		SETFONT "ＭＳ Ｐゴシック"
+			PRINTL 1(AA)
+		SETFONT
+ENDSELECT
+
+;================================================================================
+;【ガイダンス】自動振り分け条件の書き方（例：おっぱい）
+;ひんぬー
+IF TALENT:貧乳 > 0
+	PRINTL 貧乳
+;きょぬー
+ELSEIF TALENT:巨乳 > 0
+	PRINTL 巨乳
+;なみちち
+ELSE
+	PRINTL 並乳
+ENDIF
+
+;================================================================================
+;【ガイダンス】AAの挿入
+SETFONT "ＭＳ Ｐゴシック"
+PRINTL 【AA】
+SETFONT
+
+;実例
+SETFONT "ＭＳ Ｐゴシック"
+PRINTL 
+PRINTL 　: : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : :
+PRINTL 　: 　　　　　 、 、 ｀ 丶丶､ :　　　　　　　　　　　　　　　　　　　　　　　　　 　 　 　 　 :
+PRINTL 　: 　　　　 丶｀ : : : : : : : 　 ´ 丶　　　　　　　　　　　　　　　　　　　　　　　　 　 　 　 :
+PRINTL 　: 　　 .、'　 : : : 　　: 　 : : : : 　丶　　　　　　　 　　　　　　　　　　　　　　　　　　　　 :
+PRINTL 　: 　　､´　: : 　　　　: 　　　 : : 　｀、　　 : .　　　　　　　　　　　　　　　　　　　　　　　 :
+PRINTL 　: 　 、　 : 　　　　　: 　　　　　: 　 ､　　: : :　　　　　　　　　　　　　　 　 　 　 　 　 　 :
+PRINTL 　: 　 ､: : : : : : : : : : : : : :,-'''"ﾞ"''-､.、　 : : 　　,,-､、　　　　,,,-､,,、　　　　　　　　　 　 :
+PRINTL 　: 　 .､　 : 　　　　　: 　　ヽ,,,,＿,,ノ､　　 : : 　　　｀ヘ,,,,／′　 .‘'i､　　　　　　　 　 　 :
+PRINTL 　: 　　､　 : 　　　　　: 　　　　 : 　 ､　　　: :　　　　　　　　　　　　　　　　　 　 　 　 　 :
+PRINTL 　: 　　 丶 : : .　　　 : 　　　 : : 　 ､　　　 :　　　　　　　　　　　　 　 　 　 　 　 　 　 　 :
+PRINTL 　: 　　　 丶　: : : : : : ..: : : : 　　丶　　　　　　　　　　　　　　　　　　　　　　　　　　 　 :
+PRINTL 　: 　　　　 ´ 丶、　 : 　　、 、｀　　　　　　　　　　　　　　　　　　　 　 　 　 　 　 　 　 :
+PRINTL 　: 　　　　　　　: : ' : ': 丶｀　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　:
+PRINTL 　: : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : :
+SETFONT
+;
+;
+;
+;================================================================================
+;【ガイダンス】固定女性キャラクターのふたなり振り分けのちバストサイズの振り分け
+
+IF TALENT:ふたなり > 0;ふたなりだった場合
+	IF TALENT:貧乳 > 0
+			SETFONT "ＭＳ Ｐゴシック"
+			SETFONT
+	ELSEIF TALENT:巨乳 > 0
+			SETFONT "ＭＳ Ｐゴシック"
+			SETFONT
+	ELSE
+			SETFONT "ＭＳ Ｐゴシック"
+			SETFONT
+	ENDIF;乳サイズ判定
+ELSE;ふたなりでなかった場合
+	;乳サイズ判定開始
+	IF TALENT:貧乳 > 0
+			SETFONT "ＭＳ Ｐゴシック"
+			SETFONT
+	ELSEIF TALENT:巨乳 > 0
+			SETFONT "ＭＳ Ｐゴシック"
+
+			SETFONT
+	ELSE
+			SETFONT "ＭＳ Ｐゴシック"
+			SETFONT
+	ENDIF
+	;乳サイズ判定終了
+ENDIF
+
+
+;================================================================================
+;【ガイダンス】固定女性キャラクターのふたなり振り分けのちバストサイズの振り分け
+;ふたなりだった場合開始
+IF TALENT:ふたなり > 0
+	;乳サイズ判定開始
+	IF TALENT:貧乳 > 0
+		SELECTCASE RAND:2
+		CASE 1
+			SETFONT "ＭＳ Ｐゴシック"
+			SETFONT
+		CASE 0
+			SETFONT "ＭＳ Ｐゴシック"
+			SETFONT
+		ENDSELECT
+	ELSEIF TALENT:巨乳 > 0
+		SELECTCASE RAND:2
+		CASE 1
+			SETFONT "ＭＳ Ｐゴシック"
+			SETFONT
+		CASE 0
+			SETFONT "ＭＳ Ｐゴシック"
+			SETFONT
+		ENDSELECT
+	ELSE
+		SELECTCASE RAND:2
+		CASE 1
+			SETFONT "ＭＳ Ｐゴシック"
+			SETFONT
+		CASE 0
+			SETFONT "ＭＳ Ｐゴシック"
+			SETFONT
+		ENDSELECT
+	ENDIF
+	;乳サイズ判定終了
+;ふたなりだった場合終了
+;ふたなりでなかった場合開始
+ELSE
+	;乳サイズ判定開始
+	IF TALENT:貧乳 > 0
+		SELECTCASE RAND:2
+		CASE 1
+			SETFONT "ＭＳ Ｐゴシック"
+			SETFONT
+		CASE 0
+			SETFONT "ＭＳ Ｐゴシック"
+			SETFONT
+		ENDSELECT
+	ELSEIF TALENT:巨乳 > 0
+		SELECTCASE RAND:2
+		CASE 1
+			SETFONT "ＭＳ Ｐゴシック"
+			SETFONT
+		CASE 0
+			SETFONT "ＭＳ Ｐゴシック"
+			SETFONT
+		ENDSELECT
+	ELSE
+		SELECTCASE RAND:2
+		CASE 1
+			SETFONT "ＭＳ Ｐゴシック"
+			SETFONT
+		CASE 0
+			SETFONT "ＭＳ Ｐゴシック"
+			SETFONT
+		ENDSELECT
+	ENDIF
+	;乳サイズ判定終了
+ENDIF
+;ふたなりでなかった場合終了

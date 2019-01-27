@@ -1,0 +1,81 @@
+;**********************************************************
+;基本ルール
+;加筆修正は、自由に行ってください
+;
+;プログラムの可読性を上げるための試みです
+;IF構文と時間差が気になるが、可読性の為にSELECTCASE構文にしました
+;重い処理を一つ挟むので、うまく活用してください
+;
+;
+;by 雑魚の人 2018/02/11
+;**********************************************************
+;スラングの自動切り替えと呼び出し
+@WRITTENSLANG(ARGS:0)
+#DIMS WRITTENSLANG_WORD
+#FUNCTIONS
+
+;初期化
+WRITTENSLANG_WORD=
+
+SELECTCASE ARGS:0
+	CASE "アナル" , "肛門"
+		WRITTENSLANG_WORD=%SLANG_A(TARGET)%
+
+	CASE "おっぱい" , "胸" , "バスト"
+		WRITTENSLANG_WORD=%SLANG_B(TARGET)%
+
+	CASE "クリトリス" , "陰核"
+		WRITTENSLANG_WORD=%SLANG_C(TARGET)%
+
+	CASE "ヒップ" , "お尻"
+		WRITTENSLANG_WORD=%SLANG_H(TARGET)%
+
+	CASE "愛液" , "ラブジュース" , "膣分泌液"
+		WRITTENSLANG_WORD=%SLANG_Juice(TARGET,"愛液")%
+	CASE "腸液" , "直腸液" , "肛門液"
+		WRITTENSLANG_WORD=%SLANG_Juice(TARGET,"腸液")%
+
+	CASE "ラビア" , "陰唇"
+		WRITTENSLANG_WORD=%SLANG_Labia(TARGET)%
+
+	CASE "ワレメ" , "大陰唇"
+		WRITTENSLANG_WORD=%SLANG_LabiaMajora(TARGET)%
+
+	CASE "ビラビラ" , "小陰唇"
+		WRITTENSLANG_WORD=%SLANG_LabiaMinora(TARGET)%
+
+	CASE "マウス" , "口"
+		WRITTENSLANG_WORD=%SLANG_M(TARGET)%
+
+	CASE "ニップル" , "乳首"
+		WRITTENSLANG_WORD=%SLANG_N(TARGET)%
+
+	CASE "ペニス" , "男根" , "チンコ"
+		WRITTENSLANG_WORD=%SLANG_P(TARGET)%
+
+	CASE "ザーメン" , "精液"
+		WRITTENSLANG_WORD=%SLANG_Semen(TARGET)%
+
+	CASE "金玉" , "睾丸" , "テスティクル"
+		WRITTENSLANG_WORD=%SLANG_Testicle(TARGET)%
+
+	CASE "尿道" , "膀胱"
+		WRITTENSLANG_WORD=%SLANG_U(TARGET)%
+
+	CASE "ヴァギナ" , "膣"
+		WRITTENSLANG_WORD=%SLANG_V(TARGET)%
+
+	CASE "子宮"
+		WRITTENSLANG_WORD=%SLANG_W(TARGET)%
+
+	;該当なしで、そのまま部位名だけ返す
+	CASEELSE
+		WRITTENSLANG_WORD=%ARGS:0%
+ENDSELECT
+
+RETURNF WRITTENSLANG_WORD
+
+
+
+
+

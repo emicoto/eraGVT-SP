@@ -1,0 +1,123 @@
+;**********************************************************
+;サブイベントの地の文
+
+;悪堕ちキャラに敗北して犯される
+@MESSAGE_SUBEVENT_BATTLE_RAPED_ENEMY
+PRINTFORML 力無く横たわる%PRINT_TRANSCALLNAME(TARGET)%は、%PRINT_TRANSCALLNAME(FLAG:111)%の激辱を
+PRINTL ただ甘んじて受け入れるしかなかった・・・
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "SUBEVENT_BATTLE_RAPED_ENEMY")
+
+;----------------------------------------------------------
+;触手拘束具を着せられた
+@MESSAGE_SUBEVENT_BATTLE_SETTENTACLECLOTH
+PRINTL 
+PRINTFORML 全裸で息を切らす%PRINT_TRANSCALLNAME(TARGET)%・・・
+PRINTFORML 撤退の動きをみせた%STR:2500%に気を抜いてしまった次の瞬間！
+PRINTFORML %STR:2500%が突如体液の塊を飛ばしてきた！
+PRINTFORML 驚いた%PRINT_TRANSCALLNAME(TARGET)%はそれを回避できずに直撃してしまう
+PRINTFORMW 
+PRINTFORML 粘り気のある体液が肌を舐める感触に顔を歪める%PRINT_TRANSCALLNAME(TARGET)%・・・
+PRINTFORML 体液はまるで意志を持つかのように流れ、%PRINT_TRANSCALLNAME(TARGET)%の胸や秘部に集中する
+PRINTFORML ざわざわとした感触に%PRINT_TRANSCALLNAME(TARGET)%は思わず喘ぎ声をあげた
+PRINTFORMW 
+PRINTFORML やがて醜い色に変色した体液はそのまま触手化し、
+PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%を常に弄ぶ拘束具へと変貌を遂げたのだった・・・
+PRINTL 
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "SUBEVENT_BATTLE_SETTENTACLECLOTH")
+
+
+;----------------------------------------------------------
+;触手拘束具による被姦
+@MESSAGE_SUBEVENT_BATTLE_ACTTENTACLECLOTH
+FONTBOLD
+PRINTFORML %ITEMNAME:400%（愛撫）
+FONTREGULAR
+PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は%ITEMNAME:400%から与えられる刺激に身を悶えさせている・・・
+PRINTL 
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "SUBEVENT_BATTLE_ACTTENTACLECLOTH")
+
+;----------------------------------------------------------
+;触手服による被姦
+@MESSAGE_SUBEVENT_BATTLE_ACTTENTACLESUIT
+;テンタクルスーツの名前をLOCALSに代入
+IF CFLAG:1 == 0 && CSTR:8 != ""
+	LOCALS = %CSTR:8%
+ELSEIF CSTR:9 != ""
+	LOCALS = %CSTR:9%
+ELSE
+	LOCALS = %ITEMNAME:199%
+ENDIF
+
+FONTBOLD
+PRINTFORM %LOCALS%
+IF TCVAR:0 == 0
+	PRINT （Ｍ字開脚）
+ELSEIF TCVAR:41 <= 0
+	PRINT （愛撫）
+ELSEIF TCVAR:41 >= 1
+	PRINT （種付け）
+ENDIF
+PRINTL 
+FONTREGULAR
+PRINTFORML %LOCALS%はエネルギー供給を断たれて暴走している！
+PRINTW 
+IF TCVAR:0 == 0
+	PRINTFORML %LOCALS%はまるで相手の凌辱を手助けするかのように
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の身動きを封じつつ、無理やりＭ字に開脚させた・・・
+	SIF TCVAR:2 != 体勢：通常
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は態勢を崩された！
+ELSEIF TCVAR:41 == -1
+	PRINTFORML %LOCALS%は再び%PRINT_TRANSCALLNAME(TARGET)%の全身に触手を巻きつけ、
+	PRINTFORML 凌辱を再開した・・・
+ELSEIF TCVAR:41 == 0
+	PRINTFORML 制御を失った%LOCALS%は正体を現し、
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の全身に触手を巻きつけながら強引に愛撫している。
+	PRINTFORML 激しい責めに股間からはくちゅくちゅと水音がし始めている・・・
+ELSEIF TCVAR:41 == 1
+	PRINTFORML %LOCALS%はアソコが十分に濡れてきたことを確かめると、
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%のヴァギナとアナルに触手の先端をあてがい、
+	PRINTFORML そのまま蛇行しながら膣内に挿入してピストンし始めた・・・
+	IF TALENT:処女 > 0
+		PRINTW 
+		PRINTL 処女喪失
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はあっさりと処女を奪われてしまった・・・
+	ENDIF
+ELSEIF TCVAR:41 == 2
+	PRINTFORML %LOCALS%は触手で%PRINT_TRANSCALLNAME(TARGET)%の全身を愛撫しながら両穴を犯している。
+	PRINTFORML だんだんピストンが加速し、責めが激しくなっているようだ。
+	PRINTFORML このままではマズイかもしれない・・・
+ELSEIF TCVAR:41 == 3
+	PRINTFORML %LOCALS%は%PRINT_TRANSCALLNAME(TARGET)%の両穴を激しく犯しながらも更にピストンを加速させていく。
+	PRINTFORML やがて深くまで突き入れられた触手の根元がムクリと膨らみ、
+	PRINTFORML 一気に大量の精液が膣内と菊穴の奥へと注ぎ込まれていった・・・
+ELSEIF RAND:3 == 0
+	PRINTFORML %LOCALS%は射精しながら%PRINT_TRANSCALLNAME(TARGET)%を犯し続けている。
+	PRINTFORML アナルをずんと突きあげられて海老反りになると、すぐさま前から膣内を抉られ抑えつけられ。
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は股間から精液を噴き出させながら翻弄されるままだ・・・
+ELSEIF RAND:2 == 0
+	PRINTFORML %LOCALS%は射精しながら%PRINT_TRANSCALLNAME(TARGET)%を犯し続けている。
+	PRINTFORML 小刻みに動く触手に子宮口をコツコツと叩かれ、
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は膣内射精される感触に理性を塗りつぶされていく・・・
+ELSE
+	PRINTFORML %LOCALS%の射精は終わらず、%PRINT_TRANSCALLNAME(TARGET)%の両穴に精液を注ぎながらも
+	PRINTFORML なおも責めを緩めずにピストンを続け、愛撫を止める様子もない。
+	PRINTFORML 立っているのもやっとな%PRINT_TRANSCALLNAME(TARGET)%の股間からは絶えず新鮮な白濁液が流れ落ちている・・・
+ENDIF
+PRINTL 
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "SUBEVENT_BATTLE_ACTTENTACLESUIT")
+PRINTW 
+
+;----------------------------------------------------------
+;絶頂禁止の解放
+@MESSAGE_SUBEVENT_BATTLE_RELEASE_ECSTASY
+FONTBOLD
+PRINTL 絶頂解放
+FONTREGULAR
+
+PRINTFORML 医療班に回収された%PRINT_TRANSCALLNAME(TARGET)%は、絶頂を阻害している成分を中和する薬を投与され、
+PRINTL 医師や看護師たちに見られる中で望まぬ絶頂を迎えた・・・
+PRINTL 

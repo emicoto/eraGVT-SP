@@ -1,0 +1,1732 @@
+;**************************************************
+;操作キャラでないキャラについての
+;地の文と口上呼び出しファイル
+;**************************************************
+
+
+;**************************************************
+;戦闘のもの
+;**************************************************
+;洗脳/悪堕ちキャラの登場時
+;----------------------------------------------------------
+@MESSAGE_OTHER_ENTRY
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_ENTRY")
+RESETCOLOR
+
+
+;洗脳/悪堕ちキャラが操作キャラを変身強制解除させた		
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_CHARA_TRANSRELEASE
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_CHARA_TRANSRELEASE")
+RESETCOLOR
+
+@MESSAGE_OTHER_BATTLE_CHARA_TRANSRELEASE_ECS
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_CHARA_TRANSRELEASE_ECS")
+RESETCOLOR
+
+
+;洗脳/悪堕ちキャラが操作キャラに撤退されてしまった		
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_CHARA_TETTAI_SUCCESS
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_CHARA_TETTAI_SUCCESS")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラの撤退を防いだ
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_CHARA_TETTAI_FALSE
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_CHARA_TETTAI_FALSE")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラの攻撃をクリティカルヒットされた
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_CHARA_ATTACK_CRITICAL_HIT, ARG = 0
+;口上
+SETCOLOR 96, 96, 96
+SIF ARG == 0
+	TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_CHARA_ATTACK_CRITICAL_HIT")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラの攻撃を通常ヒットされた
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_CHARA_ATTACK_HIT, ARG = 0
+;口上
+SETCOLOR 96, 96, 96
+SIF ARG == 0
+	TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_CHARA_ATTACK_HIT")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラの攻撃を回避した
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_CHARA_ATTACK_FALSE, ARG = 0
+;口上
+SETCOLOR 96, 96, 96
+SIF ARG == 0
+	TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_CHARA_ATTACK_FALSE")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラにカス当たりされた
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_CHARA_ATTACK_GUARD, ARG = 0
+;口上
+SETCOLOR 96, 96, 96
+SIF ARG == 0
+	TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_CHARA_ATTACK_FALSE")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラの防御を見た			
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_CHARA_DEFENSE
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_CHARA_DEFENSE")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラの距離をとるを見た		
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_CHARA_TAKEAWAY
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_CHARA_TAKEAWAY")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラの背後に回るを見た		
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_CHARA_STEPIN
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_CHARA_STEPIN")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラの見切りを見た		
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_CHARA_SEETHROUGH
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_CHARA_SEETHROUGH")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラの何もしないを見た		
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_CHARA_NOACTION
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_CHARA_NOACTION")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラに振り解かれてしまった	
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_CHARA_HURIHODOKU_SUCCESS
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_CHARA_HURIHODOKU_SUCCESS")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラの振り解くを防いだ		
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_CHARA_HURIHODOKU_FALSE
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_CHARA_HURIHODOKU_FALSE")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラの暴れるを見た		
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_CHARA_ABARERU
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_CHARA_ABARERU")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラの耐えるを見た		
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_CHARA_TAERU
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_CHARA_TAERU")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラのなすがままを見た		
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_CHARA_NASUGAMAMA
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_CHARA_NASUGAMAMA")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラの受け入れるを見た		
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_CHARA_UKEIRERU
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_CHARA_UKEIRERU")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラの奉仕するを見た
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_CHARA_HOUSI
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_CHARA_HOUSI")
+RESETCOLOR
+
+
+;洗脳/悪堕ちキャラが操作キャラのＶ挿入防御を見た
+;--------------------------------------------------
+@MESSAGE_OTHER_BATTLE_CHARA_ANTI_V
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_CHARA_ANTI_V")
+RESETCOLOR
+
+
+;洗脳/悪堕ちキャラが操作キャラに引き剥がされた
+;--------------------------------------------------
+@MESSAGE_OTHER_BATTLE_CHARA_HIKIHAGASU_SUCCESS
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_CHARA_HIKIHAGASU_SUCCESS")
+RESETCOLOR
+
+;洗脳/悪堕ちキャラが操作キャラの引き剥がしを阻止した
+;--------------------------------------------------
+@MESSAGE_OTHER_BATTLE_CHARA_HIKIHAGASU_FALSE
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_CHARA_HIKIHAGASU_FALSE")
+RESETCOLOR
+
+;洗脳/悪堕ちキャラが操作キャラの睨みつけるを見た
+;--------------------------------------------------
+@MESSAGE_OTHER_BATTLE_CHARA_NIRAMI
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_CHARA_NIRAMI")
+RESETCOLOR
+
+
+;洗脳/悪堕ちキャラが操作キャラの罵倒するを見た
+;--------------------------------------------------
+@MESSAGE_OTHER_BATTLE_CHARA_BATOU
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_CHARA_BATOU")
+RESETCOLOR
+
+
+;洗脳/悪堕ちキャラが操作キャラの反抗するを見た
+;--------------------------------------------------
+@MESSAGE_OTHER_BATTLE_CHARA_RESISTANCE
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_CHARA_RESISTANCE")
+RESETCOLOR
+
+
+;洗脳/悪堕ちキャラが操作キャラの説得するを見た
+;--------------------------------------------------
+@MESSAGE_OTHER_BATTLE_CHARA_PERSUADE
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_CHARA_PERSUADE")
+RESETCOLOR
+
+
+;洗脳/悪堕ちキャラが操作キャラの手淫攻撃をみた
+;--------------------------------------------------
+@MESSAGE_OTHER_BATTLE_CHARA_SEX_ATTACK100
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_CHARA_SEX_ATTACK100")
+RESETCOLOR
+
+
+;洗脳/悪堕ちキャラが操作キャラのフェラ攻撃をみた
+;--------------------------------------------------
+@MESSAGE_OTHER_BATTLE_CHARA_SEX_ATTACK101
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_CHARA_SEX_ATTACK101")
+RESETCOLOR
+
+;洗脳/悪堕ちキャラが操作キャラの足コキ攻撃をみた
+;--------------------------------------------------
+@MESSAGE_OTHER_BATTLE_CHARA_SEX_ATTACK102
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_CHARA_SEX_ATTACK102")
+RESETCOLOR
+
+;洗脳/悪堕ちキャラが操作キャラの素股焦らしをみた
+;--------------------------------------------------
+@MESSAGE_OTHER_BATTLE_CHARA_SEX_ATTACK103
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_CHARA_SEX_ATTACK103")
+RESETCOLOR
+
+;洗脳/悪堕ちキャラが操作キャラの腰を振るをみた
+;--------------------------------------------------
+@MESSAGE_OTHER_BATTLE_CHARA_SEX_ATTACK104
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_CHARA_SEX_ATTACK104")
+RESETCOLOR
+
+
+;洗脳/悪堕ちキャラが攻撃を開始した				
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_TENTACLE_ATTACK
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_TENTACLE_ATTACK")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが攻撃がクリティカルヒットさせた		
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_TENTACLE_ATTACK_CRITICAL_HIT
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_TENTACLE_ATTACK_CRITICAL_HIT")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが攻撃が通常ヒットさせた			
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_TENTACLE_ATTACK_HIT
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_TENTACLE_ATTACK_HIT")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが攻撃を回避された			
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_TENTACLE_ATTACK_FALSE
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_TENTACLE_ATTACK_FALSE")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラがカス当たりさせた			
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_TENTACLE_ATTACK_GRAZE
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_TENTACLE_ATTACK_GRAZE")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが絡みつく開始した			
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_TENTACLE_KARAMITUKU
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_TENTACLE_KARAMITUKU")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが絡みつくを成功させた			
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_TENTACLE_KARAMITUKU_SUCCESS
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_TENTACLE_KARAMITUKU_SUCCESS")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが絡みつくを回避された			
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_TENTACLE_KARAMITUKU_FALSE
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_TENTACLE_KARAMITUKU_FALSE")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが体液を吐くを開始した			
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_TENTACLE_TAIEKI
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_TENTACLE_TAIEKI")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが体液を吐くをヒットさせた		
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_TENTACLE_TAIEKI_HIT
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_TENTACLE_TAIEKI_HIT")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが体液を吐くを回避された			
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_TENTACLE_TAIEKI_FALSE
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_TENTACLE_TAIEKI_FALSE")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが距離をとった				
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_TENTACLE_TAKEAWAY
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_TENTACLE_TAKEAWAY")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが押し倒すを開始した			
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_TENTACLE_OSHITAOSU
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_TENTACLE_OSHITAOSU")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが押し倒すを成功させた			
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_TENTACLE_OSHITAOSU_SUCCESS
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_TENTACLE_OSHITAOSU_SUCCESS")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが押し倒すを回避された			
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_TENTACLE_OSHITAOSU_FALSE
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_TENTACLE_OSHITAOSU_FALSE")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが邪悪な波動を開始した			
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_TENTACLE_HADOU
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_TENTACLE_HADOU")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが邪悪な波動をヒットさせた		
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_TENTACLE_HADOU_HIT
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_TENTACLE_HADOU_HIT")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが邪悪な波動を回避された			
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_TENTACLE_HADOU_FALSE
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_TENTACLE_HADOU_FALSE")
+RESETCOLOR
+
+
+
+
+
+;洗脳/悪堕ちキャラが操作キャラのアウターが破れ始めたのを見た
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_CLOTH_OUTERDAMAGE
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_CLOTH_OUTERDAMAGE")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラのアウターが破れたのを見た	
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_CLOTH_OUTERBREAK
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_CLOTH_OUTERBREAK")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラのインナーが破れ始めたのを見た
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_CLOTH_INNERDAMAGE
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_CLOTH_INNERDAMAGE")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラのインナーが破れたのを見た	
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_CLOTH_INNERBREAK
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_CLOTH_INNERBREAK")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラに敗北した			
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_END_WIN_ENEMY
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_END_WIN_ENEMY")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラに勝利した			
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_END_LOSS
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_END_LOSS")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラと引き分けた			
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_END_TIMEUP
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_END_TIMEUP")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラの「触手の虜で体が竦む」を見た
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_DISACTION_TORIKO
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_DISACTION_TORIKO")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラの「快楽で体が竦む」を見た	
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_DISACTION_KAIRAKU
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_DISACTION_KAIRAKU")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラの「苦痛で体が竦む」を見た	
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_DISACTION_KUTUU
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_DISACTION_KUTUU")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラの「屈辱で体が竦む」を見た	
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_DISACTION_KUTUZYOKU
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_DISACTION_KUTUZYOKU")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラの「恐怖で体が竦む」を見た	
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_DISACTION_KYOUHU
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_DISACTION_KYOUHU")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラの「恥辱で体が竦む」を見た	
+;----------------------------------------------------------
+@MESSAGE_OTHER_BATTLE_DISACTION_TIZYOKU
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_DISACTION_TIZYOKU")
+RESETCOLOR
+
+
+;洗脳/悪堕ちキャラが操作キャラの「寄生の影響で体が竦む」を見た
+;--------------------------------------------------
+@MESSAGE_OTHER_BATTLE_DISACTION_PARASITE
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_DISACTION_PARASITE")
+RESETCOLOR
+
+
+;洗脳中キャラの救出された側
+;--------------------------------------------------
+@MESSAGE_OTHER_BATTLE_END_RESCUED_SENNOU
+PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は洗脳が解けました
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_END_RESCUED_SENNOU")
+RESETCOLOR
+
+
+;洗脳/悪堕ち状態で倒された側
+;--------------------------------------------------
+@MESSAGE_OTHER_BATTLE_END_RESCUED_ENEMY
+PRINTFORML %PRINT_TRANSCALLNAME(FLAG:111)%は救出されました
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_END_RESCUED_ENEMY")
+RESETCOLOR
+
+
+
+;**************************************************
+;性行為のもの
+;**************************************************
+;洗脳/悪堕ちキャラが操作キャラにC攻め弱をした		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_COM0
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_COM0")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラにC攻め強をした		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_COM1
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_COM1")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラにV攻め弱をした		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_COM2
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_COM2")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラにV攻め強をした		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_COM3
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_COM3")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラにA攻め弱をした		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_COM4
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_COM4")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラにA攻め強をした		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_COM5
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_COM5")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラにB攻め弱をした		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_COM6
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_COM6")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラにB攻め強をした		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_COM7
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_COM7")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラにスパンキングをした		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_COM8
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_COM8")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラに針をした			
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_COM9
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_COM9")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラに手淫をさせた		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_COM10
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_COM10")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラにフェラをさせた		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_COM11
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_COM11")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラにイラマチオをさせた		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_COM12
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_COM12")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラに絶頂禁止をさせた		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_COM13
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_COM13")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラの衣装を破いた
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_COM14
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_COM14")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラに種付けピストンをした
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_COM15
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_COM15")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラに種付けフィニッシュをした
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_COM16
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_COM16")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラにアナルピストンをした
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_COM17
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_COM17")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラにアナルフィニッシュをした
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_COM18
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_COM18")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラに両穴ピストンをした
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_COM19
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_COM19")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラに両穴フィニッシュをした
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_COM20
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_COM20")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラにC攻めSPをした		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_SPCOM0
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_SPCOM0")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラにV攻めSPをした		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_SPCOM1
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_SPCOM1")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラにA攻めSPをした		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_SPCOM2
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_SPCOM2")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラにB攻めSPをした		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_SPCOM3
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_SPCOM3")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラに電流をした			
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_SPCOM4
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_SPCOM4")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラにパイズリをさせた		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_SPCOM5
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_SPCOM5")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラに強制自慰をさせた		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_SPCOM6
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_SPCOM6")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラに羞恥プレイをした		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_SPCOM7
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_SPCOM7")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラの射精を見た			
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_CHARA_SYASEI
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_CHARA_SYASEI")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラの大量射精を見た		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_CHARA_SYASEI_HI
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_CHARA_SYASEI_HI")
+RESETCOLOR
+
+;洗脳/悪堕ちキャラが操作キャラの射精失敗（Ｐ絶頂）を見た			
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_CHARA_SYASEI
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_CHARA_KARAIKI")
+RESETCOLOR
+
+;洗脳/悪堕ちキャラが操作キャラの大量射精（潮吹き）失敗を見た		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_CHARA_KARAIKI_HI
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_CHARA_KARAIKI_HI")
+RESETCOLOR
+
+;洗脳/悪堕ちキャラが操作キャラの噴乳を見た			
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_CHARA_HUNNYU
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_CHARA_HUNNYU")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラの大量噴乳を見た		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_CHARA_HUNNYU_HI
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_CHARA_HUNNYU_HI")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラのC絶頂を見た		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_ECSTASY_C
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_ECSTASY_C")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラのC強絶頂を見た		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_ECSTASY_C_HI
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_ECSTASY_C_HI")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラのV絶頂を見た		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_ECSTASY_V
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_ECSTASY_V")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラのV強絶頂を見た		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_ECSTASY_V_HI
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_ECSTASY_V_HI")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラのA絶頂を見た		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_ECSTASY_A
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_ECSTASY_A")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラのA強絶頂を見た		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_ECSTASY_A_HI
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_ECSTASY_A_HI")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラのB絶頂を見た		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_ECSTASY_B
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_ECSTASY_B")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラのB強絶頂を見た		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_ECSTASY_B_HI
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_ECSTASY_B_HI")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラの四重絶頂を見た		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_MULTIECSTASY_CVAB
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_MULTIECSTASY_CVAB")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラのCVA三重絶頂を見た		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_MULTIECSTASY_CVA
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_MULTIECSTASY_CVA")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラのCVB三重絶頂を見た		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_MULTIECSTASY_CVB
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_MULTIECSTASY_CVB")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラのCAB三重絶頂を見た		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_MULTIECSTASY_CAB
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_MULTIECSTASY_CAB")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラのCV二重絶頂を見た		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_MULTIECSTASY_CV
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_MULTIECSTASY_CV")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラのCA二重絶頂を見た		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_MULTIECSTASY_CA
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_MULTIECSTASY_CA")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラのCB二重絶頂を見た		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_MULTIECSTASY_CB
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_MULTIECSTASY_CB")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラのVAB三重絶頂を見た		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_MULTIECSTASY_VAB
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_MULTIECSTASY_VAB")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラのVA二重絶頂を見た		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_MULTIECSTASY_VA
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_MULTIECSTASY_VA")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラのVB二重絶頂を見た		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_MULTIECSTASY_VB
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_MULTIECSTASY_VB")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラのAB二重絶頂を見た		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_MULTIECSTASY_AB
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_MULTIECSTASY_AB")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラに快楽刻印が付くのを見た	
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_MARK_KAIRAKU_1
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_MARK_KAIRAKU_1")
+RESETCOLOR
+@MESSAGE_OTHER_SEX_MARK_KAIRAKU_2
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_MARK_KAIRAKU_2")
+RESETCOLOR
+@MESSAGE_OTHER_SEX_MARK_KAIRAKU_3
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_MARK_KAIRAKU_3")
+RESETCOLOR
+@MESSAGE_OTHER_SEX_MARK_KAIRAKU_4
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_MARK_KAIRAKU_4")
+RESETCOLOR
+@MESSAGE_OTHER_SEX_MARK_KAIRAKU_5
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_MARK_KAIRAKU_5")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラに苦痛刻印が付くのを見た	
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_MARK_KUTUU_1
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_MARK_KUTUU_1")
+RESETCOLOR
+@MESSAGE_OTHER_SEX_MARK_KUTUU_2
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_MARK_KUTUU_2")
+RESETCOLOR
+@MESSAGE_OTHER_SEX_MARK_KUTUU_3
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_MARK_KUTUU_3")
+RESETCOLOR
+@MESSAGE_OTHER_SEX_MARK_KUTUU_4
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_MARK_KUTUU_4")
+RESETCOLOR
+@MESSAGE_OTHER_SEX_MARK_KUTUU_5
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_MARK_KUTUU_5")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラに屈服刻印が付くのを見た	
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_MARK_KUPPUKU_1
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_MARK_KUPPUKU_1")
+RESETCOLOR
+@MESSAGE_OTHER_SEX_MARK_KUPPUKU_2
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_MARK_KUPPUKU_2")
+RESETCOLOR
+@MESSAGE_OTHER_SEX_MARK_KUPPUKU_3
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_MARK_KUPPUKU_3")
+RESETCOLOR
+@MESSAGE_OTHER_SEX_MARK_KUPPUKU_4
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_MARK_KUPPUKU_4")
+RESETCOLOR
+@MESSAGE_OTHER_SEX_MARK_KUPPUKU_5
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_MARK_KUPPUKU_5")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラに恐怖刻印が付くのを見た	
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_MARK_KYOUHU_1
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_MARK_KYOUHU_1")
+RESETCOLOR
+@MESSAGE_OTHER_SEX_MARK_KYOUHU_2
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_MARK_KYOUHU_2")
+RESETCOLOR
+@MESSAGE_OTHER_SEX_MARK_KYOUHU_3
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_MARK_KYOUHU_3")
+RESETCOLOR
+@MESSAGE_OTHER_SEX_MARK_KYOUHU_4
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_MARK_KYOUHU_4")
+RESETCOLOR
+@MESSAGE_OTHER_SEX_MARK_KYOUHU_5
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_MARK_KYOUHU_5")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラに恥辱刻印が付くのを見た	
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_MARK_TIJYOKU_1
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_MARK_TIJYOKU_1")
+RESETCOLOR
+@MESSAGE_OTHER_SEX_MARK_TIJYOKU_2
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_MARK_TIJYOKU_2")
+RESETCOLOR
+@MESSAGE_OTHER_SEX_MARK_TIJYOKU_3
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_MARK_TIJYOKU_3")
+RESETCOLOR
+@MESSAGE_OTHER_SEX_MARK_TIJYOKU_4
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_MARK_TIJYOKU_4")
+RESETCOLOR
+@MESSAGE_OTHER_SEX_MARK_TIJYOKU_5
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_MARK_TIJYOKU_5")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラの膣内に射精した		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_TENTACLE_SYASEI_VAGINA
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_TENTACLE_SYASEI_VAGINA")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラの膣内に大量射精した		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_TENTACLE_SYASEI_VAGINA_HI
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_TENTACLE_SYASEI_VAGINA_HI")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラのアナルに射精した		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_TENTACLE_SYASEI_ANAL
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_TENTACLE_SYASEI_ANAL")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラのアナルに大量射精した	
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_TENTACLE_SYASEI_ANAL_HI
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_TENTACLE_SYASEI_ANAL_HI")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラの手に射精した		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_TENTACLE_SYASEI_HAND
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_TENTACLE_SYASEI_HAND")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラの手に大量射精した		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_TENTACLE_SYASEI_HAND_HI
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_TENTACLE_SYASEI_HAND_HI")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラの口内に射精した		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_TENTACLE_SYASEI_MOUTH
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_TENTACLE_SYASEI_MOUTH")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラの口内に大量射精した		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_TENTACLE_SYASEI_MOUTH_HI
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_TENTACLE_SYASEI_MOUTH_HI")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラの胸に射精した		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_TENTACLE_SYASEI_BUST
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_TENTACLE_SYASEI_BUST")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラの胸に大量射精した		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SEX_TENTACLE_SYASEI_BUST_HI
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SEX_TENTACLE_SYASEI_BUST_HI")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラの普通の自慰を見た		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SELF_N
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SELF_N")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラの胸自慰を見た		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SELF_B
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SELF_B")
+RESETCOLOR
+
+
+
+;洗脳/悪堕ちキャラが操作キャラのアナニーを見た		
+;----------------------------------------------------------
+@MESSAGE_OTHER_SELF_A
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SELF_A")
+RESETCOLOR
+
+
+
+
+;**************************************************
+;幽閉のもの
+;**************************************************
+;救出された側の口上
+;--------------------------------------------------
+@MESSAGE_OTHER_BATTLE_END_RESCUED
+PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は救出されました
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_BATTLE_END_RESCUED")
+RESETCOLOR
+
+
+
+;悪堕ちキャラが幽閉中の操作キャラに被姦開始した		
+;----------------------------------------------------------
+@MESSAGE_OTHER_PRISON_PRISENTENCE
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_PRISON_PRISENTENCE")
+RESETCOLOR
+
+
+
+;悪堕ちキャラが幽閉中の操作キャラを洗脳した		
+;----------------------------------------------------------
+@MESSAGE_OTHER_PRISON_SENNOU
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_PRISON_SENNOU")
+RESETCOLOR
+
+
+
+;悪堕ちキャラが幽閉中の操作キャラを悪堕ち			
+;----------------------------------------------------------
+@MESSAGE_OTHER_PRISON_AKUOTI
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_PRISON_AKUOTI")
+RESETCOLOR
+
+
+
+;悪堕ちキャラが幽閉中の操作キャラを取り込んだ		
+;----------------------------------------------------------
+@MESSAGE_OTHER_PRISON_DEAD
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_PRISON_DEAD")
+RESETCOLOR
+
+
+
+;悪堕ちキャラが幽閉中の操作キャラをふたなり化した		
+;----------------------------------------------------------
+@MESSAGE_OTHER_PRISON_HUTANARI
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_PRISON_HUTANARI")
+RESETCOLOR
+
+
+
+;悪堕ちキャラが幽閉中の操作キャラを母乳体質化した		
+;----------------------------------------------------------
+@MESSAGE_OTHER_PRISON_BONYU
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_PRISON_BONYU")
+RESETCOLOR
+
+
+;悪堕ちキャラが幽閉中の操作キャラを苗床化した		
+;----------------------------------------------------------
+@MESSAGE_OTHER_PRISON_NAEDOKO
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_PRISON_NAEDOKO")
+RESETCOLOR
+
+
+;悪堕ちキャラが幽閉中の操作キャラにC中心攻めをした		
+;----------------------------------------------------------
+@MESSAGE_OTHER_PRISON_COM_0
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_PRISON_COM_0")
+RESETCOLOR
+
+
+
+;悪堕ちキャラが幽閉中の操作キャラにV中心攻めをした		
+;----------------------------------------------------------
+@MESSAGE_OTHER_PRISON_COM_1
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_PRISON_COM_1")
+RESETCOLOR
+
+
+
+;悪堕ちキャラが幽閉中の操作キャラにA中心攻めをした		
+;----------------------------------------------------------
+@MESSAGE_OTHER_PRISON_COM_2
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_PRISON_COM_2")
+RESETCOLOR
+
+
+
+;悪堕ちキャラが幽閉中の操作キャラにB中心攻めをした		
+;----------------------------------------------------------
+@MESSAGE_OTHER_PRISON_COM_3
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_PRISON_COM_3")
+RESETCOLOR
+
+
+
+;悪堕ちキャラが幽閉中の操作キャラにSな攻めをした		
+;----------------------------------------------------------
+@MESSAGE_OTHER_PRISON_COM_4
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_PRISON_COM_4")
+RESETCOLOR
+
+
+
+;悪堕ちキャラが幽閉中の操作キャラに強制奉仕させた		
+;----------------------------------------------------------
+@MESSAGE_OTHER_PRISON_COM_5
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_PRISON_COM_5")
+RESETCOLOR
+
+
+
+;悪堕ちキャラが幽閉中の操作キャラに羞恥な攻めをした	
+;----------------------------------------------------------
+@MESSAGE_OTHER_PRISON_COM_6
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_PRISON_COM_6")
+RESETCOLOR
+
+
+
+;悪堕ちキャラが幽閉中の操作キャラにふたなり攻めをした	
+;----------------------------------------------------------
+@MESSAGE_OTHER_PRISON_COM_100
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_PRISON_COM_100")
+RESETCOLOR
+
+
+
+;悪堕ちキャラが幽閉中の操作キャラにV拡張をした		
+;----------------------------------------------------------
+@MESSAGE_OTHER_PRISON_COM_101
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_PRISON_COM_101")
+RESETCOLOR
+
+
+
+;悪堕ちキャラが幽閉中の操作キャラにA拡張をした		
+;----------------------------------------------------------
+@MESSAGE_OTHER_PRISON_COM_102
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_PRISON_COM_102")
+RESETCOLOR
+
+
+
+;悪堕ちキャラが幽閉中の操作キャラに搾乳攻めをした		
+;----------------------------------------------------------
+@MESSAGE_OTHER_PRISON_COM_103
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_PRISON_COM_103")
+RESETCOLOR
+
+
+
+;悪堕ちキャラが幽閉中の操作キャラに種付けをした		
+;----------------------------------------------------------
+@MESSAGE_OTHER_PRISON_COM_104
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_PRISON_COM_104")
+RESETCOLOR
+
+
+
+;悪堕ちキャラが幽閉中の操作キャラにVに産卵をした		
+;----------------------------------------------------------
+@MESSAGE_OTHER_PRISON_COM_200
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_PRISON_COM_200")
+RESETCOLOR
+
+
+
+;悪堕ちキャラが幽閉中の操作キャラにAに産卵をした		
+;----------------------------------------------------------
+@MESSAGE_OTHER_PRISON_COM_201
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_PRISON_COM_201")
+RESETCOLOR
+
+
+
+;悪堕ちキャラが幽閉中の操作キャラに注射をした		
+;----------------------------------------------------------
+@MESSAGE_OTHER_PRISON_COM_300
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_PRISON_COM_300")
+RESETCOLOR
+
+
+
+;悪堕ちキャラが幽閉中の操作キャラに触手の寄生をした	
+;----------------------------------------------------------
+@MESSAGE_OTHER_PRISON_COM_301
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_PRISON_COM_301")
+RESETCOLOR
+
+
+
+;**************************************************
+;サブイベントのもの
+;**************************************************
+;レイプする側
+;--------------------------------------------------
+@MESSAGE_OTHER_SUBEVENT_BATTLE_RAPE_ENEMY
+PRINTFORML %PRINT_TRANSCALLNAME(FLAG:111)%はつい力尽きた獲物を前に怪しく哂い舌なめずりをした・・・
+PRINTL 
+;口上
+SETCOLOR 96, 96, 96
+TRYCALLFORM KOJO_ROOT(CFLAG:(FLAG:111):6, "OTHER_SUBEVENT_BATTLE_RAPE_ENEMY")
+RESETCOLOR

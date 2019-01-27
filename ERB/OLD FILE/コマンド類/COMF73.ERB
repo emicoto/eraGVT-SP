@@ -1,0 +1,58 @@
+;SP変身
+@COM73
+
+;距離表示
+CALL PRINT_DISTANCE
+PRINTL 
+
+;地の文：SP変身
+CALL MESSAGE_BATTLE_CHARA_SP_TRANSFORMCALL
+
+;SPモード
+CALL TRANSFORM, 2
+TCVAR:5 = TCVAR:4
+TCVAR:4 = 0
+
+;状態異常が治る
+IF TCVAR:12 > 0
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の状態異常が治った！
+	PRINTL 
+	TCVAR:12 = 0
+ENDIF
+
+;心境の変化
+;性格の成長補正と心境のステータス補正が近いもの
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+
+;SP変身口上から続けて心境口上は不自然なので、地の文を呼び出さずにここで直書きする
+PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%は 
+
+;「怒り」になる性格：面倒くさがり, 古風, 乱暴者
+IF RESULT == 15 || RESULT == 24 || RESULT == 27
+	TCVAR:1 = 2
+	PRINT 怒り
+;「冷静」になる性格：臆病, 恥ずかしがり屋, おっとり, 楽天家, 悲観的, 無口
+ELSEIF RESULT == 10 || RESULT == 11 || RESULT == 14 || RESULT == 17 || RESULT == 18 || RESULT == 22
+	TCVAR:1 = 4
+	PRINT 冷静
+;「高揚」になる性格：その他
+ELSE
+	TCVAR:1 = 6
+	PRINT 高揚
+ENDIF
+
+PRINTL 状態 になった
+;心境の持続ターンをリセット
+TCVAR:11 = 0
+
+;アウター（変身後）のダメージが全回復する
+SIF CFLAG:41 != 0
+	TCVAR:23 = TCVAR:22
+
+;相手を怯ませる
+TFLAG:1 = 1
+
+;反動で疲労蓄積
+TFLAG:99 += 3
+
+RETURN 1

@@ -1,0 +1,228 @@
+;**********************************************************
+;—H•ÂƒRƒ}ƒ“ƒh
+;PRISON_COM7
+;ŽqGŽè‚É”Æ‚³‚ê‚é
+;**********************************************************
+@PRISON_COM7
+#DIM CCOUNT
+VARSET LOCAL
+
+;Žæ“¾‚·‚éŽì
+;LOCAL:0 ‰õ‚b
+;LOCAL:1 ‰õ‚u
+;LOCAL:2 ‰õ‚`
+;LOCAL:3 ‰õ‚a
+;LOCAL:4 ŠŠ ŠŠ‚Í–¢Žg—p
+;LOCAL:5 ‹±‡
+;LOCAL:6 K“¾
+;LOCAL:7 —~î
+;LOCAL:8 ‹ü•ž
+;LOCAL:9 ’pî
+;LOCAL:10 ‹ê’É
+;LOCAL:11 ‹°•|
+
+;ŒoŒ±”‚Ìã—Ê’l‹L˜^—p
+;LOCAL:120 VŒoŒ±
+;LOCAL:121 AŒoŒ±
+;LOCAL:123 ¸‰tŒoŒ±
+;LOCAL:124 ƒtƒFƒ‰ŒoŒ±
+;LOCAL:130 ˜Io‰õŠyŒoŒ±,
+;LOCAL:131 •òŽd‰õŠyŒoŒ±,
+;LOCAL:132 ‹ê’É‰õŠyŒoŒ±,
+;LOCAL:140 Ž©ˆÔŒoŒ±,
+;LOCAL:141 ‹ßeŒð”zŒoŒ±,
+;LOCAL:150 ˆÙíŒoŒ±
+;LOCAL:151 ‚uŠg’£ŒoŒ±
+;LOCAL:152 ‚`Šg’£ŒoŒ±
+;LOCAL:153 ŽË¸ŒoŒ±
+;LOCAL:154 •¬“ûŒoŒ±
+;LOCAL:155 •ú”AŒoŒ±
+;LOCAL:156 Šñ¶ŒoŒ±
+;LOCAL:157 oŽYŒoŒ±
+
+;‰˜õ“x
+CFLAG:30 += 10 + RAND:11
+
+;‰õC
+IF ABL:‚bŠ´Šo == 0
+	LOCAL:0 = 1
+ELSEIF ABL:‚bŠ´Šo == 1
+	LOCAL:0 = 2
+ELSEIF ABL:‚bŠ´Šo == 2
+	LOCAL:0 = 20
+ELSEIF ABL:‚bŠ´Šo == 3
+	LOCAL:0 = 100
+ELSEIF ABL:‚bŠ´Šo == 4
+	LOCAL:0 = 200
+ELSEIF ABL:‚bŠ´Šo >= 5
+	LOCAL:0 = 400
+ENDIF
+
+;‰õV
+IF ABL:‚uŠ´Šo == 0
+	LOCAL:120 = 2
+	LOCAL:1 = 1
+ELSEIF ABL:‚uŠ´Šo == 1
+	LOCAL:120 = 5
+	LOCAL:1 = 5
+ELSEIF ABL:‚uŠ´Šo == 2
+	LOCAL:120 = 8
+	LOCAL:1 = 50
+ELSEIF ABL:‚uŠ´Šo == 3
+	LOCAL:120 = 11
+	LOCAL:1 = 250
+ELSEIF ABL:‚uŠ´Šo == 4
+	LOCAL:120 = 15
+	LOCAL:1 = 500
+ELSEIF ABL:‚uŠ´Šo >= 5
+	LOCAL:120 = 20
+	LOCAL:1 = 1000
+ENDIF
+;ŽqGŽè‚Ì‚Ì”‚¾‚¯”{‘
+LOCAL:120 *= (CFLAG:220 + 100) / 100
+LOCAL:1 *= SQRT(CFLAG:220) + 1
+
+;‰õA
+IF ABL:‚`Š´Šo == 0
+	LOCAL:121 = 2
+	LOCAL:2 = 1
+ELSEIF ABL:‚`Š´Šo == 1
+	LOCAL:121 = 5
+	LOCAL:2 = 5
+ELSEIF ABL:‚`Š´Šo == 2
+	LOCAL:121 = 8
+	LOCAL:2 = 50
+ELSEIF ABL:‚`Š´Šo == 3
+	LOCAL:121 = 11
+	LOCAL:2 = 250
+ELSEIF ABL:‚`Š´Šo == 4
+	LOCAL:121 = 15
+	LOCAL:2 = 500
+ELSEIF ABL:‚`Š´Šo >= 5
+	LOCAL:121 = 20
+	LOCAL:2 = 1000
+ENDIF
+
+;‰õB
+IF ABL:‚aŠ´Šo == 0
+	LOCAL:3 = 1
+ELSEIF ABL:‚aŠ´Šo == 1
+	LOCAL:3 = 2
+ELSEIF ABL:‚aŠ´Šo == 2
+	LOCAL:3 = 20
+ELSEIF ABL:‚aŠ´Šo == 3
+	LOCAL:3 = 100
+ELSEIF ABL:‚aŠ´Šo == 4
+	LOCAL:3 = 200
+ELSEIF ABL:‚aŠ´Šo >= 5
+	LOCAL:3 = 400
+ENDIF
+;ŽqGŽè‚Ì‚Ì”‚¾‚¯”{‘
+LOCAL:3 *= SQRT(CFLAG:220) + 1
+
+;‹±‡
+IF ABL:]‡ == 2
+	LOCAL:5 = 500
+ELSEIF ABL:]‡ == 3
+	LOCAL:5 = 1000
+ELSEIF ABL:]‡ == 4
+	LOCAL:5 = 2000
+ELSEIF ABL:]‡ >= 5
+	LOCAL:5 = 5000
+ENDIF
+
+;K“¾
+IF ABL:•òŽd¸_ == 0
+	LOCAL:6 = 10
+ELSEIF ABL:•òŽd¸_ == 1
+	LOCAL:6 = 25
+ELSEIF ABL:•òŽd¸_ == 2
+	LOCAL:6 = 50
+ELSEIF ABL:•òŽd¸_ == 3
+	LOCAL:6 = 80
+ELSEIF ABL:•òŽd¸_ == 4
+	LOCAL:6 = 125
+ELSEIF ABL:•òŽd¸_ >= 5
+	LOCAL:6 = 180
+ENDIF
+
+;ˆ—‚Å‚Í—L‚è“¾‚È‚¢‚ªAˆê‰žˆ—‚Ìˆ—
+IF TALENT:ˆ— > 0 && SHIELD:1 <= 0
+	LOCAL:10 = 500
+	CALL LOSTVIRGIN, 1
+ENDIF
+
+;‹ü•ž@‚Æ‚è‚ ‚¦‚¸ˆê’è‚Å
+LOCAL:8 = 800
+
+;VŠ´Šo‚ª’á‚¢‚Æ‹°•|‚ª“ü‚é
+IF ABL:‚uŠ´Šo == 0
+	LOCAL:11 = 800
+ELSEIF ABL:‚uŠ´Šo == 1
+	LOCAL:11 = 400
+ELSEIF ABL:‚uŠ´Šo == 2
+	LOCAL:11 = 200
+ELSEIF ABL:‚uŠ´Šo == 3
+	LOCAL:11 = 100
+ELSE
+ENDIF
+
+;K“¾Šî–{’l
+LOCAL:6 += 10
+
+;—~îŠî–{’l
+LOCAL:7 += 0
+
+;‹ü•žŠî–{’l
+LOCAL:8 += 500
+
+;’pîŠî–{’l
+LOCAL:9 += 500
+
+;‹ê’ÉŠî–{’l
+LOCAL:10 += 0
+
+;‹°•|Šî–{’l
+LOCAL:11 += 500
+
+;¸‰tŒoŒ±
+LOCAL:123 = 15 * CFLAG:220
+;ƒtƒFƒ‰ŒoŒ±
+LOCAL:124 = 2 * CFLAG:220
+;‹ßeŒð”zŒoŒ±
+LOCAL:141 = CFLAG:220
+;ˆÙíŒoŒ±
+SIF EXP:‹ßeŒð”zŒoŒ± == 0
+	LOCAL:150 = 1
+
+;’n‚Ì•¶FŽqGŽè‚É”Æ‚³‚ê‚é
+CALL MESSAGE_PRISON_COM_7
+
+;—H•Â’†ƒpƒ‰ƒ[ƒ^•Ï“®‹¤’Êˆ—‚Ö
+CALL COMMON_PRISON, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11
+
+;Šg’£“x‚É‚æ‚éŠg’£ŒoŒ±
+CALL PRISON_GAPING, LOCAL:120, LOCAL:121, LOCAL:151, LOCAL:152
+LOCAL:151 += RESULT:0
+LOCAL:152 += RESULT:1
+
+;ŒoŒ±”‚Ì‘‰Á
+CALL COMMON_PRISON_EXP_SH, LOCAL:120, LOCAL:121, LOCAL:151, LOCAL:152
+LOCAL:120 = RESULT:0
+LOCAL:121 = RESULT:1
+LOCAL:151 = RESULT:2
+LOCAL:152 = RESULT:3
+
+;•\Ž¦‚Æ‘‰Á‚Ìˆ—
+FOR CCOUNT, 100, 200
+	CALL COMMON_PRISON_EXP, CCOUNT, LOCAL:CCOUNT
+NEXT
+
+PRINTL 
+
+;Žì‚ÌŽæ“¾‚Ö
+CALL _ABLUP, 1
+;”DP
+SIF SHIELD:1 <= 0
+	TRYCALL NINSIN_HANTEI,(15 * CFLAG:220),(MIN(EXP:TARGET:‹ßeŒð”zŒoŒ± * 5 + 20,120)),200
+

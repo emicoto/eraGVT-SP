@@ -1,0 +1,69 @@
+;------------------------------------------------------------------------------------------------
+;TK-ドローン
+@TK_DRONE
+LOCAL:0 = RAND:26
+;ダメージ計算前にEX:攻を一旦切る
+LOCAL:2 = 0
+IF GETBIT(TCVAR:3, 0)
+	LOCAL:2 = 1
+	CLEARBIT TCVAR:3, 0
+ENDIF
+
+CALL DAMAGE, "ATTACK_RANGE_LONG"
+
+;EX:攻の状態を復帰
+SIF LOCAL:2 == 1
+	SETBIT TCVAR:3, 0
+	
+LOCAL:1 = RESULT * LOCAL:0 / 100
+PRINTL ＴＫ－ドローンの火力支援！
+PRINTW 
+IF LOCAL:0 < 5
+	PRINTL ＴＫ－ドローンは機銃を掃射した！
+	LOCAL:1 += 50
+ELSEIF LOCAL:0 < 20
+	PRINTL ＴＫ－ドローンは対触手レーザービームを掃射した！	
+	LOCAL:1 += 100
+ELSE
+	PRINTL ＴＫ－ドローンはミサイルを発射した！
+	LOCAL:1 += 250
+ENDIF
+FLAG:13 -= LOCAL:1
+FONTBOLD
+PRINTFORML {LOCAL:1}のダメージを与えた！
+FONTREGULAR
+PRINTW
+
+;------------------------------------------------------------------------------------------------
+;宇宙シール
+@HP_AUTOREGAIN
+LOCAL:0 = 2 + RAND:7
+LOCAL:1 = MAXBASE:体力 * LOCAL:0 / 100
+SIF BASE:体力 + LOCAL:1 >= MAXBASE:体力
+	LOCAL:1 = MAXBASE:体力 - BASE:体力
+BASE:体力 += LOCAL:1
+IF LOCAL:1 > 0
+	PRINTFORML 宇宙シールから流れ込む力が%PRINT_CALLNAME(TARGET)%の体を癒す…
+	PRINTFORML %BASENAME:0%が{LOCAL:1}回復した
+ENDIF
+
+;------------------------------------------------------------------------------------------------
+;使い魔
+@SERVANT
+LOCAL:0 = RAND:25
+PRINTFORML %PRINT_CALLNAME(TARGET)%の使い魔は触手を撹乱している…
+PRINTL 
+IF LOCAL:0 < 5
+	PRINTW しかし、あまりうまくいかなかったようだ…
+ELSEIF LOCAL:0 > 4 && LOCAL:0 < 10
+	PRINTW 少しだけ触手の気を逸らせたようだ
+ELSEIF LOCAL:0 > 9 && LOCAL:0 < 15
+	PRINTW 撹乱に成功したようだ！
+ELSEIF LOCAL:0 > 14 && LOCAL:0 < 20
+	PRINTW 触手は使い魔を警戒している！
+ELSE
+	PRINTW 使い魔に翻弄され、触手は混乱しているようだ！
+ENDIF
+TFLAG:3 += LOCAL:0
+SIF FLAG:17 + TFLAG:3 < FLAG:16
+	TFLAG:3 += 25

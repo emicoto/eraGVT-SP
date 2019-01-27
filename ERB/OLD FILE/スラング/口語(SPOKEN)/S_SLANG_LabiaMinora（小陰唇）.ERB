@@ -1,0 +1,82 @@
+;**********************************************************
+;基本ルール
+;加筆修正は、自由に行ってください
+;ただし、前の方が書いた文章は出来る限り消さないでください
+;
+;口述での「小陰唇」なので、吐息や詰まった表現などはありです
+;体力や発情など、ステータスでどもったりする様にしましょう
+;この変数を呼び出すときは、吃ることも含めてお使いください
+;
+;外側の肉厚な大陰唇（ワレメ）のことは書かないように
+;
+;増やして欲しい隠語は、アウトプットしてリクエストなりしましょう
+;未登録の中に放り込むなり、掲示板にアップするなりすれば、
+;実装される可能性があります
+;
+;by 雑魚の人 2018/02/11
+;**********************************************************
+;eXample(例)の淫語
+@S_SLANG_LabiaMinora(ARG)
+#DIMS S_SLANGWORD_LabiaMinora
+#FUNCTIONS
+
+;初期化
+S_SLANGWORD_LabiaMinora=
+;第一形容詞：状況（汁気）
+;STAIN:0;口 || STAIN:3:膣、ワレメ || STAIN:4:アナル
+IF (STAIN:3 & 4)
+	S_SLANGWORD_LabiaMinora = %S_SLANGWORD_LabiaMinora%%S_SLANG_SEMEN(TARGET)%
+	SELECTCASE RAND:2
+		CASE 1
+			S_SLANGWORD_LabiaMinora += "で穢された"
+		CASEELSE
+			S_SLANGWORD_LabiaMinora += "が濡れ落ちる"
+	ENDSELECT
+ENDIF
+
+
+
+;第二形容詞：形状表現
+
+
+;第三形容詞：動作表現
+IF TALENT:淫乱 > 0
+	SELECTCASE RAND:2
+		CASE 1
+			S_SLANGWORD_LabiaMinora += "期待に開いている"
+		CASEELSE
+			S_SLANGWORD_LabiaMinora += "興奮に開いている"
+	ENDSELECT
+ENDIF
+
+;部位呼称
+IF TALENT:淫乱 > 0
+	S_SLANGWORD_LabiaMinora += "媚肉の二枚貝"
+ELSE
+	SELECTCASE RAND:2
+		CASE 1
+			S_SLANGWORD_LabiaMinora += "小陰唇"
+		CASEELSE
+			S_SLANGWORD_LabiaMinora += "ビラビラ"
+	ENDSELECT
+ENDIF
+
+
+;合成して出来上がった淫語を返す
+RETURNF S_SLANGWORD_LabiaMinora
+
+
+
+
+
+;*************【淫語覚書（未登録）】***********************
+;
+;
+;
+;
+;*************【淫語覚書（未登録）】***********************
+
+
+
+
+

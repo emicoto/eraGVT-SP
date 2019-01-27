@@ -1,0 +1,91 @@
+;**********************************************************
+;ξ–{ƒ‹[ƒ‹
+;‰Α•MC³‚ΝA©—R‚Ιs‚Α‚Δ‚­‚Ύ‚³‚Ά
+;‚½‚Ύ‚µA‘O‚Μ•ϋ‚ª‘‚Ά‚½•¶Ν‚Νo—‚ιΐ‚θΑ‚³‚Θ‚Ά‚Ε‚­‚Ύ‚³‚Ά
+
+;‘‚«‚ή‡”Τ‚ΝAƒNƒh‚­‚Θ‚θ‰ί‚¬‚Θ‚Ά‚ζ‚¤‚Ι3—v‘f‚Ζ•”Κ‚Ε•\»‚µ‚ά‚·
+;yΐ‹µz`‚Ι”G‚κ‚Δ‚Ά‚ιAρ¶‚³‚κ‚Δ‚Ά‚ιAGθS‘©‹ο‚Θ‚Η‚π‘•’…‚Θ‚Η
+;y`σz‘ε‚«‚³A[‚³‚Θ‚ΗA
+;y“®μzJ•Β‚µ‚Δ‚Ά‚ιA‚¤‚²‚ί‚Ά‚Δ‚Ά‚ι‚Θ‚ΗA“®‚«‚π•\»
+;y•”ΚΔΜzϊ—‚β”­ξ‚β«i‚Ε‰Ί•i‚Θ‘‚«•ϋ‚Ι
+;
+;δNγχ‚©‚η”A“Ή‚Ζ‚ά‚Ε‚π•\»AƒyƒjƒX‚Θ‚Η‚Μ•\»‚Ν@SLANG_P‚Φ
+;ƒIƒgƒRA‚Σ‚½‚Θ‚θA—‚Ε•Κ‚κ‚ι‚ζ‚¤‚Ι
+;
+;‘‚β‚µ‚Δ—~‚µ‚Ά‰Bκ‚ΝAƒAƒEƒgƒvƒbƒg‚µ‚ΔƒƒNƒGƒXƒg‚Θ‚θ‚µ‚ά‚µ‚ε‚¤
+;–Ά“o^‚Μ’†‚Ι•ϊ‚θ‚ή‚Θ‚θAf¦”Β‚ΙƒAƒbƒv‚·‚ι‚Θ‚θ‚·‚κ‚ΞA
+;ΐ‘•‚³‚κ‚ι‰Β”\«‚ª‚ ‚θ‚ά‚·
+;
+;by G‹›‚Μl 2018/02/11
+;**********************************************************
+;Urethra(”A“Ή)‚Μϊκ
+;**********************************************************
+@SLANG_U(ARG)
+#FUNCTIONS
+#DIMS SLANGWORD_U
+
+;‰ϊ‰»
+SLANGWORD_U=
+
+;‘ζκ`—eFσ‹µi`‚Θ‚Ηj
+IF TALENT:ƒIƒgƒR > 0
+	IF TALENT:ϊj
+		SLANGWORD_U+="ΈqΔ‚―‚µ‚Δ‚Ά‚ι"
+	ELSE
+		SELECTCASE RAND:4
+			CASE 3
+				SLANGWORD_U+="”AH"
+			CASE 2
+				SLANGWORD_U+="¬…“Ή"
+			CASE 1
+				SLANGWORD_U+="‚¨‚µ‚Α‚±‚ΜH"
+			CASEELSE
+				SLANGWORD_U+="”A“Ή"
+		ENDSELECT
+	ENDIF
+ELSEIF TALENT:‚Σ‚½‚Θ‚θ > 0
+	IF TALENT:ϊj
+		SLANGWORD_U+="Έ‰t‚Μυ‚έ•t‚Ά‚½"
+	ELSE
+		SELECTCASE RAND:5
+			CASE 4
+				SLANGWORD_U+="δNγχ"
+			CASE 3
+				SLANGWORD_U+="”AH"
+			CASE 2
+				SLANGWORD_U+="¬…“Ή"
+			CASE 1
+				SLANGWORD_U+="‚¨‚µ‚Α‚±‚ΜH"
+			CASEELSE
+				SLANGWORD_U+="”A“Ή"
+		ENDSELECT
+	ENDIF
+ELSE
+	IF TALENT:ϊj
+		SLANGWORD_U+="Έ‰t‚Μυ‚έ•t‚Ά‚½"
+	ELSE
+		SELECTCASE RAND:4
+			CASE 3
+				SLANGWORD_U+="”AH"
+			CASE 2
+				SLANGWORD_U+="¬…“Ή"
+			CASE 1
+				SLANGWORD_U+="‚¨‚µ‚Α‚±‚ΜH"
+			CASEELSE
+				SLANGWORD_U+="”A“Ή"
+		ENDSELECT
+	ENDIF
+ENDIF
+RETURNF SLANGWORD_U
+
+;*************yϊκo‘i–Ά“o^jz***********************
+;
+;”ε”A
+;¬•Φ
+;ƒsƒX
+;
+;
+;*************yϊκo‘i–Ά“o^jz***********************
+
+
+

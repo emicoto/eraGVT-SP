@@ -1,0 +1,427 @@
+﻿;**********************************************************
+;クズ市民イベント
+
+@INTIMIDATION_EVENT
+VARSET LOCAL
+SIF TIME != 1 ;夜じゃないと発生しない
+	RETURN
+SIF FILTER_CHECK_F(5) && TALENT:オトコ > 0 ;男女平等オフにターゲットはオトコの場合は弾く
+	RETURN 0
+SIF CFLAG:72 > 0 ;イベントクールダウン中
+	RETURN 0
+SIF CONFIG_CHECK_EVENT_F(3) == 0 ;イベントオフしたら発生しない
+	RETURN 0
+
+SIF CFLAG:284 ;凌辱映像流出回数
+LOCAL += CFLAG:284
+
+SIF CFLAG:285 ;クズ市民レイプされた回数
+LOCAL += CFLAG:285
+
+SIF CFLAG:320 || CFLAG:321 ;ナンパでレイプされた回数
+LOCAL += CFLAG:320 + CFLAG:321
+
+SIF ABL:従順 + ABL:マゾっ気 > 2 ;従順とマゾっ気が2越えたら更に発生ボーナス
+LOCAL += ABL:従順 + ABL:マゾっ気
+
+SIF CFLAG:290 > 0 ;既に脅迫されていると呼び出される確率が更にアップ
+LOCAL += CFLAG:290*2
+
+SIF CFLAG:291 > 0 && CFLAG:291 <= 10 ;イベントリセット補正、リセット回数が多いほど発生しにくくなる
+LOCAL -= CFLAG:291
+
+SIF CFLAG:291 > 0 && CFLAG:291 > 10 ;イベントリセット補正
+LOCAL /= 2
+
+SIF LOCAL < RAND:30 ;クズに呼び出される確率, まとめて30ポイント越えたら100％呼び出される
+RETURN
+
+;以下イベント本文
+DRAWLINE
+FONTBOLD
+PRINTFORML クズ市民の脅迫:%PRINT_TRANSCALLNAME(TARGET)%
+FONTREGULAR
+PRINTFORML
+IF CFLAG:290 > 0
+	PRINTFORML  日が落ちる頃に、
+	PRINTFORML  %PRINT_TRANSCALLNAME(TARGET)%はまた脅迫されている男から呼び出しの電話がかかってきた。
+	PRINTFORML
+	IF TALENT:淫乱 || TALENT:マゾ気質 && ABL:マゾっ気 >= 3
+	PRINTFORML すっかり男達の飼い犬になってる%PRINT_TRANSCALLNAME(TARGET)%は言われた通りにし、
+	PRINTFORML コードの下を一糸纏わずにして更に与えられている首輪を付けたまま指示された場所まで行った。
+	PRINTFORML 男達が集まってくると、%PRINT_TRANSCALLNAME(TARGET)%がコードを脱ぎ捨てたら
+	PRINTFORML 「いい子だ。ご褒美にこれでもくれてやろう」と男達はいつも通りにズボンを下ろし、ペニスを突き出された。
+	ELSE
+	PRINTFORML こんなのもう止めてほしいと%PRINT_TRANSCALLNAME(TARGET)%は男達に伝えたが、結局聞き入れてもらえず
+	PRINTFORMW 「さっさと来いよこのメス犬が！」と怒鳴られてそのまま電話切られてしまった。
+	PRINTFORML
+	IF CFLAG:290 >= 5 && RAND:2 == 0 ;何度も脅迫されたら半分の確率でイベントリセットしてしばらく発生しなくなる
+	PRINTFORML  「今度こそ止めさせなきゃ！」と、
+	PRINTFORML  %PRINT_TRANSCALLNAME(TARGET)%は強く決意をし、仲間と相談して一緒に指示された場所まで行った・・・
+	PRINTL
+	PRINTFORML  「へー、気が利くじゃねえか。」と男の人は%PRINT_TRANSCALLNAME(TARGET)%たちを囲もうとしたが、
+	PRINTFORML  一緒に付いてきてもらった仲間の人は「こういう事はもうやめろ」と一喝したが、
+	PRINTFORML  男達がそれを無視し手を出そうとしたら大きなサイレンの音が遠くから近くまで響き渡った。
+	PRINTFORML  
+	PRINTFORMW  そのサイレンはどういう意味なのか分かった瞬間、男達は「チッ」と強く舌打ちしてその場から去っていた。	
+	PRINTL
+	PRINTFORML  男達は%PRINT_TRANSCALLNAME(TARGET)%をこれ以上脅迫するのを止めたらしい……
+	FONTBOLD
+	PRINTFORMW  イベント深度がリセットされました。
+	FONTREGULAR 
+	CFLAG:290 = 0
+	CFLAG:291 += 1
+	CFLAG:72 = 8
+	RETURN
+
+	ELSE
+	PRINTFORML  仕方なく指示された場所まで行ってみたが・・・
+	PRINTFORML 「もう始めようぜ」と男達はいつも通りにズボンをおろし、%PRINT_TRANSCALLNAME(TARGET)%を囲むように近づいてきた。
+	PRINTFORML  しかし、%PRINT_TRANSCALLNAME(TARGET)%は「こんな事は犯罪だ」と強く訴えてみようと、
+	PRINTL
+	PRINTFORML 「舐めてんのか、サツなんて怖かったらこんな事しねえだろうが。」
+	PRINTL
+	PRINTFORML と、%PRINT_TRANSCALLNAME(TARGET)%はヤクザっぽい男に殴られて、衝撃で後ろの人にぶつかってしまい、
+	PRINTFORML そのまま後ろの人に拘束され、男達に服を脱がされて間もなく産まれたままにされてしまった。
+	ENDIF
+	ENDIF
+	PRINTL
+ELSE
+	PRINTFORML  夜、日々の訓練と勉強を終え、
+	PRINTFORML  風呂上がったばかりの%PRINT_TRANSCALLNAME(TARGET)%は携帯がずっと鳴り続けている事に気づいた。
+	PRINTFORML  こんな時間に誰なんだろうっと%PRINT_TRANSCALLNAME(TARGET)%は通知画面を確認すると、それは登録した覚えもない人の名前だった。
+	PRINTFORML  知らない人とはいえ、もしかしたらただ忘れただけかもしれないと思って%PRINT_TRANSCALLNAME(TARGET)%は取る事にしたが
+	PRINTFORML  電話の向こうから聞こえたのは、この前のトラウマを呼び覚ます男の声だった。
+	PRINTL
+	PRINTFORML 「この前は楽しかったぜ」と男はそう言って、これから指示されたところに来いと伝え、
+	PRINTFORM  もし来なかったらこの前取った%PRINT_TRANSCALLNAME(TARGET)%が男たちに犯される写真や映像をばらまく
+	IF CFLAG:284 ;映像流出で追加描写
+	PRINTFORML  と、
+	PRINTFORM  さらに触手にやられた事も知ってるとか、その正体バラすぞとか、
+	ENDIF	
+	PRINTFORML 脅してきた。
+	PRINTL
+	SIF !TALENT:臆病 && !TALENT:恥ずかしがり屋 && !TALENT:悲観的 && ABL:従順 < 3
+	PRINTFORML  思い通りにやられるのは嫌だ、%PRINT_TRANSCALLNAME(TARGET)%は「じゃあ警察に通報します」と少し強気に出たが、
+	PRINTFORML  電話切った後、携帯に動画付きのメールが一着着信したの通知された。
+	PRINTFORML  そのメールに付きされた動画は確認するまでもないく、
+	PRINTFORML  この前%PRINT_TRANSCALLNAME(TARGET)%が男たちに輪姦されていた時の動画だった。
+	PRINTL
+	PRINTFORML  さすがにこんな動画まで付きだされたら、じっとしていていい訳がない。
+	PRINTFORML  こんな動画を誰かに見せるのは恥ずかしいから、他人と相談するのも難しく
+	PRINTFORML  %PRINT_TRANSCALLNAME(TARGET)%は仕方なく、言われた通りの場所まで一人で行くことにした。
+	PRINTL 
+	PRINTFORM  十数分後、%PRINT_TRANSCALLNAME(TARGET)%は
+	SIF !TALENT:臆病 && !TALENT:恥ずかしがり屋 && !TALENT:悲観的 && ABL:従順 < 3
+	PRINTFORM 直談判するために
+	PRINTFORML 言われた廃ビルまで来たが誰もいないなと思った途端に、
+	PRINTFORML  後ろから誰かに拘束され、変な匂いがすると同時に%PRINT_TRANSCALLNAME(TARGET)%のカラダから急に力が抜けていき
+	PRINTFORML  立っていることもままなくなっている。
+	PRINTL
+	PRINTFORMW 力の抜けた%PRINT_TRANSCALLNAME(TARGET)%は徐々に意識を失っていった・・・
+ENDIF
+	PRINTW 
+	IF CFLAG:290 == 0
+	CALL PASTIME_NANPA_RAPE,TARGET,1
+	ELSE
+    CALL INTIMIDATION_RAPE,TARGET
+	ENDIF
+	CFLAG:290 += 1
+	DRAWLINE
+	FONTBOLD
+	PRINTL 脅迫輪姦・その後
+	FONTREGULAR
+	PRINTFORML
+	PRINTL ――
+	PRINTL ――――
+	PRINTW ――――――
+	PRINTL 
+	IF RAND:100 < 25 ; 25%確率でエロイベント後拉致監禁。
+	PRINTFORML  何週も輪姦された後、一人の男は「いっそこのまま飼っちゃう？」とリーダーらしい男に話しかけたら、
+	PRINTFORML 「いいね。」とリーダー男がそう答えて、%PRINT_TRANSCALLNAME(TARGET)%は首輪や鎖などで拘束された後、
+	PRINTFORML  そのままリーダー男が所有しているビルの地下倉庫に閉じ込められていった。
+	PRINTL
+	SETCOLOR 0xFFFF00
+	PRINTFORML  %PRINT_TRANSCALLNAME(TARGET)%はクズ市民たちに拉致された。
+	RESETCOLOR
+
+	CFLAG:0 = 4
+	ELSEIF (TALENT:淫乱 || TALENT:マゾ気質 && ABL:マゾっ気 >= 3) && RAND:100 < 36 ;淫乱かマゾ付くと36%確率でほいほいついていく
+	PRINTFORML 男たちの欲望をどれくらい受け止めたか分からなくなったころ、
+	PRINTFORML ようやく満足した男たちは%PRINT_TRANSCALLNAME(TARGET)%を地面に放り捨てそのまま去ろうとするところ、
+	PRINTFORML 快楽に蕩けている%PRINT_TRANSCALLNAME(TARGET)%は「まって‥行っちゃいや…」と声上げた。
+	PRINTFORMW すっかり快楽の虜になってる%PRINT_TRANSCALLNAME(TARGET)%を見て、男達は下卑な笑い声を上げなら%PRINT_TRANSCALLNAME(TARGET)%も一緒に連れ去った。
+	PRINTL 
+	SETCOLOR 0xFFFF00
+	PRINTFORML  %PRINT_TRANSCALLNAME(TARGET)%はクズ市民たちに拉致された。
+	RESETCOLOR
+	
+	CFLAG:0 = 4
+	ELSE
+	PRINTFORML 男たちの欲望をどれくらい受け止めたか分からなくなったころ、
+	PRINTFORML ようやく満足した男たちは%PRINT_TRANSCALLNAME(TARGET)%をそのまま地面に放り捨て。
+	PRINTFORML 「次も頼むわ」という言葉と共に、男たちは下卑た笑いだけ残して去っていった。
+	PRINTW 
+	PRINTFORML 全身を白く染められた%PRINT_TRANSCALLNAME(TARGET)%は焦点も定まらず、
+	IF TALENT:淫乱 ||  ABL:欲望 >= 3 || ABL:マゾっ気 >= 3
+		PRINTFORML 快楽の余韻に脳髄を蕩けさせている・・・
+	ELSE
+		PRINTFORML 犯されたショックと疲労で動くことができなかった・・・
+		PRINTL
+		PRINTL
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は憂鬱状態になりました
+		PRINTL
+	ENDIF
+	PRINTW 
+    ENDIF
+	SIF RAND:100 < 30
+	CFLAG:825 += 1
+
+	RETURN
+@KIDNAPPING
+#DIM CCOUNT
+VARSET LOCAL
+
+IF CFLAG:71 > 0 ;救出イベント
+	DRAWLINE
+	FONTBOLD
+	PRINTL 拉致監禁・救出
+	FONTREGULAR
+	PRINTFORML 
+	PRINTFORML どれくらいの時間経ったのだろうか…
+	PRINTFORMW 男達に監禁され、性処理道具として扱われていた%PRINT_TRANSCALLNAME(TARGET)%はぼんやりしている外から騒ぎ声が聞こえてきた。
+	PRINTFORML 
+	PRINTFORMW 「確保！」
+	PRINTFORML 
+	PRINTFORML そしてドアが破られた大きな音と共に、
+	PRINTFORML 仲間の人は%PRINT_TRANSCALLNAME(TARGET)%に駆けつけて「よかった」と涙流しながら抱きしめてきた。
+	PRINTFORML 仲間たちに続くように、警察たちは地下倉庫に駆けつけてその場にいる男どもを逮捕していった。
+	PRINTL
+		SETCOLOR 0xFFFF00
+		PRINTFORML  %PRINT_TRANSCALLNAME(TARGET)%は仲間たちに救出された。
+		RESETCOLOR
+	CFLAG:0 = -1
+	CFLAG:71 = 0
+	CFLAG:72 = 8 ;脅迫クールダウン、流石に救出された直後また脅迫されるのはないだろう…
+	CFLAG:290 = 0 ;さすがに逮捕された後また同じ人に呼び出されるのはないのでリセット。
+	CALL AFTER_RESCUED,TARGET
+	LOCAL:999 = 1
+ELSEIF CFLAG:70 > 6 && RAND:10 < 4 ;監禁3日後確率で解放される
+	DRAWLINE
+	FONTBOLD
+	PRINTL 拉致監禁・解放
+	FONTREGULAR
+	PRINTFORML 
+	PRINTFORML どれくらいの時間経ったのだろうか…
+	PRINTFORMW 男達に監禁され、性処理道具として%PRINT_TRANSCALLNAME(TARGET)%は今日も男達に乱暴に扱われいてる。
+	PRINTFORML 
+	PRINTFORMW 「くさいな…　もう飽きてきたし、そろそろ解放してやってもいいじゃんね？」
+	PRINTFORML 
+	PRINTFORML リーダーらしき男がそう呟くと連れの男たちもそれに同意して、%PRINT_TRANSCALLNAME(TARGET)%を裸のままゴミ捨て場に捨てられた。
+	PRINTFORMW その後、%PRINT_TRANSCALLNAME(TARGET)%は近所の通報で駆けつけてきた警察に確保され、仲間たちがいる場所まで届いていった。
+	PRINTL
+		SETCOLOR 0xFFFF00
+		PRINTFORML  %PRINT_TRANSCALLNAME(TARGET)%は監禁から解放された。
+		RESETCOLOR
+	CFLAG:0 = -1
+	CFLAG:70 = 0
+	CFLAG:72 = 8
+	CALL AFTER_RESCUED,TARGET
+	LOCAL:999 = 1
+ELSE
+	DRAWLINE
+	FONTBOLD
+	PRINTFORML 拉致監禁：%PRINT_TRANSCALLNAME(TARGET)%
+	FONTREGULAR
+	PRINTFORML
+	PRINTFORML  どれくらいの時間経ったのだろうか…
+	PRINTFORMW  黴臭いビルの地下室に監禁され、性処理道具として%PRINT_TRANSCALLNAME(TARGET)%は今も男達に使われている。
+	PRINTL
+CALL INTIMIDATION_RAPE,TARGET
+ENDIF
+
+
+@INTIMIDATION_RAPE,ARG:0
+#DIM CCOUNT
+VARSET LOCAL
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はマスクで顔を隠した男たちに目の前に勃起したペニスが突き付けられている。
+	IF TALENT:淫乱
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は誘惑するように、上目遣いで男に奉仕し始めた・・・
+	ELSEIF ABL:欲望 > 3
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は心の中で言い訳をしながら、男のペニスに奉仕し始めた・・・
+	ELSEIF ABL:従順 > 3
+		PRINTFORML %STR:2500%との戦いで身体と心に服従を教え込まれている%PRINT_TRANSCALLNAME(TARGET)%は
+		PRINTFORML 碌に鍛錬もしていないであろう男さえ抵抗することができない・・・
+	ELSE
+		PRINTFORML 薬が飲まされているせいか、力が入らない%PRINT_TRANSCALLNAME(TARGET)%は
+		PRINTFORML 碌に鍛錬もしていないであろう男さえ抵抗することができない・・・
+	ENDIF
+	PRINTW 
+	PRINTFORML すると男はそのまま%PRINT_TRANSCALLNAME(TARGET)%を組み敷いて、
+	IF TALENT:オトコ > 0
+		IF CFLAG:36 <= 40
+			PRINT 明らかオトコ慣れてないアナルにペニスを捻り込んで、
+		ELSE
+			PRINT アナルに挿入して、
+		ENDIF
+		PRINTL 乱暴にピストンし始めた。
+	ELSE
+		PRINTL ヴァギナに挿入して乱暴にピストンし始めた。
+	ENDIF
+
+	PRINTW 
+	IF TALENT:オトコ > 0
+		PRINTFORML 男が限界に登り詰めて直腸内に精液を放出すると、
+	ELSE
+		PRINTFORML 男が限界に登り詰めて当然のように膣内射精を決めると、
+	ENDIF
+		PRINTFORML 順番待ちをしていた仲間と場所を代わってすぐに凌辱が再開される。
+		IF TALENT:淫乱 || ABL:欲望 >= 3
+			PRINTFORML 男たちの相手をすることにも慣れてきた%PRINT_TRANSCALLNAME(TARGET)%は
+			PRINTFORML 手際よく精液を搾り取っていく。
+		ELSE
+		    IF CFLAG:0 == 4 || EXP:拉致監禁経験 > 0
+			PRINTFORM 監禁中で何度も調教された
+			ELSEIF CFLAG:290 > 2
+			PRINTFORM すでに何回も呼び出されてた
+			ELSE
+			PRINTFORM 男達に脅迫されている
+			ENDIF
+			PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%は
+			IF TALENT:主観視点 > 0
+				PRINTFORML 歯を食いしばり、諦めたように奉仕に専念する。
+			ELSE
+				PRINTFORML 歯を食いしばり、諦めたように奉仕に専念している。
+			ENDIF
+		ENDIF
+	PRINTW 
+	IF CFLAG:0 == 4
+	PRINTFORML 男たちの欲望をどれくらい受け止めたか分からなくなったころ、
+	PRINTFORML ようやく満足した彼らは%PRINT_TRANSCALLNAME(TARGET)%を牢屋の中に戻した。
+	ELSE
+	PRINTFORML 男たちの欲望をどれくらい受け止めたか、
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はすっかり諦めて、未だに満足した様子のない男達を奉仕し続けるしかなかった…
+	PRINTFORML ・
+	PRINTFORML ・
+	PRINTFORML ・
+	ENDIF
+	
+
+	PRINTW 
+
+IF TALENT:オトコ <= 0
+	IF ABL:Ｖ感覚 == 0
+		LOCAL:11 = 10
+	ELSEIF ABL:Ｖ感覚 == 1
+		LOCAL:11 = 20
+	ELSEIF ABL:Ｖ感覚 == 2
+		LOCAL:11 = 40
+	ELSEIF ABL:Ｖ感覚 == 3
+		LOCAL:11 = 100
+	ELSEIF ABL:Ｖ感覚 == 4
+		LOCAL:11 = 200
+	ELSE
+		LOCAL:11 = 400
+	ENDIF
+
+	;Ｖ経験
+	LOCAL:120 = 10 + RAND:30
+
+	IF TALENT:処女 > 0
+		TALENT:処女 = -1
+		CFLAG:206 = 11
+		LOCAL:20 = 500
+	ELSE
+		LOCAL:11 *= 3
+	ENDIF
+ENDIF
+
+IF ABL:Ａ感覚 == 0
+	LOCAL:12 = 6
+ELSEIF ABL:Ａ感覚 == 1
+	LOCAL:12 = 50
+ELSEIF ABL:Ａ感覚 == 2
+	LOCAL:12 = 200
+ELSEIF ABL:Ａ感覚 == 3
+	LOCAL:12 = 600
+ELSEIF ABL:Ａ感覚 == 4
+	LOCAL:12 = 900
+ELSE
+	LOCAL:12 = 1200
+ENDIF
+
+;Ａ経験
+LOCAL:121 = 40 - LOCAL:120 + RAND:5 - RAND:5
+SIF TALENT:オトコ > 0
+TIMES LOCAL:121 , 1.50
+
+;精液経験
+LOCAL:123 = 15 + RAND:16
+;フェラ経験
+LOCAL:124 = 12 + RAND:5
+
+;習得、屈服、恐怖
+LOCAL:16 = 100
+LOCAL:18 = 500
+LOCAL:21 = 500
+
+;監禁レイプ回数をカウント
+SIF LOCAL:999 < 1
+CFLAG:70 += 1
+
+;オトコか異常経験が３つ以下なら異常経験が付く
+SIF TALENT:オトコ > 0 || EXP:異常経験 < 3
+	LOCAL:150 = 1
+
+;狭すぎた場合は拡張度追加
+IF TALENT:オトコ <= 0 && CFLAG:35 <= 40
+    CFLAG:35 += 10
+	LOCAL:151 = 2
+ENDIF
+
+IF CFLAG:36 <= 40
+    CFLAG:36 += 10
+	LOCAL:152 = 2
+ENDIF
+
+
+;苦痛快楽経験
+LOCAL:132 = 2 + RAND:3
+;輪姦経験
+LOCAL:113 = 1
+;誘拐監禁経験
+LOCAL:142 = 1
+;幽閉中パラメータ変動共通処理へ
+CALL COMMON_PRISON, LOCAL:10, LOCAL:11, LOCAL:12, LOCAL:13, LOCAL:14, LOCAL:15, LOCAL:16, LOCAL:17, LOCAL:18, LOCAL:19, LOCAL:20, LOCAL:21, 1
+
+;経験数の増加
+FOR CCOUNT, 100, 200
+	CALL COMMON_PRISON_EXP, CCOUNT, LOCAL:CCOUNT
+NEXT
+PRINTL 
+
+;珠の取得へ
+CALL _ABLUP, 1
+
+;妊娠判定
+SIF TALENT:オトコ <= 0
+	CALL NINSIN_HANTEI, LOCAL:123, 100, 望まない相手
+
+;四ターン強制休憩フラグ
+IF CFLAG:0 != 4
+IF TALENT:淫乱 ||  ABL:欲望 >= 3 || ABL:マゾっ気 >= 3
+CFLAG:99 = 10
+BASE:体力 = (BASE:体力*20)/100
+BASE:気力 = (BASE:気力*20)/100
+BASE:性耐性 = 0
+ELSE
+CFLAG:15 = 5
+BASE:体力 = 0
+BASE:気力 = 0
+BASE:性耐性 = 0
+CFLAG:99 = 50
+ENDIF
+ENDIF
+PRINTFORML 
+PRINTFORML 
+RETURN

@@ -1,0 +1,92 @@
+;-------------------------------------------------------------
+;ランダム抽選に候補ARGを加える
+@ADDRANDCHOOSE(ARG)
+#DIM HOGE
+;負の数は候補にできない
+IF ARG < 0
+	PRINTW ERROR 候補に負の数を指定することはできません
+	RETURN
+ENDIF
+RANDCHOOSE_NUM:0 += 1
+HOGE = RANDCHOOSE_NUM:0
+$LOOP
+IF RANDCHOOSE_NUM:HOGE == 0
+	RANDCHOOSE_NUM:HOGE = ARG + 1
+ELSEIF HOGE < RANDCHOOSE_MAX
+	HOGE ++
+	GOTO LOOP
+ELSE
+	PRINTW ERROR ADDRANDCHOOSE の候補が多すぎます
+ENDIF
+RANDCHOOSE_NUM:0 = HOGE
+
+
+;-------------------------------------------------------------
+;ランダム抽選の結果をRESULTに返す
+@RANDCHOOSE
+LOCAL = RAND:(RANDCHOOSE_NUM:0)
+LOCAL += 1
+RESULT = RANDCHOOSE_NUM:LOCAL - 1
+RETURN RESULT
+
+
+;-------------------------------------------------------------
+;ランダム抽選の結果を返す式中関数
+@RANDCHOOSE_F()
+#FUNCTION
+LOCAL = RAND:(RANDCHOOSE_NUM:0)
+LOCAL += 1
+LOCAL:1 = RANDCHOOSE_NUM:LOCAL - 1
+RETURNF LOCAL:1
+
+
+;-------------------------------------------------------------
+;指定した候補をクリア（ARG = 0で全てクリア）
+@CLEARRANDCHOOSE(ARG = 0)
+IF ARG <= -1
+	ARRAYSHIFT RANDCHOOSE_NUM,-1,0,RANDCHOOSE_NUM:0
+	RANDCHOOSE_NUM:0 -= 1
+ELSEIF ARG == 0
+	VARSET RANDCHOOSE_NUM
+ELSEIF ARG != 0 && ARG <= RANDCHOOSE_MAX - 1
+	ARRAYSHIFT RANDCHOOSE_NUM,-1,0,ARG
+	RANDCHOOSE_NUM:0 -= 1
+ENDIF
+
+;-------------------------------------------------------------
+;特定の値を持つ候補を全てクリア
+@CLEARSPECIFICCHOOSE(ARG)
+LOCAL:1 = 0
+FOR LOCAL,1,RANDCHOOSE_NUM:0 + 1
+	IF RANDCHOOSE_NUM:LOCAL == (ARG + 1)
+		ARRAYREMOVE RANDCHOOSE_NUM, LOCAL, 1
+		LOCAL -= 1
+		LOCAL:1 += 1
+	ENDIF
+NEXT
+RANDCHOOSE_NUM:0 -= LOCAL:1
+
+;-------------------------------------------------------------
+;候補の数を返す式中関数
+@CHOICECOUNT_F()
+#FUNCTION
+LOCAL = RANDCHOOSE_NUM:0
+RETURNF LOCAL
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

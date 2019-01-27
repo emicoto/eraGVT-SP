@@ -1,0 +1,28 @@
+;--------------------------------------------------
+;【彼氏持ちor婚約or既婚者】
+;--------------------------------------------------
+ESLEIF TALENT:ARG:交際相手 == 2 || TALENT:ARG:交際相手 == 3 || TALENT:ARG:交際相手 == 4
+	PRINTFORML 「%PRINT_TRANSCALLNAME(TARGET)%、%PRINT_TRANSCALLNAME(TARGET)%」
+	PRINTFORML 呼びかける声に導かれ、%PRINT_TRANSCALLNAME(TARGET)%は重たい瞼を持ち上げた。
+	PRINTFORML 
+	PRINTFORM 見慣れた寝室の、布団の中の、愛しい
+	SIF TALENT:ARG:交際相手 == 2 || TALENT:ARG:交際相手 == 3
+	PRINTFORML 恋人の腕の中。
+	SIF TALENT:ARG:交際相手 == 4
+	PRINTFORML 夫の腕の中。
+	PRINTFORML 
+	PRINTFORML …あれ？敵は？
+	PRINTFORML 当然の疑問を発しようとしたその口はすぐさま塞がれた。
+	PRINTFORML 
+	PRINTFORML 甘く、優しく、それでいて激しい大人のキス。
+	PRINTFORML 
+	PRINTFORML まぁ…いいか。
+	PRINTFORML 
+	PRINTFORML 心地よい微睡みに包まれて　愛し、愛される悦びに
+	IF TALENT:処女 > 0
+		PRINTFORML このまま初めてを捧げてしまいたい。
+	IF TALENT:処女 <= 0
+		PRINTFORML 身も心も全て委ねてしまいたい。
+	PRINTFORML その甘い誘惑は、微かに残っていた違和感をたやすく吹き飛ばした。
+
+

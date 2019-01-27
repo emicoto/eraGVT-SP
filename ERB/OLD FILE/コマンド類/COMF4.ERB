@@ -1,0 +1,35 @@
+;防御
+@COM4
+
+;刻印による行動制限判定　１で行動できない
+CALL ACT_LIMIT
+SIF RESULT == 1
+	RETURN 1
+
+;滞空中なら着地状態になる
+IF GETBIT(TCVAR:216, 1)
+	TCVAR:216 = 4
+	;FEAT効果による着地時の反動
+	SIF TALENT:有翼 > 0
+		TFLAG:99 += 1
+ELSE
+	TCVAR:216 = 0
+ENDIF
+
+;距離表示
+CALL PRINT_DISTANCE
+PRINTL 
+
+;防御フラグを立てる
+TCVAR:2 = 体勢：防御
+
+;地の文：防御
+CALL MESSAGE_BATTLE_CHARA_DEFENSE
+;地の文：洗脳/悪堕ちキャラが操作キャラの防御を見た
+SIF FLAG:110 == 1
+	CALL MESSAGE_OTHER_BATTLE_CHARA_DEFENSE
+
+;行動ポイントを+1
+EX:行動ポイント += 1
+
+RETURN 1

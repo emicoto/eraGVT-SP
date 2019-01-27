@@ -1,0 +1,32 @@
+@SHOKISET_NAME_2
+PRINTL [ 2]３人：地球防衛クラブ
+;-----------------------------
+;地球防衛クラブに対する説明
+;------------------------------
+@SHOKISET_SETUMEI_2
+PRINTL
+PRINTL 　　　きたりよる脅威に向けて結成された地元のチーム
+PRINTL 　　　なぜ地元に魔法使いや異能力者がいるのかは考えてはいけない
+PRINTL 　　　近中遠とバランスよく分かれている
+PRINTL
+PRINTL 　　　多分中級者向け
+PRINTL
+;-------------------------------
+;グループの選択-地球防衛クラブ
+;-------------------------------
+@SHOKISET_SELECT_2
+
+FLAG:5 = 1
+SAVESTR:10=地球防衛クラブ
+
+ADDCHARA 321
+FLAG:8 ++
+ADDCHARA 322
+FLAG:8 ++
+ADDCHARA 323
+FLAG:8 ++
+
+CALL SHOKISET_CSVFIX
+JUMP CHARA_MAKE_MAIN, 0
+
+

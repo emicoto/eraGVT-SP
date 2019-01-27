@@ -1,0 +1,74 @@
+;移動選択の処理
+@TRANSFORM_MOVESELECT
+#DIM ABLE5
+#DIM ABLE6
+#DIM ABLE7
+#DIM LCOUNT
+;先制攻撃中は選択する必要がない
+SIF TFLAG:24 > 0
+	RETURN 0
+;捕まってるときは選択不能
+SIF TCVAR:0 < 1
+	RETURN 0
+;空中ダッシュとの併用不能
+SIF GETBIT(TCVAR:216, 1)
+	RETURN 0
+;移動系コマンドが使用できない場合は選択不能
+CALL COM_ABLE5
+ABLE5 = RESULT
+CALL COM_ABLE6
+ABLE6 = RESULT
+CALL COM_ABLE7
+ABLE7 = RESULT
+SIF ABLE5 == 0 && ABLE6 == 0 && ABLE7 == 0
+	RETURN 0
+LCOUNT = LINECOUNT
+PRINTL 
+PRINTFORML 変身方法を選択してください
+IF TCVAR:0 == 1
+	PRINTL [1]その場で変身する　　　　　（回避+20%）
+ELSEIF ABLE6 > 0
+	PRINTL [1]踏み込んで隙を突く　　　　（近距離に移動、EXゲージが上昇）
+ENDIF
+IF TCVAR:0 == 2
+	PRINTL [2]その場で変身する　　　　　（回避+15%）
+ELSEIF ABLE7 > 0
+	PRINTL [2]敵の動きを見極める　　　　（中距離に移動、次のターン予測精度アップ）
+ENDIF
+IF TCVAR:0 == 3
+	PRINTL [3]その場で変身する　　　　　（回避+10%）
+ELSEIF ABLE5 > 0
+	PRINTL [3]距離を取って態勢を整える　（遠距離に移動、体力気力が多めに回復）
+ENDIF
+$INPUT_LOOP
+INPUT
+IF RESULT == TCVAR:0
+	CLEARLINE LINECOUNT - LCOUNT
+	RETURN 0
+ELSEIF RESULT == 1 && ABLE6 > 0
+	TCVAR:0 = 1
+	;FEAT効果による反動の増加
+	SIF TALENT:空中浮遊 > 0
+		TFLAG:99 += 1
+	CLEARLINE LINECOUNT - LCOUNT
+	RETURN 1
+ELSEIF RESULT == 2 && ABLE7 > 0
+	TCVAR:0 = 2
+	;FEAT効果による反動の増加
+	SIF TALENT:空中浮遊 > 0
+		TFLAG:99 += 1
+	CLEARLINE LINECOUNT - LCOUNT
+	RETURN 2
+ELSEIF RESULT == 3 && ABLE5 > 0
+	TCVAR:0 = 3
+	;FEAT効果による反動の増加
+	SIF TALENT:空中浮遊 > 0
+		TFLAG:99 += 1
+	CLEARLINE LINECOUNT - LCOUNT
+	RETURN 3
+ELSE
+	GOTO INPUT_LOOP
+ENDIF
+
+
+

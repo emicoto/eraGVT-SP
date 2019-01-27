@@ -1,0 +1,164 @@
+;フェラ
+
+;性コマンド分類
+@SEX_TYPE_COM11
+RETURN フェラ
+
+@SEX_COM11,ARG = 0,ARG:1 = 0
+;EX_COM	追加責め実行部位（ビット）
+;	1：Ｃ　2：Ｖ　4：Ａ　8：Ｂ
+;追加責め（特定部位なし）
+CALL SEX_COMEX_RANDOM, 0, ARG:1
+EX_COM = RESULT:0
+SH_COM = RESULT:1
+
+;射精部位フラグ:手と口を立てる
+TFLAG:4 = TFLAG:4 | 手
+TFLAG:4 = TFLAG:4 | 口
+;我慢：確率で射精部位フラグを折る
+SIF RAND:100 < 40
+	TFLAG:4 = 0
+
+;悪堕ちキャラのペニス位置をセット
+SIF FLAG:110 == 1 && (TALENT:(FLAG:111):オトコ > 0 || TALENT:(FLAG:111):ふたなり > 0)
+	TFLAG:18 = 口
+
+;取得パラメータ計算
+;ベース値の明示的初期化
+REPEAT 12
+	LOCAL:COUNT = 0
+REND
+
+;油断度の上昇
+TFLAG:3 += 50
+
+;射精値 200
+CALL TENTACLE_SYASEI_UP, 200
+
+;触手サイズの設定
+CALL SET_TENTACLE_SIZE, FLAG:10, FLAG:11, FLAG:110, FLAG:111, 11
+
+IF FLAG:10 == 2
+	CALLFORM MESSAGE_MOB_{ARG}_COM11, EX_COM, SH_COM
+ELSE
+	;地の文：洗脳/悪堕ちキャラが操作キャラにフェラをさせた
+	SIF FLAG:110 == 1
+		CALL MESSAGE_OTHER_SEX_COM11
+	;地の文：COM11
+	CALL MESSAGE_SEX_COM11, EX_COM, SH_COM
+ENDIF
+
+;結界による触手本数の変動
+CALL SET_TENTACLE_POOL
+;服へのダメージ
+CALL CLOTH_BATTLE_DAMAGE, 5
+
+;ベース
+EXP:フェラ経験 += 1
+EXP:奉仕快楽経験 += 1
+
+;恭順
+IF ABL:従順 <= 2
+	LOCAL:5 = 200
+ELSEIF ABL:従順 == 3
+	LOCAL:5 = 500
+ELSEIF ABL:従順 == 4
+	LOCAL:5 = 1000
+ELSEIF ABL:従順 >= 5
+	LOCAL:5 = 2000
+ENDIF
+
+;習得
+IF ABL:奉仕精神 == 0
+	LOCAL:6 = 100
+ELSEIF ABL:奉仕精神 == 1
+	LOCAL:6 = 200
+ELSEIF ABL:奉仕精神 == 2
+	LOCAL:6 = 500
+ELSEIF ABL:奉仕精神 == 3
+	LOCAL:6 = 1000
+ELSEIF ABL:奉仕精神 == 4
+	LOCAL:6 = 2000
+ELSEIF ABL:奉仕精神 >= 5
+	LOCAL:6 = 5000
+ENDIF
+
+;欲情
+IF ABL:欲望 <= 2
+	LOCAL:7 = 200
+ELSEIF ABL:欲望 == 3
+	LOCAL:7 = 500
+ELSEIF ABL:欲望 == 4
+	LOCAL:7 = 1000
+ELSEIF ABL:欲望 >= 5
+	LOCAL:7 = 2000
+ENDIF
+
+;屈服
+IF ABL:従順 == 0
+	LOCAL:8 = 100
+ELSEIF ABL:従順 == 1
+	LOCAL:8 = 200
+ELSEIF ABL:従順 == 2
+	LOCAL:8 = 500
+ELSEIF ABL:従順 == 3
+	LOCAL:8 = 1000
+ELSEIF ABL:従順 == 4
+	LOCAL:8 = 2000
+ELSEIF ABL:従順 >= 5
+	LOCAL:8 = 5000
+ENDIF
+
+;奉仕精神に応じてボーナス
+IF ABL:奉仕精神 < 3
+ELSEIF ABL:奉仕精神 < 4
+	LOCAL:5 += 500
+	LOCAL:6 += 200
+ELSEIF ABL:奉仕精神 < 5
+	LOCAL:5 += 1000
+	LOCAL:6 += 500
+ELSE
+	LOCAL:5 += 2000
+	LOCAL:6 += 1000
+ENDIF
+
+;従順が低いと恐怖が入る　とりあえず固定
+SIF ABL:従順 < 3
+	LOCAL:11 = 2000
+
+;追加責め実行
+IF EX_COM
+	CALL SEX_COMEX, 0, 0, EX_COM | SH_COM
+	REPEAT 12
+		LOCAL:COUNT += RESULT:COUNT
+	REND
+ENDIF
+
+;行動予約なし
+TFLAG:17 = -1
+;触手の行動を記録
+TFLAG:20 = 11
+
+;習得基本値
+LOCAL:6 += 2500
+
+;欲情基本値
+LOCAL:7 += 0
+
+;屈服基本値
+LOCAL:8 += 800
+
+;恥情基本値
+LOCAL:9 += 500
+
+;苦痛基本値
+LOCAL:10 += 1000
+
+;恐怖基本値
+LOCAL:11 += 100
+
+;体力消費基本値
+LOCAL:12 += 100
+
+;計算へ
+CALL PALAM_CAL, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, LOCAL:12

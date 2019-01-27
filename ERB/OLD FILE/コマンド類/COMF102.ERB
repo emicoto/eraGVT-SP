@@ -1,0 +1,93 @@
+;足コキ攻撃
+@COM102
+#DIM SELECT
+;距離表示
+CALL PRINT_DISTANCE
+PRINTL 
+
+SELECT = -1
+VARSET LOCAL
+
+;性コマンド選択ルーチンで判定
+;挿入系の性コマンドが出ればカウンター発動成功
+CALL ENEMY_ACTION_SEX_ROUTINE
+SELECT = RESULT
+
+;選択したコマンドの分類を呼び出し
+IF FLAG:10 == 2
+	TRYCALLFORM SEX_TYPE_MOB_{FLAG:11}_COM{SELECT}
+ELSE
+	TRYCALLFORM SEX_TYPE_COM{SELECT}
+ENDIF
+LOCAL = RESULT
+
+;挿入系コマンドが選択された場合はカウンター発動
+;技巧依存で発動率アップ
+IF (LOCAL & 挿入) && RAND:100 < 95 || (RAND:100 < SQRT(1 + 50 * ABL:技巧))
+	;射精部位フラグ:ワレメと暴発を立てる
+	TFLAG:4 = TFLAG:4 | ワレメ
+	TFLAG:4 = TFLAG:4 | 暴発
+
+	;油断度の上昇
+	TFLAG:3 += 105 + 5 * ABL:技巧
+
+	;地の文：足コキ攻撃
+	CALL MESSAGE_BATTLE_CHARA_SEX_ATTACK102
+	;地の文：洗脳/悪堕ちキャラが操作キャラの足コキ攻撃を見た
+	SIF FLAG:110 == 1
+		CALL MESSAGE_OTHER_BATTLE_CHARA_SEX_ATTACK102
+
+	;射精ゲージを記録
+	LOCAL:1 = FLAG:15
+
+	;射精
+	LOCAL = MIN(MAXBASE:性耐性 / 2, 150) + 150 + 75 * ABL:技巧
+	CALL TENTACLE_SYASEI_UP, LOCAL
+
+	PRINTL
+	IF (FLAG:110 == 0)
+		CALL TENTACLE_ACCESS, "NAME"
+	ELSEIF (FLAG:110 == 1)
+		PRINTFORM %PRINT_TRANSCALLNAME(FLAG:111)%
+	ENDIF
+	PRINT に
+	FONTBOLD
+	PRINTFORM {FLAG:15 - LOCAL:1}の快楽
+	FONTREGULAR
+	PRINTL を与えた！
+	PRINTW 
+
+	;触手の射精チェック
+	CALL TENTACLE_SYASEI_CHECK
+	PRINTL 
+
+	;習得の獲得
+	COMMON_PALAM:6 += 1050 + 25 * (ABL:従順 + ABL:奉仕精神 * 2)
+
+	;行動予約を空にする
+	TFLAG:17 = -1
+
+	;触手を行動不能にする
+	TFLAG:1 = 1
+
+	;行動ポイントを+1
+	EX:行動ポイント += 1
+
+	RETURN 1
+;カウンターに失敗
+ELSE
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は足コキ攻撃の構え！
+	PRINTW 
+	PRINTFORML しかし%PRINT_TRANSCALLNAME(TARGET)%の行動は失敗した！
+	PRINTL 
+
+	;習得の獲得
+	COMMON_PALAM:6 += 250 + 25 * (ABL:従順 + ABL:奉仕精神 * 2)
+
+	;行動ポイントを+1
+	EX:行動ポイント += 1
+
+	FLAG:17 = SELECT
+
+	RETURN 1
+ENDIF

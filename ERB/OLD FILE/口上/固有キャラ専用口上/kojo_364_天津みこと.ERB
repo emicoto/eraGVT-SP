@@ -1,0 +1,3015 @@
+﻿;eraGVT口上テンプレver0.390改造 by 雑魚の人 2018/05/06
+;
+;各関数のKOJO_0_の_0_がcsvのキャラ番号に対応しています
+;
+;
+;--------------------------------------------------
+;キャラクターの性成長で分岐させる際のガイダンス
+;分岐フラグの詳細については、資料フォルダの「地の文と口上：分岐条件」をご覧ください。
+;
+;　IF (MESSAGE_BRANCH_F(TARGET) & 堕落)			自分から触手に犯されたいと感じている、ほぼ陥落している状態です。
+;　IF (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)		快楽に身体が屈して理性が働かなくなっている状態です。
+;　IF (MESSAGE_BRANCH_F(TARGET) & 性抵抗)		快楽に流されないよう必死に抗っている状態です。
+;　IF (MESSAGE_BRANCH_F(TARGET) & 絶望)			心が折れて戦意を失っている状態です。
+;　IF (MESSAGE_BRANCH_F(TARGET) & 苦戦)			余裕が無くなってきている状態です。
+;
+;　BASE:Ｃ結界耐久力	結界の耐久力が残っていると、該当する部位に触手は触れません。
+;　BASE:Ｖ結界耐久力	触れられていないため快楽も感じませんが、目の前に触手があるので嫌悪感や恐怖は感じます。
+;　BASE:Ａ結界耐久力	
+;　BASE:Ｂ結界耐久力	
+;
+;　TCVAR:2 == 体勢：奉仕する		奉仕フラグが立っている状態です。望むと望まざるとに関わらず、積極的に奉仕している状態です。
+;　TCVAR:2 == 体勢：Ｖ防御		Ｖ挿入防御フラグが立っている状態です。Ｖに挿入できませんが、触れられているので快楽は感じます。
+;
+;　IF CHECK_PREGNANT_F(TARGET) > 0	妊娠しているかどうかを判定します。正の値であれば妊娠中です。
+;
+;  絶頂状態の参照	NOWEXでそれぞれの「このターンに絶頂した回数」を参照することができます。
+;			0=Ｃ絶頂、1=Ｖ絶頂、2=Ａ絶頂、3=Ｂ絶頂です。例えばＶ絶頂した回数を参照したければ、NOWEX:1を参照してください。
+;
+;　挿入状態の参照	ユーザー定義変数 INSERT に現在挿入している個所が記録されています。
+;			なので、SIF (INSERT & 膣)などのように表記することで挿入中かどうかを判定することができます。
+;			ただしDIMで定義している定数の関係上、GETBITを使いたい場合には GETBIT (INSERT, 膣-1)と表記する必要があります
+;
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+@KOJO_364_PERSONALITY_CHANGE_1
+IF TALENT:臆病 == 1
+	TALENT:臆病 = 0
+	TALENT:勝気 = 1
+	CSTR:TARGET:5 = 爆風
+	CDFLAG:TARGET:近距離:戦闘スタイル = 5
+	;爆風// //広範
+	CSTR:TARGET:6 = 流水剣
+	CDFLAG:TARGET:中距離:戦闘スタイル = 5
+	;流水剣// //広範
+	CSTR:TARGET:7 = 陽光一閃
+	CDFLAG:TARGET:遠距離:戦闘スタイル = 5
+	;陽光一閃// //広範
+ENDIF
+
+@KOJO_364_PERSONALITY_CHANGE_2
+IF TALENT:勝気 == 1
+	TALENT:勝気 = 0
+	TALENT:臆病 = 1
+	CSTR:TARGET:5 = ポカポカ殴り
+	CDFLAG:TARGET:近距離:戦闘スタイル = 8
+	;ポカポカ殴り// //設置
+	CSTR:TARGET:6 = 精霊の乱舞
+	CDFLAG:TARGET:中距離:戦闘スタイル = 9
+	;精霊の乱舞// //使役
+	CSTR:TARGET:7 = つむじ風
+	CDFLAG:TARGET:遠距離:戦闘スタイル = 8
+	;つむじ風// //設置
+	TALENT:近距離得意 = 0
+	TALENT:中距離得意 = 0
+	TALENT:遠距離苦手 = 0
+	TALENT:近距離苦手 = 0
+	TALENT:中距離苦手 = 0
+	TALENT:遠距離得意 = 0
+ENDIF
+
+@KOJO_364_PERSONALITY_CHANGE_RANDOM_1
+PRINTW 
+LOCAL:0 = RAND:3
+IF LOCAL:0 == 0
+	PRINTDL 風が強く吹いている
+	PRINTDL 一時的に「近距離得意」になった！
+	TALENT:近距離得意 = 1
+ELSEIF LOCAL:0 == 2
+	PRINTDL 風が止んでいる
+	PRINTDL 一時的に「近距離苦手」になった！
+	TALENT:近距離苦手 = 1
+ENDIF
+LOCAL:0 = RAND:3
+IF LOCAL:0 == 0
+	LOCAL:1 = RAND:2
+	SIF LOCAL:1 == 0
+		PRINTDL この近辺は湿気が多い。
+	SIF LOCAL:1 == 1
+		PRINTDL 近くに水場がある。
+	PRINTDL 一時的に「中距離得意」になった！
+	TALENT:中距離得意 = 1
+ELSEIF LOCAL:0 == 2
+	PRINTDL この近辺は乾いている。
+	PRINTDL 一時的に「中距離苦手」になった！
+	TALENT:中距離苦手 = 1
+ENDIF
+
+IF TIME == 0
+	PRINTDL 今は昼間だ。
+	PRINTDL 一時的に「遠距離得意」になった！
+	TALENT:遠距離得意 = 1
+ELSEIF TIME == 1
+	PRINTDL 今は夜だ。
+	PRINTDL 一時的に「遠距離苦手」になった！
+	TALENT:遠距離苦手 = 1
+ENDIF
+
+
+;キャラ口上色
+;--------------------------------------------------
+@KOJO_364_COLOR
+IF CFLAG:1 > 0
+	;変身時に性格を変更
+	CALL KOJO_364_PERSONALITY_CHANGE_1
+	TRYCALLFORM KOJO_0_COLOR_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	;変身解除時に性格を変更
+	CALL KOJO_364_PERSONALITY_CHANGE_2
+	TRYCALLFORM KOJO_0_COLOR_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+;キャラ個別のオープニング
+;--------------------------------------------------
+@KOJO_364_FIRST
+;ゲーム開始時に表示されるテキストを設定します
+;キャラが戦うに至った動機の説明など
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_FIRST_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_FIRST_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+;ターン終了時の処理
+;--------------------------------------------------
+@KOJO_364_TURNEND
+;ターン終了時に呼び出されるキャラ専用の処理です
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_TURNEND_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_TURNEND_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+;ショップ画面
+;--------------------------------------------------
+@KOJO_364_HITOKUTI_SHOP
+;ショップ画面で選択されているときに一言しゃべります
+;普段の様子や体調、今の心情など
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_HITOKUTI_SHOP_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_HITOKUTI_SHOP_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+;鍛錬
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+;鍛練開始
+;--------------------------------------------------
+@KOJO_364_TRAINING_BEGIN
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_TRAINING_BEGIN_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_TRAINING_BEGIN_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+;鍛練終了
+;--------------------------------------------------
+@KOJO_364_TRAINING_END
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_TRAINING_END_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_TRAINING_END_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+;走りこみ
+;--------------------------------------------------
+@KOJO_364_TRAINING_HASHIRI
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_TRAINING_HASHIRI_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_TRAINING_HASHIRI_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+;精神鍛錬
+;--------------------------------------------------
+@KOJO_364_TRAINING_SEISHIN
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_TRAINING_SEISHIN_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_TRAINING_SEISHIN_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+;瞑想
+;--------------------------------------------------
+@KOJO_364_TRAINING_MEISOU
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_TRAINING_MEISOU_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_TRAINING_MEISOU_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+;筋トレ
+;--------------------------------------------------
+@KOJO_364_TRAINING_KINTORE
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_TRAINING_KINTORE_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_TRAINING_KINTORE_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+;自衛訓練
+;--------------------------------------------------
+@KOJO_364_TRAINING_JIEI
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_TRAINING_JIEI_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_TRAINING_JIEI_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+;ダッシュ
+;--------------------------------------------------
+@KOJO_364_TRAINING_DASH
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_TRAINING_DASH_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_TRAINING_DASH_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+;近距離戦闘訓練
+;--------------------------------------------------
+@KOJO_364_TRAINING_SHORT
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_TRAINING_SHORT_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_TRAINING_SHORT_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+;中距離戦闘訓練
+;--------------------------------------------------
+@KOJO_364_TRAINING_MIDDLE
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_TRAINING_MIDDLE_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_TRAINING_MIDDLE_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+;遠距離戦闘訓練
+;--------------------------------------------------
+@KOJO_364_TRAINING_LONG
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_TRAINING_LONG_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_TRAINING_LONG_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+;戦術研究
+;--------------------------------------------------
+@KOJO_364_TRAINING_TACTICS
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_TRAINING_TACTICS_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_TRAINING_TACTICS_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+;触手拘束具が鍛錬の邪魔をする
+;--------------------------------------------------
+@KOJO_364_TRAINING_TENTACLECLOTH
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_TRAINING_TENTACLECLOTH_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_TRAINING_TENTACLECLOTH_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+;触手と遭遇
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+;ザコ触手と戦闘
+;--------------------------------------------------
+@KOJO_364_ENCOUNT_MOB
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_ENCOUNT_MOB_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_ENCOUNT_MOB_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+;ボス触手と戦闘
+;--------------------------------------------------
+@KOJO_364_ENCOUNT_BOSS
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_ENCOUNT_BOSS_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_ENCOUNT_BOSS_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;ラスボス触手と戦闘
+;--------------------------------------------------
+@KOJO_364_ENCOUNT_LASTBOSS
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_ENCOUNT_LASTBOSS_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_ENCOUNT_LASTBOSS_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;初めて洗脳キャラと対峙した
+;--------------------------------------------------
+@KOJO_364_ENCOUNT_SENNOU_FIRST
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_ENCOUNT_SENNOU_FIRST_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_ENCOUNT_SENNOU_FIRST_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;洗脳キャラと対峙
+;--------------------------------------------------
+@KOJO_364_ENCOUNT_SENNOU
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_ENCOUNT_SENNOU_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_ENCOUNT_SENNOU_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;始めて悪堕ちキャラと対峙した
+;--------------------------------------------------
+@KOJO_364_ENCOUNT_AKUOTI_FIRST
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_ENCOUNT_AKUOTI_FIRST_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_ENCOUNT_AKUOTI_FIRST_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;悪堕ちキャラと対峙
+;--------------------------------------------------
+@KOJO_364_ENCOUNT_AKUOTI
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_ENCOUNT_AKUOTI_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_ENCOUNT_AKUOTI_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+;戦闘中のキャラの行動
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+;変身前のかけ声
+@KOJO_364_BATTLE_CHARA_TRANSFORMCALL
+
+SIF CHARATALENT_F(TARGET,0,"オトコ") > 0 || CHARATALENT_F(TARGET,1,"オトコ") == 0 || TALENT:妊娠 == 0
+	CALL TRANSFORM, 1
+TRYCALL KOJO_0_COLOR
+;変身時かけ声設定
+IF CFLAG:(TARGET):4 == 1
+	PRINTFORML 「%CSTR:TARGET:2%」
+ELSE
+	SELECTCASE RAND:10
+		CASE 1
+			PRINTFORML 「チェンジ」
+		CASEELSE
+			PRINTFORML 「変身」
+	ENDSELECT
+ENDIF
+
+
+
+;変身後の名乗り
+;口上オリジナルの名乗りを使用する場合のみコメントアウトを外して記述してください
+@KOJO_364_BATTLE_CHARA_NANORI
+;変身時に性格を変更
+CALL KOJO_364_PERSONALITY_CHANGE_1
+TRYCALLFORM KOJO_0_COLOR_{SEIKAKU_CHECK_F(TARGET)}
+TRYCALLFORM KOJO_0_BATTLE_CHARA_NANORI_{SEIKAKU_CHECK_F(TARGET)}
+
+PRINTDL 
+PRINTDL 一時的に「性格：勝気」になった！
+PRINTDL 一時的に攻撃スタイルが変わった！
+PRINTFORMDL 
+PRINTFORMDL 　近距離『%CSTR:TARGET:5%』<<%FSTYLE_NAME_F(TARGET,1)%>>
+PRINTFORMDL 　中距離『%CSTR:TARGET:6%』<<%FSTYLE_NAME_F(TARGET,2)%>>
+PRINTFORMDL 　遠距離『%CSTR:TARGET:7%』<<%FSTYLE_NAME_F(TARGET,3)%>>
+PRINTFORMDL 
+CALL KOJO_364_PERSONALITY_CHANGE_RANDOM_1
+
+;気力が尽きて変身が強制的に解けた
+;--------------------------------------------------
+@KOJO_364_BATTLE_CHARA_TRANSRELEASE
+;変身解除時に性格を変更
+CALL KOJO_364_PERSONALITY_CHANGE_2
+TRYCALLFORM KOJO_0_COLOR_{SEIKAKU_CHECK_F(TARGET)}
+TRYCALLFORM KOJO_0_BATTLE_CHARA_TRANSRELEASE_{SEIKAKU_CHECK_F(TARGET)}
+
+PRINTDL 
+PRINTDL 「性格：臆病」に戻った！
+PRINTDL 攻撃スタイルが戻った！
+PRINTFORMDL 
+PRINTFORMDL 　近距離『%CSTR:TARGET:5%』<<%FSTYLE_NAME_F(TARGET,1)%>>
+PRINTFORMDL 　中距離『%CSTR:TARGET:6%』<<%FSTYLE_NAME_F(TARGET,2)%>>
+PRINTFORMDL 　遠距離『%CSTR:TARGET:7%』<<%FSTYLE_NAME_F(TARGET,3)%>>
+PRINTFORMDL 
+PRINTDL 得意・苦手な距離が戻った！
+
+
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+;衣装の損傷が酷くなった関連
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+;アウターが破れ始めた
+;--------------------------------------------------
+@KOJO_364_BATTLE_CLOTH_OUTERDAMAGE
+;攻撃でアウターが大きな損傷を受けた場合
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_CLOTH_OUTERDAMAGE_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_CLOTH_OUTERDAMAGE_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;アウターが破れた
+;--------------------------------------------------
+@KOJO_364_BATTLE_CLOTH_OUTERBREAK
+;アウターの耐久力が尽きた場合
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_CLOTH_OUTERBREAK_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_CLOTH_OUTERBREAK_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;インナーが破れ始めた
+;--------------------------------------------------
+@KOJO_364_BATTLE_CLOTH_INNERDAMAGE
+;攻撃でインナーが大きな損傷を受けた場合
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_CLOTH_INNERDAMAGE_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_CLOTH_INNERDAMAGE_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;インナーが破れた
+;--------------------------------------------------
+@KOJO_364_BATTLE_CLOTH_INNERBREAK
+;インナーの耐久力が尽きた場合
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_CLOTH_INNERBREAK_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_CLOTH_INNERBREAK_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+;戦闘行動関連
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+;撤退成功
+;--------------------------------------------------
+@KOJO_364_BATTLE_CHARA_TETTAI_SUCCESS
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_TETTAI_SUCCESS_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_TETTAI_SUCCESS_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;撤退失敗
+;--------------------------------------------------
+@KOJO_364_BATTLE_CHARA_TETTAI_FALSE
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_TETTAI_FALSE_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_TETTAI_FALSE_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+
+;戦闘スタイル変更
+;--------------------------------------------------
+@KOJO_364_BATTLE_CHARA_BATTLE_STYLE_CHANGE
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_BATTLE_STYLE_CHANGE_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_BATTLE_STYLE_CHANGE_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;近距離攻撃
+;--------------------------------------------------
+@KOJO_364_BATTLE_CHARA_ATTACK_RANGE_SHORT
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_ATTACK_RANGE_SHORT_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_ATTACK_RANGE_SHORT_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;中距離攻撃
+;--------------------------------------------------
+@KOJO_364_BATTLE_CHARA_ATTACK_RANGE_MIDDLE
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_ATTACK_RANGE_MIDDLE_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_ATTACK_RANGE_MIDDLE_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;遠距離攻撃
+;--------------------------------------------------
+@KOJO_364_BATTLE_CHARA_ATTACK_RANGE_LONG
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_ATTACK_RANGE_LONG_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_ATTACK_RANGE_LONG_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;防御
+;--------------------------------------------------
+@KOJO_364_BATTLE_CHARA_DEFENSE
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_DEFENSE_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_DEFENSE_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;距離をとる
+;--------------------------------------------------
+@KOJO_364_BATTLE_CHARA_TAKEAWAY
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_TAKEAWAY_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_TAKEAWAY_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;何もしない
+;--------------------------------------------------
+@KOJO_364_BATTLE_CHARA_NOACTION
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_NOACTION_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_NOACTION_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;振り解く
+;--------------------------------------------------
+@KOJO_364_BATTLE_CHARA_HURIHODOKU
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_HURIHODOKU_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_HURIHODOKU_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;暴れる
+;--------------------------------------------------
+@KOJO_364_BATTLE_CHARA_ABARERU
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_ABARERU_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_ABARERU_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;耐える
+;--------------------------------------------------
+@KOJO_364_BATTLE_CHARA_TAERU
+;あまり調教が進んでおらず、闘志が残っている状態です
+;情報を集めるため、油断を誘うためなど、まだ諦めていないような口上が相応しいでしょう
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_TAERU_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_TAERU_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;なすがまま
+;--------------------------------------------------
+@KOJO_364_BATTLE_CHARA_NASUGAMAMA
+;苦痛や恐怖が高くなって翻弄されている状態です
+;余裕がなくなった様子を描写するのが良いでしょう
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_NASUGAMAMA_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_NASUGAMAMA_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;受け入れる
+;--------------------------------------------------
+@KOJO_364_BATTLE_CHARA_UKEIRERU
+;屈服で心が折れたか、快楽に流されている状態です
+;普段よりも快楽に素直になっている様子を描写するのが良いでしょう
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_UKEIRERU_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_UKEIRERU_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;奉仕する
+;--------------------------------------------------
+@KOJO_364_BATTLE_CHARA_HOUSI
+;恭順する気持ちから触手を満足させようとしている状態です
+;口では言い訳しつつ、心の底では触手のことが大好きです
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_HOUSI_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_HOUSI_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;Ｖ挿入防御
+;--------------------------------------------------
+@KOJO_364_BATTLE_CHARA_ANTI_V
+;なりふり構わず処女だけを守り通す構えです
+;調教が進むと使えなくなるのであまり調教が進んでいない状況を想定しましょう
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_ANTI_V_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_ANTI_V_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;引き剥がす
+;--------------------------------------------------
+@KOJO_364_BATTLE_CHARA_HIKIHAGASU
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_HIKIHAGASU_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_HIKIHAGASU_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;睨みつける
+;--------------------------------------------------
+@KOJO_364_BATTLE_CHARA_NIRAMI
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_NIRAMI_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_NIRAMI_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;罵倒する
+;--------------------------------------------------
+@KOJO_364_BATTLE_CHARA_BATOU
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_BATOU_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_BATOU_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;反抗する
+;--------------------------------------------------
+@KOJO_364_BATTLE_CHARA_RESISTANCE
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_RESISTANCE_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_RESISTANCE_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;説得する
+;----------------------------------------------------------
+@KOJO_364_BATTLE_CHARA_PERSUADE
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_PERSUADE_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_PERSUADE_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+;キャラによる性コマンド
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+;手淫攻撃
+;--------------------------------------------------
+@KOJO_364_BATTLE_CHARA_SEX_ATTACK100
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_SEX_ATTACK100_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_SEX_ATTACK100_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;フェラ攻撃
+;--------------------------------------------------
+@KOJO_364_BATTLE_CHARA_SEX_ATTACK101
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_SEX_ATTACK101_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_SEX_ATTACK101_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;足コキ攻撃
+;--------------------------------------------------
+@KOJO_364_BATTLE_CHARA_SEX_ATTACK102
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_SEX_ATTACK102_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_SEX_ATTACK102_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;素股焦らし
+;--------------------------------------------------
+@KOJO_364_BATTLE_CHARA_SEX_ATTACK103
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_SEX_ATTACK103_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_SEX_ATTACK103_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;腰を振る
+;--------------------------------------------------
+@KOJO_364_BATTLE_CHARA_SEX_ATTACK104
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_SEX_ATTACK104_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_SEX_ATTACK104_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+;キャラの行動の結果
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+;攻撃がクリティカルヒット
+;--------------------------------------------------
+@KOJO_364_BATTLE_CHARA_ATTACK_CRITICAL_HIT
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_ATTACK_CRITICAL_HIT_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_ATTACK_CRITICAL_HIT_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;攻撃が通常ヒット
+;--------------------------------------------------
+@KOJO_364_BATTLE_CHARA_ATTACK_HIT
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_ATTACK_HIT_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_ATTACK_HIT_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;攻撃失敗
+;--------------------------------------------------
+@KOJO_364_BATTLE_CHARA_ATTACK_FALSE
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_ATTACK_FALSE_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_ATTACK_FALSE_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;振り解く成功
+;--------------------------------------------------
+@KOJO_364_BATTLE_CHARA_HURIHODOKU_SUCCESS
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_HURIHODOKU_SUCCESS_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_HURIHODOKU_SUCCESS_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;振り解く失敗
+;--------------------------------------------------
+@KOJO_364_BATTLE_CHARA_HURIHODOKU_FALSE
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_HURIHODOKU_FALSE_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_HURIHODOKU_FALSE_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;引き剥がす成功
+;--------------------------------------------------
+@KOJO_364_BATTLE_CHARA_HIKIHAGASU_SUCCESS
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_HIKIHAGASU_SUCCESS_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_HIKIHAGASU_SUCCESS_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;引き剥がす失敗
+;--------------------------------------------------
+@KOJO_364_BATTLE_CHARA_HIKIHAGASU_FALSE
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_HIKIHAGASU_FALSE_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_CHARA_HIKIHAGASU_FALSE_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+
+
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+;敵側の行動（攻撃など）
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+;敵が攻撃
+;--------------------------------------------------
+@KOJO_364_BATTLE_TENTACLE_ATTACK
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_TENTACLE_ATTACK_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_TENTACLE_ATTACK_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;敵が絡みつく
+;--------------------------------------------------
+@KOJO_364_BATTLE_TENTACLE_KARAMITUKU
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_TENTACLE_KARAMITUKU_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_TENTACLE_KARAMITUKU_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;敵が体液を吐く
+;--------------------------------------------------
+@KOJO_364_BATTLE_TENTACLE_TAIEKI
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_TENTACLE_TAIEKI_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_TENTACLE_TAIEKI_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;敵が距離をとる
+;--------------------------------------------------
+@KOJO_364_BATTLE_TENTACLE_TAKEAWAY
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_TENTACLE_TAKEAWAY_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_TENTACLE_TAKEAWAY_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;敵が押し倒すを開始
+;--------------------------------------------------
+@KOJO_364_BATTLE_TENTACLE_OSHITAOSU
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_TENTACLE_OSHITAOSU_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_TENTACLE_OSHITAOSU_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+
+
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+;敵の行動の結果
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+;敵の攻撃がクリティカルヒット
+;--------------------------------------------------
+@KOJO_364_BATTLE_TENTACLE_ATTACK_CRITICAL_HIT
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_TENTACLE_ATTACK_CRITICAL_HIT_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_TENTACLE_ATTACK_CRITICAL_HIT_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;敵の攻撃が通常ヒット
+;--------------------------------------------------
+@KOJO_364_BATTLE_TENTACLE_ATTACK_HIT
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_TENTACLE_ATTACK_HIT_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_TENTACLE_ATTACK_HIT_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;敵の攻撃を回避
+;--------------------------------------------------
+@KOJO_364_BATTLE_TENTACLE_ATTACK_FALSE
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_TENTACLE_ATTACK_FALSE_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_TENTACLE_ATTACK_FALSE_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;敵の絡みつくが成功
+;--------------------------------------------------
+@KOJO_364_BATTLE_TENTACLE_KARAMITUKU_SUCCESS
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_TENTACLE_KARAMITUKU_SUCCESS_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_TENTACLE_KARAMITUKU_SUCCESS_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;敵の絡みつくを回避
+;--------------------------------------------------
+@KOJO_364_BATTLE_TENTACLE_KARAMITUKU_FALSE
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_TENTACLE_KARAMITUKU_FALSE_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_TENTACLE_KARAMITUKU_FALSE_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;敵の体液を吐くがヒット
+;--------------------------------------------------
+@KOJO_364_BATTLE_TENTACLE_TAIEKI_HIT
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_TENTACLE_TAIEKI_HIT_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_TENTACLE_TAIEKI_HIT_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;敵の体液を吐くを回避
+;--------------------------------------------------
+@KOJO_364_BATTLE_TENTACLE_TAIEKI_FALSE
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_TENTACLE_TAIEKI_FALSE_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_TENTACLE_TAIEKI_FALSE_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;敵の押し倒すがヒット
+;--------------------------------------------------
+@KOJO_364_BATTLE_TENTACLE_OSHITAOSU_SUCCESS
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_TENTACLE_OSHITAOSU_SUCCESS_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_TENTACLE_OSHITAOSU_SUCCESS_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;敵の押し倒すを回避
+;--------------------------------------------------
+@KOJO_364_BATTLE_TENTACLE_OSHITAOSU_FALSE
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_TENTACLE_OSHITAOSU_FALSE_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_TENTACLE_OSHITAOSU_FALSE_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+;敵から受ける性コマンド関連
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+;COM0：C攻め弱　クリトリスを撫でる
+;--------------------------------------------------
+@KOJO_364_SEX_COM0
+;オトコ/ふたなりの場合はペニスを愛撫されている扱いになります。
+IF TALENT:オトコ > 0 || TALENT:ふたなり > 0
+ELSE
+ENDIF
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_COM0_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_COM0_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;COM1：C攻め強　クリトリスに吸い付く
+;--------------------------------------------------
+@KOJO_364_SEX_COM1
+;オトコ/ふたなりの場合はペニスを吸われている扱いになります。
+IF TALENT:オトコ > 0 || TALENT:ふたなり > 0
+ELSE
+ENDIF
+
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_COM1_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_COM1_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;COM2：V攻め弱　膣口を愛撫（処女は奪いません）
+;--------------------------------------------------
+@KOJO_364_SEX_COM2
+;今にも犯されそうな状態で弄ばれます。
+;### FLAG:900 ###
+;1　クンニされる（吸う、舐める）
+;2　突起触手に跨らされる
+;3　男性器触手を擦りつけられる
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_COM2_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_COM2_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;COM3：V攻め強　挿入
+;--------------------------------------------------
+@KOJO_364_SEX_COM3
+;膣に挿入され、犯されます。
+;TCVAR:2 == 体勢：Ｖ防御のときはＶに挿入されません。
+;Ｖ感覚が0のときは苦痛が強く、Ｖ感覚が4以上なら強烈な快感を感じます。
+IF TCVAR:2 == 体勢：Ｖ防御
+ELSEIF ABL:Ｖ感覚 == 0
+ELSEIF ABL:Ｖ感覚 >= 4
+ENDIF
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_COM3_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_COM3_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;COM4：A攻め弱　アナルを撫で回す
+;--------------------------------------------------
+@KOJO_364_SEX_COM4
+;軽いちょっかいを出されている段階なので、それほど危機感は感じていない場面です。
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_COM4_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_COM4_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;COM5：A攻め強　アナルに挿入
+;--------------------------------------------------
+@KOJO_364_SEX_COM5
+;A攻め弱とは一転して激しく犯されます。
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_COM5_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_COM5_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;COM6：B攻め弱　胸を揉みしだく
+;--------------------------------------------------
+@KOJO_364_SEX_COM6
+;胸を撫でられたり、乳首を引っ張られたりします。
+;鬼畜度の低い愛撫です。
+;### FLAG:900 ###
+;1　撫でられる
+;2　乳首を引っ張られる
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_COM6_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_COM6_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;COM7：B攻め強　乳首に吸い付く
+;--------------------------------------------------
+@KOJO_364_SEX_COM7
+;ややハードですが苦痛成分がないプレイです。母乳体質のアピールポイントです。
+;### FLAG:900 ###
+;1　揉まれる
+;2　吸われる
+;3　揉みながら吸われる
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_COM7_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_COM7_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;COM8：スパンキング
+;--------------------------------------------------
+@KOJO_364_SEX_COM8
+;割と手加減なしで暴行されるので、痛い！というよりは叫び声が出ると思います。
+;マゾっ気Lv2以上なら喜びます。
+;### FLAG:900 ###
+;1　身体を鞭打たれて痣ができる
+;2　胸を鞭打たれて切り傷ができる
+;3　腹部に打撃を入れられる
+;4　尻を鞭打たれて腫れあがる
+;5　蹲ったところを何度も蹴られる（悪堕ちキャラ）
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_COM8_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_COM8_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;COM9：針
+;--------------------------------------------------
+@KOJO_364_SEX_COM9
+;これもハード。殴られるより痛いはず。マゾっ気がLv3以上で欲情します。
+;### FLAG:900 ###
+;1　敏感な部分に針を突き立てられる
+;2　乳首に針を突き立てられる
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_COM9_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_COM9_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;COM10：手淫
+;--------------------------------------------------
+@KOJO_364_SEX_COM10
+;調教が進んでいたり「奉仕する」を選んでいる場合は素直に手淫します。
+;また、悪堕ちキャラやＨ触手が相手の場合は催眠手淫させられます。
+IF FLAG:110 == 0
+	;まずはボス触手の名前を取得
+	CALL TENTACLE_ACCESS, "GETNAME"
+	LOCALS:0 = %RESULTS%
+ELSE
+	LOCALS:0 = 
+ENDIF
+IF FLAG:110 && (TALENT:(FLAG:111):寄生 == 0 || FILTER_CHECK_F(13) > 0)
+	;悪堕ちキャラが相手の場合
+ELSEIF LOCALS:0 == "Ｈ触手"
+	;Ｈ触手が相手の場合
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落) || TCVAR:2 == 体勢：奉仕する
+ELSE
+ENDIF
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_COM10_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_COM10_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;COM11：フェラ
+;--------------------------------------------------
+@KOJO_364_SEX_COM11
+;基本的に無理やり口を犯されます。
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_COM11_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_COM11_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;COM12：イラマチオ
+;--------------------------------------------------
+@KOJO_364_SEX_COM12
+;フェラをさらにハードにしたバージョン。こちらは喉を犯される。
+;地の文では息ができなくて気絶しかけるので、口上のほうも息も絶え絶えという感じが良いでしょう。
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_COM12_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_COM12_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;COM13：絶頂禁止
+;--------------------------------------------------
+@KOJO_364_SEX_COM13
+IF TCVAR:40
+	;絶頂禁止を解除した場合
+ELSE
+	;絶頂禁止した場合
+ENDIF
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_COM13_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_COM13_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;COM14：衣装を破く
+;--------------------------------------------------
+@KOJO_364_SEX_COM14
+;拘束中に衣装を破かれます。
+;これから犯されることが分かって抵抗する、怯える、悪態をつくなど。
+;### FLAG:900 ###
+;1　通常の脱衣
+;2　異臭のする液体
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_COM14_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_COM14_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;COM15：種付けピストン（Ｖ系統）
+;--------------------------------------------------
+@KOJO_364_SEX_COM15
+;Ｖ攻め強などで触手が射精しなかった場合は次のターンにこのコマンドに派生します。
+;体勢を固定されてじゅぽじゅぽ犯されている状態です。
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_COM15_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_COM15_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;COM16：種付けフィニッシュ（Ｖ系統）
+;--------------------------------------------------
+@KOJO_364_SEX_COM16
+;種付けピストンでフィニッシュされる場合の口上です。
+;連続でハメられ続けているので通常よりも快楽を受けている描写にすると良いでしょう。
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_COM16_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_COM16_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;COM17：アナルピストン（Ａ系統）
+;--------------------------------------------------
+@KOJO_364_SEX_COM17
+;Ａ攻め強などで触手が射精しなかった場合は次のターンにこのコマンドに派生します。
+;体勢を固定されてじゅぽじゅぽ犯されている状態です。
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_COM17_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_COM17_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;COM18：アナルフィニッシュ（Ａ系統）
+;--------------------------------------------------
+@KOJO_364_SEX_COM18
+;アナルピストンでフィニッシュされる場合の口上です。
+;連続でハメられ続けているので通常よりも快楽を受けている描写にすると良いでしょう。
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_COM18_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_COM18_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;COM19：両穴ピストン（ＶＡ系統）
+;--------------------------------------------------
+@KOJO_364_SEX_COM19
+;種付けフィニッシュ、アナルピストンなどからこのコマンドに派生する場合があります。
+;体勢を固定されてじゅぽじゅぽ犯されている状態です。
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_COM19_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_COM19_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;COM20：両穴フィニッシュ（ＶＡ系統）
+;--------------------------------------------------
+@KOJO_364_SEX_COM20
+;両穴ピストンでフィニッシュされる場合の口上です。
+;連続でハメられ続けているので通常よりも快楽を受けている描写にすると良いでしょう。
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_COM20_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_COM20_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+;ボス専用SPコマンド関連
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+;SPCOM0：C攻めSP　クリトリスに噛み付く/逆レイプされる
+;--------------------------------------------------
+@KOJO_364_SEX_SPCOM0
+;媚薬を注入されて、感度を高められたまま放置されたタイミングで表示されます。
+;自分がオトコ/ふたなりで相手が女性悪堕ちキャラの場合は逆レイプされます。
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_SPCOM0_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_SPCOM0_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;SPCOM1：V攻めSP　奥を突く
+;--------------------------------------------------
+@KOJO_364_SEX_SPCOM1
+;激しいピストンで子宮口を責められている場面です。
+;「少女に似合わぬ獣のような喘ぎ声を上げ続けている・・・」に続く形になるため、
+;快楽に翻弄されているような文にするのが良いでしょう。
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_SPCOM1_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_SPCOM1_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;SPCOM2：A攻めSP　激しくアナルを犯す
+;--------------------------------------------------
+@KOJO_364_SEX_SPCOM2
+;かなりハードなプレイで、アナルから入った触手が口から出て"貫通"します。
+;地の文でもアヘ顔だったり白目を剥いて泡を吹いているので、相応の描写が必要です。
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_SPCOM2_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_SPCOM2_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;SPCOM3：B攻めSP　媚薬ニプルファック
+;--------------------------------------------------
+@KOJO_364_SEX_SPCOM3
+;胸の感度を高められてニプルファックで責められます。
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_SPCOM3_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_SPCOM3_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;SPCOM4：電流
+;--------------------------------------------------
+@KOJO_364_SEX_SPCOM4
+;このゲーム内で最も苦痛が入るコマンドなので、たとえマゾでも絶叫しか聞かれないでしょう。
+;マゾっ気Lv4以上で欲情します。
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_SPCOM4_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_SPCOM4_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;SPCOM5：パイズリ
+;--------------------------------------------------
+@KOJO_364_SEX_SPCOM5
+;ごく普通のパイズリ…というわけではなく、無理やり奉仕させられる感が強いです。
+;触手の虜や「奉仕する」を選択している場合は普通のパイズリをしている感じになります。
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_SPCOM5_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_SPCOM5_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;SPCOM6：強制自慰
+;--------------------------------------------------
+@KOJO_364_SEX_SPCOM6
+;自分の意に反して自慰させられます。
+;このあと普通の自慰の口上も表示されるので、クドくならないように。
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_SPCOM6_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_SPCOM6_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;SPCOM7：羞恥プレイ
+;--------------------------------------------------
+@KOJO_364_SEX_SPCOM7
+;恥ずかしい姿を衆目に晒されます。
+;### FLAG:900 ###
+;1　雑魚触手をけしかけられる（悪堕ちキャラ）
+;2　強制開脚させられる
+;3　動画配信サイトに個人情報を晒される
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_SPCOM7_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_SPCOM7_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;SPCOM8：C触手専用SP　尿道責め
+;--------------------------------------------------
+@KOJO_364_SEX_SPCOM8
+;イモムシ型のＣ触手に尿道を責められ、お漏らしさせられます。
+;公開排尿なので、羞恥心を煽られます。
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_SPCOM8_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_SPCOM8_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;SPCOM9：V触手専用SP　V拡張責め（腹ボコ系
+;--------------------------------------------------
+@KOJO_364_SEX_SPCOM9
+;通常なら入らない極太ペニスによる拡張責め、V拡張経験によって地の文が変化します。
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_SPCOM9_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_SPCOM9_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;SPCOM10：A触手専用SP　A拡張攻め（腹ボコ
+;--------------------------------------------------
+@KOJO_364_SEX_SPCOM10
+;不定形のＡ触手による疑似浣腸による拡張、拡張経験によって地の文が変化します。
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_SPCOM10_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_SPCOM10_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;SPCOM11：B触手専用SP　甘えん坊授乳プレイ
+;--------------------------------------------------
+@KOJO_364_SEX_SPCOM11
+;巨大な赤ん坊型のボスに圧し掛かられ、乳房を吸われながら正常位で犯されます。
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_SPCOM11_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_SPCOM11_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;SPCOM12：S触手専用SP ヘソ快楽攻め
+;--------------------------------------------------
+@KOJO_364_SEX_SPCOM12
+;コンフィグでグロ表現がオフの場合、ヘソ挿入はありません。
+;コンフィグオンオフにかかわらず、快感で限界気絶確定
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_SPCOM12_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_SPCOM12_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;SPCOM13：P触手専用SP　丸飲み精液攻め
+;--------------------------------------------------
+@KOJO_364_SEX_SPCOM13
+;受けると幽閉確定の即死攻撃です。
+;ウツボカツラ型のＰ触手に丸飲みされ、精液風呂で倒れるまで射精されます。
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_SPCOM13_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_SPCOM13_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;SPCOM14：H触手専用SP　催眠姦
+;--------------------------------------------------
+@KOJO_364_SEX_SPCOM14
+;触手の虜or欲望3以上なら受け入れ、前記条件未取得なら屈辱＆羞恥
+;被姦後なので、されてる最中の描写は不可
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_SPCOM14_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_SPCOM14_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;SPCOM15：K触手専用SP サブミッションファック
+;--------------------------------------------------
+@KOJO_364_SEX_SPCOM15
+;関節を極められて、さらに太い触手に犯されます。
+;基本激痛で泣きわめいているような状態
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_SPCOM15_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_SPCOM15_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+
+;キャラが射精
+;--------------------------------------------------
+@KOJO_364_SEX_CHARA_SYASEI
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_CHARA_SYASEI_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_CHARA_SYASEI_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;キャラが大量射精
+;--------------------------------------------------
+@KOJO_364_SEX_CHARA_SYASEI_HI
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_CHARA_SYASEI_HI_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_CHARA_SYASEI_HI_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;キャラが噴乳
+;--------------------------------------------------
+@KOJO_364_SEX_CHARA_HUNNYU
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_CHARA_HUNNYU_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_CHARA_HUNNYU_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;キャラが大量噴乳
+;--------------------------------------------------
+@KOJO_364_SEX_CHARA_HUNNYU_HI
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_CHARA_HUNNYU_HI_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_CHARA_HUNNYU_HI_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+
+
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+;絶頂関連
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+;C絶頂
+;--------------------------------------------------
+@KOJO_364_SEX_ECSTASY_C
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_ECSTASY_C_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_ECSTASY_C_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;C強絶頂
+;--------------------------------------------------
+@KOJO_364_SEX_ECSTASY_C_HI
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_ECSTASY_C_HI_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_ECSTASY_C_HI_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;V絶頂
+;--------------------------------------------------
+@KOJO_364_SEX_ECSTASY_V
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_ECSTASY_V_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_ECSTASY_V_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;V強絶頂
+;--------------------------------------------------
+@KOJO_364_SEX_ECSTASY_V_HI
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_ECSTASY_V_HI_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_ECSTASY_V_HI_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;A絶頂
+;--------------------------------------------------
+@KOJO_364_SEX_ECSTASY_A
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_ECSTASY_A_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_ECSTASY_A_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;A強絶頂
+;--------------------------------------------------
+@KOJO_364_SEX_ECSTASY_A_HI
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_ECSTASY_A_HI_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_ECSTASY_A_HI_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;B絶頂
+;--------------------------------------------------
+@KOJO_364_SEX_ECSTASY_B
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_ECSTASY_B_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_ECSTASY_B_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;B強絶頂
+;--------------------------------------------------
+@KOJO_364_SEX_ECSTASY_B_HI
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_ECSTASY_B_HI_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_ECSTASY_B_HI_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+
+
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+;多重絶頂に関する口上
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+;四重絶頂
+;--------------------------------------------------
+@KOJO_364_SEX_MULTIECSTASY_CVAB
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_MULTIECSTASY_CVAB_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_MULTIECSTASY_CVAB_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;CVA三重絶頂
+;--------------------------------------------------
+@KOJO_364_SEX_MULTIECSTASY_CVA
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_MULTIECSTASY_CVA_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_MULTIECSTASY_CVA_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;CVB三重絶頂
+;--------------------------------------------------
+@KOJO_364_SEX_MULTIECSTASY_CVB
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_MULTIECSTASY_CVB_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_MULTIECSTASY_CVB_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;CAB三重絶頂
+;--------------------------------------------------
+@KOJO_364_SEX_MULTIECSTASY_CAB
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_MULTIECSTASY_CAB_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_MULTIECSTASY_CAB_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;VAB三重絶頂
+;--------------------------------------------------
+@KOJO_364_SEX_MULTIECSTASY_VAB
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_MULTIECSTASY_VAB_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_MULTIECSTASY_VAB_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;CV二重絶頂
+;--------------------------------------------------
+@KOJO_364_SEX_MULTIECSTASY_CV
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_MULTIECSTASY_CV_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_MULTIECSTASY_CV_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;CA二重絶頂
+;--------------------------------------------------
+@KOJO_364_SEX_MULTIECSTASY_CA
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_MULTIECSTASY_CA_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_MULTIECSTASY_CA_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;CB二重絶頂
+;--------------------------------------------------
+@KOJO_364_SEX_MULTIECSTASY_CB
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_MULTIECSTASY_CB_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_MULTIECSTASY_CB_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;VA二重絶頂
+;--------------------------------------------------
+@KOJO_364_SEX_MULTIECSTASY_VA
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_MULTIECSTASY_VA_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_MULTIECSTASY_VA_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;VB二重絶頂
+;--------------------------------------------------
+@KOJO_364_SEX_MULTIECSTASY_VB
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_MULTIECSTASY_VB_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_MULTIECSTASY_VB_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;AB二重絶頂
+;--------------------------------------------------
+@KOJO_364_SEX_MULTIECSTASY_AB
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_MULTIECSTASY_AB_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_MULTIECSTASY_AB_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+
+
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+;触手が射精したときの処理
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+;膣に通常射精
+;--------------------------------------------------
+@KOJO_364_SEX_TENTACLE_SYASEI_VAGINA
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_TENTACLE_SYASEI_VAGINA_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_TENTACLE_SYASEI_VAGINA_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;膣に大量射精
+;--------------------------------------------------
+@KOJO_364_SEX_TENTACLE_SYASEI_VAGINA_HI
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_TENTACLE_SYASEI_VAGINA_HI_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_TENTACLE_SYASEI_VAGINA_HI_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;アナルに通常射精
+;--------------------------------------------------
+@KOJO_364_SEX_TENTACLE_SYASEI_ANAL
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_TENTACLE_SYASEI_ANAL_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_TENTACLE_SYASEI_ANAL_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;アナルに大量射精
+;--------------------------------------------------
+@KOJO_364_SEX_TENTACLE_SYASEI_ANAL_HI
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_TENTACLE_SYASEI_ANAL_HI_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_TENTACLE_SYASEI_ANAL_HI_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;手に通常射精
+;--------------------------------------------------
+@KOJO_364_SEX_TENTACLE_SYASEI_HAND
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_TENTACLE_SYASEI_HAND_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_TENTACLE_SYASEI_HAND_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;手に大量射精
+;--------------------------------------------------
+@KOJO_364_SEX_TENTACLE_SYASEI_HAND_HI
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_TENTACLE_SYASEI_HAND_HI_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_TENTACLE_SYASEI_HAND_HI_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;口内に通常射精
+;--------------------------------------------------
+@KOJO_364_SEX_TENTACLE_SYASEI_MOUTH
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_TENTACLE_SYASEI_MOUTH_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_TENTACLE_SYASEI_MOUTH_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;口内に大量射精
+;--------------------------------------------------
+@KOJO_364_SEX_TENTACLE_SYASEI_MOUTH_HI
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_TENTACLE_SYASEI_MOUTH_HI_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_TENTACLE_SYASEI_MOUTH_HI_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;胸に通常射精
+;--------------------------------------------------
+@KOJO_364_SEX_TENTACLE_SYASEI_BUST
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_TENTACLE_SYASEI_BUST_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_TENTACLE_SYASEI_BUST_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;胸に大量射精
+;--------------------------------------------------
+@KOJO_364_SEX_TENTACLE_SYASEI_BUST_HI
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_TENTACLE_SYASEI_BUST_HI_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_TENTACLE_SYASEI_BUST_HI_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;避妊結界が破られた
+;--------------------------------------------------
+@KOJO_364_PREGNANCY_BARRIER_COLLAPSED
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_PREGNANCY_BARRIER_COLLAPSED_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_PREGNANCY_BARRIER_COLLAPSED_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+;戦闘終了関連
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+;ボス触手・ラスボス触手に勝利
+;--------------------------------------------------
+@KOJO_364_BATTLE_END_WIN
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_END_WIN_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_END_WIN_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;敵キャラに勝利
+;--------------------------------------------------
+@KOJO_364_BATTLE_END_WIN_ENEMY
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_END_WIN_ENEMY_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_END_WIN_ENEMY_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;ラスボス触手出現
+;--------------------------------------------------
+@KOJO_364_BATTLE_END_LASTBOSSAPPEAR
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_END_LASTBOSSAPPEAR_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_END_LASTBOSSAPPEAR_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;完全殲滅
+;--------------------------------------------------
+@KOJO_364_BATTLE_END_PERFECT
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_END_PERFECT_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_END_PERFECT_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;捕らわれキャラの救出
+;--------------------------------------------------
+@KOJO_364_BATTLE_END_RESCUED
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_END_RESCUED_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_END_RESCUED_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;洗脳中キャラの救出
+;--------------------------------------------------
+@KOJO_364_BATTLE_END_RESCUE_SENNOU
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_END_RESCUE_SENNOU_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_END_RESCUE_SENNOU_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;敵キャラの救出
+;--------------------------------------------------
+@KOJO_364_BATTLE_END_RESCUE_ENEMY
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_END_RESCUE_ENEMY_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_END_RESCUE_ENEMY_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;敗北
+;--------------------------------------------------
+@KOJO_364_BATTLE_END_LOSS
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_END_LOSS_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_END_LOSS_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;時間切れ
+;--------------------------------------------------
+@KOJO_364_BATTLE_END_TIMEUP
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_END_TIMEUP_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_END_TIMEUP_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+
+
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+;素質関連
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+;処女喪失
+;--------------------------------------------------
+@KOJO_364_SEX_LOSTVIRGIN
+;特に喋らせたいことが無ければ空白でもＯＫ
+;また、分岐を全て埋めなければいけないわけでもない
+;例
+;恋人で処女喪失
+;IF CFLAG:TARGET:206 == 5
+;	PRINTFORML 「んぐっ！ …だい…じょうぶ、痛くない…よ❤」
+;犬で処女喪失
+;ELSEIF CFLAG:TARGET:206 == 10
+;	PRINTFORML 「んぐっ！ …ワンちゃんに…奪われちゃったぁ❤」
+
+;子触手襲撃
+IF CFLAG:TARGET:206 == 1
+;通常戦闘中（敵）
+ELSEIF CFLAG:TARGET:206 == 2
+;幽閉中（敵）
+ELSEIF CFLAG:TARGET:206 == 3
+;触手拘束具/寄生触手
+ELSEIF CFLAG:TARGET:206 == 4
+;恋人との夜の営み
+ELSEIF CFLAG:TARGET:206 == 5
+;仲間夜這い
+ELSEIF CFLAG:TARGET:206 == 6
+;枕営業
+ELSEIF CFLAG:TARGET:206 == 7
+;援助交際
+ELSEIF CFLAG:TARGET:206 == 8
+;公衆便所（浮浪者）
+ELSEIF CFLAG:TARGET:206 == 9
+;公衆便所（犬）
+ELSEIF CFLAG:TARGET:206 == 10
+;クズ市民
+ELSEIF CFLAG:TARGET:206 == 11
+;情報屋
+ELSEIF CFLAG:TARGET:206 == 12
+ENDIF
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_LOSTVIRGIN_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_LOSTVIRGIN_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;触手の虜取得
+;--------------------------------------------------
+@KOJO_364_GETTALENT_TORIKO
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_GETTALENT_TORIKO_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_GETTALENT_TORIKO_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;淫乱取得
+;--------------------------------------------------
+@KOJO_364_GETTALENT_INRAN
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_GETTALENT_INRAN_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_GETTALENT_INRAN_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;淫核取得
+;--------------------------------------------------
+@KOJO_364_GETTALENT_INKAKU
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_GETTALENT_INKAKU_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_GETTALENT_INKAKU_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;淫壷取得
+;--------------------------------------------------
+@KOJO_364_GETTALENT_INTUBO
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_GETTALENT_INTUBO_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_GETTALENT_INTUBO_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;淫尻取得
+;--------------------------------------------------
+@KOJO_364_GETTALENT_INJIRI
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_GETTALENT_INJIRI_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_GETTALENT_INJIRI_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;淫乳取得
+;--------------------------------------------------
+@KOJO_364_GETTALENT_INNYUU
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_GETTALENT_INNYUU_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_GETTALENT_INNYUU_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;清純派喪失
+;--------------------------------------------------
+@KOJO_364_LOSETALENT_SEIJUNHA
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_LOSETALENT_SEIJUNHA_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_LOSETALENT_SEIJUNHA_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+
+
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+;刻印関連
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+;快楽刻印１取得
+;--------------------------------------------------
+@KOJO_364_SEX_MARK_KAIRAKU_1
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_MARK_KAIRAKU_1_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_MARK_KAIRAKU_1_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;快楽刻印２取得
+;--------------------------------------------------
+@KOJO_364_SEX_MARK_KAIRAKU_2
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_MARK_KAIRAKU_2_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_MARK_KAIRAKU_2_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;快楽刻印３取得
+;--------------------------------------------------
+@KOJO_364_SEX_MARK_KAIRAKU_3
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_MARK_KAIRAKU_3_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_MARK_KAIRAKU_3_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;快楽刻印４取得
+;--------------------------------------------------
+@KOJO_364_SEX_MARK_KAIRAKU_4
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_MARK_KAIRAKU_4_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_MARK_KAIRAKU_4_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;快楽刻印５取得
+;--------------------------------------------------
+@KOJO_364_SEX_MARK_KAIRAKU_5
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_MARK_KAIRAKU_5_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_MARK_KAIRAKU_5_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;苦痛刻印１取得
+;--------------------------------------------------
+@KOJO_364_SEX_MARK_KUTUU_1
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_MARK_KUTUU_1_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_MARK_KUTUU_1_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;苦痛刻印２取得
+;--------------------------------------------------
+@KOJO_364_SEX_MARK_KUTUU_2
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_MARK_KUTUU_2_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_MARK_KUTUU_2_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;苦痛刻印３取得
+;--------------------------------------------------
+@KOJO_364_SEX_MARK_KUTUU_3
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_MARK_KUTUU_3_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_MARK_KUTUU_3_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;苦痛刻印４取得
+;--------------------------------------------------
+@KOJO_364_SEX_MARK_KUTUU_4
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_MARK_KUTUU_4_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_MARK_KUTUU_4_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;苦痛刻印５取得
+;--------------------------------------------------
+@KOJO_364_SEX_MARK_KUTUU_5
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_MARK_KUTUU_5_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_MARK_KUTUU_5_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;屈服刻印１取得
+;--------------------------------------------------
+@KOJO_364_SEX_MARK_KUPPUKU_1
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_MARK_KUPPUKU_1_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_MARK_KUPPUKU_1_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;屈服刻印２取得
+;--------------------------------------------------
+@KOJO_364_SEX_MARK_KUPPUKU_2
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_MARK_KUPPUKU_2_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_MARK_KUPPUKU_2_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;屈服刻印３取得
+;--------------------------------------------------
+@KOJO_364_SEX_MARK_KUPPUKU_3
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_MARK_KUPPUKU_3_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_MARK_KUPPUKU_3_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;屈服刻印４取得
+;--------------------------------------------------
+@KOJO_364_SEX_MARK_KUPPUKU_4
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_MARK_KUPPUKU_4_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_MARK_KUPPUKU_4_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;屈服刻印５取得
+;--------------------------------------------------
+@KOJO_364_SEX_MARK_KUPPUKU_5
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_MARK_KUPPUKU_5_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_MARK_KUPPUKU_5_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;恐怖刻印１取得
+;--------------------------------------------------
+@KOJO_364_SEX_MARK_KYOUHU_1
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_MARK_KYOUHU_1_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_MARK_KYOUHU_1_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;恐怖刻印２取得
+;--------------------------------------------------
+@KOJO_364_SEX_MARK_KYOUHU_2
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_MARK_KYOUHU_2_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_MARK_KYOUHU_2_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;恐怖刻印３取得
+;--------------------------------------------------
+@KOJO_364_SEX_MARK_KYOUHU_3
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_MARK_KYOUHU_3_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_MARK_KYOUHU_3_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;恐怖刻印４取得
+;--------------------------------------------------
+@KOJO_364_SEX_MARK_KYOUHU_4
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_MARK_KYOUHU_4_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_MARK_KYOUHU_4_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;恐怖刻印５取得
+;--------------------------------------------------
+@KOJO_364_SEX_MARK_KYOUHU_5
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_MARK_KYOUHU_5_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_MARK_KYOUHU_5_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;恥辱刻印１取得
+;--------------------------------------------------
+@KOJO_364_SEX_MARK_TIJYOKU_1
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_MARK_TIJYOKU_1_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_MARK_TIJYOKU_1_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;恥辱刻印２取得
+;--------------------------------------------------
+@KOJO_364_SEX_MARK_TIJYOKU_2
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_MARK_TIJYOKU_2_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_MARK_TIJYOKU_2_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;恥辱刻印３取得
+;--------------------------------------------------
+@KOJO_364_SEX_MARK_TIJYOKU_3
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_MARK_TIJYOKU_3_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_MARK_TIJYOKU_3_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;恥辱刻印４取得
+;--------------------------------------------------
+@KOJO_364_SEX_MARK_TIJYOKU_4
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_MARK_TIJYOKU_4_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_MARK_TIJYOKU_4_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;恥辱刻印５取得
+;--------------------------------------------------
+@KOJO_364_SEX_MARK_TIJYOKU_5
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEX_MARK_TIJYOKU_5_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEX_MARK_TIJYOKU_5_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+
+
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+;心境変化関連
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+;倒錯
+;--------------------------------------------------
+@KOJO_364_BATTLE_SHINKYOU_CHANGE_TOUSAKU
+;犯された場合
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_SHINKYOU_CHANGE_TOUSAKU_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_SHINKYOU_CHANGE_TOUSAKU_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;怒り
+;--------------------------------------------------
+@KOJO_364_BATTLE_SHINKYOU_CHANGE_IKARI
+;罵倒した場合
+IF SELECTCOM == 45
+;攻撃を受けた場合
+ELSE
+ENDIF
+
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_SHINKYOU_CHANGE_IKARI_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_SHINKYOU_CHANGE_IKARI_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;諦観
+;--------------------------------------------------
+@KOJO_364_BATTLE_SHINKYOU_CHANGE_TEIKAN
+;反抗した場合
+IF SELECTCOM == 46
+;攻撃を受けた場合
+ELSE
+ENDIF
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_SHINKYOU_CHANGE_TEIKAN_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_SHINKYOU_CHANGE_TEIKAN_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;冷静
+;--------------------------------------------------
+@KOJO_364_BATTLE_SHINKYOU_CHANGE_REISEI
+;反抗した場合
+IF SELECTCOM == 46
+;絡みつかれた場合
+ELSE
+ENDIF
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_SHINKYOU_CHANGE_REISEI_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_SHINKYOU_CHANGE_REISEI_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;動揺
+;--------------------------------------------------
+@KOJO_364_BATTLE_SHINKYOU_CHANGE_DOUYOU
+;罵倒した場合
+IF SELECTCOM == 45
+;絡みつかれた場合
+ELSE
+ENDIF
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_SHINKYOU_CHANGE_DOUYOU_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_SHINKYOU_CHANGE_DOUYOU_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;高揚
+;--------------------------------------------------
+@KOJO_364_BATTLE_SHINKYOU_CHANGE_KOUYOU
+;背後に回り込んだ場合
+IF SELECTCOM == 6
+;攻撃を回避された場合
+ELSE
+ENDIF
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_SHINKYOU_CHANGE_KOUYOU_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_SHINKYOU_CHANGE_KOUYOU_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;消沈
+;--------------------------------------------------
+@KOJO_364_BATTLE_SHINKYOU_CHANGE_SYOUTIN
+;攻撃を回避された場合
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_SHINKYOU_CHANGE_SYOUTIN_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_SHINKYOU_CHANGE_SYOUTIN_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+;体が竦んだ関連
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+;触手の虜で体が竦む
+;--------------------------------------------------
+@KOJO_364_BATTLE_DISACTION_TORIKO
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_DISACTION_TORIKO_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_DISACTION_TORIKO_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;快楽で体が竦む
+;--------------------------------------------------
+@KOJO_364_BATTLE_DISACTION_KAIRAKU
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_DISACTION_KAIRAKU_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_DISACTION_KAIRAKU_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;苦痛で体が竦む
+;--------------------------------------------------
+@KOJO_364_BATTLE_DISACTION_KUTUU
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_DISACTION_KUTUU_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_DISACTION_KUTUU_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;屈辱で体が竦む
+;--------------------------------------------------
+@KOJO_364_BATTLE_DISACTION_KUTUZYOKU
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_DISACTION_KUTUZYOKU_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_DISACTION_KUTUZYOKU_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;恐怖で体が竦む
+;--------------------------------------------------
+@KOJO_364_BATTLE_DISACTION_KYOUHU
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_DISACTION_KYOUHU_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_DISACTION_KYOUHU_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;恥辱で体が竦む
+;--------------------------------------------------
+@KOJO_364_BATTLE_DISACTION_TIZYOKU
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_DISACTION_TIZYOKU_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_DISACTION_TIZYOKU_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;寄生の影響で体が竦む
+;--------------------------------------------------
+@KOJO_364_BATTLE_DISACTION_PARASITE
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_BATTLE_DISACTION_PARASITE_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_BATTLE_DISACTION_PARASITE_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+;自慰関連
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+;戦闘後自慰
+;--------------------------------------------------
+@KOJO_364_SELF_BATTLEEND
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SELF_BATTLEEND_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SELF_BATTLEEND_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;普通の自慰
+;--------------------------------------------------
+@KOJO_364_SELF_N
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SELF_N_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SELF_N_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;胸自慰
+;--------------------------------------------------
+@KOJO_364_SELF_B
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SELF_B_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SELF_B_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;アナニー
+;--------------------------------------------------
+@KOJO_364_SELF_A
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SELF_A_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SELF_A_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+;幽閉関係
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+;初めての幽閉
+;--------------------------------------------------
+@KOJO_364_PRISON_PRISENTENCE_FIRST
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_PRISON_PRISENTENCE_FIRST_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_PRISON_PRISENTENCE_FIRST_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;二度目以降の幽閉後の初被姦
+;--------------------------------------------------
+@KOJO_364_PRISON_PRISENTENCE_START
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_PRISON_PRISENTENCE_START_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_PRISON_PRISENTENCE_START_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;幽閉後の被姦開始文
+;--------------------------------------------------
+@KOJO_364_PRISON_PRISENTENCE
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_PRISON_PRISENTENCE_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_PRISON_PRISENTENCE_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;洗脳になった
+;--------------------------------------------------
+@KOJO_364_PRISON_SENNOU
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_PRISON_SENNOU_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_PRISON_SENNOU_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;悪堕ちになった
+;--------------------------------------------------
+@KOJO_364_PRISON_AKUOTI
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_PRISON_AKUOTI_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_PRISON_AKUOTI_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;取り込まれ
+;--------------------------------------------------
+@KOJO_364_PRISON_DEAD
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_PRISON_DEAD_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_PRISON_DEAD_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;ふたなり化
+;--------------------------------------------------
+@KOJO_364_PRISON_HUTANARI
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_PRISON_HUTANARI_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_PRISON_HUTANARI_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;母乳体質化
+;--------------------------------------------------
+@KOJO_364_PRISON_BONYU
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_PRISON_BONYU_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_PRISON_BONYU_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;C中心攻め
+;--------------------------------------------------
+@KOJO_364_PRISON_COM_0
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_PRISON_COM_0_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_PRISON_COM_0_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;V中心攻め
+;--------------------------------------------------
+@KOJO_364_PRISON_COM_1
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_PRISON_COM_1_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_PRISON_COM_1_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;A中心攻め
+;--------------------------------------------------
+@KOJO_364_PRISON_COM_2
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_PRISON_COM_2_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_PRISON_COM_2_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;B中心攻め
+;--------------------------------------------------
+@KOJO_364_PRISON_COM_3
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_PRISON_COM_3_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_PRISON_COM_3_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;Sな攻め
+;--------------------------------------------------
+@KOJO_364_PRISON_COM_4
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_PRISON_COM_4_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_PRISON_COM_4_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;強制奉仕
+;--------------------------------------------------
+@KOJO_364_PRISON_COM_5
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_PRISON_COM_5_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_PRISON_COM_5_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;羞恥な攻め
+;--------------------------------------------------
+@KOJO_364_PRISON_COM_6
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_PRISON_COM_6_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_PRISON_COM_6_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;子触手に犯される
+;--------------------------------------------------
+@KOJO_364_PRISON_COM_7
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_PRISON_COM_7_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_PRISON_COM_7_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;ふたなり攻め
+;--------------------------------------------------
+@KOJO_364_PRISON_COM_100
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_PRISON_COM_100_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_PRISON_COM_100_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;V拡張
+;--------------------------------------------------
+@KOJO_364_PRISON_COM_101
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_PRISON_COM_101_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_PRISON_COM_101_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;A拡張
+;--------------------------------------------------
+@KOJO_364_PRISON_COM_102
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_PRISON_COM_102_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_PRISON_COM_102_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;搾乳攻め
+;--------------------------------------------------
+@KOJO_364_PRISON_COM_103
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_PRISON_COM_103_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_PRISON_COM_103_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;Vに産卵
+;--------------------------------------------------
+@KOJO_364_PRISON_COM_200
+
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_PRISON_COM_200_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_PRISON_COM_200_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+;Aに産卵
+;--------------------------------------------------
+@KOJO_364_PRISON_COM_201
+
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_PRISON_COM_201_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_PRISON_COM_201_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+;注射
+;--------------------------------------------------
+@KOJO_364_PRISON_COM_300
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_PRISON_COM_300_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_PRISON_COM_300_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;触手の寄生
+;--------------------------------------------------
+@KOJO_364_PRISON_COM_301
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_PRISON_COM_301_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_PRISON_COM_301_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+
+
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+;サブイベント関連
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+;悪堕ちキャラに敗北して犯される
+;--------------------------------------------------
+@KOJO_364_SUBEVENT_BATTLE_RAPED_ENEMY
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SUBEVENT_BATTLE_RAPED_ENEMY_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SUBEVENT_BATTLE_RAPED_ENEMY_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;触手拘束具を着せられた
+;--------------------------------------------------
+@KOJO_364_SUBEVENT_BATTLE_SETTENTACLECLOTH
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SUBEVENT_BATTLE_SETTENTACLECLOTH_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SUBEVENT_BATTLE_SETTENTACLECLOTH_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;触手拘束具による被姦
+;--------------------------------------------------
+@KOJO_364_SUBEVENT_BATTLE_ACTTENTACLECLOTH
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SUBEVENT_BATTLE_ACTTENTACLECLOTH_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SUBEVENT_BATTLE_ACTTENTACLECLOTH_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+

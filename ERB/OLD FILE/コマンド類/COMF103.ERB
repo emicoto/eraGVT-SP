@@ -1,0 +1,201 @@
+﻿;素股焦らし
+@COM103
+
+;距離表示
+CALL PRINT_DISTANCE
+PRINTL 
+
+;油断度の上昇
+TFLAG:3 += 25 + 5 * ABL:技巧
+
+;快C
+IF ABL:Ｃ感覚 == 0
+	COMMON_PALAM:0 = 250
+ELSEIF ABL:Ｃ感覚 == 1
+	COMMON_PALAM:0 = 500
+ELSEIF ABL:Ｃ感覚 == 2
+	COMMON_PALAM:0 = 1000
+ELSEIF ABL:Ｃ感覚 == 3
+	COMMON_PALAM:0 = 2000
+ELSEIF ABL:Ｃ感覚 == 4
+	COMMON_PALAM:0 = 3000
+ELSEIF ABL:Ｃ感覚 >= 5
+	COMMON_PALAM:0 = 4000
+ENDIF
+
+;快V
+IF ABL:Ｖ感覚 == 0
+	COMMON_PALAM:1 = 125
+ELSEIF ABL:Ｖ感覚 == 1
+	COMMON_PALAM:1 = 250
+ELSEIF ABL:Ｖ感覚 == 2
+	COMMON_PALAM:1 = 500
+ELSEIF ABL:Ｖ感覚 == 3
+	COMMON_PALAM:1 = 1000
+ELSEIF ABL:Ｖ感覚 == 4
+	COMMON_PALAM:1 = 1500
+ELSEIF ABL:Ｖ感覚 >= 5
+	COMMON_PALAM:1 = 2000
+ENDIF
+
+;成功率設定
+LOCAL = 35 + ABL:技巧 * 5
+;魅了経験依存
+IF EXP:魅了経験 >= 200
+	LOCAL += 20
+ELSEIF EXP:魅了経験 >= 100
+	LOCAL += 10 + (EXP:魅了経験 - 100) / 10
+ELSEIF EXP:魅了経験 >= 50
+	LOCAL += (EXP:魅了経験 - 50) / 5
+ENDIF
+
+;暴走テンタクルスーツを装備している場合、成功率ダウン
+IF CFLAG:40 == 199 && BASE:性耐性 <= 0
+	LOCAL -= 20
+;触手拘束具を装備している場合、成功率ダウン
+ELSEIF CFLAG:42 == 400
+	LOCAL -= 10
+ENDIF
+SETCOLOR 96,96,96
+SIF FLAG:999
+	PRINTFORML 素股焦らし成功率 = {LOCAL}％
+RESETCOLOR
+;判定に成功した場合
+IF RAND:100 < LOCAL || CLOTH_OUTER_PER > 90 || CLOTH_INNER_PER > CLOTH_INNER_DEF
+	;服へのダメージ
+	CALL CLOTH_BATTLE_DAMAGE, 12
+
+	;地の文：素股焦らし
+	CALL MESSAGE_BATTLE_CHARA_SEX_ATTACK103
+	;地の文：洗脳/悪堕ちキャラが操作キャラの素股焦らしを見た
+	SIF FLAG:110 == 1
+		CALL MESSAGE_OTHER_BATTLE_CHARA_SEX_ATTACK103
+
+	;射精ゲージを記録
+	LOCAL:1 = FLAG:15
+
+	;射精
+	LOCAL = MIN(MAXBASE:性耐性 / 4, 75) + 50 + 25 * ABL:技巧
+	CALL TENTACLE_SYASEI_UP, LOCAL
+
+	PRINTL
+	IF (FLAG:110 == 0)
+		CALL TENTACLE_ACCESS, "NAME"
+	ELSEIF (FLAG:110 == 1)
+		PRINTFORM %PRINT_TRANSCALLNAME(FLAG:111)%
+	ENDIF
+	PRINT に
+	FONTBOLD
+	PRINTFORM {FLAG:15 - LOCAL:1}の快楽
+	FONTREGULAR
+	PRINTW を与えた！
+	PRINT 次のターン相手は
+	FONTBOLD
+	PRINT 挿入系コマンド
+	FONTREGULAR
+	PRINTL を選択しやすくなった！
+	PRINTW 
+
+	;触手の射精チェック
+	CALL TENTACLE_SYASEI_CHECK
+	PRINTL 
+
+	;習得の獲得
+	COMMON_PALAM:6 += 250 + 25 * (ABL:従順 + ABL:奉仕精神 * 2)
+
+	;触手を行動不能にする
+	TFLAG:1 = 1
+
+	;行動ポイントを+1
+	EX:行動ポイント += 1
+
+	RETURN 1
+;判定に失敗した場合
+ELSE
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は素股焦らしの構え！
+	PRINTW 
+	IF BASE:Ｖ結界耐久力 > 0
+		PRINTFORML しかし%PRINT_TRANSCALLNAME(TARGET)%の行動は失敗した！
+		PRINTFORML 無防備な体勢で触手に抑え込まれ、触手の攻勢に晒されるＶ結界が
+		PRINTFORML たちまち輝きを失っていく…
+		COMMON_PALAM:1 *= 4
+	ELSEIF TALENT:処女 > 0
+		PRINTFORML 挑発するように素股していた%PRINT_TRANSCALLNAME(TARGET)%だったが
+		IF (CFLAG:40 == 199 && BASE:性耐性 <= 0) || CFLAG:42 == 400
+			IF (CFLAG:40 == 199 && BASE:性耐性 <= 0)
+				PRINTFORM 暴走した%ITEMNAME:199%
+			ELSEIF CFLAG:42 == 400
+				PRINTFORM %ITEMNAME:400%
+			ENDIF
+			PRINTFORML の触手に強制開脚させられてしまう。
+			PRINTL 
+			IF RAND:3 == 0
+				PRINTFORML 拘束されて雌穴をくぱぁと広げられ、
+			ELSEIF RAND:2 == 0
+				PRINTFORML 種付けを受け入れる屈辱的な体勢を無理やり取らされ、
+			ELSE
+				PRINTFORML 思わぬタイミングで体勢を崩され、
+			ENDIF
+			PRINTFORML なし崩し的にズブリと男根の侵入を許してしまった！
+		ELSE
+			PRINTFORML まだ性交したことのないヴァギナに亀頭の先端がぐちゅっと挿入り込み、
+			PRINTFORML 未知の感覚に思わず「んッ・・・❤」と色付いた吐息を漏らしてしまう。
+			PRINTL 
+			PRINTFORML その拍子に%PRINT_TRANSCALLNAME(TARGET)%は膣圧の加減を間違えてしまい、
+			PRINTFORML なし崩し的にズブリと男根の侵入を許してしまった！
+		ENDIF
+		PRINTW 
+		PRINTFORML 処女喪失
+		PRINTL 
+		PRINTFORML 不意に訪れた破瓜の痛みに驚き慌てて引き抜こうとするも時既に遅く、
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はそのまま強制交尾の体勢に持ち込まれてしまった・・・
+		PRINTW 
+		;苦痛が大量に入る
+		COMMON_PALAM:10 = 10000
+		TALENT:処女 = -1
+		CFLAG:206 = 2
+	ELSEIF (CFLAG:40 == 199 && BASE:性耐性 <= 0) || CFLAG:42 == 400
+		PRINTFORML しかし%PRINT_TRANSCALLNAME(TARGET)%の行動は失敗した！
+		IF (CFLAG:40 == 199 && BASE:性耐性 <= 0)
+			PRINTFORM 暴走した%ITEMNAME:199%
+		ELSEIF CFLAG:42 == 400
+			PRINTFORM %ITEMNAME:400%
+		ENDIF
+		PRINT の触手に
+		IF RAND:3 == 0
+			PRINTFORML 拘束されて雌穴をくぱぁと広げられ、
+		ELSEIF RAND:2 == 0
+			PRINTFORML 種付けを受け入れる屈辱的な体勢を無理やり取らされ、
+		ELSE
+			PRINTFORML 思わぬタイミングで体勢を崩され、
+		ENDIF
+		PRINTFORML なし崩し的に挿入を許してしまう・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 苦戦)
+		PRINTFORML しかし%PRINT_TRANSCALLNAME(TARGET)%の行動は失敗した！
+		PRINTFORML 先走り汁に光る先端を淫裂に押し当てられたところで腰を浮かそうとするが、
+		PRINTFORML 力で抑え込まれそのまま挿入されてしまう・・・
+	ELSE
+		PRINTFORML しかし%PRINT_TRANSCALLNAME(TARGET)%の行動は失敗した！
+		PRINTFORML 素股だけのつもりが、先端が少しだけ挿入ったタイミングでズンと突き上げられ、
+		PRINTFORML そのまま雪崩れ込むように膣穴を犯されてしまう・・・
+	ENDIF
+
+	;習得の獲得
+	COMMON_PALAM:6 += 50 + 25 * (ABL:従順 + ABL:奉仕精神 * 2)
+
+	;行動ポイントを+1
+	EX:行動ポイント += 1
+
+	IF FLAG:10 == 2
+		TRYCALLFORM TENTACLE_MOB_{FLAG:11}_REACTION_REF, 2 - (BASE:Ｖ結界耐久力 > 0)
+	ELSEIF FLAG:10 == 1
+		TRYCALLFORM TENTACLE_LASTBOSS_{FLAG:11}_REACTION_REF, 2 - (BASE:Ｖ結界耐久力 > 0)
+	ELSE
+		TRYCALLFORM TENTACLE_BOSS_{FLAG:11}_REACTION_REF, 2 - (BASE:Ｖ結界耐久力 > 0)
+	ENDIF
+	SIF RESULT >= 0
+		TFLAG:17 = RESULT
+
+	RETURN 1
+ENDIF
+

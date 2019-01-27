@@ -1,0 +1,744 @@
+;eraGVTアルバイト口上テンプレ（汎用キャラ用）
+;汎用キャラ（キャラ番号0のキャラ）用のアルバイト口上テンプレです
+;性格によって口上ファイルを分ける目的でこのファイルは用意されています
+;
+;このファイルは汎用キャラ用に各関数の最後にをつけてます
+;サクラエディタ等の置換機能でを作成したい性格の素質番号に変換してお使いください
+;
+;例：性格「臆病」のキャラの口上を作成する場合（素質番号=10）
+;   KOJO_1201_SEISAN_FAMILY_normal
+;
+;--------------------------------------------------
+
+;休憩
+;--------------------------------------------------
+@KOJO_1201_REST
+CALLFORM KOJO_霊夢_REST
+@KOJO_1211_REST
+CALLFORM KOJO_霊夢_REST
+@KOJO_霊夢_REST
+
+;アルバイト『ファミレス』（通常）
+;--------------------------------------------------
+@KOJO_1201_SEISAN_FAMILY_normal
+CALLFORM KOJO_霊夢_SEISAN_FAMILY_normal
+@KOJO_1211_SEISAN_FAMILY_normal
+CALLFORM KOJO_霊夢_SEISAN_FAMILY_normal
+@KOJO_霊夢_SEISAN_FAMILY_normal
+
+;アルバイト『ファミレス』（痴漢）
+;--------------------------------------------------
+@KOJO_1201_SEISAN_FAMILY_chikan
+CALLFORM KOJO_霊夢_SEISAN_FAMILY_chikan
+@KOJO_1211_SEISAN_FAMILY_chikan
+CALLFORM KOJO_霊夢_SEISAN_FAMILY_chikan
+@KOJO_霊夢_SEISAN_FAMILY_chikan
+IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && !(MESSAGE_BRANCH_F(TARGET) & 絶望)
+ELSE
+ENDIF
+
+;アルバイト『食堂』
+;--------------------------------------------------
+@KOJO_1201_SEISAN_SYOKUDOU
+CALLFORM KOJO_霊夢_SEISAN_SYOKUDOU
+@KOJO_1211_SEISAN_SYOKUDOU
+CALLFORM KOJO_霊夢_SEISAN_SYOKUDOU
+@KOJO_霊夢_SEISAN_SYOKUDOU
+
+;アルバイト『食堂』(痴漢)
+;--------------------------------------------------
+@KOJO_1201_SEISAN_SYOKUDOU_chikan
+CALLFORM KOJO_霊夢_SEISAN_SYOKUDOU_chikan
+@KOJO_1211_SEISAN_SYOKUDOU_chikan
+CALLFORM KOJO_霊夢_SEISAN_SYOKUDOU_chikan
+@KOJO_霊夢_SEISAN_SYOKUDOU_chikan
+IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && !(MESSAGE_BRANCH_F(TARGET) & 絶望)
+ELSE
+ENDIF
+
+;アルバイト『食堂』(薬)
+;--------------------------------------------------
+@KOJO_1201_SEISAN_SYOKUDOU_drug
+CALLFORM KOJO_霊夢_SEISAN_SYOKUDOU_drug
+@KOJO_1211_SEISAN_SYOKUDOU_drug
+CALLFORM KOJO_霊夢_SEISAN_SYOKUDOU_drug
+@KOJO_霊夢_SEISAN_SYOKUDOU_drug
+IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && !(MESSAGE_BRANCH_F(TARGET) & 絶望)
+ELSE
+ENDIF
+
+;アルバイト『新聞配達』
+;--------------------------------------------------
+@KOJO_1201_SEISAN_SHINBUN
+CALLFORM KOJO_霊夢_SEISAN_SHINBUN
+@KOJO_1211_SEISAN_SHINBUN
+CALLFORM KOJO_霊夢_SEISAN_SHINBUN
+@KOJO_霊夢_SEISAN_SHINBUN
+
+;アルバイト『新聞配達』(アクメ自転車)
+;--------------------------------------------------
+@KOJO_1201_SEISAN_SHINBUN_acmecycle
+CALLFORM KOJO_霊夢_SEISAN_SHINBUN_acmecycle
+@KOJO_1211_SEISAN_SHINBUN_acmecycle
+CALLFORM KOJO_霊夢_SEISAN_SHINBUN_acmecycle
+@KOJO_霊夢_SEISAN_SHINBUN_acmecycle
+IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+	PRINTFORML 「んっ、くぅ……」
+	PRINTFORMDL ペダルを踏み下ろす
+	PRINTFORMDL ずりゅずりゅと膣腔の襞の隅々までこするように動く肉バイブ
+	PRINTFORMDW その感触に体の熱が上がっていく
+	PRINTFORML 「ふぅ、はぁ、んぅ」
+	PRINTFORMDL いつもと同じ早さで漕いでいる、はずなのに、配達先がとても遠い
+	PRINTFORML 「はぁ、はぁ、ひぁんっ！」
+	PRINTFORMDW 余りの悦楽に、足が止まった瞬間、ぐりゅんと肉バイブがうねった
+	PRINTFORML 「ふぁっ！　や、とま、とまってっ、てばぁ」
+	PRINTFORMDL 媚びを滲ませながら、随喜の涙をこぼし、それでも霊夢はそろそろと足を動かしていく
+	PRINTFORMDW …………
+	PRINTFORMDW …………
+	PRINTFORML 「はふ、んく、ふぅ、はぁ…………」
+	PRINTFORMDL 頬は上気し、口元は涎でとろとろ、サドルからポストを伝ってフレームまで愛液にまみれている
+	PRINTFORMDL 配達中に、幾度となく上り詰めたのだ、体力と気力は限界に近くて
+	PRINTFORMW 「あと、一軒……、はふ」
+	PRINTFORMDL その一軒が問題だった
+	PRINTFORMDL 傾斜のきつい坂の上にあるのだ、それは今まで以上につよくペダルを漕がなければならないと言う事
+	PRINTFORML 「はー、はー……」
+	PRINTFORMDW ごくりと生唾を飲み込んだ霊夢が、その坂を上り始める
+	PRINTFORML 「んっ、くぅっ、ひぁんっふぁっっ」
+	PRINTFORMDL ごりゅぐりゅと、肉バイブが膣腔をえぐり抜く
+	PRINTFORMDL ごつんどすんと、張り詰めた亀頭が子宮口を強く叩く
+	PRINTFORMDW そのたびに、びくびくと体中が震える
+	PRINTFORML 「あんっ、あんっ、ふぁあんっ」
+	PRINTFORMDL 身も世もない悦鳴をこぼしながら、それでもなんとか最後の一軒に到達し、
+	PRINTFORML 「っっ！？　や、な、ちょ、っっ！！　あひ、んくっ、ま、まって、あとあと、すこ」
+	PRINTFORMDW 新聞をポストに入れた瞬間、勝手に肉バイブが上下動を始めた
+	PRINTFORMDL しかも、うねりと回転を加えて、霊夢の膣内を蹂躙していく
+	PRINTFORML 「っっっ！！　っっっっっっ！！！！　～～～～～～～～～～～～～～～～～っっ！！！！」
+	PRINTFORMDW 今までで一番の絶頂に叩き上げられ、霊夢は全身を痙攣させながら、声にならない嬌声を揚げた
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && !(MESSAGE_BRANCH_F(TARGET) & 絶望)
+	PRINTFORML 「ふー、ふー、まけな、いわよ」
+	PRINTFORMDL 足を踏み下ろすたび、ずぐんずぐんと膣奥まで届く肉バイブ
+	PRINTFORMDL その快感に、漏れそうになる甘い声を必死で押さえる
+	PRINTFORML 「はふ、んく、くぅ、まけない、こんなの、こんな、の」
+	PRINTFORMDW 足を下ろすのが遅れ、ぐりゅんと肉バイブが膣内を掻き回す
+	PRINTFORML 「ふぁんっ！　っっ、くぅ」
+	PRINTFORMDL 一瞬漏れた甘い嬌声に、霊夢は唇を噛みしめて、またこぎ始める
+	PRINTFORMDL こつこつと子宮口をこづかれる快感に、上り詰めそうになりながら、
+	PRINTFORMDW それでも霊夢は配達を終えた
+ELSE
+	PRINTFORML 「くっ、こ、の……」
+	PRINTFORMDL 歯を食いしばり、霊夢は平静を装って自転車を漕いでいく
+	PRINTFORMDL ごつどちゅと膣奥まで突き込まれる感覚と、ぐりゅにゅぐと膣襞を掻き回される感触
+	PRINTFORMDW その悦楽に堪えきって、霊夢はなんとか配達を無難に終えた
+ENDIF
+
+;アルバイト『新聞配達』(トップニュース)
+;--------------------------------------------------
+@KOJO_1201_SEISAN_SHINBUN_topnews
+CALLFORM KOJO_霊夢_SEISAN_SHINBUN_topnews
+@KOJO_1211_SEISAN_SHINBUN_topnews
+CALLFORM KOJO_霊夢_SEISAN_SHINBUN_topnews
+@KOJO_霊夢_SEISAN_SHINBUN_topnews
+IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && !(MESSAGE_BRANCH_F(TARGET) & 絶望)
+ELSE
+ENDIF
+
+;アルバイト『新聞配達』(出歯亀)
+;--------------------------------------------------
+@KOJO_1201_SEISAN_SHINBUN_debagame
+CALLFORM KOJO_霊夢_SEISAN_SHINBUN_debagame
+@KOJO_1211_SEISAN_SHINBUN_debagame
+CALLFORM KOJO_霊夢_SEISAN_SHINBUN_debagame
+@KOJO_霊夢_SEISAN_SHINBUN_debagame
+IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && !(MESSAGE_BRANCH_F(TARGET) & 絶望)
+ELSE
+ENDIF
+
+;アルバイト『ヒーローショー』（通常）
+;--------------------------------------------------
+@KOJO_1201_SEISAN_HERO_normal
+CALLFORM KOJO_霊夢_SEISAN_HERO_normal
+@KOJO_1211_SEISAN_HERO_normal
+CALLFORM KOJO_霊夢_SEISAN_HERO_normal
+@KOJO_霊夢_SEISAN_HERO_normal
+
+;アルバイト『ヒーローショー』（転んだ）
+;--------------------------------------------------
+@KOJO_1201_SEISAN_HERO_korobi
+CALLFORM KOJO_霊夢_SEISAN_HERO_korobi
+@KOJO_1211_SEISAN_HERO_korobi
+CALLFORM KOJO_霊夢_SEISAN_HERO_korobi
+@KOJO_霊夢_SEISAN_HERO_korobi
+
+;アルバイト『ヒーローショー』（スカート捲り）
+;--------------------------------------------------
+@KOJO_1201_SEISAN_HERO_skirtmekuri
+CALLFORM KOJO_霊夢_SEISAN_HERO_skirtmekuri
+@KOJO_1211_SEISAN_HERO_skirtmekuri
+CALLFORM KOJO_霊夢_SEISAN_HERO_skirtmekuri
+@KOJO_霊夢_SEISAN_HERO_skirtmekuri
+IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && !(MESSAGE_BRANCH_F(TARGET) & 絶望)
+ELSE
+ENDIF
+
+;アルバイト『ヒーローショー』（痴漢）
+;--------------------------------------------------
+@KOJO_1201_SEISAN_HERO_chikan
+CALLFORM KOJO_霊夢_SEISAN_HERO_chikan
+@KOJO_1211_SEISAN_HERO_chikan
+CALLFORM KOJO_霊夢_SEISAN_HERO_chikan
+@KOJO_霊夢_SEISAN_HERO_chikan
+IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && !(MESSAGE_BRANCH_F(TARGET) & 絶望)
+ELSE
+ENDIF
+
+;アルバイト『ヒーローショー』（触手拘束具）
+;--------------------------------------------------
+@KOJO_1201_SEISAN_HERO_syokusyu
+CALLFORM KOJO_霊夢_SEISAN_HERO_syokusyu
+@KOJO_1211_SEISAN_HERO_syokusyu
+CALLFORM KOJO_霊夢_SEISAN_HERO_syokusyu
+@KOJO_霊夢_SEISAN_HERO_syokusyu
+IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && !(MESSAGE_BRANCH_F(TARGET) & 絶望)
+ELSE
+ENDIF
+
+;アルバイト『ヒーローショー』（陵辱ショー）
+;--------------------------------------------------
+@KOJO_1201_SEISAN_HERO_ryoujoku
+CALLFORM KOJO_霊夢_SEISAN_HERO_ryoujoku
+@KOJO_1211_SEISAN_HERO_ryoujoku
+CALLFORM KOJO_霊夢_SEISAN_HERO_ryoujoku
+@KOJO_霊夢_SEISAN_HERO_ryoujoku
+IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+	PRINTFORML 「や、やめなさい、この」
+	PRINTFORMDL 自身甘ったるさを感じる声音で、霊夢はなんとか前後左右から伸びる手を払おうとする
+	PRINTFORMDL けれど、瘴気に当てられている、スーツアクター達は、無造作に霊夢の手足を掴んできた
+	PRINTFORMDW そのまま抱きかかえられた霊夢は、観客に見せつけるようにＭ字開脚の形を取らされる
+	PRINTFORML （あ、み、みないで、おねがい）
+	PRINTFORMD 内心で呟く霊夢だが、
+	IF EXP:魅了経験 > 199 && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0)
+		PRINTFORMD 口元を緩める大人達に
+	ELSEIF EXP:魅了経験 > 99 && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0)
+		PRINTFORMD 大人達に混じって子供にも
+	ELSE
+		PRINTFORMD 子供の目を覆う親達に
+	ENDIF
+	PRINTFORMDL レザーのような質感のモノに覆われた秘処を曝け出されてしまう
+	PRINTFORMDL 内側ではうじゅると触手が蠢き、蜜が湧いた事を自覚してしまう
+	PRINTFORMW 「や、みないで、お願い、お願いだから」
+	PRINTFORMDL 目を潤ませ、頬を朱に染め、蕩けた声で懇願する霊夢
+	PRINTFORMDL だが、その声に従うモノはいない
+	PRINTFORMDL スーツアクターの手の動きに合わせて、拘束具がぬるりと動いた
+	PRINTFORMW （あ、だめ、みられちゃう、こんなところで、こんなに人がいるのに）
+	PRINTFORMDL 抱きかかえられて抵抗できない、その免罪符にすがる霊夢
+	PRINTFORMDL だが、股布部分が勝手にズレ、観客に秘処を見られた途端、鼓動が早くなった
+	PRINTFORMDL ぽたり、ぽたりと、こぼれ落ちる愛蜜の立てる音が、霊夢の快感をさらに昂ぶらせる
+	PRINTFORMW 「や、みちゃいやぁ」
+	PRINTFORMDL 呟きながら、ひくんひくんと腰が勝手に上下に動く
+	PRINTFORMDL その様に、生唾を飲む音が聞こえ、同時にスーツアクター達がスーツを脱ぎ始めた
+	PRINTFORMDL そそり立つ肉棒が、霊夢の周囲を取り囲む
+	PRINTFORMDW 身を寄せてきたアクターの逸物が、間髪容れず霊夢の膣穴に突き刺さった
+	PRINTFORML 「っっ！　ひぁああっっっ！！」
+	PRINTFORMDL 途端、紛れもない嬌声があがった
+	PRINTFORMDL じゅぷじゅぷと卑猥な音が股間から響く
+	PRINTFORMDW 人に見られながら、”人”に犯される、それは触手からの悦楽とは余りにも違っていた
+	PRINTFORML 「やんっ、ひんっ、んくぅっ、やめ、てぇ、おねがい、おねがいぃ」
+	PRINTFORMDL 口ではいやがりながらも自ら腰をかくかくとゆらし、両手に握らされた逸物をなでさする霊夢
+	PRINTFORMD その淫猥な姿に、観客席から
+	IF EXP:魅了経験 > 199 && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0)
+		PRINTFORMDL いくたりかの男性が這い上がってくる
+	ELSEIF EXP:魅了経験 > 99 && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0)
+		PRINTFORMDL 子供まで混じって人の群れがのぼってくる
+	ELSE
+		PRINTFORMDL 子供をつれて親達が逃げ出していく
+	ENDIF
+	PRINTFORMDL これから、更なる輪姦と凌辱を受ける、その気配に
+	PRINTFORML 「んっ、んっっ、ふぁんっ、ひぁあああああああっっっっ！！」
+	PRINTFORMDW 霊夢は、随喜の涙をこぼしながら、一気に上り詰めた
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && !(MESSAGE_BRANCH_F(TARGET) & 絶望)
+	PRINTFORML 「はなせ、この離しなさいっっ！」
+	PRINTFORMDL 両手両足をがっしりと捕まえられた霊夢の抵抗に、スーツアクター達は堪えた様子も無くステージの際まで歩いて行く
+	PRINTFORML 「あ、いや、見ないでっ！　お願い見ないでっっ！！」
+	PRINTFORMD 観客席に向かっておおきく両足を広げられた霊夢は、
+	IF EXP:魅了経験 > 199 && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0)
+		PRINTFORMD 男達の熱い
+	ELSEIF EXP:魅了経験 > 99 && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0)
+		PRINTFORMD 子供と大人の好奇心の
+	ELSE
+		PRINTFORMD 子供達の不思議そうな
+	ENDIF
+	PRINTFORMDW 視線を感じて、悲鳴を上げる
+	PRINTFORMDL 戦闘員のスーツアクター達が全身をなで回し、最前列にいた観客が秘処をなでさすり始める
+	PRINTFORML 「やめなさい、やめて、いや、いやぁっ！！」
+	PRINTFORMDL 必死で身をよじる霊夢だが、無数の指と手に体中をもみくちゃにされ、望まない悦楽に身が焦がされていく
+	PRINTFORMW 「んっ、くぅっ、や、やだ、ふぁんっ、っっっ！？」
+	PRINTFORMDL 口元から勝手に漏れた甘い声に、一瞬身を震わせ、さらに激しさを増した手の動きに翻弄される
+	PRINTFORML 「やぁ、あふん、んきゅぅ、やぁ、もう、や、あ、あんっ、んっっ」
+	PRINTFORML 「ゆる、ゆるし、て、もう、も、っっっっっ！！　や、イク、イクイク、イクゥッッッッッッッッ！！！」
+	PRINTFORMDL びくんびくんと全身を痙攣させる霊夢
+	PRINTFORMDW 一拍おいて、鋭いホイッスルの音が響き、警備員達がなだれ込んできた
+ELSE
+	PRINTFORMDL 抱きついてこようとするスーツアクターの顔面に、思い切り掌底を叩き込む霊夢
+	PRINTFORML 「この、近寄らないでよヘンタイっ！」
+	PRINTFORMDL さらにのしかかってこようとする他のアクターにケリを放ち、その足を別のアクターに押さえ込まれた
+	PRINTFORMW 「ちょ、この、止めなさいよっ！」
+	PRINTFORMDL じたばたと暴れ回る霊夢だが、多勢に無勢で押さえ込まれ、そのまま体中をまさぐられてしまう
+	PRINTFORML 「この、この、このぉっっっ！！」
+	PRINTFORMDL カッと閃光が走り、アクター達が吹き飛ばされる
+	PRINTFORMDW 一拍おいて、警備の人員が走り込んできた
+ENDIF
+
+;研究所助手（通常）
+;--------------------------------------------------
+@KOJO_1201_SEISAN_KENKYU_normal
+CALLFORM KOJO_霊夢_SEISAN_KENKYU_normal
+@KOJO_1211_SEISAN_KENKYU_normal
+CALLFORM KOJO_霊夢_SEISAN_KENKYU_normal
+@KOJO_霊夢_SEISAN_KENKYU_normal
+IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && !(MESSAGE_BRANCH_F(TARGET) & 絶望)
+ELSE
+ENDIF
+
+;研究所助手（妊娠）
+;--------------------------------------------------
+@KOJO_1201_SEISAN_KENKYU_ninshin
+CALLFORM KOJO_霊夢_SEISAN_KENKYU_ninshin
+@KOJO_1211_SEISAN_KENKYU_ninshin
+CALLFORM KOJO_霊夢_SEISAN_KENKYU_ninshin
+@KOJO_霊夢_SEISAN_KENKYU_ninshin
+IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && !(MESSAGE_BRANCH_F(TARGET) & 絶望)
+ELSE
+ENDIF
+
+;研究所助手（妊娠経験あり）
+;--------------------------------------------------
+@KOJO_1201_SEISAN_KENKYU_after
+CALLFORM KOJO_霊夢_SEISAN_KENKYU_after
+@KOJO_1211_SEISAN_KENKYU_after
+CALLFORM KOJO_霊夢_SEISAN_KENKYU_after
+@KOJO_霊夢_SEISAN_KENKYU_after
+IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && !(MESSAGE_BRANCH_F(TARGET) & 絶望)
+ELSE
+ENDIF
+
+;研究所助手（搾乳）
+;--------------------------------------------------
+@KOJO_1201_SEISAN_KENKYU_sakunyu
+CALLFORM KOJO_霊夢_SEISAN_KENKYU_sakunyu
+@KOJO_1211_SEISAN_KENKYU_sakunyu
+CALLFORM KOJO_霊夢_SEISAN_KENKYU_sakunyu
+@KOJO_霊夢_SEISAN_KENKYU_sakunyu
+IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && !(MESSAGE_BRANCH_F(TARGET) & 絶望)
+ELSE
+ENDIF
+
+;研究所助手（ふたなり）
+;--------------------------------------------------
+@KOJO_1201_SEISAN_KENKYU_hutanari
+CALLFORM KOJO_霊夢_SEISAN_KENKYU_hutanari
+@KOJO_1211_SEISAN_KENKYU_hutanari
+CALLFORM KOJO_霊夢_SEISAN_KENKYU_hutanari
+@KOJO_霊夢_SEISAN_KENKYU_hutanari
+IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && !(MESSAGE_BRANCH_F(TARGET) & 絶望)
+ELSE
+ENDIF
+
+;雑魚触手退治（通常）
+;--------------------------------------------------
+@KOJO_1201_SEISAN_BATTLE_normal
+CALLFORM KOJO_霊夢_SEISAN_BATTLE_normal
+@KOJO_1211_SEISAN_BATTLE_normal
+CALLFORM KOJO_霊夢_SEISAN_BATTLE_normal
+@KOJO_霊夢_SEISAN_BATTLE_normal
+IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && !(MESSAGE_BRANCH_F(TARGET) & 絶望)
+ELSE
+ENDIF
+
+;雑魚触手退治（敗北：苦痛）
+;--------------------------------------------------
+@KOJO_1201_SEISAN_BATTLE_haibokuA
+CALLFORM KOJO_霊夢_SEISAN_BATTLE_haibokuA
+@KOJO_1211_SEISAN_BATTLE_haibokuA
+CALLFORM KOJO_霊夢_SEISAN_BATTLE_haibokuA
+@KOJO_霊夢_SEISAN_BATTLE_haibokuA
+IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && !(MESSAGE_BRANCH_F(TARGET) & 絶望)
+ELSE
+ENDIF
+
+;雑魚触手退治（敗北：陵辱）
+;--------------------------------------------------
+@KOJO_1201_SEISAN_BATTLE_haibokuB
+CALLFORM KOJO_霊夢_SEISAN_BATTLE_haibokuB
+@KOJO_1211_SEISAN_BATTLE_haibokuB
+CALLFORM KOJO_霊夢_SEISAN_BATTLE_haibokuB
+@KOJO_霊夢_SEISAN_BATTLE_haibokuB
+IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && !(MESSAGE_BRANCH_F(TARGET) & 絶望)
+ELSE
+ENDIF
+
+;雑魚触手退治（触手の虜）
+;--------------------------------------------------
+@KOJO_1201_SEISAN_BATTLE_toriko
+CALLFORM KOJO_霊夢_SEISAN_BATTLE_toriko
+@KOJO_1211_SEISAN_BATTLE_toriko
+CALLFORM KOJO_霊夢_SEISAN_BATTLE_toriko
+@KOJO_霊夢_SEISAN_BATTLE_toriko
+IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && !(MESSAGE_BRANCH_F(TARGET) & 絶望)
+ELSE
+ENDIF
+
+;援助交際（調教：快楽）
+;--------------------------------------------------
+@KOJO_1201_SEISAN_SYOUHU_nomalA
+CALLFORM KOJO_霊夢_SEISAN_SYOUHU_nomalA
+@KOJO_1211_SEISAN_SYOUHU_nomalA
+CALLFORM KOJO_霊夢_SEISAN_SYOUHU_nomalA
+@KOJO_霊夢_SEISAN_SYOUHU_nomalA
+IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && !(MESSAGE_BRANCH_F(TARGET) & 絶望)
+ELSE
+ENDIF
+
+;援助交際（調教：フェラ）
+;--------------------------------------------------
+@KOJO_1201_SEISAN_SYOUHU_nomalB
+CALLFORM KOJO_霊夢_SEISAN_SYOUHU_nomalB
+@KOJO_1211_SEISAN_SYOUHU_nomalB
+CALLFORM KOJO_霊夢_SEISAN_SYOUHU_nomalB
+@KOJO_霊夢_SEISAN_SYOUHU_nomalB
+IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && !(MESSAGE_BRANCH_F(TARGET) & 絶望)
+ELSE
+ENDIF
+
+;援助交際（調教：キス）
+;--------------------------------------------------
+@KOJO_1201_SEISAN_SYOUHU_nomalC
+CALLFORM KOJO_霊夢_SEISAN_SYOUHU_nomalC
+@KOJO_1211_SEISAN_SYOUHU_nomalC
+CALLFORM KOJO_霊夢_SEISAN_SYOUHU_nomalC
+@KOJO_霊夢_SEISAN_SYOUHU_nomalC
+IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && !(MESSAGE_BRANCH_F(TARGET) & 絶望)
+ELSE
+ENDIF
+
+;援助交際（変態：浣腸）
+;--------------------------------------------------
+@KOJO_1201_SEISAN_SYOUHU_hentaiA
+CALLFORM KOJO_霊夢_SEISAN_SYOUHU_hentaiA
+@KOJO_1211_SEISAN_SYOUHU_hentaiA
+CALLFORM KOJO_霊夢_SEISAN_SYOUHU_hentaiA
+@KOJO_霊夢_SEISAN_SYOUHU_hentaiA
+IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && !(MESSAGE_BRANCH_F(TARGET) & 絶望)
+ELSE
+ENDIF
+
+;援助交際（変態：メスブタ）
+;--------------------------------------------------
+@KOJO_1201_SEISAN_SYOUHU_hentaiB
+CALLFORM KOJO_霊夢_SEISAN_SYOUHU_hentaiB
+@KOJO_1211_SEISAN_SYOUHU_hentaiB
+CALLFORM KOJO_霊夢_SEISAN_SYOUHU_hentaiB
+@KOJO_霊夢_SEISAN_SYOUHU_hentaiB
+IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && !(MESSAGE_BRANCH_F(TARGET) & 絶望)
+ELSE
+ENDIF
+
+;援助交際（変態：メスイヌ）
+;--------------------------------------------------
+@KOJO_1201_SEISAN_SYOUHU_hentaiC
+CALLFORM KOJO_霊夢_SEISAN_SYOUHU_hentaiC
+@KOJO_1211_SEISAN_SYOUHU_hentaiC
+CALLFORM KOJO_霊夢_SEISAN_SYOUHU_hentaiC
+@KOJO_霊夢_SEISAN_SYOUHU_hentaiC
+IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && !(MESSAGE_BRANCH_F(TARGET) & 絶望)
+ELSE
+ENDIF
+
+;援助交際（変態：女王様）
+;--------------------------------------------------
+@KOJO_1201_SEISAN_SYOUHU_hentaiD
+CALLFORM KOJO_霊夢_SEISAN_SYOUHU_hentaiD
+@KOJO_1211_SEISAN_SYOUHU_hentaiD
+CALLFORM KOJO_霊夢_SEISAN_SYOUHU_hentaiD
+@KOJO_霊夢_SEISAN_SYOUHU_hentaiD
+IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && !(MESSAGE_BRANCH_F(TARGET) & 絶望)
+ELSE
+ENDIF
+
+;援助交際（レズ）
+;--------------------------------------------------
+@KOJO_1201_SEISAN_SYOUHU_les
+CALLFORM KOJO_霊夢_SEISAN_SYOUHU_les
+@KOJO_1211_SEISAN_SYOUHU_les
+CALLFORM KOJO_霊夢_SEISAN_SYOUHU_les
+@KOJO_霊夢_SEISAN_SYOUHU_les
+IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && !(MESSAGE_BRANCH_F(TARGET) & 絶望)
+ELSE
+ENDIF
+
+;AV撮影
+;--------------------------------------------------
+@KOJO_1201_SEISAN_AV
+CALLFORM KOJO_霊夢_SEISAN_AV
+@KOJO_1211_SEISAN_AV
+CALLFORM KOJO_霊夢_SEISAN_AV
+@KOJO_霊夢_SEISAN_AV
+;;コスプレ魔法少女  マジカル☆○○
+;IF CFLAG:282 == 1
+;;凌辱ヒロイン プリティー☆○○ セカンドシーズン
+;ELSEIF CFLAG:282 == 2
+;;サディスティック魔法少女 すぷらったー☆○○
+;ELSEIF CFLAG:282 == 3
+;;ふたなりな妹とえっちしてみませんか？
+;ELSEIF CFLAG:282 == 4
+;;私の子●はお父さんとの子 腹ボテ小○生 鬼畜父親中出し 近親相姦成長記録
+;ELSEIF CFLAG:282 == 5
+;;ネコ耳○○のニャンニャンしちゃうぞ
+;ELSEIF CFLAG:282 == 6
+;;淫語 卑猥語 BEST SELECTION
+;ELSEIF CFLAG:282 == 7
+;;萌え萌えコスプレ7
+;ELSEIF CFLAG:282 == 8
+;;かわゆ過ぎる○○と僕のパコパコ同棲性活
+;ELSEIF CFLAG:282 == 9
+;;無理矢理犯されるアナル 4時間
+;ELSEIF CFLAG:282 == 10
+;;おしおきされてイキまくるドジっ娘メイド
+;ELSEIF CFLAG:282 == 11
+	IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && !(MESSAGE_BRANCH_F(TARGET) & 絶望)
+	ELSE
+	ENDIF
+;ENDIF
+
+;公衆便所（路地裏）
+;--------------------------------------------------
+@KOJO_1201_SEISAN_TOILET_roji
+CALLFORM KOJO_霊夢_SEISAN_TOILET_roji
+@KOJO_1211_SEISAN_TOILET_roji
+CALLFORM KOJO_霊夢_SEISAN_TOILET_roji
+@KOJO_霊夢_SEISAN_TOILET_roji
+IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && !(MESSAGE_BRANCH_F(TARGET) & 絶望)
+ELSE
+ENDIF
+
+;公衆便所（浮浪者）
+;--------------------------------------------------
+@KOJO_1201_SEISAN_TOILET_homeless
+CALLFORM KOJO_霊夢_SEISAN_TOILET_homeless
+@KOJO_1211_SEISAN_TOILET_homeless
+CALLFORM KOJO_霊夢_SEISAN_TOILET_homeless
+@KOJO_霊夢_SEISAN_TOILET_homeless
+IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && !(MESSAGE_BRANCH_F(TARGET) & 絶望)
+ELSE
+ENDIF
+
+;公衆便所（野良犬）
+;--------------------------------------------------
+@KOJO_1201_SEISAN_TOILET_dog
+CALLFORM KOJO_霊夢_SEISAN_TOILET_dog
+@KOJO_1211_SEISAN_TOILET_dog
+CALLFORM KOJO_霊夢_SEISAN_TOILET_dog
+@KOJO_霊夢_SEISAN_TOILET_dog
+IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && !(MESSAGE_BRANCH_F(TARGET) & 絶望)
+ELSE
+ENDIF
+
+;アイドル活動（下積み：低知名度）
+;--------------------------------------------------
+@KOJO_1201_SEISAN_IDOL1
+CALLFORM KOJO_霊夢_SEISAN_IDOL1
+@KOJO_1211_SEISAN_IDOL1
+CALLFORM KOJO_霊夢_SEISAN_IDOL1
+@KOJO_霊夢_SEISAN_IDOL1
+
+;アイドル活動（下積み：高知名度）
+;--------------------------------------------------
+@KOJO_1201_SEISAN_IDOL2
+CALLFORM KOJO_霊夢_SEISAN_IDOL2
+@KOJO_1211_SEISAN_IDOL2
+CALLFORM KOJO_霊夢_SEISAN_IDOL2
+@KOJO_霊夢_SEISAN_IDOL2
+
+;アイドル活動（路上ライブ）
+;--------------------------------------------------
+@KOJO_1201_SEISAN_IDOL3
+CALLFORM KOJO_霊夢_SEISAN_IDOL3
+@KOJO_1211_SEISAN_IDOL3
+CALLFORM KOJO_霊夢_SEISAN_IDOL3
+@KOJO_霊夢_SEISAN_IDOL3
+
+;アイドル活動（売り込み）
+;--------------------------------------------------
+@KOJO_1201_SEISAN_IDOL4
+CALLFORM KOJO_霊夢_SEISAN_IDOL4
+@KOJO_1211_SEISAN_IDOL4
+CALLFORM KOJO_霊夢_SEISAN_IDOL4
+@KOJO_霊夢_SEISAN_IDOL4
+
+;アイドル活動（テレビ番組）
+;--------------------------------------------------
+@KOJO_1201_SEISAN_IDOL_TV
+CALLFORM KOJO_霊夢_SEISAN_IDOL_TV
+@KOJO_1211_SEISAN_IDOL_TV
+CALLFORM KOJO_霊夢_SEISAN_IDOL_TV
+@KOJO_霊夢_SEISAN_IDOL_TV
+
+;アイドル活動（グラビア撮影）
+;--------------------------------------------------
+@KOJO_1201_SEISAN_IDOL_picture
+CALLFORM KOJO_霊夢_SEISAN_IDOL_picture
+@KOJO_1211_SEISAN_IDOL_picture
+CALLFORM KOJO_霊夢_SEISAN_IDOL_picture
+@KOJO_霊夢_SEISAN_IDOL_picture
+
+;アイドル活動（新曲）
+;--------------------------------------------------
+@KOJO_1201_SEISAN_IDOL_music
+CALLFORM KOJO_霊夢_SEISAN_IDOL_music
+@KOJO_1211_SEISAN_IDOL_music
+CALLFORM KOJO_霊夢_SEISAN_IDOL_music
+@KOJO_霊夢_SEISAN_IDOL_music
+
+;アイドル活動（イベント）
+;--------------------------------------------------
+@KOJO_1201_SEISAN_IDOL_event
+CALLFORM KOJO_霊夢_SEISAN_IDOL_event
+@KOJO_1211_SEISAN_IDOL_event
+CALLFORM KOJO_霊夢_SEISAN_IDOL_event
+@KOJO_霊夢_SEISAN_IDOL_event
+
+;枕営業（プロデューサー：フェラ）
+;--------------------------------------------------
+@KOJO_1201_SEISAN_MAKURA_pro1
+CALLFORM KOJO_霊夢_SEISAN_MAKURA_pro1
+@KOJO_1211_SEISAN_MAKURA_pro1
+CALLFORM KOJO_霊夢_SEISAN_MAKURA_pro1
+@KOJO_霊夢_SEISAN_MAKURA_pro1
+IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && !(MESSAGE_BRANCH_F(TARGET) & 絶望)
+ELSE
+ENDIF
+
+;枕営業（プロデューサー：立ちバック）
+;--------------------------------------------------
+@KOJO_1201_SEISAN_MAKURA_pro2
+CALLFORM KOJO_霊夢_SEISAN_MAKURA_pro2
+@KOJO_1211_SEISAN_MAKURA_pro2
+CALLFORM KOJO_霊夢_SEISAN_MAKURA_pro2
+@KOJO_霊夢_SEISAN_MAKURA_pro2
+IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && !(MESSAGE_BRANCH_F(TARGET) & 絶望)
+ELSE
+ENDIF
+
+;枕営業（役員：処女正常位）
+;--------------------------------------------------
+@KOJO_1201_SEISAN_MAKURA_client1
+CALLFORM KOJO_霊夢_SEISAN_MAKURA_client1
+@KOJO_1211_SEISAN_MAKURA_client1
+CALLFORM KOJO_霊夢_SEISAN_MAKURA_client1
+@KOJO_霊夢_SEISAN_MAKURA_client1
+IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && !(MESSAGE_BRANCH_F(TARGET) & 絶望)
+ELSE
+ENDIF
+
+;枕営業（お得意様：正常位）
+;--------------------------------------------------
+@KOJO_1201_SEISAN_MAKURA_client2
+CALLFORM KOJO_霊夢_SEISAN_MAKURA_client2
+@KOJO_1211_SEISAN_MAKURA_client2
+CALLFORM KOJO_霊夢_SEISAN_MAKURA_client2
+@KOJO_霊夢_SEISAN_MAKURA_client2
+IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && !(MESSAGE_BRANCH_F(TARGET) & 絶望)
+ELSE
+ENDIF
+
+;枕営業（コスプレ：アナル）
+;--------------------------------------------------
+@KOJO_1201_SEISAN_MAKURA_client3
+CALLFORM KOJO_霊夢_SEISAN_MAKURA_client3
+@KOJO_1211_SEISAN_MAKURA_client3
+CALLFORM KOJO_霊夢_SEISAN_MAKURA_client3
+@KOJO_霊夢_SEISAN_MAKURA_client3
+IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && !(MESSAGE_BRANCH_F(TARGET) & 絶望)
+ELSE
+ENDIF
+
+;枕営業（ファンクラブ：輪姦）
+;--------------------------------------------------
+@KOJO_1201_SEISAN_MAKURA_fanclub
+CALLFORM KOJO_霊夢_SEISAN_MAKURA_fanclub
+@KOJO_1211_SEISAN_MAKURA_fanclub
+CALLFORM KOJO_霊夢_SEISAN_MAKURA_fanclub
+@KOJO_霊夢_SEISAN_MAKURA_fanclub
+IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && !(MESSAGE_BRANCH_F(TARGET) & 絶望)
+ELSE
+ENDIF
+
+;ライブ公演（通常）
+;--------------------------------------------------
+@KOJO_1201_SEISAN_LIVE_normal
+CALLFORM KOJO_霊夢_SEISAN_LIVE_normal
+@KOJO_1211_SEISAN_LIVE_normal
+CALLFORM KOJO_霊夢_SEISAN_LIVE_normal
+@KOJO_霊夢_SEISAN_LIVE_normal
+IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && !(MESSAGE_BRANCH_F(TARGET) & 絶望)
+ELSE
+ENDIF
+
+;ライブ公演（転んだ）
+;--------------------------------------------------
+@KOJO_1201_SEISAN_LIVE_kobori
+CALLFORM KOJO_霊夢_SEISAN_LIVE_kobori
+@KOJO_1211_SEISAN_LIVE_kobori
+CALLFORM KOJO_霊夢_SEISAN_LIVE_kobori
+@KOJO_霊夢_SEISAN_LIVE_kobori
+IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && !(MESSAGE_BRANCH_F(TARGET) & 絶望)
+ELSE
+ENDIF
+
+;ライブ公演（触手拘束具）
+;--------------------------------------------------
+@KOJO_1201_SEISAN_LIVE_syokusyu
+CALLFORM KOJO_霊夢_SEISAN_LIVE_syokusyu
+@KOJO_1211_SEISAN_LIVE_syokusyu
+CALLFORM KOJO_霊夢_SEISAN_LIVE_syokusyu
+@KOJO_霊夢_SEISAN_LIVE_syokusyu
+IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && !(MESSAGE_BRANCH_F(TARGET) & 絶望)
+ELSE
+ENDIF

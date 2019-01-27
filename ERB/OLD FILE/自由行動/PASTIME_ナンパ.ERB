@@ -1,0 +1,1568 @@
+;----------------------------------------------------------------------------------------------------------------------------
+;ナンパ判定
+;ナンパされるかどうかの判定と補正値計算用
+@PASTIME_NANPA, ARG
+#DIM NANPA
+
+;ナンパ判定
+NANPA = 10 + RAND:10
+
+SIF TALENT:学生 == 1
+	NANPA -= 3
+SIF TALENT:学生 == 2
+	NANPA += 1
+SIF TALENT:学生 == 3
+	NANPA += 3
+SIF TALENT:学生 == 4
+	NANPA += 3
+
+SIF TALENT:オトコ > 0
+	NANPA -= 20
+
+SIF TALENT:巨乳 > 0
+	NANPA += 3
+
+SIF TALENT:小柄 > 0
+	NANPA += 3
+	
+SIF TALENT:女体受容 > 0
+	NANPA += 5
+
+SIF TALENT:社交的 > 0
+	NANPA += 3
+SIF TALENT:母性的 > 0
+	NANPA += 3
+SIF TALENT:小悪魔 > 0
+	NANPA += 3
+SIF TALENT:目立ちたがり > 0
+	NANPA += 3
+SIF TALENT:上品 > 0
+	NANPA += 3
+SIF TALENT:泣き虫 > 0
+	NANPA += 3
+
+SIF TALENT:清純派 > 0
+	NANPA += 10
+	
+IF CFLAG:1 > 0
+	SIF TALENT:変身時外見 > 0
+		NANPA += 5
+ELSE
+	SIF TALENT:外見 > 0
+		NANPA += 5
+ENDIF
+
+SIF TALENT:巻き込まれ体質 > 0
+	NANPA += 20
+SIF TALENT:人外の美貌 > 0
+	NANPA += 40
+SIF TALENT:小さな体躯 > 0
+	NANPA += 5
+
+IF RAND:100 <= NANPA
+	RETURN 1
+ENDIF
+RETURN 0
+
+;----------------------------------------------------------------------------------------------------------------------------
+;ナンパされた時の内容
+@MESSAGE_PASTIME_NANPA, ARG
+#DIM ＴＳキャラ
+#DIM 誘い内容
+#DIMS 誘い文句
+#DIMS 誘ってきた相手
+;変身時ＴＳ女体化キャラのメッセージ分岐
+IF TALENT:オトコ <= 0 && TALENT:変身時ＴＳ > 0 && CFLAG:1 > 0
+	ＴＳキャラ = 1
+ELSE
+	ＴＳキャラ = 0
+ENDIF
+PRINTW 
+;ナンパされた場所が街中か遠出中
+IF ARG == 0 || ARG == 2
+	IF ＴＳキャラ == 1 && TALENT:淫乱 < 1
+		PRINTFORML 不意に%PRINT_TRANSCALLNAME(TARGET)%は知らない相手に声をかけられてしまい、
+		PRINTFORM あたふたと慌てているうちに
+	ELSE
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はふと知らない相手に声を掛けられた。
+	ENDIF
+	誘い内容 = RAND:5
+	IF 誘い内容 == 0
+		IF ＴＳキャラ == 1
+			PRINTFORML 一緒に食事でもどうかと誘われてしまった。
+		ELSE
+			PRINTFORML 一緒に食事でもどうかと誘われているところを見ると、
+		ENDIF
+		誘い文句 = 一緒に食事する
+	ELSEIF 誘い内容 == 1
+		IF ＴＳキャラ == 1
+			PRINTFORML 一緒にお茶でもしないか誘われてしまった。
+		ELSE
+			PRINTFORML 一緒にお茶でもしないか誘われているところを見ると、
+		ENDIF
+		誘い文句 = 一緒にお茶する
+	ELSEIF 誘い内容 == 2
+		IF ＴＳキャラ == 1
+			PRINTFORML 一緒にカラオケに行かないかと誘われてしまった。
+		ELSE
+			PRINTFORML 一緒にカラオケに行かないかと誘われているところを見ると、
+		ENDIF
+		誘い文句 = 一緒にカラオケする
+	ELSEIF 誘い内容 == 3
+		IF ＴＳキャラ == 1
+			PRINTFORML 一緒にゲーセンで遊ばないか誘われてしまった。
+		ELSE
+			PRINTFORML 一緒にゲーセンで遊ばないか誘われているところを見ると、
+		ENDIF
+		誘い文句 = 一緒にゲーセンで遊ぶ
+	ELSEIF 誘い内容 == 4
+		IF ＴＳキャラ == 1
+			PRINTFORML 写真を撮らせてくれないかと誘われてしまった。
+		ELSE
+			PRINTFORML 写真を撮らせてくれないかと誘われているところを見ると、
+		ENDIF
+		誘い文句 = ちょっと写真を撮る
+	ENDIF
+	IF ＴＳキャラ == 1
+		PRINTFORML …ナンパだ…！
+	ELSE
+		PRINTFORML これが噂に聞くナンパという奴かもしれない。
+	ENDIF
+	PRINTW 
+	IF TALENT:巻き込まれ体質 > 0 && RAND:2 == 0
+		誘ってきた相手 = ヤクザ
+		PRINTFORML ナンパしてきた男は見るからに%誘ってきた相手%だ。
+	ELSEIF RAND:10 == 0
+		誘ってきた相手 = ユーチューバー
+		PRINTFORML ナンパしてきた男は動画サイトで人気の%誘ってきた相手%だと名乗っている。
+	ELSEIF RAND:9 == 0
+		誘ってきた相手 = 生放送主
+		PRINTFORML ナンパしてきた男は動画サイトで人気の%誘ってきた相手%だと名乗っている。
+	ELSEIF RAND:8 == 0
+		誘ってきた相手 = 実況者
+		PRINTFORML ナンパしてきた男は動画サイトで人気の%誘ってきた相手%だと名乗っている。
+	ELSEIF RAND:7 == 0
+		誘ってきた相手 = 歌い手
+		PRINTFORML ナンパしてきた男は動画サイトで人気の%誘ってきた相手%だと名乗っている。
+	ELSEIF RAND:6 == 0
+		誘ってきた相手 = 脂ぎったオヤジ
+		PRINTFORML ナンパしてきた男は見るからに%誘ってきた相手%だ。
+	ELSEIF RAND:5 == 0
+		誘ってきた相手 = チンピラ
+		PRINTFORML ナンパしてきた男は見るからに%誘ってきた相手%だ。
+	ELSEIF RAND:4 == 0
+		誘ってきた相手 = チャラ男
+		PRINTFORML ナンパしてきた男は見るからに%誘ってきた相手%だ。
+	ELSEIF  RAND:3 == 0
+		誘ってきた相手 = ヤクザ
+		PRINTFORML ナンパしてきた男は見るからに%誘ってきた相手%だ。
+	ELSEIF RAND:2 == 0
+		誘ってきた相手 = 紳士
+		PRINTFORML ナンパしてきた男は見るからに%誘ってきた相手%風の男だ。
+	ELSE
+		誘ってきた相手 = 知らない相手
+		PRINTFORML ナンパしてきた男はニヤニヤとした視線を%PRINT_TRANSCALLNAME(TARGET)%のカラダに送っている。
+	ENDIF
+;ナンパされた場所がスポーツ施設
+ELSEIF ARG == 1
+	;とりあえず暫定で設定。中身は同じ
+	IF ＴＳキャラ == 1 && TALENT:淫乱 < 1
+		PRINTFORML すると%PRINT_TRANSCALLNAME(TARGET)%は不意に知らない相手に声をかけられてしまい、
+		PRINTFORM あたふたと慌てているうちに
+	ELSE
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はふと知らない相手に声を掛けられた。
+	ENDIF
+	誘い内容 = RAND:5
+	IF 誘い内容 == 0
+		IF ＴＳキャラ == 1
+			PRINTFORML 一緒に食事でもどうかと誘われてしまった。
+		ELSE
+			PRINTFORML 一緒に食事でもどうかと誘われているところを見ると、
+		ENDIF
+		誘い文句 = 一緒に食事する
+	ELSEIF 誘い内容 == 1
+		IF ＴＳキャラ == 1
+			PRINTFORML 一緒にお茶でもしないか誘われてしまった。
+		ELSE
+			PRINTFORML 一緒にお茶でもしないか誘われているところを見ると、
+		ENDIF
+		誘い文句 = 一緒にお茶する
+	ELSEIF 誘い内容 == 2
+		IF ＴＳキャラ == 1
+			PRINTFORML 一緒にカラオケに行かないかと誘われてしまった。
+		ELSE
+			PRINTFORML 一緒にカラオケに行かないかと誘われているところを見ると、
+		ENDIF
+		誘い文句 = 一緒にカラオケする
+	ELSEIF 誘い内容 == 3
+		IF ＴＳキャラ == 1
+			PRINTFORML 一緒にゲーセンで遊ばないか誘われてしまった。
+		ELSE
+			PRINTFORML 一緒にゲーセンで遊ばないか誘われているところを見ると、
+		ENDIF
+		誘い文句 = 一緒にゲーセンで遊ぶ
+	ELSEIF 誘い内容 == 4
+		IF ＴＳキャラ == 1
+			PRINTFORML 写真を撮らせてくれないかと誘われてしまった。
+		ELSE
+			PRINTFORML 写真を撮らせてくれないかと誘われているところを見ると、
+		ENDIF
+		誘い文句 = ちょっと写真を撮る
+	ENDIF
+	IF ＴＳキャラ == 1
+		PRINTFORML …ナンパだ…！
+	ELSE
+		PRINTFORML これが噂に聞くナンパという奴かもしれない。
+	ENDIF
+	PRINTW 
+	IF TALENT:巻き込まれ体質 > 0 && RAND:2 == 0
+		誘ってきた相手 = ヤクザ
+		PRINTFORML ナンパしてきた男は見るからに%誘ってきた相手%だ。
+	ELSEIF RAND:10 == 0
+		誘ってきた相手 = ユーチューバー
+		PRINTFORML ナンパしてきた男は動画サイトで人気の%誘ってきた相手%だと名乗っている。
+	ELSEIF RAND:9 == 0
+		誘ってきた相手 = 生放送主
+		PRINTFORML ナンパしてきた男は動画サイトで人気の%誘ってきた相手%だと名乗っている。
+	ELSEIF RAND:8 == 0
+		誘ってきた相手 = 実況者
+		PRINTFORML ナンパしてきた男は動画サイトで人気の%誘ってきた相手%だと名乗っている。
+	ELSEIF RAND:7 == 0
+		誘ってきた相手 = 歌い手
+		PRINTFORML ナンパしてきた男は動画サイトで人気の%誘ってきた相手%だと名乗っている。
+	ELSEIF RAND:6 == 0
+		誘ってきた相手 = 脂ぎったオヤジ
+		PRINTFORML ナンパしてきた男は見るからに%誘ってきた相手%だ。
+	ELSEIF RAND:5 == 0
+		誘ってきた相手 = チンピラ
+		PRINTFORML ナンパしてきた男は見るからに%誘ってきた相手%だ。
+	ELSEIF RAND:4 == 0
+		誘ってきた相手 = チャラ男
+		PRINTFORML ナンパしてきた男は見るからに%誘ってきた相手%だ。
+	ELSEIF  RAND:3 == 0
+		誘ってきた相手 = ヤクザ
+		PRINTFORML ナンパしてきた男は見るからに%誘ってきた相手%だ。
+	ELSEIF RAND:2 == 0
+		誘ってきた相手 = 紳士
+		PRINTFORML ナンパしてきた男は見るからに%誘ってきた相手%風の男だ。
+	ELSE
+		誘ってきた相手 = 知らない相手
+		PRINTFORML ナンパしてきた男はニヤニヤとした視線を%PRINT_TRANSCALLNAME(TARGET)%のカラダに送っている。
+	ENDIF
+;現状未使用
+ELSE
+	IF ＴＳキャラ == 1 && TALENT:淫乱 < 1
+		PRINTFORML すると%PRINT_TRANSCALLNAME(TARGET)%は不意に知らない相手に声をかけられてしまい、
+		PRINTFORM あたふたと慌てているうちに
+	ELSE
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はふと知らない相手に声を掛けられた。
+	ENDIF
+	誘い内容 = RAND:5
+	IF 誘い内容 == 0
+		IF ＴＳキャラ == 1
+			PRINTFORML 一緒に食事でもどうかと誘われてしまった。
+		ELSE
+			PRINTFORML 一緒に食事でもどうかと誘われているところを見ると、
+		ENDIF
+		誘い文句 = 一緒に食事する
+	ELSEIF 誘い内容 == 1
+		IF ＴＳキャラ == 1
+			PRINTFORML 一緒にお茶でもしないか誘われてしまった。
+		ELSE
+			PRINTFORML 一緒にお茶でもしないか誘われているところを見ると、
+		ENDIF
+		誘い文句 = 一緒にお茶する
+	ELSEIF 誘い内容 == 2
+		IF ＴＳキャラ == 1
+			PRINTFORML 一緒にカラオケに行かないかと誘われてしまった。
+		ELSE
+			PRINTFORML 一緒にカラオケに行かないかと誘われているところを見ると、
+		ENDIF
+		誘い文句 = 一緒にカラオケする
+	ELSEIF 誘い内容 == 3
+		IF ＴＳキャラ == 1
+			PRINTFORML 一緒にゲーセンで遊ばないか誘われてしまった。
+		ELSE
+			PRINTFORML 一緒にゲーセンで遊ばないか誘われているところを見ると、
+		ENDIF
+		誘い文句 = 一緒にゲーセンで遊ぶ
+	ELSEIF 誘い内容 == 4
+		IF ＴＳキャラ == 1
+			PRINTFORML 写真を撮らせてくれないかと誘われてしまった。
+		ELSE
+			PRINTFORML 写真を撮らせてくれないかと誘われているところを見ると、
+		ENDIF
+		誘い文句 = ちょっと写真を撮る
+	ENDIF
+	IF ＴＳキャラ == 1
+		PRINTFORML …ナンパだ…！
+	ELSE
+		PRINTFORML これが噂に聞くナンパという奴かもしれない。
+	ENDIF
+	PRINTW 
+	誘ってきた相手 = 知らない相手
+	PRINTFORML ナンパしてきた男はニヤニヤとした視線を%PRINT_TRANSCALLNAME(TARGET)%のカラダに送っている。
+ENDIF
+
+IF TALENT:淫乱 > 0
+	PRINTFORML どう反応するべきか%PRINT_TRANSCALLNAME(TARGET)%は考えている・・・
+ELSE
+	PRINTFORML どう反応するべきか%PRINT_TRANSCALLNAME(TARGET)%は迷っている・・・
+ENDIF
+PRINTW 
+PRINTL 
+PRINTFORML [0]着いていく
+PRINTFORML [1]やんわりと断る（交渉失敗率{ABL:従順 * 10 + 45}％）
+PRINTFORML [2]はっきり断る　（交渉失敗率{ABL:従順 * 10 + 15}％）
+PRINTFORML [3]無視する
+$INPUT_LOOP_NANPA
+INPUT
+IF RESULT == 0
+	PRINTL 
+	IF TALENT:淫乱 > 0
+		PRINTFORML 考える素振りをしていた%PRINT_TRANSCALLNAME(TARGET)%だったが
+		PRINTFORML %誘い文句%程度なら構わない…と相手に着いていった…
+	ELSE
+		PRINTFORML どうしようか迷っていた%PRINT_TRANSCALLNAME(TARGET)%だったが
+		PRINTFORML 雰囲気に呑まれてしまいなし崩し的に
+		PRINTFORML %誘い文句%程度なら…と相手に着いていくことにした…
+	ENDIF
+	PRINTW 
+	CALL PASTIME_NANPA_DATE,ARG,ＴＳキャラ,誘い内容,誘ってきた相手
+ELSEIF RESULT == 1
+	PRINTL 
+	IF RAND:100 < ABL:従順 * 10 + 45
+		PRINTFORML やんわりと断ろうとした%PRINT_TRANSCALLNAME(TARGET)%だったが
+		PRINTFORML 相手の勢いと雰囲気に流され押し切られてしまい、
+		PRINTFORML %誘い文句%程度なら…と相手に着いていくことにした…
+		CALL PASTIME_NANPA_DATE,ARG,ＴＳキャラ,誘い内容,誘ってきた相手
+	ELSE
+		PRINTFORML あまり良い印象が無かったので警戒していた%PRINT_TRANSCALLNAME(TARGET)%は
+		PRINTFORML やんわりと誘いを断っている…
+		PRINTW 
+		IF TALENT:巻き込まれ体質 > 0 || TALENT:人外の美貌 > 0
+		   IF RAND:100 < 30
+		    PRINTFORML しかし、立ち去ろうとした%PRINT_TRANSCALLNAME(TARGET)%のカラダから急に力が抜けていき
+			PRINTFORML 立っていることもままなくなる。
+			PRINTFORML 倒れそうになったカラダを%誘ってきた相手%が優しく声を掛け抱き止める。
+			PRINTL 
+			PRINTFORML ふと相手の手にスプレー缶の様な物が握られているのを見つけ、何かされた事に気がつく。
+			PRINTFORML 力の抜けた%PRINT_TRANSCALLNAME(TARGET)%は徐々に意識を失っていった・・・
+			PRINTW 
+			CALL PASTIME_NANPA_RAPE
+		   ELSE
+			PRINTFORML %誘ってきた相手%は諦めてボヤきながら去っていった・・・
+		   ENDIF
+		ELSEIF RAND:100 < 5
+			PRINTFORML しかし、立ち去ろうとした%PRINT_TRANSCALLNAME(TARGET)%のカラダから急に力が抜けていき
+			PRINTFORML 立っていることもままなくなる。
+			PRINTFORML 倒れそうになったカラダを%誘ってきた相手%が優しく声を掛け抱き止める。
+			PRINTL 
+			PRINTFORML ふと相手の手にスプレー缶の様な物が握られているのを見つけ、何かされた事に気がつく。
+			PRINTFORML 力の抜けた%PRINT_TRANSCALLNAME(TARGET)%は徐々に意識を失っていった・・・
+			PRINTW 
+			CALL PASTIME_NANPA_RAPE
+		ELSE
+			PRINTFORML %誘ってきた相手%は諦めてボヤきながら去っていった・・・
+		ENDIF
+	ENDIF
+ELSEIF RESULT == 2
+	PRINTL 
+	IF 	誘ってきた相手 == "ヤクザ"
+		PRINTFORML あまり良い印象が無かったので警戒していた%PRINT_TRANSCALLNAME(TARGET)%は
+		PRINTFORML はっきり誘いを断った…
+		PRINTW 
+		PRINTFORML しかし、立ち去ろうとした%PRINT_TRANSCALLNAME(TARGET)%のカラダから急に力が抜けていき
+		PRINTFORML 立っていることもままなくなる。
+		PRINTFORML 倒れそうになったカラダを%誘ってきた相手%が抱き止める。
+		PRINTL 
+		PRINTFORML ふと相手の手にスプレー缶の様な物が握られているのを見つけ、何かされた事に気がつく。
+		PRINTFORML 力の抜けた%PRINT_TRANSCALLNAME(TARGET)%は徐々に意識を失っていった・・・
+		PRINTW 
+		CALL PASTIME_NANPA_RAPE
+	ELSEIF RAND:100 < ABL:従順 * 10 + 15
+		PRINTFORML はっきり断ろうとした%PRINT_TRANSCALLNAME(TARGET)%だったが
+		PRINTFORML 相手の勢いと雰囲気に流され押し切られてしまい、
+		PRINTFORML %誘い文句%程度なら…と相手に着いていくことにした…
+		CALL PASTIME_NANPA_DATE,ARG,ＴＳキャラ,誘い内容,誘ってきた相手
+	ELSE
+		PRINTFORML あまり良い印象が無かったので警戒していた%PRINT_TRANSCALLNAME(TARGET)%は、
+		PRINTFORML はっきり誘いを断った…
+		PRINTW 
+		IF RAND:100 < 5
+			PRINTFORML しかし、立ち去ろうとした%PRINT_TRANSCALLNAME(TARGET)%のカラダから急に力が抜けていき
+			PRINTFORML 立っていることもままなくなる。
+			PRINTFORML 倒れそうになったカラダを%誘ってきた相手%が優しく声を掛け抱き止める。
+			PRINTL 
+			PRINTFORML ふと相手の手にスプレー缶の様な物が握られているのを見つけ、何かされた事に気がつく。
+			PRINTFORML 力の抜けた%PRINT_TRANSCALLNAME(TARGET)%は徐々に意識を失っていった・・・
+			PRINTW 
+			CALL PASTIME_NANPA_RAPE
+		ELSE
+			PRINTFORML %誘ってきた相手%は諦めてボヤきながら去っていった・・・
+		ENDIF
+	ENDIF
+ELSEIF RESULT == 3
+	PRINTL 
+	PRINTFORML あまり良い印象が無かったので警戒していた%PRINT_TRANSCALLNAME(TARGET)%は
+	PRINTFORML 声をかけてきた相手を無視して立ち去ることにした…
+	PRINTW 
+IF TALENT:巻き込まれ体質 > 0 || TALENT:人外の美貌 > 0
+		   IF RAND:100 < 50
+		    PRINTFORML しかし、立ち去ろうとした%PRINT_TRANSCALLNAME(TARGET)%のカラダから急に力が抜けていき
+			PRINTFORML 立っていることもままなくなる。
+			PRINTFORML 倒れそうになったカラダを%誘ってきた相手%が優しく声を掛け抱き止める。
+			PRINTL 
+			PRINTFORML ふと相手の手にスプレー缶の様な物が握られているのを見つけ、何かされた事に気がつく。
+			PRINTFORML 力の抜けた%PRINT_TRANSCALLNAME(TARGET)%は徐々に意識を失っていった・・・
+			PRINTW 
+			CALL PASTIME_NANPA_RAPE
+		   ELSE
+			PRINTFORML %誘ってきた相手%は諦めてボヤきながら去っていった・・・
+		   ENDIF
+		ELSEIF RAND:100 < 5
+			PRINTFORML しかし、立ち去ろうとした%PRINT_TRANSCALLNAME(TARGET)%のカラダから急に力が抜けていき
+			PRINTFORML 立っていることもままなくなる。
+			PRINTFORML 倒れそうになったカラダを%誘ってきた相手%が優しく声を掛け抱き止める。
+			PRINTL 
+			PRINTFORML ふと相手の手にスプレー缶の様な物が握られているのを見つけ、何かされた事に気がつく。
+			PRINTFORML 力の抜けた%PRINT_TRANSCALLNAME(TARGET)%は徐々に意識を失っていった・・・
+			PRINTW 
+			CALL PASTIME_NANPA_RAPE
+		ELSE
+			PRINTFORML %誘ってきた相手%は諦めてボヤきながら去っていった・・・
+		ENDIF
+ELSE
+	GOTO INPUT_LOOP_NANPA
+ENDIF
+;行動結果表示のためのウェイト
+PRINTW 
+
+
+;----------------------------------------------------------------------------------------------------------------------------
+;ナンパ成功デート
+@PASTIME_NANPA_DATE, ARG:0, ARG:1, ARG:2, ARGS
+#DIM 誘い内容
+#DIM 持ち帰り先
+#DIM MOOD
+#DIMS 誘ってきた相手
+;ＴＳキャラ ARG:1, 1=TSした女の子,0=普通の女の子　？
+誘い内容 = ARG:2
+誘ってきた相手 = %ARGS%
+PRINTW 
+PRINTW ・・
+PRINTW ・・・・
+PRINTW ・・・・・・
+PRINTL 
+IF 誘い内容 == 0
+	IF RAND:5 == 0
+		MOOD = 2
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は%誘ってきた相手%と
+		PRINTFORML 高級レストランで会話を交えつつ食事をしている。
+		PRINTL 
+		PRINTFORML 星を所持している有名店らしく、料理はとても美味しい。
+		PRINTFORML 気がつけば%PRINT_TRANSCALLNAME(TARGET)%は警戒心を解いて、談笑に応じてしまっていた。
+	ELSEIF RAND:3 == 0
+		MOOD = 1
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は%誘ってきた相手%と
+		PRINTFORML レストランで会話を交えつつ食事をしている。
+		PRINTL 
+		PRINTFORML それなりにいい値段がする店だけあって味は確かな物で
+		PRINTFORML 自然と相手との会話が弾んでしまう。
+	ELSE
+		MOOD = 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は%誘ってきた相手%と
+		PRINTFORML ファミレスで会話を交えつつ食事をしている。
+		PRINTL 
+		PRINTFORML …ナンパするのならもう少しいい店を選べ、と言いたくもなるが
+		PRINTFORML 会計は相手持ちなのだからと%PRINT_TRANSCALLNAME(TARGET)%は気にしないことにした。
+	ENDIF
+	PRINTW 
+	PRINTFORML 食事を終えた%PRINT_TRANSCALLNAME(TARGET)%達は会計を済ませて店を後にした。
+ELSEIF 誘い内容 == 1
+	IF RAND:5 == 0
+		MOOD = 2
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は%誘ってきた相手%と
+		PRINTFORML 行列のできる洋菓子店で会話を交えつつお茶している。
+		PRINTL 
+		PRINTFORML テレビでも有名なパティシエ作の洋菓子だけでなく、お茶もとても美味しい。
+		PRINTFORML 気がつけば%PRINT_TRANSCALLNAME(TARGET)%は警戒心を解いて、談笑に応じてしまっていた。
+	ELSEIF RAND:3 == 0
+		MOOD = 1
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は%誘ってきた相手%と
+		PRINTFORML 落ち着いた雰囲気の喫茶店で会話を交えつつお茶している。
+		PRINTL 
+		PRINTFORML マスター自慢のブレンドは苦味がありながらもほのかに甘い落ち着く味で
+		PRINTFORML 自然と相手への警戒心が緩み談笑が弾んでしまった。
+	ELSE
+		MOOD = 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は%誘ってきた相手%と
+		PRINTFORML コーヒーチェーンで会話を交えつつお茶している。
+		PRINTL 
+		PRINTFORML …ナンパするのならもう少しいい店を選べ、と言いたくもなるが
+		PRINTFORML 会計は相手持ちなのだからと%PRINT_TRANSCALLNAME(TARGET)%は気にしないことにした。
+	ENDIF
+	PRINTW 
+	PRINTFORML 喫食を終えた%PRINT_TRANSCALLNAME(TARGET)%達は会計を済ませて店を後にした。
+ELSEIF 誘い内容 == 2
+	IF RAND:5 == 0
+		MOOD = 2
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は%誘ってきた相手%と
+		PRINTFORML カラオケボックスで歌っている。
+		PRINTL 
+		PRINTFORML %誘ってきた相手%の歌唱力はプロ顔負けと思えるほどの物で
+		PRINTFORML 思わず%PRINT_TRANSCALLNAME(TARGET)%は聴き惚れてしまっていた。
+	ELSEIF RAND:3 == 0
+		MOOD = 1
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は%誘ってきた相手%と
+		PRINTFORML カラオケボックスで歌っている。
+		PRINTL 
+		PRINTFORML %誘ってきた相手%はカラオケを盛り上げ慣れているようで
+		PRINTFORML 気がつけば%PRINT_TRANSCALLNAME(TARGET)%もすっかりいい気になり、デュエットまでしていた。
+	ELSE
+		MOOD = 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は%誘ってきた相手%と
+		PRINTFORML カラオケボックスで歌っている。
+		PRINTL 
+		PRINTFORML しかし%誘ってきた相手%は歌声で惚れさせたいのかマイクを握りっぱなしで
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の番が全然回って来ない。
+		IF RAND:3 == 0
+			PRINTFORML その上、%誘ってきた相手%の歌は雑音にしか聴こえない…
+		ELSEIF RAND:2 == 0
+			PRINTFORML その上、%誘ってきた相手%は酷い音痴だ…
+		ENDIF
+	ENDIF
+	PRINTW 
+	PRINTFORML カラオケを終えた%PRINT_TRANSCALLNAME(TARGET)%達は会計を済ませて店を後にした。
+ELSEIF 誘い内容 == 3
+	IF RAND:5 == 0
+		MOOD = 2
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は%誘ってきた相手%と
+		PRINTFORML ゲームセンターで遊んでいる。
+		PRINTL 
+		PRINTFORML クレーンゲームの景品に%PRINT_TRANSCALLNAME(TARGET)%が目を奪われていると
+		PRINTFORML %誘ってきた相手%はアレが欲しいのかと聞くとコインを投入し、あっさり獲得してしまった。
+		PRINTFORML あまりの鮮やかさに唖然としている%PRINT_TRANSCALLNAME(TARGET)%だったが
+		PRINTFORML 景品を渡されるとハっとしてハニカミながら感謝の言葉を伝えていた。
+	ELSEIF RAND:3 == 0
+		MOOD = 1
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は%誘ってきた相手%と
+		PRINTFORML ゲームセンターで遊んでいる。
+		PRINTL 
+		PRINTFORML 音楽ゲームの同時プレイを誘われた。
+		PRINTFORML %誘ってきた相手%の腕前はかなりの物で、うっかり見惚れてしまっている内に
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はゲームオーバーになってしまっていた。
+	ELSE
+		MOOD = 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は%誘ってきた相手%と
+		PRINTFORML ゲームセンターで遊んでいる。
+		PRINTL 
+		PRINTFORML しかし%誘ってきた相手%は対戦格闘ゲームでいいところを見せたかったようだが
+		PRINTFORML 対戦相手の方が格段に強く、いいところが全くないまま連敗してしまっている。
+		PRINTFORML 挙句、ムキになって連コインまでし始めた様を%PRINT_TRANSCALLNAME(TARGET)%は呆れた目でみている。
+	ENDIF
+	PRINTW 
+	PRINTFORML 遊びを終えた%PRINT_TRANSCALLNAME(TARGET)%達は会計を済ませて店を後にした。
+ELSE
+	IF RAND:5 == 0
+		MOOD = 2
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は%誘ってきた相手%に
+		PRINTFORML 高級スタジオで写真を撮られている。
+		PRINTL 
+		PRINTFORML 高額な利用料相応の設備が整っているのが素人目でも見て取れる。
+		PRINTFORML 撮影を始める前に%誘ってきた相手%は幾つかのコスプレ衣装を取り出すと
+		PRINTFORML これに着替えてくれないかと頼まれた。
+		PRINTFORML 少々戸惑った%PRINT_TRANSCALLNAME(TARGET)%だったが
+		PRINTFORML 機材などから相手の本気ぶりが垣間見えていた為、消極的ながらも応じる。
+		IF TALENT:変身能力 > 0
+			PRINTFORML 戸惑いを見せつつ着替える%PRINT_TRANSCALLNAME(TARGET)%だが
+			PRINTFORML 変身時の衣装に比べれば…と考え気持ちを切り替えた。
+			PRINTFORML しかし、その表情は普段とは異なる可愛い衣装を着れて満更でもなさそうだ。
+		ELSEIF TALENT:オトコ > 0
+			PRINTFORML 戸惑いを見せつつ着替える%PRINT_TRANSCALLNAME(TARGET)%だが
+			PRINTFORML その表情は普段着ることのない衣装を着れて満更でもなさそうだ。
+		ELSE
+			PRINTFORML 戸惑いを見せつつ着替える%PRINT_TRANSCALLNAME(TARGET)%だが
+			PRINTFORML その表情は普段着ることのない可愛い衣装を着れて満更でもなさそうだ。
+		ENDIF
+		PRINTL 
+		PRINTFORML 出来上がった写真はとても素晴らしく
+		PRINTFORML 写真に映る自分を見て%PRINT_TRANSCALLNAME(TARGET)%は思わずうっとりしてしまった。
+		PRINTFORML %誘ってきた相手%も今まで撮って来た中でも会心の出来栄えだと誇らしげにしている。
+		PRINTW 
+		PRINTFORML 撮影を終えた%PRINT_TRANSCALLNAME(TARGET)%達は会計を済ませて店を後にした。
+	ELSEIF RAND:3 == 0
+		MOOD = 1
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は%誘ってきた相手%に
+		PRINTFORML エッチな雰囲気が漂うスタジオで写真を撮られている。
+		PRINTL 
+		IF TALENT:清純派 > 0
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は%誘ってきた相手%の指示に従わずに去ろうとしたが……
+			PRINTFORML 「せっかくだから～」とせがんできたため、仕方なく普通の写真を撮ることになった。
+		ELSEIF ABL:欲望 <= 2
+			PRINTFORML 戸惑いを見せつつ%PRINT_TRANSCALLNAME(TARGET)%は%誘ってきた相手%の指示に従う気がないが……
+			PRINTFORML 「せっかくだから～」と頼まれて、普通な写真を撮ってしまった。
+		ELSE
+		PRINTFORML %誘ってきた相手%の指示に従いポーズを取り撮影されている%PRINT_TRANSCALLNAME(TARGET)%だったが
+		PRINTFORML スタジオの雰囲気も相まってかなり際どい写真まで撮られてしまった。
+		ENDIF
+		PRINTW 
+		PRINTFORML 撮影を終えた%PRINT_TRANSCALLNAME(TARGET)%達は会計を済ませて店を後にした。
+	ELSE
+		MOOD = 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は%誘ってきた相手%に
+		PRINTFORML 人気のない道端で写真を撮られている。
+		PRINTL 
+		PRINTFORML %誘ってきた相手%の使用している機材は貧相どころかスマフォのカメラのみだ。
+		PRINTFORML 撮らせてくれとせがむならまともなカメラ位用意しろと思う%PRINT_TRANSCALLNAME(TARGET)%だったが
+		PRINTFORML なるべくそんな考えを表情に出さないように我慢して撮影されている。
+		PRINTW 
+		PRINTFORML 撮影を終えた%PRINT_TRANSCALLNAME(TARGET)%達はその場を後にした。
+	ENDIF
+ENDIF
+
+PRINTL 
+PRINTW 
+IF TALENT:淫乱 > 0
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%がそろそろ来るかな等と考えていると
+ELSE
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%がそろそろ別れて帰路に着こうと考えていると
+ENDIF
+SIF TALENT:オトコ > 0 && ARG:1 == 0
+	PRINTFORM オトコ同士でも構わず、
+IF RAND:3 == 0
+	持ち帰り先 = 0
+	PRINTFORML この後まだ時間は大丈夫か、と声を掛けられた。
+ELSEIF RAND:2 == 0
+	持ち帰り先 = 1
+	PRINTFORML ホテルで休憩していかないか、と声を掛けられた。
+ELSE
+	持ち帰り先 = 2
+	PRINTFORML この近くに家があるが寄っていかないか、と声を掛けられた。
+ENDIF
+PRINTFORML %誘ってきた相手%のイヤラシイ視線がはっきり%PRINT_TRANSCALLNAME(TARGET)%のカラダを舐め回している。
+PRINTL 
+IF TALENT:淫乱 > 0
+	PRINTFORML やっと来たかと思った%PRINT_TRANSCALLNAME(TARGET)%だったが、
+	PRINTFORML もう少し焦らそうかとなるべく態度を表に出さないようにしている…
+ELSEIF TALENT:感情乏しい > 0
+	PRINTFORML まったく気にした風もない無愛想な態度の%PRINT_TRANSCALLNAME(TARGET)%だが
+	PRINTFORML 相手はそういうタイプが好みなのかニヤニヤ笑っている…
+ELSEIF ARG:1 == 1
+	PRINTFORML 女性に向けられるそういった視線に晒された経験が薄い%PRINT_TRANSCALLNAME(TARGET)%は
+	PRINTFORML 顔を真っ赤にしながら必死に気持ちを落ち着けている…
+ELSE
+	PRINTFORML やっぱりそれが目当てか…と自分に言い聞かせながら、
+	PRINTFORML 表情に出てしまわないように気を遣うので精いっぱいだ…
+ENDIF
+PRINTW 
+PRINTFORML どうするべきか%PRINT_TRANSCALLNAME(TARGET)%は迷っている・・・
+PRINTL 
+PRINTFORML [0]着いていく
+PRINTFORML [1]やんわりと断る（交渉失敗率{ABL:従順 * 10 + MOOD * 10 + 30}％）
+PRINTFORML [2]はっきり断る　（交渉失敗率{ABL:従順 * 10 + MOOD * 10 + 10}％）
+PRINTFORML [3]無視して立ち去る
+$INPUT_LOOP_NANPA2
+INPUT
+IF RESULT == 0
+	PRINTL 
+	IF TALENT:淫乱 > 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はそれを待っていたと言わんばかりに身を寄せると
+		PRINTFORML 肩を抱かれて街の人ごみの中へと消えていった…
+	ELSE
+		IF RAND: 3 == 0
+			PRINTFORML 顔を赤くしながら%PRINT_TRANSCALLNAME(TARGET)%が小さく頷くと
+			PRINTFORML %誘ってきた相手%は%PRINT_TRANSCALLNAME(TARGET)%の肩に手を回してを抱き寄せると
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%を連れて街の人ごみの中へと消えていった…
+		ELSEIF RAND: 2 == 0
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%が小さく一歩相手に近寄ると
+			PRINTFORML %誘ってきた相手%はニヤリとして%PRINT_TRANSCALLNAME(TARGET)%の腰に手を回し
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%を連れて街の人ごみの中へと歩き出した…
+		ELSE
+			PRINTFORML どうしようか迷っていた%PRINT_TRANSCALLNAME(TARGET)%だったが
+			PRINTFORML 雰囲気に呑まれてしまいなし崩し的に相手に着いていくことにした…
+		ENDIF
+	ENDIF
+	PRINTW 
+	CALL PASTIME_NANPA_TAKEOUT, 持ち帰り先, 誘ってきた相手, ARG:1
+ELSEIF RESULT == 1
+	PRINTL 
+	IF RAND:3 == 0 && (TALENT:淫核 > 0 || TALENT:淫壷 > 0 || TALENT:淫尻 > 0 || TALENT:淫乳 || TALENT:淫乱 > 0)
+		PRINTFORML やんわりと断ろうとした%PRINT_TRANSCALLNAME(TARGET)%だったが
+		PRINTFORML 淫靡に染まった肉体が疼いてしまい、我慢できずに着いていくことにした…
+		PRINTW 
+		CALL PASTIME_NANPA_TAKEOUT, 持ち帰り先, 誘ってきた相手, ARG:1
+	ELSEIF RAND:100 < ABL:従順 * 10 + MOOD * 5 + 45
+		IF RAND: 3 == 0
+			PRINTFORML やんわりと断ろうとした%PRINT_TRANSCALLNAME(TARGET)%だったが
+			PRINTFORML 消極的な断りの言葉を遠回しな同意と取られてしまったらしく
+			PRINTFORML %誘ってきた相手%は強引に%PRINT_TRANSCALLNAME(TARGET)%の腰に手を回すと
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%を連れて街の人ごみの中へと歩き出した…
+		ELSEIF RAND: 2 == 0
+			PRINTFORML やんわりと断ろうとした%PRINT_TRANSCALLNAME(TARGET)%だったが
+			PRINTFORML %誘ってきた相手%はまともに取り合わず更に誘いの言葉を続ける。
+			PRINTFORML 業を煮やしたのか急に%PRINT_TRANSCALLNAME(TARGET)%の肩に手を回して抱き寄せると
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%が抵抗する間も無くえっちな言葉を投げかけつつ引き連れていった…
+		ELSE
+			PRINTFORML やんわりと断ろうとした%PRINT_TRANSCALLNAME(TARGET)%だったが
+			PRINTFORML 相手の勢いと雰囲気に流され押し切られてしまい、着いていくことにした…
+		ENDIF
+		PRINTW 
+		CALL PASTIME_NANPA_TAKEOUT, 持ち帰り先, 誘ってきた相手, ARG:1
+	ELSE
+		PRINTFORML そういう事をするつもりがなかった%PRINT_TRANSCALLNAME(TARGET)%は
+		PRINTFORML やんわりと誘いを断っている…
+		PRINTL 
+		IF TALENT:巻き込まれ体質 > 0 || TALENT:人外の美貌 > 0
+		    IF RAND:100 < 20
+			PRINTFORML しかし、断りをいれている%PRINT_TRANSCALLNAME(TARGET)%のカラダから急に力が抜けていき
+			PRINTFORML 立っていることもままなくなる。
+			PRINTFORML 倒れそうになったカラダを%誘ってきた相手%が優しく声を掛け抱き止める。
+			PRINTL 
+			PRINTFORML ふと相手の手にスプレー缶の様な物が握られているのを見つけ、何かされた事に気がつく。
+			PRINTFORML 力の抜けた%PRINT_TRANSCALLNAME(TARGET)%は徐々に意識を失っていった・・・
+			PRINTW 
+			CALL PASTIME_NANPA_RAPE
+		    ELSE
+			PRINTFORML %誘ってきた相手%はボヤきながら去っていった・・・
+		    ENDIF
+		ELSEIF RAND:100 < 20
+			PRINTFORML しかし、断りをいれている%PRINT_TRANSCALLNAME(TARGET)%のカラダから急に力が抜けていき
+			PRINTFORML 立っていることもままなくなる。
+			PRINTFORML 倒れそうになったカラダを%誘ってきた相手%が優しく声を掛け抱き止める。
+			PRINTL 
+			PRINTFORML ふと相手の手にスプレー缶の様な物が握られているのを見つけ、何かされた事に気がつく。
+			PRINTFORML 力の抜けた%PRINT_TRANSCALLNAME(TARGET)%は徐々に意識を失っていった・・・
+			PRINTW 
+			CALL PASTIME_NANPA_RAPE
+		ELSE
+			PRINTFORML %誘ってきた相手%はボヤきながら去っていった・・・
+		ENDIF
+    ENDIF
+ELSEIF RESULT == 2
+	PRINTL 
+IF 誘ってきた相手 == "ヤクザ"
+		PRINTFORML あまり良い印象が無かったので警戒していた%PRINT_TRANSCALLNAME(TARGET)%は
+		PRINTFORML はっきり誘いを断った…
+		PRINTL 
+		IF RAND:100 < 80
+			PRINTFORML しかし、断りをいれている%PRINT_TRANSCALLNAME(TARGET)%のカラダから急に力が抜けていき
+			PRINTFORML 立っていることもままなくなる。
+			PRINTFORML 倒れそうになったカラダを%誘ってきた相手%が優しく声を掛け抱き止める。
+			PRINTL 
+			PRINTFORML ふと相手の手にスプレー缶の様な物が握られているのを見つけ、何かされた事に気がつく。
+			PRINTFORML 力の抜けた%PRINT_TRANSCALLNAME(TARGET)%は徐々に意識を失っていった・・・
+			PRINTW 
+			CALL PASTIME_NANPA_RAPE
+		ELSE
+			PRINTFORML %誘ってきた相手%はボヤきながら去っていった・・・
+		ENDIF
+	ELSEIF RAND:100 < ABL:従順 * 10 + MOOD * 5 + 15
+		PRINTFORML そういう事をするつもりがなかった%PRINT_TRANSCALLNAME(TARGET)%は、はっきり誘いを断ろうとしたが
+		PRINTFORML 相手の勢いと雰囲気に流され押し切られてしまい、相手に着いていくことにした…
+		PRINTW 
+		CALL PASTIME_NANPA_TAKEOUT, 持ち帰り先, 誘ってきた相手, ARG:1
+	ELSE
+		PRINTFORML あまり良い印象が無かったので警戒していた%PRINT_TRANSCALLNAME(TARGET)%は
+		PRINTFORML はっきり誘いを断った…
+		PRINTL 
+		IF TALENT:巻き込まれ体質 > 0 || TALENT:人外の美貌 > 0
+		    IF RAND:100 < 30
+			PRINTFORML しかし、断りをいれている%PRINT_TRANSCALLNAME(TARGET)%のカラダから急に力が抜けていき
+			PRINTFORML 立っていることもままなくなる。
+			PRINTFORML 倒れそうになったカラダを%誘ってきた相手%が優しく声を掛け抱き止める。
+			PRINTL 
+			PRINTFORML ふと相手の手にスプレー缶の様な物が握られているのを見つけ、何かされた事に気がつく。
+			PRINTFORML 力の抜けた%PRINT_TRANSCALLNAME(TARGET)%は徐々に意識を失っていった・・・
+			PRINTW 
+			CALL PASTIME_NANPA_RAPE
+		    ELSE
+			PRINTFORML %誘ってきた相手%はボヤきながら去っていった・・・
+		    ENDIF
+		ELSEIF RAND:100 < 5
+			PRINTFORML しかし、断りをいれている%PRINT_TRANSCALLNAME(TARGET)%のカラダから急に力が抜けていき
+			PRINTFORML 立っていることもままなくなる。
+			PRINTFORML 倒れそうになったカラダを%誘ってきた相手%が優しく声を掛け抱き止める。
+			PRINTL 
+			PRINTFORML ふと相手の手にスプレー缶の様な物が握られているのを見つけ、何かされた事に気がつく。
+			PRINTFORML 力の抜けた%PRINT_TRANSCALLNAME(TARGET)%は徐々に意識を失っていった・・・
+			PRINTW 
+			CALL PASTIME_NANPA_RAPE
+		ELSE
+			PRINTFORML %誘ってきた相手%はボヤきながら去っていった・・・
+		ENDIF
+	ENDIF
+ELSEIF RESULT == 3
+	PRINTL 
+	PRINTFORML そういう事をするつもりがなかった%PRINT_TRANSCALLNAME(TARGET)%は
+	PRINTFORML 声をかけてきた相手を無視して立ち去ることにした…
+	PRINTW 
+	IF 誘ってきた相手 == "ヤクザ"
+		PRINTFORML あまり良い印象が無かったので警戒していた%PRINT_TRANSCALLNAME(TARGET)%は
+		PRINTFORML はっきり誘いを断った…
+		PRINTL 
+			PRINTFORML しかし、断りをいれている%PRINT_TRANSCALLNAME(TARGET)%のカラダから急に力が抜けていき
+			PRINTFORML 立っていることもままなくなる。
+			PRINTFORML 倒れそうになったカラダを%誘ってきた相手%が優しく声を掛け抱き止める。
+			PRINTL 
+			PRINTFORML ふと相手の手にスプレー缶の様な物が握られているのを見つけ、何かされた事に気がつく。
+			PRINTFORML 力の抜けた%PRINT_TRANSCALLNAME(TARGET)%は徐々に意識を失っていった・・・
+			PRINTW 
+			CALL PASTIME_NANPA_RAPE
+	ELSEIF 	TALENT:巻き込まれ体質 > 0 || TALENT:人外の美貌 > 0
+		    IF RAND:100 < 40
+			PRINTFORML しかし、断りをいれている%PRINT_TRANSCALLNAME(TARGET)%のカラダから急に力が抜けていき
+			PRINTFORML 立っていることもままなくなる。
+			PRINTFORML 倒れそうになったカラダを%誘ってきた相手%が優しく声を掛け抱き止める。
+			PRINTL 
+			PRINTFORML ふと相手の手にスプレー缶の様な物が握られているのを見つけ、何かされた事に気がつく。
+			PRINTFORML 力の抜けた%PRINT_TRANSCALLNAME(TARGET)%は徐々に意識を失っていった・・・
+			PRINTW 
+			CALL PASTIME_NANPA_RAPE
+		    ELSE
+			PRINTFORML %誘ってきた相手%はボヤきながら去っていった・・・
+		    ENDIF
+	ELSEIF RAND:100 < 5
+			PRINTFORML しかし、断りをいれている%PRINT_TRANSCALLNAME(TARGET)%のカラダから急に力が抜けていき
+			PRINTFORML 立っていることもままなくなる。
+			PRINTFORML 倒れそうになったカラダを%誘ってきた相手%が優しく声を掛け抱き止める。
+			PRINTL 
+			PRINTFORML ふと相手の手にスプレー缶の様な物が握られているのを見つけ、何かされた事に気がつく。
+			PRINTFORML 力の抜けた%PRINT_TRANSCALLNAME(TARGET)%は徐々に意識を失っていった・・・
+			PRINTW 
+			CALL PASTIME_NANPA_RAPE
+	ELSE
+			PRINTFORML %誘ってきた相手%はボヤきながら去っていった・・・
+	ENDIF
+ELSE
+	GOTO INPUT_LOOP_NANPA2
+ENDIF
+
+;----------------------------------------------------------------------------------------------------------------------------
+;ナンパ成功持ち帰り
+;中身はほぼ援交のコピペ改変。終わった後に連絡先交換とかでセフレにされたり肉奴隷にされたりとかいれてもいいかも
+@PASTIME_NANPA_TAKEOUT, ARG, ARGS, ARG:1
+#DIM CCOUNT
+#DIM NAMAHAME
+#DIM NAKADASHI
+NAMAHAME = 0
+NAKADASHI = 0
+PRINTW 
+PRINTW ・・
+PRINTW ・・・・
+PRINTW ・・・・・・
+PRINTL 
+;通常の性交
+IF RAND:3 != 0
+	IF ARG == 0
+		IF RAND:3 == 0
+			PRINT 繁華街のビルの隙間の物陰に、
+		ELSEIF RAND:2 == 0
+			PRINT 人気のない公衆トイレに、
+		ELSE
+			PRINT 黴臭いビルの地下室に、
+		ENDIF
+	ELSEIF ARG == 1
+		PRINT 繁華街のハズレのラブホテルに、
+	ELSEIF ARG == 2
+		PRINT とあるマンションの一室に、
+	ELSE
+		PRINT 見知らぬ場所で、
+	ENDIF
+	IF TALENT:処女 > 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の嬌声が響いている。
+		NAMAHAME = 0
+	ELSE
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は%ARGS%の前で膝をついて口で奉仕している。
+		PRINTFORML 勃起したペニスを軽く手でしごきながらコンドームを着けさせようとすると、
+		PRINTFORML %ARGS%に「生ハメさせて欲しい」と頼まれてしまった…
+		PRINTL 
+		PRINTFORMW 生で挿入を許すべきだろうか？
+		PRINTL 
+		PRINTFORML [0]断固拒否する
+		PRINTFORML [1]やんわりと断る（交渉失敗率{ABL:従順 * 15 + 15}％）
+		PRINTFORML [2]外で出すよう約束させる
+		PRINTFORML [3]中出しＯＫする
+		$INPUT_LOOP_TAKEOUT
+		INPUT
+		IF RESULT == 0
+			PRINTFORML 有無を言わさぬ雰囲気で%ARGS%にコンドームを着けさせた…
+			NAMAHAME = -1
+		ELSEIF RESULT == 1
+			IF RAND:100 < ABL:従順 * 15 + 15
+				PRINTFORML %ARGS%を説得しようとしたが、雰囲気に流され押し切られてしまった…
+				NAMAHAME = 1 + RAND:2
+			ELSE
+				PRINTFORML %ARGS%はしぶしぶコンドームを着けることを受け入れた…
+				NAMAHAME = 0
+			ENDIF
+		ELSEIF RESULT == 2
+			PRINTL 中出しＮＧを条件に要求を受け入れた…
+			NAMAHAME = 1
+		ELSEIF RESULT == 3
+			PRINTFORML 中出ししても良いと伝えると、%ARGS%の目が興奮の色に変わった…
+			NAMAHAME = 2
+		ELSE
+			GOTO INPUT_LOOP_TAKEOUT
+		ENDIF
+	ENDIF
+	PRINTW 
+	IF RAND:4 == 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は%ARGS%のペニスを受け入れ、激しく突き上げられていた。
+		PRINTFORML 相手は歪んだ欲望を秘めているらしく、%PRINT_TRANSCALLNAME(TARGET)%を自分の娘の名前で呼びながら犯し、
+		PRINTFORML 近親相姦のロールプレイに勤しんでいる…
+		PRINTL 
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%もまた%ARGS%をパパ、パパと呼んで背徳感を煽り立てつつ、
+		;ランダム分岐フラグ
+		FLAG:900 = 4
+	ELSEIF RAND:3 == 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は%ARGS%の上に跨り、騎乗位で胸を揉まれながら自分から腰を振っていた。
+		PRINTFORML 大きく開脚した体勢で尻を上下に叩きつけ、ひたすら%SPLIT_SEX(TARGET,"膣肉／腸壁")%でペニスを扱き上げていく…
+		PRINTFORML 顔を真っ赤にして相手も見ずにひたすら快楽を貪り続ける%PRINT_TRANSCALLNAME(TARGET)%は
+		;ランダム分岐フラグ
+		FLAG:900 = 3
+	ELSEIF RAND:2 == 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は壁に手をついた体勢で後ろから%ARGS%に犯されていた。
+		PRINTFORML 激しさを増していく動きに、肘で体重を支える%PRINT_TRANSCALLNAME(TARGET)%の%SPLIT_SEX(TARGET,"乳房／海綿体")%の前後が加速していく…
+		PRINTFORML まるで獣のような交尾快楽に酔いしれた%PRINT_TRANSCALLNAME(TARGET)%は
+		;ランダム分岐フラグ
+		FLAG:900 = 2
+	ELSE
+		PRINTFORML %ARGS%に圧し掛かられた%PRINT_TRANSCALLNAME(TARGET)%は完全に無防備を晒して何時間も責められ続けていた。
+		PRINTFORML ねちっこい腰使いで執拗に%SPLIT_SEX(TARGET,"子宮口／前立腺")%を責められ、%PRINT_TRANSCALLNAME(TARGET)%は幾度となく絶頂に導かれてしまう…
+		PRINTFORML 理性が焼き切れるほど官能を昂らせ、%SPLIT_SEX(TARGET,"少女／少年")%から牝へと堕とされた%PRINT_TRANSCALLNAME(TARGET)%は
+		;ランダム分岐フラグ
+		FLAG:900 = 1
+	ENDIF
+	IF TALENT:処女 > 0
+		PRINTFORML 処女を失ったばかりなのに絶頂させられる快楽に屈服させられてしまった…
+		PRINTW 
+		PRINTL 処女喪失
+		CFLAG:206 = 8
+		TALENT:処女 = -1
+	ELSEIF NAMAHAME > 1
+			PRINTFORML 言われるがまま中出しのおねだりをさせられ、屈従の証を%SPLIT_SEX(TARGET,"胎内／腸内")%に注ぎ込まれてしまった…
+	ELSE
+		PRINTFORML 焦点の合わない目で男と口づけしながら激しく突き上げられている…
+	ENDIF
+	;口上
+	TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_SYOUHU_normalA")
+	;習得
+	;JUEL:習得
+	LOCAL:16 = 250
+	IF TALENT:オトコ
+		;Ａ経験
+	;EXP:Ａ経験
+	LOCAL:121 = 3
+	ELSE
+		;Ｖ経験
+	;EXP:Ｖ経験
+	LOCAL:120 = 3
+	ENDIF
+	;Ｖ感覚
+	;JUEL:快Ｖ
+	IF TALENT:オトコ
+	LOCAL:11 = 15 * ABL:Ａ感覚
+	ELSE
+	LOCAL:11 = 15 * ABL:Ｖ感覚
+	ENDIF
+	;精液経験
+	;EXP:精液経験
+	LOCAL:123 = 3
+	PRINTW 
+	;中出し
+	IF NAMAHAME == 2
+		PRINTL 中出し
+		PRINTL 
+		IF RAND:3 == 0
+			PRINTFORML %ARGS%は出すぞ！中に出すぞ！と叫びながらピストンを加速させ、
+		ELSEIF RAND:2 == 0
+			PRINTFORML %ARGS%は卑猥な言葉で煽りながらピストンを加速させ、
+		ELSE
+			PRINTFORML %ARGS%は無言のまま鬼気迫る勢いでピストンを加速させ、
+		ENDIF
+		PRINTFORML 痙攣しながら濃厚な欲望を%PRINT_TRANSCALLNAME(TARGET)%の肉穴に解き放った。
+		PRINTFORML 最後の一滴まで出しきってペニスが引き抜かれると、たっぷり注ぎ込まれた精液が
+		PRINTFORML こってりと溢れ出てきた…
+		PRINTW 
+		NAKADASHI = 1
+	;外出し
+	ELSEIF NAMAHAME == 1
+		;避妊失敗
+		IF RAND:5 == 0
+			IF RAND:8 == 0
+				PRINTL 膣内射精
+				PRINTL 
+				PRINTFORML %ARGS%の限界が近付いていると察した%PRINT_TRANSCALLNAME(TARGET)%は外で出すように頼んだが
+				PRINTFORML %ARGS%は無視してピストンを続け、そのまま%SPLIT_SEX(TARGET,"膣内／腸内")%に精液を放出した…
+				PRINTW 
+				PRINTFORML %ARGS%を咎めても悪びれる様子もなく、何食わぬ顔で気持ち良かったよ等と言っている…
+				NAKADASHI = 1
+			ELSEIF RAND:2 == 0
+				PRINTL 中出し
+				PRINTL 
+				PRINTFORML %ARGS%は射精寸前でペニスを引き抜こうとしたが、
+				PRINTFORML もたついて外に出すのが少し遅れてしまった。
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%が指で秘裂を押し広げると、僅かだが白濁液が流れ出てきた…
+				PRINTW 
+				PRINTFORM %ARGS%を咎めても後の祭りでしかない。				
+				IF TALENT:オトコ <= 0 || ARG:1 > 0
+				PRINTFORML 後でピルを飲んでおかなければ…
+				ELSE
+				PRINTFORML 後で掻き出さなければ……
+				ENDIF
+				NAKADASHI = 1
+			ELSE
+				PRINTL 中出し
+				PRINTL 
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%が叩きつけられる快楽に流されていると、
+				PRINTFORML %ARGS%が突然力尽きて痙攣し、そのまま%PRINT_TRANSCALLNAME(TARGET)%の上にしなだれかかってきた。
+				PRINTFORML まさかと思いながら慌ててペニスを引き抜かせると、
+				PRINTFORML 案の定たっぷりと中出しされた精液がどろりとワレメから溢れ出していた…
+				PRINTW 
+				PRINTFORM %ARGS%を咎めても後の祭りでしかない。				
+				IF TALENT:オトコ <= 0 || ARG:1 > 0
+				PRINTFORML 後でピルを飲んでおかなければ…
+				ELSE
+				PRINTFORML 後で掻き出さなければ……
+				ENDIF
+				NAKADASHI = 1
+			ENDIF
+		;避妊成功
+		ELSEIF RAND:3 == 0
+			PRINTL ワレメに射精
+			PRINTL 
+			PRINTFORML %ARGS%は射精寸前でペニスを引き抜くと、%PRINT_TRANSCALLNAME(TARGET)%のワレメに欲望を解き放った…
+		ELSEIF RAND:2 == 0
+			PRINTL 口に射精
+			PRINTL 
+			PRINTFORML %ARGS%は射精寸前でペニスを引き抜くと%PRINT_TRANSCALLNAME(TARGET)%にフェラチオさせ、
+			PRINTFORML そのまま喉の奥に欲望を解き放った…
+			PRINTW 
+		ELSE
+			PRINTL 外出し
+			PRINTL 
+			PRINTFORML %ARGS%が射精寸前でペニスを引き抜くと、
+			PRINTFORML 危うく迸った白濁が%PRINT_TRANSCALLNAME(TARGET)%の下腹部を汚していった…
+			PRINTW 
+		ENDIF
+	;コンドームに射精
+	ELSEIF NAMAHAME < 1
+		;避妊失敗
+		IF RAND:10 == 0
+			IF RAND:4 == 0 && NAMAHAME == -1
+				PRINTL 無許可中出し
+				PRINTL 
+				PRINTFORML %ARGS%が限界に達すると、あろうことかコンドームを取り外して再度挿入し
+				PRINTFORML 制止する%PRINT_TRANSCALLNAME(TARGET)%を無視して生ハメの状態でピストンしはじめた。
+				PRINTFORML レイプ同然の状態に抵抗するも、%ARGS%はそのまま無許可での中出しを敢行した…
+				PRINTW 
+				PRINTFORML 茫然とする%PRINT_TRANSCALLNAME(TARGET)%に、%ARGS%は何食わぬ顔で気持ち良かったよ等と言っている…
+				NAKADASHI = 1
+			ELSE
+				PRINTL 破れたコンドーム
+				PRINTL 
+				PRINTFORML %ARGS%はゴム越しに%PRINT_TRANSCALLNAME(TARGET)%の%SPLIT_SEX(TARGET,"膣内／腸内")%にたっぷりと欲望を吐き出した。
+				PRINTFORML …が、どうにも様子がおかしく、何やら%SPLIT_SEX(TARGET,"膣内／腸内")%に妙な感触が広がっていく。
+				PRINTFORML まさかと思いながら慌ててペニスを引き抜かせると、
+				PRINTFORML 案の定コンドームが破れており、濃厚な精液がどろりと秘裂から溢れ出していた…
+				PRINTW 
+				NAKADASHI = 1
+			ENDIF
+		ELSE
+			PRINTL コンドームに射精
+			PRINTL 
+			PRINTFORML %ARGS%はゴム越しに%PRINT_TRANSCALLNAME(TARGET)%の%SPLIT_SEX(TARGET,"膣内／腸内")%にたっぷりと欲望を吐き出した。
+			PRINTFORML ペニスを引き抜いてみると、コンドームは濃厚な精液でぷっくり膨らんでいた…
+			PRINTW 
+		ENDIF
+	ENDIF
+;ねちっこく調教される
+ELSEIF RAND:2 == 0
+	IF ARG == 0
+		IF RAND:3 == 0
+			PRINT 繁華街のビルの隙間の物陰に、
+		ELSEIF RAND:2 == 0
+			PRINT 人気のない公衆トイレに、
+		ELSE
+			PRINT 黴臭いビルの地下室に、
+		ENDIF
+	ELSEIF ARG == 1
+		PRINT 繁華街のハズレのラブホテルに、
+	ELSEIF ARG == 2
+		PRINT とあるマンションの一室に、
+	ELSE
+		PRINT 見知らぬ場所で、
+	ENDIF
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の嬌声が響いている。
+	PRINTW 
+	IF RAND:2 == 0 && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0)
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は街で知り合った%ARGS%の前に跪き、硬く反り返った男性器に口で奉仕していた。
+		PRINTFORML %ARGS%の言うままに%PRINT_TRANSCALLNAME(TARGET)%は洗ってもいない肉棒に舌を這わせ、先走りを啜っていく…
+		PRINTFORML 舌の使い方から始まり、最後には喉を性器のように扱う術まで教えられ、
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は%ARGS%に口で奉仕する術をたっぷりと教え込まれてしまった…
+		;口上
+		TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_SYOUHU_normalB")
+		;習得
+		;JUEL:習得
+		LOCAL:16 = 100
+		;フェラ経験
+		;EXP:フェラ経験
+		LOCAL:124 = 3
+		;精液経験
+		;EXP:精液経験
+		LOCAL:123 = 3
+	ELSE
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の持ち帰りに成功した%ARGS%は挿入もせず、ただただ執拗にキスを繰り返していた。
+		PRINTFORML 唾液をたっぷりと流し込まれ、口の中で音を立てながら混ぜ合わされ、それを嚥下させられる…
+		PRINTFORML 最初はその行為に嫌悪感しかなかった%PRINT_TRANSCALLNAME(TARGET)%だが、%ARGS%の卓越した舌使いに理性を蕩かされていくに従って
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%のほうから%ARGS%にキスを媚びるまでに狂わされてしまった…
+		;口上
+		TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_SYOUHU_normalC")
+		;習得
+		;JUEL:習得
+		LOCAL:16 = 50
+	ENDIF
+	PRINTL
+	PRINTFORML %ARGS%による%PRINT_TRANSCALLNAME(TARGET)%の調教は、時間の許す限り続いた…
+	IF CONFIG_CHECK_SCREEN_F(3) == 0
+		PRINTW 
+	ELSE
+		PRINTL 
+	ENDIF
+;変態的なプレイをされる
+ELSE
+	IF ARG == 2
+		IF RAND:3 == 0
+			PRINT 繁華街のビルの隙間の物陰で、
+		ELSEIF RAND:2 == 0
+			PRINT 人気のない公衆トイレで、
+		ELSE
+			PRINT 黴臭いビルの地下室で、
+		ENDIF
+	ELSEIF ARG == 1
+		PRINT 繁華街のハズレのラブホテルで、
+	ELSEIF ARG == 2
+		PRINT とあるマンションの一室で、
+	ELSE
+		PRINT 見知らぬ場所で、
+	ENDIF
+	IF RAND:4 == 0
+		PRINTFORMW %PRINT_TRANSCALLNAME(TARGET)%は目隠しに口枷、そして全身を荒縄で縛られて自由を奪われていた。
+		PRINTFORML 何リットルもの浣腸液を詰め込まれた腹はまるで孕んだように醜く膨らみ、縛られた肢体をより淫靡に強調している。
+		PRINTFORML 脂汗を浮かべて責め苦に耐える%PRINT_TRANSCALLNAME(TARGET)%に男が近付き、浣腸液を塞き止めているプラグを勢い良く引き抜くと、
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はくぐもった悲鳴を上げながら汚物を撒き散らし、ぐったりと崩れ落ちた。
+		PRINTL 
+		PRINTFORML %ARGS%による%PRINT_TRANSCALLNAME(TARGET)%への変態行為は、時間の許す限り続いた…
+		;口上
+		TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_SYOUHU_hentaiA")
+		;習得
+		;JUEL:習得
+		LOCAL:16 = 150
+		;Ａ経験
+		;EXP:Ａ経験
+		LOCAL:121 = 3
+		;Ａ感覚
+		;JUEL:快Ａ
+		LOCAL:12 = 15 * ABL:Ａ感覚
+		;フェラ経験
+		;EXP:フェラ経験
+		LOCAL:124 = 1
+		;精液経験
+		;EXP:精液経験
+		LOCAL:123 = 1
+	ELSEIF RAND:3 == 0
+		PRINTFORMW %PRINT_TRANSCALLNAME(TARGET)%は鼻フックで醜く化粧を施され、%ARGS%の前に四つん這いになっていた。
+		PRINTFORML アナルに尻尾を模したプラグを差し込まれている%PRINT_TRANSCALLNAME(TARGET)%の今の身分は牝豚である…
+		PRINTFORML 言葉を喋ることも許されず、ブヒブヒと鳴きながら家畜同然に嬲られ、人間としてのプライドを徹底的に破壊され、
+		PRINTFORML 主人に媚び、与えられる快楽にただ身を任せることを心にも体にも教え込まれていく…
+		PRINTL 
+		PRINTFORML %ARGS%による%PRINT_TRANSCALLNAME(TARGET)%への変態行為は、時間の許す限り続き、終わる頃には%PRINT_TRANSCALLNAME(TARGET)%はすっかり牝豚に堕ちていた…
+		;口上
+		TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_SYOUHU_hentaiB")
+		;習得
+		;JUEL:習得
+		LOCAL:16 = 150
+		;苦痛快楽経験
+		;EXP:苦痛快楽経験
+		LOCAL:132 = 3
+		;苦痛
+		;JUEL:苦痛
+		LOCAL:20 = 100
+		;フェラ経験
+		LOCAL:124 = 1
+		;精液経験
+		LOCAL:123 = 1
+	ELSEIF RAND:2 == 0
+		PRINTFORMW %PRINT_TRANSCALLNAME(TARGET)%は動物の耳を模した髪飾りをつけられ、%ARGS%の前に四つん這いになっていた。
+		PRINTFORML 首輪から伸びたリードを男に握られた%PRINT_TRANSCALLNAME(TARGET)%の今の身分は牝犬である…
+		PRINTFORML 命じられるがまま『芸』をし、成功すれば快楽を、失敗すれば苦痛を与えられ、%PRINT_TRANSCALLNAME(TARGET)%は飴と鞭で%ARGS%に躾けられていく…
+		PRINTL 
+		PRINTFORML %ARGS%による%PRINT_TRANSCALLNAME(TARGET)%への変態行為は、時間の許す限り続き、終わる頃には%PRINT_TRANSCALLNAME(TARGET)%はすっかり牝犬に堕ちていた…
+		;口上
+		TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_SYOUHU_hentaiC")
+		;習得
+		;JUEL:習得
+		LOCAL:16 = 150
+		;苦痛快楽経験
+		;EXP:苦痛快楽経験
+		LOCAL:132 = 2
+		;苦痛
+		;JUEL:苦痛
+		LOCAL:20 = 100
+		;欲情
+		;JUEL:欲情
+		LOCAL:17 = 100
+		;恥情
+		;JUEL:恥情
+		LOCAL:19 = 100
+		;EXP:フェラ経験
+		LOCAL:124 = 1
+		;精液経験
+		;EXP:精液経験
+		LOCAL:123 = 1
+	ELSE
+		PRINTFORMW %PRINT_TRANSCALLNAME(TARGET)%はボンテージに身を包み、手にした鞭で%ARGS%を打ち据えていた。
+		PRINTFORML 手足を縛られ満足に動くこともできない%ARGS%を、ヒールで踏みつけながら鞭で嬲り、爪先を舐めさせ、
+		PRINTFORML さらに%ARGS%自身をヒールで踏みにじり、女王様として崇めさせる、その倒錯的な行為…
+		PRINTL 
+		PRINTFORML 自分の中のサディズムが目覚めて行くに従い、%PRINT_TRANSCALLNAME(TARGET)%奇妙な胸の高鳴りを感じていた…
+		;口上
+		TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_SYOUHU_hentaiD")
+		;習得
+		;JUEL:習得
+		LOCAL:16 = 100
+		;欲情
+		;JUEL:欲情
+		LOCAL:17 = 100
+		;EXP:フェラ経験
+		LOCAL:124 = 1
+		;精液経験
+		;EXP:精液経験
+		LOCAL:123 = 1
+	ENDIF
+	IF CONFIG_CHECK_SCREEN_F(3) == 0
+		PRINTW 
+	ELSE
+		PRINTL 
+	ENDIF
+ENDIF
+
+PRINTW 
+;幽閉中パラメータ変動共通処理へ
+CALL COMMON_PRISON, LOCAL:10, LOCAL:11, LOCAL:12, LOCAL:13, LOCAL:14, LOCAL:15, LOCAL:16, LOCAL:17, LOCAL:18, LOCAL:19, LOCAL:20, LOCAL:21, 1
+
+;経験数の増加
+FOR CCOUNT, 100, 200
+	CALL COMMON_PRISON_EXP, CCOUNT, LOCAL:CCOUNT
+NEXT
+PRINTL 
+
+;珠の取得へ
+CALL _ABLUP, 1
+
+IF NAKADASHI > 0
+	;アフターピル
+	CALL AFTER_PILL, TARGET, 35, 望まない相手
+	;妊娠判定
+	SIF TALENT:オトコ <= 0
+		CALL NINSIN_HANTEI, 3, 800, 望まない相手
+ENDIF
+
+;----------------------------------------------------------------------------------------------------------------------------
+;ナンパ失敗レイプ
+@PASTIME_NANPA_RAPE,ARG:0,ARG:1
+#DIM CCOUNT
+#DIM RAPECOUNT
+#DIM CALLED
+VARSET LOCAL
+SIF ARG:1
+CALLED = 1
+
+;男女平等のオプション
+SIF FILTER_CHECK_F(5) && TALENT:オトコ > 0 
+	RETURN 0
+
+IF CFLAG:1 > 0 && TALENT:変身時ＴＳ > 0
+	RAPECOUNT = CFLAG:321
+ELSE
+	RAPECOUNT = CFLAG:320
+ENDIF
+
+DRAWLINE
+PRINTL ――
+PRINTL ――――
+PRINTW ――――――
+PRINTL 
+IF RAPECOUNT == 0
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%が気が付くと、周りを複数の男に囲まれているようだ。
+	PRINTFORML 取り囲んでいる男の内一人が%PRINT_TRANSCALLNAME(TARGET)%の意識が戻った事に気づき
+	PRINTFORML そろそろヤッちまおうと宣言すると男達がにじり寄ってくる…
+ELSE
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%が気が付くと、周りを複数の男に囲まれているようだ。
+	PRINTFORML 取り囲んでいる男の内一人が下卑た声で今回も頼むわと声を掛けられた。
+	PRINTFORML どうやら以前犯された時の一人だったようだ…
+ENDIF
+PRINTL 
+PRINTFORML 覆面で顔を隠した男たちに取り押さえられ、目の前に勃起したペニスが突き付けられる。
+IF TALENT:淫乱
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は誘惑するように、上目遣いで男に奉仕し始めた・・・
+ELSEIF ABL:欲望 > 3
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は心の中で言い訳をしながら、男のペニスに奉仕し始めた・・・
+ELSEIF ABL:従順 > 3
+	PRINTFORML %STR:2500%との戦いで身体と心に服従を教え込まれている%PRINT_TRANSCALLNAME(TARGET)%は
+	PRINTFORML 碌に鍛錬もしていないであろう男たちを振り払うことができない・・・
+ELSE
+	PRINTFORML 先程何かされた影響なのかまったく力が入らない、%PRINT_TRANSCALLNAME(TARGET)%は
+	PRINTFORML 碌に鍛錬もしていないであろう男たちを振り払うことができない・・・
+ENDIF
+PRINTW 
+IF RAPECOUNT == 0
+	PRINTFORML 両手でそれぞれペニスを握らせ、口にもペニスを咥えさせられた%PRINT_TRANSCALLNAME(TARGET)%。
+	PRINTFORML 手コキとフェラチオで限界に達した男たちが射精に至るが、全く衰える様子をみせない。
+	PRINTFORML するといきなり男たちに押し倒されて、手足を抑えつけられてしまう。
+	PRINTW 
+	IF TALENT:淫乱
+		PRINTFORML 驚きの声を上げる%PRINT_TRANSCALLNAME(TARGET)%の唇を奪い、
+	ELSE
+		PRINTFORML 制止しようとする%PRINT_TRANSCALLNAME(TARGET)%の説得も空しく、
+	ENDIF
+	PRINTFORM 男が
+	IF TALENT:オトコ > 0 && CFLAG:36 < 40
+		    IF EXP:Ａ経験 < 1 && CFLAG:36 <= 30
+			PRINTL 指すら入った事ないアナルをハンドクリーム使い、
+			PRINTL 何度もほぐしてからペニスをアナルの入り口にあてがい、ゆっくり埋めていく。
+			PRINT 異物感と共に、性器として認識されてなかった排泄孔が男に裂かれ、
+
+		    ELSEIF EXP:Ａ経験 < 5 || CFLAG:36 <= 40
+			PRINT ペニスで明らかオトコ慣れてないアナルに捻り込んで、
+			ELSE
+			PRINT ペニスでアナルをほぐして挿入し、
+			ENDIF
+		PRINTL ピストンし始めた。
+		PRINTL 
+
+	ELSEIF TALENT:処女 > 0
+		PRINTL ペニスを何度か擦り付けると、ゆっくりと腰を埋めていく。
+		PRINT 破瓜の痛みと共にまだ男を知らないヴァギナが貫かれ
+		IF TALENT:淫乱 || ABL:欲望 >= 3
+			PRINTL ていく。
+		ELSE
+			PRINT 、
+		ENDIF
+	ELSE
+		PRINTL ペニスをヴァギナに深々と挿入して、ゆっくり腰を使い始めた。
+	ENDIF
+	SIF TALENT:淫乱 == 0 && ABL:欲望 < 3
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の悲鳴が辺りに響き渡る・・・
+ELSE
+	PRINTFORML すると男はそのまま%PRINT_TRANSCALLNAME(TARGET)%を押し倒し、
+	IF TALENT:オトコ > 0
+			IF CFLAG:36 <= 40
+			PRINT 明らかオトコ慣れてないアナルにペニスを捻り込んで、
+			ELSE
+			PRINT アナルに挿入して、
+			ENDIF
+		PRINTL 乱暴にピストンし始めた。
+	ELSEIF TALENT:処女 > 0
+		PRINTL まだ男を知らないヴァギナを貫いた。
+	ELSE
+		PRINTL ヴァギナに挿入して乱暴にピストンし始めた。
+	ENDIF
+ENDIF
+PRINTW 
+IF TALENT:オトコ > 0
+	PRINTFORML 男が限界に登り詰めて直腸内に精液を放出すると、
+ELSEIF TALENT:処女 > 0
+	FONTBOLD
+	PRINTL 処女喪失
+	FONTREGULAR
+	IF TALENT:淫乱 || ABL:欲望 >= 3 || ABL:マゾっ気 >= 3
+		PRINTFORML 乱暴に処女膜を引き裂かれる痛みに耐えながらも、
+		IF TALENT:主観視点 > 0
+			PRINTFORML 誰とも知らない男性に処女を奪われたという事実に%PRINT_TRANSCALLNAME(TARGET)%の体は興奮して
+			PRINTFORML すぐに快楽を感じ始めてしまう。
+		ELSE
+			PRINTFORML 誰とも知らない男性に処女を奪われたという事実に%PRINT_TRANSCALLNAME(TARGET)%は興奮して
+			PRINTFORML すぐに快楽を感じ始めてしまった。
+		ENDIF
+	ELSE
+		PRINTFORML 乱暴に処女膜を引き裂かれる痛みに抵抗する気力を完全に奪われ、
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は自分の身に起きた出来事を現実だと受け止めることすらできずに
+		PRINTFORML 誰とも知らない男に膣肉の純潔を押し開かれていく。
+	ENDIF
+	PRINTW 
+	PRINTFORML 身勝手なピストンで男が限界に登り詰めて膣内射精を決めると、
+ELSE
+	PRINTFORML 男が限界に登り詰めて当然のように膣内射精を決めると、
+ENDIF
+IF RAPECOUNT > 3
+	PRINTFORML 順番待ちをしていた仲間と場所を代わってすぐに凌辱が再開される。
+	IF TALENT:淫乱 || ABL:欲望 >= 3
+		PRINTFORML 既に男たちの相手をすることにも慣れてきた%PRINT_TRANSCALLNAME(TARGET)%は
+		PRINTFORML 手際よく精液を搾り取っていく。
+	ELSE
+		PRINTFORML 既に何度もレイプされたことのある%PRINT_TRANSCALLNAME(TARGET)%は
+		IF TALENT:主観視点 > 0
+			PRINTFORML 歯を食いしばり、諦めたように奉仕に専念する。
+		ELSE
+			PRINTFORML 歯を食いしばり、諦めたように奉仕に専念している。
+		ENDIF
+	ENDIF
+ELSE
+	PRINTFORML 順番待ちをしていた仲間と場所を代わってすぐに凌辱が再開される。
+	PRINTFORML 全員に順番が回ると２週目、３週目が始まって休むことも許されず、
+	IF TALENT:主観視点 > 0
+		PRINTFORML 体を穢され続ける痛みと屈辱に、%PRINT_TRANSCALLNAME(TARGET)%の頬を熱い液体が伝っていく。
+	ELSE
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は目の端に涙を滲ませながら凌辱に耐えている。
+	ENDIF
+ENDIF
+PRINTW 
+IF CALLED == 0
+PRINTFORML 男たちの欲望をどれくらい受け止めたか分からなくなったころ、
+PRINTFORML ようやく満足した彼らは%PRINT_TRANSCALLNAME(TARGET)%を地面に放り捨てた。
+	IF RAPECOUNT > 0
+		PRINTFORML 「次も頼むわ」という言葉と共に、男たちは下卑た笑いだけ残して去っていった。
+	ELSE
+		PRINTFORML 男たちのうち一人がハンディカメラでレイプの一部始終を録画しており、
+		PRINTFORML 誰かに言えばネットに動画を公開するとひと通り脅して立ち去って行った。
+	ENDIF
+	PRINTW 
+	PRINTFORML 全身を白く染められた%PRINT_TRANSCALLNAME(TARGET)%は焦点も定まらず、
+	IF TALENT:淫乱 ||  ABL:欲望 >= 3 || ABL:マゾっ気 >= 3
+		PRINTFORML 快楽の余韻に脳髄を蕩けさせている・・・
+	ELSE
+		PRINTFORML 犯されたショックと疲労で動くことができなかった・・・
+		PRINTL
+		PRINTL
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は憂鬱状態になりました
+		PRINTL
+	ENDIF
+PRINTW 
+ELSE
+
+ENDIF
+
+
+
+IF TALENT:オトコ <= 0
+	IF ABL:Ｖ感覚 == 0
+		LOCAL:11 = 10
+	ELSEIF ABL:Ｖ感覚 == 1
+		LOCAL:11 = 20
+	ELSEIF ABL:Ｖ感覚 == 2
+		LOCAL:11 = 40
+	ELSEIF ABL:Ｖ感覚 == 3
+		LOCAL:11 = 100
+	ELSEIF ABL:Ｖ感覚 == 4
+		LOCAL:11 = 200
+	ELSE
+		LOCAL:11 = 400
+	ENDIF
+
+	;Ｖ経験
+	LOCAL:120 = 10 + RAND:30
+
+	IF TALENT:処女 > 0
+		TALENT:処女 = -1
+		CFLAG:206 = 11
+		LOCAL:20 = 500
+	ELSE
+		LOCAL:11 *= 3
+	ENDIF
+ENDIF
+
+IF ABL:Ａ感覚 == 0
+	LOCAL:12 = 6
+ELSEIF ABL:Ａ感覚 == 1
+	LOCAL:12 = 50
+ELSEIF ABL:Ａ感覚 == 2
+	LOCAL:12 = 200
+ELSEIF ABL:Ａ感覚 == 3
+	LOCAL:12 = 600
+ELSEIF ABL:Ａ感覚 == 4
+	LOCAL:12 = 900
+ELSE
+	LOCAL:12 = 1200
+ENDIF
+
+;Ａ経験
+LOCAL:121 = 40 - LOCAL:120 + RAND:5 - RAND:5
+SIF TALENT:オトコ > 0
+TIMES LOCAL:121 , 1.50
+
+;精液経験
+LOCAL:123 = 15 + RAND:16
+;フェラ経験
+LOCAL:124 = 12 + RAND:5
+
+;習得、屈服、恐怖
+LOCAL:16 = 100
+LOCAL:18 = 500
+LOCAL:21 = 500
+
+;レイプ回数をカウント
+IF CFLAG:1 > 1 && TALENT:変身時ＴＳ > 0
+	CFLAG:321 += 1
+ELSE
+	CFLAG:320 += 1
+ENDIF
+
+;オトコか異常経験が３つ以下なら異常経験が付く
+SIF TALENT:オトコ > 0 || EXP:異常経験 < 3
+	LOCAL:150 = 1
+
+;狭すぎた場合は拡張度追加
+IF TALENT:オトコ <= 0 && CFLAG:35 <= 40
+    CFLAG:35 += 10
+	LOCAL:151 = 2
+ENDIF
+
+IF CFLAG:36 <= 40
+    CFLAG:36 += 10
+	LOCAL:152 = 2
+ENDIF
+
+
+;苦痛快楽経験
+LOCAL:132 = 2 + RAND:3
+;輪姦経験
+LOCAL:113 = 1
+
+;幽閉中パラメータ変動共通処理へ
+CALL COMMON_PRISON, LOCAL:10, LOCAL:11, LOCAL:12, LOCAL:13, LOCAL:14, LOCAL:15, LOCAL:16, LOCAL:17, LOCAL:18, LOCAL:19, LOCAL:20, LOCAL:21, 1
+
+;経験数の増加
+FOR CCOUNT, 100, 200
+	CALL COMMON_PRISON_EXP, CCOUNT, LOCAL:CCOUNT
+NEXT
+PRINTL 
+
+;珠の取得へ
+CALL _ABLUP, 1
+
+;アフターピル
+CALL AFTER_PILL, TARGET, 20, 望まない相手
+;妊娠判定
+SIF TALENT:オトコ <= 0
+	CALL NINSIN_HANTEI, LOCAL:123, 100, 望まない相手
+
+
+;四ターン強制休憩フラグ
+IF TALENT:淫乱 ||  ABL:欲望 >= 3 || ABL:マゾっ気 >= 3
+CFLAG:99 = 10
+BASE:体力 = (BASE:体力*20)/100
+BASE:気力 = (BASE:気力*20)/100
+BASE:性耐性 = 0
+ELSE
+CFLAG:15 = 5
+BASE:体力 = 0
+BASE:気力 = 0
+BASE:性耐性 = 0
+CFLAG:99 = 50
+ENDIF
+SIF RAND:100 < 30
+CFLAG:825 += 1
+RETURN 1
+

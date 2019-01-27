@@ -1,0 +1,113 @@
+;**********************************************************
+;基本ルール
+;加筆修正は、自由に行ってください
+;ただし、前の方が書いた文章は出来るだけ消さないでください
+;
+;書き込む順番は、クドくなり過ぎないように3要素と部位で表現します
+;【実況】汁に濡れている、寄生されている、触手拘束具などを装着など
+;【形状】大きさ、深さなど、
+;【動作】開閉している、うごめいているなど、動きを表現
+;【部位呼称】淫乱や発情や性格で下品な書き方に
+;
+;内側のビラビラのことは書かないようにしてください
+;
+;増やして欲しい隠語は、アウトプットしてリクエストなりしましょう
+;未登録の中に放り込むなり、掲示板にアップするなりすれば、
+;実装される可能性があります
+;
+;by 雑魚の人 2018/02/11
+;**********************************************************
+;LabiaMajora(大陰唇)の淫語
+@SLANG_LabiaMajora(ARG)
+#DIMS SLANGWORD_LabiaMajora
+#FUNCTIONS
+
+;初期化
+SLANGWORD_LabiaMajora=
+
+;第一形容詞：状況（汁気など）
+;STAIN:3:膣、ワレメ
+IF (STAIN:3 & 4)
+	SLANGWORD_LabiaMajora = %SLANGWORD_LabiaMajora%%SLANG_SEMEN(TARGET)%
+	SELECTCASE RAND:2
+		CASE 1
+			SLANGWORD_LabiaMajora += "で穢されている"
+		CASEELSE
+			SLANGWORD_LabiaMajora += "が濡れている"
+	ENDSELECT
+ENDIF
+
+
+
+;第二形容詞：形状表現
+;安産型
+IF TALENT:812 == 1
+	SLANGWORD_LabiaMajora += "プリプリしている"
+;むちむち
+ELSEIF TALENT:812 == 2
+	SLANGWORD_LabiaMajora += "ムチムチしている"
+;イカ腹
+ELSEIF TALENT:812 == 3
+	SLANGWORD_LabiaMajora += "プニっとしている"
+;スレンダー
+ELSEIF TALENT:812 == 4
+	SLANGWORD_LabiaMajora += "スラッとしている"
+ENDIF
+
+
+
+;第三形容詞：動作表現
+IF TALENT:淫乱 > 0
+	SELECTCASE RAND:2
+		CASE 1
+			SLANGWORD_LabiaMajora += "期待で開く"
+		CASEELSE
+			SLANGWORD_LabiaMajora += "興奮で開く"
+	ENDSELECT
+ENDIF
+
+
+
+;部位呼称
+IF TALENT:淫乱 > 0
+	SELECTCASE RAND:3
+		CASE 2
+			SLANGWORD_LabiaMajora += "淫らな裂け目"
+		CASE 1
+			SLANGWORD_LabiaMajora += "淫らな谷間"
+		CASEELSE
+			SLANGWORD_LabiaMajora += "淫裂"
+	ENDSELECT
+ELSE
+	SELECTCASE RAND:4
+		CASE 3
+			SLANGWORD_LabiaMajora += "大陰唇"
+		CASE 2
+			SLANGWORD_LabiaMajora += "陰裂"
+		CASE 1
+			SLANGWORD_LabiaMajora += "ワレメ"
+		CASEELSE
+			SLANGWORD_LabiaMajora += "縦筋"
+	ENDSELECT
+ENDIF
+
+
+;合成して出来上がった淫語を返す
+RETURNF SLANGWORD_LabiaMajora
+
+
+
+
+
+;*************【淫語覚書（未登録）】***********************
+;媚肉の二枚貝
+;
+;
+;
+;
+;*************【淫語覚書（未登録）】***********************
+
+
+
+
+

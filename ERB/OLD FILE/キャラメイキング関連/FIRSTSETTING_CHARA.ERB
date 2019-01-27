@@ -1,0 +1,1866 @@
+;**********************************************************
+;キャラ個別の設定ファイル
+;ARG   = 対象キャラ
+;ARG:1 = 周回で引き継いだボーナス値
+;ARG:2 = キャラメイク制限
+@FIRSTSETTING_CHARA_MAIN, ARG, ARG:1 = 0, ARG:2 = 0
+$MASTER_LOOP
+;キャラ設定を１度でも開いたキャラは編集済み扱いにする
+IF CALLNAME:ARG == "汎用キャラ"
+	;女性なら処女の清純派持ちにする
+	IF TALENT:ARG:オトコ <= 0
+		TALENT:ARG:処女 = 1
+		TALENT:ARG:清純派 = 1
+	ENDIF
+
+	;キャラ名のランダム生成
+	;キャラメイキングの関数の処理と同じ
+	LOCAL:0 = 0
+	LOCAL:1 = 0
+	;３/４の確率で日本語名
+	IF RAND:4 != 0
+		;苗字
+		LOCAL:0 = RAND:500 + 3000
+		WHILE STR:(LOCAL:0) == ""
+			LOCAL:0 = RAND:500 + 3000
+		WEND
+		LOCALS:0 = %STR:(LOCAL:0)%
+		;名前
+		IF TALENT:ARG:オトコ > 0
+			LOCAL:1 = RAND:500 + 16000
+			WHILE STR:(LOCAL:1) == ""
+				LOCAL:1 = RAND:500 + 16000
+			WEND
+			LOCALS:1 = %STR:(LOCAL:1)%
+		ELSE
+			LOCAL:1 = RAND:500 + 12000
+			WHILE STR:(LOCAL:1) == ""
+				LOCAL:1 = RAND:500 + 12000
+			WEND
+			LOCALS:1 = %STR:(LOCAL:1)%
+		ENDIF
+
+		;日本語名の場合、日本人風の外見
+		IF RAND:8 == 0
+			IF RAND:3 == 0
+				CSTR:ARG:30 = 赤
+				CSTR:ARG:31 = 赤
+			ELSEIF RAND:2 == 0
+				CSTR:ARG:30 = 緑
+				CSTR:ARG:31 = 緑
+			ELSE
+				CSTR:ARG:30 = 青
+				CSTR:ARG:31 = 青
+			ENDIF
+		ELSEIF RAND:3 != 0
+			CSTR:ARG:30 = 茶
+			CSTR:ARG:31 = 茶
+		ELSE
+			CSTR:ARG:30 = 黒
+			CSTR:ARG:31 = 黒
+		ENDIF
+		CSTR:ARG:32 = 黒
+		CSTR:ARG:33 = 黒
+		CSTR:ARG:34 = 黒
+		CSTR:ARG:35 = 黒
+		IF RAND:4 == 0
+			CSTR:ARG:36 = 褐色
+			CSTR:ARG:37 = 褐色
+		ELSE
+			CSTR:ARG:36 = 肌色
+			CSTR:ARG:37 = 肌色
+		ENDIF
+		;特殊外見
+		IF RAND:15 == 0
+			;アルビノ
+			CSTR:ARG:30 = 銀
+			CSTR:ARG:31 = 銀
+			CSTR:ARG:32 = 赤
+			CSTR:ARG:33 = 赤
+			CSTR:ARG:34 = 赤
+			CSTR:ARG:35 = 赤
+			CSTR:ARG:36 = 色白
+			CSTR:ARG:37 = 色白
+		ENDIF
+	ELSE
+		;苗字
+		LOCAL:0 = RAND:12000 + 3000
+		WHILE STR:(LOCAL:0) == ""
+			LOCAL:0 = RAND:12000 + 3000
+		WEND
+		LOCALS:0 = %STR:(LOCAL:0)%
+		;名前
+		LOCAL:1 = RAND:5000 + 15000
+		WHILE STR:(LOCAL:1) == ""
+			LOCAL:1 = RAND:5000 + 15000
+		WEND
+		LOCALS:1 = %STR:(LOCAL:1)%
+
+		;西洋名の場合、西洋風の外見
+		IF RAND:6 == 0
+			CSTR:ARG:30 = 銀
+			CSTR:ARG:31 = 銀
+		ELSEIF RAND:4 == 0
+			CSTR:ARG:30 = 赤
+			CSTR:ARG:31 = 赤
+		ELSEIF RAND:14 == 0
+			CSTR:ARG:30 = 緑
+			CSTR:ARG:31 = 緑
+		ELSEIF RAND:12 == 0
+			CSTR:ARG:30 = 青
+			CSTR:ARG:31 = 青
+		ELSEIF RAND:2 == 0
+			CSTR:ARG:30 = 茶
+			CSTR:ARG:31 = 茶
+		ELSE
+			CSTR:ARG:30 = 金
+			CSTR:ARG:31 = 金
+		ENDIF
+		IF RAND:12 == 0
+			CSTR:ARG:32 = 赤
+			CSTR:ARG:33 = 赤
+			CSTR:ARG:34 = 赤
+			CSTR:ARG:35 = 赤
+		ELSEIF RAND:8 == 0
+			CSTR:ARG:32 = 紫
+			CSTR:ARG:33 = 紫
+			CSTR:ARG:34 = 紫
+			CSTR:ARG:35 = 紫
+		ELSEIF RAND:4 == 0
+			CSTR:ARG:32 = 青
+			CSTR:ARG:33 = 青
+			CSTR:ARG:34 = 青
+			CSTR:ARG:35 = 青
+		ELSE
+			CSTR:ARG:32 = 茶
+			CSTR:ARG:33 = 茶
+			CSTR:ARG:34 = 茶
+			CSTR:ARG:35 = 茶
+		ENDIF
+		IF RAND:20 == 0
+			CSTR:ARG:36 = 銀
+			CSTR:ARG:37 = 銀
+		ELSEIF RAND:20 == 0
+			CSTR:ARG:36 = 黒
+			CSTR:ARG:37 = 黒
+		ELSEIF RAND:4 == 0
+			CSTR:ARG:36 = 褐色
+			CSTR:ARG:37 = 褐色
+		ELSEIF RAND:10 == 0
+			CSTR:ARG:36 = 肌色
+			CSTR:ARG:37 = 肌色
+		ELSE
+			CSTR:ARG:36 = 色白
+			CSTR:ARG:37 = 色白
+		ENDIF
+
+		;特殊外見
+		IF RAND:6 == 0
+			;褐色娘
+			CSTR:ARG:30 = 銀
+			CSTR:ARG:31 = 銀
+			CSTR:ARG:36 = 褐色
+			CSTR:ARG:37 = 褐色
+		ELSEIF RAND:5 == 0
+			;金髪碧眼
+			CSTR:ARG:30 = 金
+			CSTR:ARG:31 = 金
+			CSTR:ARG:32 = 青
+			CSTR:ARG:33 = 青
+			CSTR:ARG:34 = 青
+			CSTR:ARG:35 = 青
+		ELSEIF RAND:10 == 0
+			;アルビノ
+			CSTR:ARG:30 = 銀
+			CSTR:ARG:31 = 銀
+			CSTR:ARG:32 = 赤
+			CSTR:ARG:33 = 赤
+			CSTR:ARG:34 = 赤
+			CSTR:ARG:35 = 赤
+			CSTR:ARG:36 = 色白
+			CSTR:ARG:37 = 色白
+		ENDIF
+	ENDIF
+
+	;変身後の髪色をランダムで変える
+	IF RAND:4 == 0
+		IF RAND:8 == 0
+			CSTR:ARG:31 = 赤
+		ELSEIF RAND:7 == 0
+			CSTR:ARG:31 = 緑
+		ELSEIF RAND:6 == 0
+			CSTR:ARG:31 = 青
+		ELSEIF RAND:5 == 0
+			CSTR:ARG:31 = 黄
+		ELSEIF RAND:4 == 0
+			CSTR:ARG:31 = 紫
+		ELSEIF RAND:3 == 0
+			CSTR:ARG:31 = 橙
+		ELSEIF RAND:2 == 0
+			CSTR:ARG:31 = 桃
+		ENDIF
+	ENDIF
+
+	;変身後の瞳の色をランダムで変える
+	IF RAND:50 == 0
+		;オッドアイ
+		IF RAND:8 == 0
+			CSTR:ARG:(34 + RAND:2) = 赤
+		ELSEIF RAND:7 == 0
+			CSTR:ARG:(34 + RAND:2) = 緑
+		ELSEIF RAND:6 == 0
+			CSTR:ARG:(34 + RAND:2) = 青
+		ELSEIF RAND:5 == 0
+			CSTR:ARG:(34 + RAND:2) = 黄
+		ELSEIF RAND:4 == 0
+			CSTR:ARG:(34 + RAND:2) = 紫
+		ELSEIF RAND:3 == 0
+			CSTR:ARG:(34 + RAND:2) = 橙
+		ELSEIF RAND:2 == 0
+			CSTR:ARG:(34 + RAND:2) = 桃
+		ENDIF
+	ELSEIF RAND:4 == 0
+		IF RAND:8 == 0
+			CSTR:ARG:34 = 赤
+			CSTR:ARG:35 = 赤
+		ELSEIF RAND:7 == 0
+			CSTR:ARG:34 = 緑
+			CSTR:ARG:35 = 緑
+		ELSEIF RAND:6 == 0
+			CSTR:ARG:34 = 青
+			CSTR:ARG:35 = 青
+		ELSEIF RAND:5 == 0
+			CSTR:ARG:34 = 黄
+			CSTR:ARG:35 = 黄
+		ELSEIF RAND:4 == 0
+			CSTR:ARG:34 = 紫
+			CSTR:ARG:35 = 紫
+		ELSEIF RAND:3 == 0
+			CSTR:ARG:34 = 橙
+			CSTR:ARG:35 = 橙
+		ELSEIF RAND:2 == 0
+			CSTR:ARG:34 = 桃
+			CSTR:ARG:35 = 桃
+		ENDIF
+	ENDIF
+
+	IF LOCAL:0 < 4000
+		LOCALS:2 = %LOCALS:0% %LOCALS:1%
+	ELSE
+		LOCALS:2 = %LOCALS:1% %LOCALS:0%
+	ENDIF
+	NAME:ARG = %LOCALS:2%
+	CALLNAME:ARG = %LOCALS:1%
+	CSTR:ARG:200 = %LOCALS:1%
+	CSTR:ARG:10 = %LOCALS:0%
+
+	;デフォルトで変身能力ありにする
+	TALENT:ARG:変身能力 = 1
+
+	;素質のランダム設定
+	BASE:ARG:年齢 = RAND:11 + 10
+	BASE:ARG:実年齢 = BASE:ARG:年齢
+	IF TALENT:ARG:変身能力 > 0 && MAXBASE:ARG:年齢 <= 18 && RAND:4 == 0
+		MAXBASE:ARG:年齢 = BASE:ARG:年齢 + RAND:6
+	ELSEIF TALENT:ARG:変身能力 > 0
+		MAXBASE:ARG:年齢 = BASE:ARG:年齢
+	ENDIF
+	CALL CHARA_MAKE_STATUS_TALENT, ARG
+	SIF (ARG:2) == 0
+		CALL CHARA_MAKE_STATUS_TALENT_FLAVOR, ARG
+	CALL CHARA_MAKE_STATUS_TALENT_SEIKAKU, ARG, RAND:4
+
+	;一人称を低確率で変更
+	IF RAND:20 == 0 || TALENT:ARG:オトコ > 0
+		IF RAND:2 == 0
+			CFLAG:ARG:8 = 25 + RAND:3
+		ELSE
+			CFLAG:ARG:8 = 30 + RAND:3
+		ENDIF
+	ENDIF
+ENDIF
+IF CFLAG:ARG:34 == 0
+	;スリーサイズ等設定
+	CALL GENERATE_BODYLINE, ARG
+	CALL CHARA_MAKE_AGE_SETTING, ARG
+	CALL CHARA_SIZE_DEFAULT, ARG
+ENDIF
+SIF CALLNAME:ARG != ""
+	CSTR:ARG:200 = %CALLNAME:ARG%
+;共通設定からのロード
+IF CSTR:ARG:0 == "" && SAVESTR:11 != ""
+	CSTR:ARG:0 = %SAVESTR:11%%LOCALS:1%
+	CFLAG:ARG:2 = 1
+ENDIF
+IF CSTR:ARG:1 == "" && CSTR:ARG:0 != ""
+	CSTR:ARG:1 = %CSTR:ARG:0%
+	CFLAG:ARG:3 = 1
+ENDIF
+IF CSTR:ARG:2 == "" && SAVESTR:12 != ""
+	CSTR:ARG:2 = %SAVESTR:12%
+	CFLAG:ARG:4 = 1
+ENDIF
+;圧縮武器データの解凍
+SIF CSTR:ARG:15 != ""
+	CALL DECODE_WEAPON_DATA, ARG, 1
+SIF CSTR:ARG:16 != ""
+	CALL DECODE_WEAPON_DATA, ARG, 2
+SIF CSTR:ARG:17 != ""
+	CALL DECODE_WEAPON_DATA, ARG, 3
+;圧縮武器データのクリア
+CSTR:ARG:15 =
+CSTR:ARG:16 =
+CSTR:ARG:17 =
+
+$START_CHARA_SETTING
+CALL LB
+PRINTL ･････････････････････････････････････････････････････
+PRINTFORML キャラクター {ARG:0} 設定
+
+IF TALENT:ARG:ふたなり > 0
+	LOCALS = ふたなり
+	IF TALENT:ARG:変身時ＴＳ > 0
+		LOCALS:1 = (変身時:男)
+	ELSEIF TALENT:ARG:変身能力 > 0
+		LOCALS:1 = (変身時:女)
+	ELSE
+		LOCALS:1 =
+	ENDIF
+ELSEIF TALENT:ARG:オトコ > 0
+	LOCALS = 男
+	IF TALENT:ARG:変身時ふたなり > 0
+		LOCALS:1 = (変身時:ふたなり)
+	ELSEIF TALENT:ARG:変身時ＴＳ > 0
+		LOCALS:1 = (変身時:女)
+	ELSE
+		LOCALS:1 =
+	ENDIF
+ELSE
+	LOCALS = 女
+	IF TALENT:ARG:変身時ふたなり > 0
+		LOCALS:1 = (変身時:ふたなり)
+	ELSEIF TALENT:ARG:変身時ＴＳ > 0
+		LOCALS:1 = (変身時:男)
+	ELSE
+		LOCALS:1 =
+	ENDIF
+ENDIF
+SIF TALENT:ARG:固有キャラ != 0
+	SETCOLOR 128,128,128
+PRINTFORML [ 0]性別・・・・・・・・・・『%LOCALS%』　%LOCALS:1%
+RESETCOLOR
+PRINTFORML [ 1]氏名・・・・・・・・・・『%NAME:ARG%』
+PRINTFORML [ 2]呼び名・・・・・・・・・『%CALLNAME:ARG%』
+PRINTFORML [ 3]一人称・・・・・・・・・『%SELF_CALL(0, 0, ARG)% <%SELF_CALL(7, 0, ARG)%>』
+SIF TALENT:ARG:固有キャラ != 0 || (ARG:2) > 0
+	SETCOLOR 128,128,128
+PRINTFORM [ 4]種族・・・・・・・・・・『
+CALL SYUZOKU_CHECK, "PRINT", ARG
+PRINTL 』
+RESETCOLOR
+SIF TALENT:ARG:固有キャラ != 0
+	SETCOLOR 128,128,128
+PRINTFORM [ 5]性格・・・・・・・・・・『
+CALL SEIKAKU_CHECK, "PRINT", ARG
+PRINTL 』
+RESETCOLOR
+PRINTFORM [ 6]口上設定・・・・・・・・
+IF TALENT:ARG:口上設定 < 0
+	PRINT 『非表示』
+ELSEIF TALENT:ARG:口上設定 == 0
+	PRINT 『汎用』
+ELSEIF TALENT:ARG:口上設定 == 1
+	PRINT 『ロボ風』
+ELSEIF TALENT:ARG:口上設定 == 2
+	PRINT 『あなた』
+ELSEIF NO:ARG != 0
+	PRINTFORM 『専用口上({NO:ARG}番)』
+ENDIF
+SIF TALENT:ARG:主観視点 > 0
+	PRINT  + 『主観モード』
+PRINTL 
+
+SIF TALENT:ARG:固有キャラ != 0
+	SETCOLOR 128,128,128
+PRINTFORM [ 7]戦闘能力・・・・・・・・ 
+IF TALENT:ARG:変身能力 == 1
+	PRINTL 変身能力あり
+ELSEIF TALENT:ARG:変身能力 == -1
+	PRINTL 非戦闘員
+ELSE
+	PRINTL 変身能力なし、戦闘能力あり
+ENDIF
+RESETCOLOR
+IF TALENT:ARG:変身能力 == 1
+	PRINTFORML [ 8]　変身後名・・・・・・\@(CFLAG:ARG:2 == 1) ?・『%CSTR:ARG:0%』#・ なし\@
+	PRINTFORML [ 9]　変身後呼び名・・・・\@(CFLAG:ARG:3 == 1) ?・『%CSTR:ARG:1%』#・ なし\@
+	PRINTFORML [10]　変身時かけ声・・・・\@(CFLAG:ARG:4 == 1) ?・『%CSTR:ARG:2%』#・ なし\@
+	PRINTFORML [11]　変身後名乗り口上・・\@(CFLAG:ARG:5 == 1) ?・『%CSTR:ARG:3%』#・ なし\@
+	SIF CFLAG:ARG:0 == 3
+		SETCOLOR 96,96,96
+	PRINTFORML [12]　変身コスチューム・・・『%ITEMNAME:(CFLAG:ARG:41)%』
+	RESETCOLOR
+ENDIF
+PRINTL ･････････････････････････････････････････････････････
+PRINTL [20]キャラクタープロフィールの設定
+PRINTL ･････････････････････････････････････････････････････
+PRINT [21]
+CALL SHOW_STATUS_TALENT, ARG, 2
+RESETCOLOR
+PRINTL ･････････････････････････････････････････････････････
+PRINT [22]基礎値ボーナス	
+PRINTFORML （のこり +{(JUEL:ARG:修練P / 10)}pts）
+PRINTL 
+PRINTFORML 体力　：{BASE:ARG:体力 + CFLAG:ARG:50 * 10 + FEAT_BONUS_F(ARG,0),4}    気力　：{BASE:ARG:気力 + CFLAG:ARG:51 * 10 + FEAT_BONUS_F(ARG,1),4}    性耐性：{BASE:ARG:性耐性 + CFLAG:ARG:52 + FEAT_BONUS_F(ARG,2),4}
+PRINTL ---
+PRINTFORML 攻撃　：{BASE:ARG:攻撃 + CFLAG:ARG:53 + FEAT_BONUS_F(ARG,3),4}    防御　：{BASE:ARG:防御 + CFLAG:ARG:54 + FEAT_BONUS_F(ARG,4),4}
+PRINTFORML 敏捷　：{BASE:ARG:敏捷 + CFLAG:ARG:55 + FEAT_BONUS_F(ARG,5),4}    知性　：{BASE:ARG:知性 + CFLAG:ARG:56 + FEAT_BONUS_F(ARG,6),4}
+PRINTL ･････････････････････････････････････････････････････
+PRINT 調教耐性： 
+CALL SHOW_RESISTSEX,SEIKAKU_CHECK_F(ARG), ARG
+PRINTL 
+PRINTL ･････････････････････････････････････････････････････
+IF TALENT:ARG:変身能力 != -1
+	PRINTL [23]武器カスタマイズの設定
+	PRINT 近距離　銘：
+	IF CSTR:ARG:5 != ""
+		PRINT ○　
+	ELSE
+		PRINT 無　
+	ENDIF
+	SETCOLOR 96,96,96
+	PRINT 描写：汎用　
+	RESETCOLOR
+	PRINT 戦闘スタイル：
+	PRINTFORM <<%FSTYLE_NAME_F(ARG,1)%>>
+	PRINTL 
+	PRINT 中距離　銘：
+	IF CSTR:ARG:6 != ""
+		PRINT ○　
+	ELSE
+		PRINT 無　
+	ENDIF
+	SETCOLOR 96,96,96
+	PRINT 描写：汎用　
+	RESETCOLOR
+	PRINT 戦闘スタイル：
+	PRINTFORM <<%FSTYLE_NAME_F(ARG,2)%>>
+	PRINTL 
+	PRINT 遠距離　銘：
+	IF CSTR:ARG:7 != ""
+		PRINT ○　
+	ELSE
+		PRINT 無　
+	ENDIF
+	SETCOLOR 96,96,96
+	PRINT 描写：汎用　
+	RESETCOLOR
+	PRINT 戦闘スタイル：
+	PRINTFORM <<%FSTYLE_NAME_F(ARG,3)%>>
+	PRINTL 
+ENDIF
+PRINTL ･････････････････････････････････････････････････････
+SIF TALENT:ARG:固有キャラ > 0 || TALENT:ARG:初期経験設定不可 > 0
+	SETCOLOR 128,128,128
+PRINTL [24]初期経験の設定
+PRINT 　
+CALL FIRSTSETTING_PRINT_EXP, ARG
+PRINTL 
+RESETCOLOR
+PRINTL ･････････････････････････････････････････････････････
+PRINTLC [99]決定
+SIF (ARG:2) == 0
+	PRINTLC [999]CSVから読み込む
+PRINTL 
+
+$LOOP_CHARA_SETTING_0
+INPUT
+IF RESULT == 0 && TALENT:ARG:固有キャラ == 0
+	;キャラの性別の設定
+	CALL FIRSTSETTING_CHARA_SEX, ARG
+	GOTO START_CHARA_SETTING
+ELSEIF RESULT == 1
+	;キャラの氏名の設定
+	CALL FIRSTSETTING_CHARA_NAME, ARG
+	GOTO START_CHARA_SETTING
+ELSEIF RESULT == 2
+	;キャラの呼び名の設定
+	CALL FIRSTSETTING_CHARA_CALLNAME, ARG
+	GOTO START_CHARA_SETTING
+ELSEIF RESULT == 3
+	;キャラの一人称の設定
+	CALL FIRSTSETTING_CHARA_SELFCALL, ARG
+	GOTO START_CHARA_SETTING
+ELSEIF RESULT == 4 && TALENT:ARG:固有キャラ == 0 && (ARG:2) == 0
+	;キャラの種族の設定
+	CALL FIRSTSETTING_CHARA_SYUZOKU, ARG
+	GOTO START_CHARA_SETTING
+ELSEIF RESULT == 5 && TALENT:ARG:固有キャラ == 0
+	;キャラの性格の設定
+	CALL FIRSTSETTING_CHARA_SEIKAKU, ARG
+	GOTO START_CHARA_SETTING
+ELSEIF RESULT == 6
+	;キャラの口上設定変更
+	CALL FIRSTSETTING_CHARA_KOJO, ARG
+	GOTO START_CHARA_SETTING
+ELSEIF RESULT == 7 && TALENT:ARG:固有キャラ == 0
+	;キャラの変身能力の設定
+	CALL FIRSTSETTING_CHARA_TRANSABILITY, ARG
+	GOTO START_CHARA_SETTING
+ELSEIF RESULT == 8 && TALENT:ARG:変身能力 == 1
+	;キャラの変身後名前の設定
+	CALL FIRSTSETTING_CHARA_TRANSAFTERNAME, ARG
+	GOTO START_CHARA_SETTING
+ELSEIF RESULT == 9 && TALENT:ARG:変身能力 == 1
+	;キャラの変身後呼び名の設定
+	IF CFLAG:ARG:2 == 1
+		;キャラの変身後呼び名フラグを立てる
+		CFLAG:ARG:3 = 1
+		CALL FIRSTSETTING_CHARA_TRANSAFTERCALLNAME, ARG
+	ENDIF
+	GOTO START_CHARA_SETTING
+ELSEIF RESULT == 10 && TALENT:ARG:変身能力 == 1
+	;キャラの変身時のかけ声の設定
+	CALL FIRSTSETTING_CHARA_TRANSCALL, ARG
+	GOTO START_CHARA_SETTING
+ELSEIF RESULT == 11 && TALENT:ARG:変身能力 == 1
+	;キャラの名乗り口上の設定
+	CALL FIRSTSETTING_CHARA_NANORI, ARG
+	GOTO START_CHARA_SETTING
+ELSEIF RESULT == 12 && TALENT:ARG:変身能力 == 1 && CFLAG:ARG:0 != 3
+	;キャラの初期コスチュームを設定
+	CALL FIRSTSETTING_CHARA_COSTUME, ARG
+	GOTO START_CHARA_SETTING
+ELSEIF RESULT == 20
+	SIF CFLAG:ARG:34 == 0
+		CALL GENERATE_BODYLINE, ARG
+	CALL SIZE_SETTING, ARG
+	GOTO START_CHARA_SETTING
+ELSEIF RESULT == 21
+	;キャラの素質の設定
+	CALL FIRSTSETTING_CHARA_TALENT, ARG, (ARG:2)
+	GOTO START_CHARA_SETTING
+ELSEIF RESULT == 22
+	;キャラの基礎値ボーナスの設定
+	CALL FIRSTSETTING_STATUS_BONUS, ARG
+	GOTO START_CHARA_SETTING
+ELSEIF RESULT == 23 && TALENT:ARG:変身能力 != -1
+	;武器カスタマイズの設定
+	CALL WEAPON_CUSTOMIZE, ARG, 1
+	GOTO START_CHARA_SETTING
+ELSEIF RESULT == 24 && TALENT:ARG:固有キャラ == 0 && TALENT:ARG:初期経験設定不可 == 0
+	;初期経験の設定
+	CALL FIRSTSETTING_CHARA_EXP, ARG
+	GOTO START_CHARA_SETTING
+ELSEIF RESULT == 99
+	;部位結界の設定
+	CALL BASEUP_CAL_SHIELD, ARG
+ELSEIF RESULT == 999 && (ARG:2) == 0
+	CALL FIRSTSETTING_CHARA_LOADCSV, ARG
+	;修練Ｐボーナスを追加
+	JUEL:ARG:修練P += (ARG:1) * 10
+	IF CALLNAME:ARG == "汎用キャラ"
+		GOTO MASTER_LOOP
+	ELSE
+		IF CFLAG:ARG:34 == 0
+			;スリーサイズ等設定
+			CALL CHARA_MAKE_AGE_SETTING, ARG
+			CALL CHARA_SIZE_DEFAULT, ARG
+		ENDIF
+		GOTO START_CHARA_SETTING
+	ENDIF
+ELSE
+	CLEARLINE 1
+	GOTO LOOP_CHARA_SETTING_0
+ENDIF
+
+;キャラの設定の確認
+;CALL FIRSTSETTING_CHARA_KAKUNIN, ARG
+;DRAWLINE
+
+;名前や変身後名の一時保存の初期化
+REPEAT 4
+	SAVESTR:(COUNT) = %STRCLEAR()%
+REND
+
+;-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+;キャラの性別設定
+@FIRSTSETTING_CHARA_SEX, ARG
+$INPUT_LOOP
+PRINTFORML {ARG:0}人目のキャラの性別を設定してください
+PRINTL ･････････････････････････････････････････････････････
+PRINTL [0]女性
+SIF TALENT:ARG:変身能力 == 1
+	PRINTL [1]女性 ＆ 変身時ＴＳ
+PRINTL [2]男性
+SIF TALENT:ARG:変身能力 == 1
+	PRINTL [3]男性 ＆ 変身時ＴＳ
+INPUT
+SIF TALENT:ARG:変身能力 == 1 && (RESULT == 0 || RESULT == 2)
+	TALENT:ARG:変身時ＴＳ = 0
+SIF TALENT:ARG:変身能力 == 1 && (RESULT == 1 || RESULT == 3)
+	TALENT:ARG:変身時ＴＳ = 1
+IF RESULT == 0 || (RESULT == 1 && TALENT:ARG:変身能力 == 1)
+	IF TALENT:ARG:変身時ＴＳ > 0
+		LOCALS = 女/オトコ
+	ELSEIF TALENT:ARG:変身能力 == 1
+		LOCALS = 女/女
+	ELSE
+		LOCALS = 女
+	ENDIF
+	PRINTFORML キャラを %LOCALS% にします。よろしいですか？
+	PRINTL [0]いいえ
+	PRINTL [1]はい
+	$INPUT_LOOP_1
+	INPUT
+	IF RESULT == 0
+		GOTO INPUT_LOOP
+	ELSEIF RESULT == 1
+		TALENT:ARG:オトコ = 0
+		TALENT:ARG:ふたなり = 0
+		TALENT:ARG:変身時ふたなり = 0
+		PRINTFORML キャラを 女 に設定しました。
+		IF TALENT:ARG:変身時ＴＳ > 0
+			TALENT:ARG:変身時胸サイズ変動 = 0
+			TALENT:ARG:変身時外見 = 0
+		ENDIF
+		TALENT:ARG:変身時濡れやすさ変動 = 0
+		TALENT:ARG:変身時Ｖ感覚変動 = 0
+		;結界をリセット
+		FOR LOCAL,190,194
+			IF TALENT:ARG:LOCAL
+				TALENT:ARG:LOCAL = 0
+				JUEL:ARG:修練P += 50
+			ENDIF
+		NEXT
+		IF TALENT:ARG:避妊結界
+			TALENT:ARG:避妊結界 = 0
+			JUEL:ARG:修練P += 50
+		ENDIF
+		;初期経験を設定可能な場合、射精経験をリセット
+		SIF TALENT:ARG:固有キャラ == 0 && TALENT:ARG:初期経験設定不可 == 0
+			EXP:ARG:射精経験 = 0
+		;プロフィールに反映
+		CALL SET_PROFILE, ARG
+	ELSE
+		GOTO INPUT_LOOP_1
+	ENDIF
+ELSEIF RESULT == 2 || (RESULT == 3 && TALENT:ARG:変身能力 == 1)
+	IF TALENT:ARG:変身時ＴＳ > 0
+		LOCALS = オトコ/女
+	ELSEIF TALENT:ARG:変身能力 == 1
+		LOCALS = オトコ/オトコ
+	ELSE
+		LOCALS = オトコ
+	ENDIF
+	PRINTL ※同性愛や男の娘属性が苦手な方は注意！
+	PRINTL 　出撃した場合は性別に関わらず触手による性行為の対象となります。
+	PRINTL 　（苦手な方向けにコンフィグで男性と女性を区別するオプションを設定できます）
+	PRINTL 
+	PRINTFORML キャラを %LOCALS% にします。よろしいですか？
+	PRINTL [0]いいえ
+	PRINTL [1]はい
+	$INPUT_LOOP_2
+	INPUT
+	IF RESULT == 0
+		GOTO INPUT_LOOP
+	ELSEIF RESULT == 1
+		TALENT:ARG:オトコ = 1
+		TALENT:ARG:処女 = 0
+		TALENT:ARG:母乳体質 = 0
+		TALENT:ARG:パイパン = 0
+		TALENT:ARG:Ｖ敏感 = 0
+		TALENT:ARG:Ｖ鈍感 = 0
+		TALENT:ARG:貧乳 = 0
+		TALENT:ARG:巨乳 = 0
+		TALENT:ARG:濡れやすい = 0
+		TALENT:ARG:濡れにくい = 0
+		TALENT:ARG:苗床化 = 0
+		TALENT:ARG:ふたなり = 0
+		TALENT:ARG:変身時ふたなり = 0
+		SIF TALENT:ARG:交際相手 == 2 || TALENT:ARG:交際相手 == 4 || TALENT:ARG:交際相手 == 5
+			TALENT:ARG:交際相手 = 0
+		TALENT:ARG:アクセサリ = 0
+		TALENT:ARG:外見 = 0
+		IF TALENT:ARG:変身時ＴＳ == 0
+			TALENT:ARG:変身時胸サイズ変動 = 0
+			TALENT:ARG:変身時外見 = 0
+			TALENT:ARG:変身時濡れやすさ変動 = 0
+			TALENT:ARG:変身時Ｖ感覚変動 = 0
+		ENDIF
+		PRINTFORML キャラを オトコ に設定しました。
+		;結界をリセット
+		FOR LOCAL,190,194
+			IF TALENT:ARG:LOCAL
+				TALENT:ARG:LOCAL = 0
+				JUEL:ARG:修練P += 50
+			ENDIF
+		NEXT
+		IF TALENT:ARG:避妊結界
+			TALENT:ARG:避妊結界 = 0
+			JUEL:ARG:修練P += 50
+		ENDIF
+		;初期経験を設定可能な場合、Ｖ経験と出産経験をリセット
+		IF TALENT:ARG:固有キャラ == 0 && TALENT:ARG:初期経験設定不可 == 0
+			EXP:ARG:Ｖ経験 = 0
+			EXP:ARG:出産経験 = 0
+		ENDIF
+
+		;プロフィールに反映
+		CALL SET_PROFILE, ARG
+	ELSE
+		GOTO INPUT_LOOP_2
+	ENDIF
+ELSE
+	GOTO INPUT_LOOP
+ENDIF
+
+;-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+;キャラの氏名設定
+@FIRSTSETTING_CHARA_NAME, ARG
+#DIM LCOUNT
+#DIMS DEFAULT_NAME
+#DIMS DEFAULT_CALLNAME
+#DIMS DEFAULT_FAMILYNAME
+VARSET LOCALS
+DEFAULT_NAME = %CSVNAME(NO:ARG)%
+DEFAULT_CALLNAME = %CSVCALLNAME(NO:ARG)%
+DEFAULT_FAMILYNAME = %CSVCSTR(NO:ARG,10)%
+
+LCOUNT = LINECOUNT
+$LOOP_FIRST
+PRINTFORML {ARG:0}人目のキャラの氏名を設定してください
+PRINTL （※ 通常の地の文などで表示される呼び名ではなく本名を設定してください。
+PRINTL 　　 一部の地の文やステータス表示などに使用されます）
+PRINTL ･････････････････････････････････････････････････････
+PRINTL [0]ランダムに設定
+PRINTL [1]自分で設定
+SIF DEFAULT_CALLNAME != "汎用キャラ"
+	PRINTFORML [2]デフォルト名を使う（%DEFAULT_NAME%）
+SIF CSTR:ARG:10 != ""
+	PRINTL [3]名前と苗字の並びを変える
+SIF CHARANUM >= 3
+	PRINTL [4]他のキャラの苗字に合わせる
+PRINTL [99]もどる
+$INPUT_LOOP
+INPUT
+IF RESULT == 0
+	$INPUT_LOOP_CHILD_1_0
+	CALL FIRSTSETTING_CHARA_NAME_RANDOM, ARG
+	LOCAL:0 = RESULT:0
+	LOCAL:1 = RESULT:1
+	$INPUT_LOOP_CHILD_1_1
+	PRINTFORML キャラの氏名を 『%RESULTS:0%』 とします。よろしいですか？
+	PRINTL [0]いいえ
+	PRINTL [1]はい
+	SIF CALLNAME:ARG != "汎用キャラ"
+		PRINTFORML [2]変更しない（%NAME:ARG%）
+	$INPUT_LOOP_CHILD_1_2
+	INPUT
+	IF RESULT == 0
+		GOTO INPUT_LOOP_CHILD_1_0
+	ELSEIF RESULT == 1
+		NAME:ARG = %RESULTS:0%
+		CSTR:ARG:200 = %RESULTS:1%
+		CSTR:ARG:10 = %RESULTS:2%
+		PRINTFORML キャラの氏名を 『%NAME:ARG%』 に設定しました
+	ELSEIF RESULT == 2
+		CSTR:ARG:200 = %CALLNAME:ARG%
+	ELSE
+		GOTO INPUT_LOOP_CHILD_1_2
+	ENDIF
+ELSEIF RESULT == 1
+	;LOCALS:1	名前格納
+	;LOCALS:2	フルネーム格納
+	;LOCALS:3	苗字格納
+	PRINTL キャラの苗字を入力してください
+	IF CSTR:ARG:200 != ""
+		LOCALS:1 = %CSTR:ARG:200%
+	ELSE
+		LOCALS:1 = %CALLNAME:ARG%
+	ENDIF
+	LOCALS:3 = 
+	STRLENS NAME:ARG
+	LOCAL:0 = RESULT:0
+	STRLENS CALLNAME:ARG
+	LOCAL:1 = RESULT:0
+	STRFIND NAME:ARG, CALLNAME:ARG
+	IF RESULT:0 != -1 && LOCAL:0 != LOCAL:1
+		IF RESULT:0 == 0
+			SUBSTRING NAME:ARG, LOCAL:1 + 1, LOCAL:0
+		ELSE
+			SUBSTRING NAME:ARG, 0, LOCAL:0 - LOCAL:1 - 1
+		ENDIF
+		LOCALS:3 = %RESULTS%
+		PRINT [999]変更しない
+		PRINTFORML （%LOCALS:3%）
+	ENDIF
+	$INPUT_LOOP_CHILD_2_1
+	INPUTS
+	IF RESULTS == ""
+		PRINTW 苗字なしに設定します
+	ELSEIF RESULTS == "999"
+		LOCALS:0 = %LOCALS:3%
+	ELSE
+		LOCALS:0 = %RESULTS%
+	ENDIF
+	PRINTL 
+	PRINTL キャラの名前を入力してください
+	IF LOCALS:1 != ""
+		PRINT [999]変更しない
+		PRINTFORML （%CALLNAME:ARG%）
+	ENDIF
+	$INPUT_LOOP_CHILD_2_2
+	INPUTS
+	IF RESULTS == ""
+		PRINTW 名前は必ず設定する必要があります
+		CLEARLINE 1
+		GOTO INPUT_LOOP_CHILD_2_2
+	ELSEIF RESULTS == "999"
+		LOCALS:1 = %CALLNAME:ARG%
+	ELSE
+		LOCALS:1 = %RESULTS%
+	ENDIF
+	CSTR:ARG:200 = %LOCALS:1%
+	CSTR:ARG:10 = %LOCALS:0%
+	IF CSTR:ARG:10 == ""
+		LOCALS:2 = %LOCALS:1%
+	ELSE
+		LOCALS:2 = %LOCALS:0% %LOCALS:1%
+	ENDIF
+	NAME:ARG = %LOCALS:2%
+	PRINTFORML キャラの氏名を 『%NAME:ARG%』 に設定しました
+ELSEIF RESULT == 2 && DEFAULT_CALLNAME != "汎用キャラ"
+	NAME:ARG = %DEFAULT_NAME%
+	CALLNAME:ARG = %DEFAULT_CALLNAME%
+	CSTR:ARG:10 = %DEFAULT_FAMILYNAME%
+	CSTR:ARG:200 = %DEFAULT_CALLNAME%
+	PRINTFORML キャラの氏名を 『%DEFAULT_NAME%』 に設定しました
+ELSEIF RESULT == 3
+	PRINT [0]苗字　→　名前の順番にする
+	PRINTPLAINFORM 　『%CSTR:ARG:10% %CALLNAME:ARG%』
+	PRINTL 
+	PRINT [1]名前　→　苗字の順番にする
+	PRINTPLAINFORM 　『%CALLNAME:ARG% %CSTR:ARG:10%』
+	PRINTL 
+	PRINTL [99]選ばずにもどる
+	$INPUT_LOOP_CHILD_3_1
+	INPUT
+	IF RESULT == 0
+		NAME:ARG = %CSTR:ARG:10% %CALLNAME:ARG%
+		PRINTFORMW 『%CSTR:ARG:10% %CALLNAME:ARG%』に変更しました
+	ELSEIF RESULT == 1
+		NAME:ARG = %CALLNAME:ARG% %CSTR:ARG:10%
+		PRINTFORMW 『%CALLNAME:ARG% %CSTR:ARG:10%』に変更しました
+	ELSEIF RESULT == 99
+		PRINTW 変更せずに戻ります
+	ELSE
+		GOTO INPUT_LOOP_CHILD_3_1
+	ENDIF
+	CLEARLINE LINECOUNT - LCOUNT
+	GOTO LOOP_FIRST
+ELSEIF RESULT == 4 && CHARANUM >= 3
+	DRAWLINE
+	PRINTL 苗字を選んでください
+	PRINTL 
+	LOCAL:1 = 0
+	FOR LOCAL, 0, CHARANUM
+		SIF LOCAL == MASTER
+			CONTINUE
+		SIF LOCAL == ARG
+			CONTINUE
+		IF CSTR:LOCAL:10 != "" && CSTR:LOCAL:10 != CSTR:ARG:10
+			PRINTFORML  [{LOCAL}]%CSTR:LOCAL:10%
+			LOCAL:1 = 0
+		ENDIF
+	NEXT
+	PRINTL [99]もどる
+	$INPUT_LOOP_CHILD_4_1
+	INPUT
+	IF RESULT > 0 && RESULT <= CHARANUM && CSTR:RESULT:10 != "" && CSTR:RESULT:10 != CSTR:ARG:10
+		LOCALS = %CSTR:RESULT:10% %CALLNAME:RESULT%
+		CSTR:ARG:10 = %CSTR:RESULT:10%
+		IF NAME:RESULT == LOCALS
+			NAME:ARG = %CSTR:RESULT:10% %CALLNAME:ARG%
+		ELSE
+			NAME:ARG = %CALLNAME:ARG% %CSTR:RESULT:10%
+		ENDIF
+		PRINTFORML {ARG:0}人目のキャラの名前を%NAME:ARG%にしました
+		PRINTW 
+	ELSEIF RESULT == 99
+		PRINTW 変更せずに戻ります
+	ELSE
+		GOTO INPUT_LOOP_CHILD_4_1
+	ENDIF
+	CLEARLINE LINECOUNT - LCOUNT
+	GOTO LOOP_FIRST
+ELSEIF RESULT == 99
+	RETURN 99
+ELSE
+	GOTO INPUT_LOOP
+ENDIF
+SIF CSTR:ARG:200 != ""
+	CALLNAME:ARG = %CSTR:ARG:200%
+PRINTL 
+PRINTL 
+
+;-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+;キャラの氏名のランダム設定
+@FIRSTSETTING_CHARA_NAME_RANDOM, ARG
+LOCAL:0 = 2
+LOCAL:1 = 0
+LOCAL:2 = 0
+LOCAL:10 = 0
+LOCAL:20 = 0
+
+$SETTING_LOOP
+WHILE LOCAL:0 > 0
+	PRINTL 
+	PRINTL 
+	FONTBOLD
+	SIF LOCAL:0 == 1
+		SETCOLOR 0,255,180
+	PRINT 　苗字：
+	IF LOCAL:1 == 0
+		PRINTL 日本語
+	ELSEIF LOCAL:1 == 1
+		PRINTL 英語
+	ELSEIF LOCAL:1 == 2
+		PRINTL フランス語
+	ELSEIF LOCAL:1 == 3
+		PRINTL ドイツ語
+	ELSEIF LOCAL:1 == 4
+		PRINTL イタリア語
+	ELSEIF LOCAL:1 == 5
+		PRINTL ロシア語
+	ELSE
+		PRINTL ランダム
+	ENDIF
+	RESETCOLOR
+
+	SIF LOCAL:0 == 2
+		SETCOLOR 0,255,180
+	PRINT 　名前：
+	IF LOCAL:2 == 0
+		PRINTL 日本語(女性)
+	ELSEIF LOCAL:2 == 1
+		PRINTL 英語
+	ELSEIF LOCAL:2 == 2
+		PRINTL フランス語
+	ELSEIF LOCAL:2 == 3
+		PRINTL ドイツ語
+	ELSEIF LOCAL:2 == 4
+		PRINTL イタリア語
+	ELSEIF LOCAL:2 == 5
+		PRINTL ロシア語
+	ELSEIF LOCAL:2 == 10
+		PRINTL 日本語(中性)
+	ELSE
+		PRINTL ランダム
+	ENDIF
+	RESETCOLOR
+	FONTREGULAR
+
+	IF LOCAL:0 == 1
+		PRINT 苗字
+	ELSE
+		PRINT 名前
+	ENDIF
+	PRINTL の言語を選択してください
+	PRINT [ 0]日本語
+	SIF LOCAL:0 == 2
+		PRINT (女性)　　　　　 [10]日本語(中性)
+	PRINTL 
+	PRINTL [ 1]英語
+	PRINTL [ 2]フランス語
+	PRINTL [ 3]ドイツ語
+	PRINTL [ 4]イタリア語
+	PRINTL [ 5]ロシア語
+	PRINTL [99]ランダム
+	PRINTPLAIN 　　　　　　　　　　　　　 
+	PRINT [800] 
+	SIF LOCAL:3 == 0
+		FONTBOLD
+	PRINTL 順序を固定しない
+	SIF LOCAL:3 == 0
+		FONTREGULAR
+	IF LOCAL:0 == 1
+		PRINT [100]名前
+	ELSE
+		PRINT [100]苗字
+	ENDIF
+	PRINT を変更
+	PRINT 　　　　　　[801]
+	SIF LOCAL:3 == 1
+		FONTBOLD
+	PRINTL 「苗字 名前」の順に固定
+	SIF LOCAL:3 == 1
+		FONTREGULAR
+	PRINT [200]生成
+	PRINT 　　　　　　　　　[802]
+	SIF LOCAL:3 == 2
+		FONTBOLD
+	PRINTL 「名前 苗字」の順に固定
+	SIF LOCAL:3 == 2
+		FONTREGULAR
+
+	$INPUT_LOOP
+	INPUT
+	IF RESULT == 10 && LOCAL:0 == 1
+		GOTO INPUT_LOOP
+	ELSEIF RESULT < 100
+		LOCAL:(LOCAL:0) = RESULT
+	ELSEIF RESULT == 100
+		IF LOCAL:0 == 1
+			LOCAL:0 = 2
+		ELSE
+			LOCAL:0 = 1
+		ENDIF
+	ELSEIF RESULT == 200
+		BREAK
+	ELSEIF RESULT == 800
+		LOCAL:3 = 0
+	ELSEIF RESULT == 801
+		LOCAL:3 = 1
+	ELSEIF RESULT == 802
+		LOCAL:3 = 2
+	ELSE
+		GOTO INPUT_LOOP
+	ENDIF
+	CLEARLINE 16
+WEND
+
+WHILE LOCAL:0 > 0
+	REPEAT 20
+		IF LOCAL:1 == 0
+			LOCAL:(10 + COUNT) = RAND:500 + 3000
+			WHILE STR:(LOCAL:(10 + COUNT)) == ""
+				LOCAL:(10 + COUNT) = RAND:500 + 3000
+			WEND
+		ELSEIF LOCAL:1 == 1
+			LOCAL:(10 + COUNT) = RAND:2000 + 3500
+			WHILE STR:(LOCAL:(10 + COUNT)) == ""
+				LOCAL:(10 + COUNT) = RAND:2000 + 3500
+			WEND
+		ELSEIF LOCAL:1 == 2
+			LOCAL:(10 + COUNT) = RAND:2000 + 5500
+			WHILE STR:(LOCAL:(10 + COUNT)) == ""
+				LOCAL:(10 + COUNT) = RAND:2000 + 5500
+			WEND
+		ELSEIF LOCAL:1 == 3
+			LOCAL:(10 + COUNT) = RAND:1500 + 7500
+			WHILE STR:(LOCAL:(10 + COUNT)) == ""
+				LOCAL:(10 + COUNT) = RAND:1500 + 7500
+			WEND
+		ELSEIF LOCAL:1 == 4
+			LOCAL:(10 + COUNT) = RAND:2000 + 9000
+			WHILE STR:(LOCAL:(10 + COUNT)) == ""
+				LOCAL:(10 + COUNT) = RAND:2000 + 9000
+			WEND
+		ELSEIF LOCAL:1 == 5
+			LOCAL:(10 + COUNT) = RAND:1000 + 11000
+			WHILE STR:(LOCAL:(10 + COUNT)) == ""
+				LOCAL:(10 + COUNT) = RAND:1000 + 11000
+			WEND
+		ELSEIF LOCAL:1 == 99
+			LOCAL:(10 + COUNT) = RAND:9000 + 3000
+			WHILE STR:(LOCAL:(10 + COUNT)) == ""
+				LOCAL:(10 + COUNT) = RAND:9000 + 3000
+			WEND
+		ENDIF
+
+		IF LOCAL:2 == 0
+			LOCAL:(30 + COUNT) = RAND:500 + 12000
+			WHILE STR:(LOCAL:(30 + COUNT)) == ""
+				LOCAL:(30 + COUNT) = RAND:500 + 12000
+			WEND
+		ELSEIF LOCAL:2 == 1
+			LOCAL:(30 + COUNT) = RAND:1000 + 12500
+			WHILE STR:(LOCAL:(30 + COUNT)) == ""
+				LOCAL:(30 + COUNT) = RAND:1000 + 12500
+			WEND
+		ELSEIF LOCAL:2 == 2
+			LOCAL:(30 + COUNT) = RAND:500 + 13500
+			WHILE STR:(LOCAL:(30 + COUNT)) == ""
+				LOCAL:(30 + COUNT) = RAND:500 + 13500
+			WEND
+		ELSEIF LOCAL:2 == 3
+			LOCAL:(30 + COUNT) = RAND:500 + 14000
+			WHILE STR:(LOCAL:(30 + COUNT)) == ""
+				LOCAL:(30 + COUNT) = RAND:500 + 14000
+			WEND
+		ELSEIF LOCAL:2 == 4
+			LOCAL:(30 + COUNT) = RAND:500 + 15000
+			WHILE STR:(LOCAL:(30 + COUNT)) == ""
+				LOCAL:(30 + COUNT) = RAND:500 + 15000
+			WEND
+		ELSEIF LOCAL:2 == 5
+			LOCAL:(30 + COUNT) = RAND:500 + 15500
+			WHILE STR:(LOCAL:(30 + COUNT)) == ""
+				LOCAL:(30 + COUNT) = RAND:500 + 15500
+			WEND
+		ELSEIF LOCAL:2 == 10
+			LOCAL:(30 + COUNT) = RAND:500 + 16000
+			WHILE STR:(LOCAL:(30 + COUNT)) == ""
+				LOCAL:(30 + COUNT) = RAND:500 + 16000
+			WEND
+		ELSEIF LOCAL:2 == 99
+			LOCAL:(30 + COUNT) = RAND:4000 + 12000
+			WHILE STR:(LOCAL:(30 + COUNT)) == ""
+				LOCAL:(30 + COUNT) = RAND:7000 + 12000
+			WEND
+		ENDIF
+	REND
+
+	$RE_OUTPUT
+	PRINTL 
+	REPEAT 20
+		IF LOCAL:3 == 1
+			PRINTFORML [{COUNT, 2}]%STR:(LOCAL:(10 + COUNT))% %STR:(LOCAL:(30 + COUNT))%
+		ELSEIF LOCAL:3 == 2
+			PRINTFORML [{COUNT, 2}]%STR:(LOCAL:(30 + COUNT))% %STR:(LOCAL:(10 + COUNT))%
+		ELSEIF LOCAL:1 == 0 || (LOCAL:1 == 99 && LOCAL:(10 + COUNT) < 4000)
+			PRINTFORML [{COUNT, 2}]%STR:(LOCAL:(10 + COUNT))% %STR:(LOCAL:(30 + COUNT))%
+		ELSE
+			PRINTFORML [{COUNT, 2}]%STR:(LOCAL:(30 + COUNT))% %STR:(LOCAL:(10 + COUNT))%
+		ENDIF
+	REND
+	PRINTPLAIN 　　　　　　　　　　　　　 
+	PRINT [800] 
+	SIF LOCAL:3 == 0
+		FONTBOLD
+	PRINTL 順序を固定しない
+	SIF LOCAL:3 == 0
+		FONTREGULAR
+	PRINT [100]構成から選びなおす
+	PRINT 　　[801]
+	SIF LOCAL:3 == 1
+		FONTBOLD
+	PRINTL 「苗字 名前」の順に固定
+	SIF LOCAL:3 == 1
+		FONTREGULAR
+	PRINT [200]再生成
+	PRINT 　　　　　　　　[802]
+	SIF LOCAL:3 == 2
+		FONTBOLD
+	PRINTL 「名前 苗字」の順に固定
+	SIF LOCAL:3 == 2
+		FONTREGULAR
+
+	$INPUT_LOOP2
+	INPUT
+
+	IF RESULT >= 0 && RESULT < 20
+		LOCAL:0 = RESULT
+		BREAK
+	ELSEIF RESULT == 100
+		LOCAL:0 = 1
+		GOTO SETTING_LOOP
+	ELSEIF RESULT == 200
+		CLEARLINE 25
+	ELSEIF RESULT == 800
+		LOCAL:3 = 0
+		CLEARLINE 25
+		GOTO RE_OUTPUT
+	ELSEIF RESULT == 801
+		LOCAL:3 = 1
+		CLEARLINE 25
+		GOTO RE_OUTPUT
+	ELSEIF RESULT == 802
+		LOCAL:3 = 2
+		CLEARLINE 25
+		GOTO RE_OUTPUT
+	ELSE
+		GOTO INPUT_LOOP2
+	ENDIF
+WEND
+
+IF LOCAL:1 == 0 || (LOCAL:1 == 99 && LOCAL:(10 + COUNT) < 4000)
+	RESULTS:0 = %STR:(LOCAL:(10 + RESULT))% %STR:(LOCAL:(30 + RESULT))%
+ELSE
+	RESULTS:0 = %STR:(LOCAL:(30 + RESULT))% %STR:(LOCAL:(10 + RESULT))%
+ENDIF
+RESULTS:1 = %STR:(LOCAL:(30 + RESULT))%
+RESULTS:2 = %STR:(LOCAL:(10 + RESULT))%
+
+RETURN LOCAL:1, LOCAL:2
+
+;-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+;キャラ呼び名の設定
+@FIRSTSETTING_CHARA_CALLNAME, ARG
+PRINTFORML {ARG:0}人目のキャラの呼び名を設定してください
+PRINTL （※ 通常の地の文などで表示されるキャラ名です）
+PRINTL ･････････････････････････････････････････････････････
+SIF CSTR:ARG:200 != ""
+	PRINTFORML [0]名前を呼び名に設定（名前：%CSTR:ARG:200%）
+PRINTL [1]自分で設定
+PRINTL [99]もどる
+$INPUT_LOOP
+INPUT
+IF RESULT == 0
+	SIF CSTR:ARG:200 == ""
+		GOTO INPUT_LOOP
+	CALLNAME:ARG = %CSTR:ARG:200%
+	PRINTFORML キャラの呼び名を 『%CALLNAME:ARG%』 に設定しました
+ELSEIF RESULT == 1
+	PRINTL キャラの呼び名を入力してください。
+	$INPUT_LOOP_CHILD_1
+	INPUTS
+	IF RESULTS == ""
+		GOTO INPUT_LOOP_CHILD_1
+	ELSE
+		CALLNAME:ARG = %RESULTS%
+		PRINTFORML キャラの呼び名を 『%CALLNAME:ARG%』 に設定しました
+	ENDIF
+ELSEIF RESULT == 99
+	RETURN 99
+ELSE
+	GOTO INPUT_LOOP
+ENDIF
+PRINTL 
+PRINTL 
+
+;-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+;キャラの口上設定
+@FIRSTSETTING_CHARA_KOJO, ARG
+PRINTFORML {ARG:0}人目のキャラ『%CALLNAME:ARG%』 の口上設定を確認してください
+PRINT  現在の口上：
+IF TALENT:ARG:口上設定 == -2
+	PRINT 非表示
+ELSEIF TALENT:ARG:口上設定 == 0
+	PRINT 汎用
+ELSEIF TALENT:ARG:口上設定 == 1
+	PRINT ロボ風
+ELSEIF TALENT:ARG:口上設定 == 2
+	PRINT あなた
+ELSEIF NO:ARG != 0
+	PRINT 専用({NO:ARG}番)
+ENDIF
+PRINTL 
+PRINT  主観モード：
+IF TALENT:ARG:主観視点 > 0
+	PRINT 使用する
+ELSE
+	PRINT 使用しない
+ENDIF
+PRINTL 
+PRINTL ･････････････････････････････････････････････････････
+PRINTL [0]口上の選択
+PRINTL [1]主観モードの設定変更
+PRINTL [99]もどる
+$INPUT_LOOP
+INPUT
+IF RESULT == 0
+	PRINTL 口上を選択してください。
+	PRINTL [0]汎用
+	PRINTL [1]ロボ風
+	PRINTL [2]あなた
+	SIF NO:ARG != 0
+		PRINTL [90]キャラ専用口上
+	PRINTL [99]口上なし
+	$INPUT_LOOP_CHILD_0
+	INPUT
+	IF RESULT == 0
+		PRINTFORML 口上を 『汎用』 に設定しました
+		TALENT:ARG:口上設定 = 0
+	ELSEIF RESULT == 1
+		PRINTFORML 口上を 『ロボ風』 に設定しました
+		TALENT:ARG:口上設定 = 1
+	ELSEIF RESULT == 2
+		PRINTFORML 口上を 『あなた』 に設定しました
+		PRINTFORML 地の文を主観モードに設定しました
+		TALENT:ARG:口上設定 = 2
+		TALENT:ARG:主観視点 = 1
+	ELSEIF RESULT == 90 && NO:ARG != 0
+		PRINTFORML 口上を 『専用口上({NO:ARG}番)』 に設定しました
+		TALENT:ARG:口上設定 = NO:ARG
+	ELSEIF RESULT == 99
+		PRINTFORML 口上を 『非表示』 に設定しました	
+		TALENT:ARG:口上設定 = -2	
+	ELSE
+		GOTO INPUT_LOOP_CHILD_0
+	ENDIF
+	PRINTW 
+ELSEIF RESULT == 1
+	IF TALENT:ARG:主観視点 == 1
+		PRINTL 現在『主観モード』を使用中です
+		PRINTL [0]変更しない
+		PRINTL [1]主観モードを終了する
+		INPUT
+		IF RESULT == 1
+			TALENT:ARG:主観視点 = 0
+			PRINTW 地の文を変更しました
+		ENDIF
+	ELSE
+		PRINTL ※地の文をより主観的な描写に変更します
+		PRINTL 　この設定は個別に適用されます
+		PRINTL [0]使用しない
+		PRINTL [1]使用する
+		INPUT
+		IF RESULT == 1
+			TALENT:ARG:主観視点 = 1
+			PRINTW 地の文を変更しました
+		ENDIF
+	ENDIF
+ELSEIF RESULT == 99
+	RETURN 99
+ELSE
+	GOTO INPUT_LOOP
+ENDIF
+PRINTL 
+PRINTL 
+
+
+
+;-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+;キャラ一人称の設定
+@FIRSTSETTING_CHARA_SELFCALL, ARG
+#DIM LCOUNT
+#DIM CALL_VAR, 2
+#DIM PRN_VAR, 10
+#DIM CHR_VAR
+#DIMS CALL_STR, 3
+#DIM CONST PRN_MAX = 4
+CALL_VAR:0 = CFLAG:ARG:8 / 5 % 20
+CALL_VAR:1 = CFLAG:ARG:8 % 5
+CALL_STR:0 = %SELF_CALL(7, 0, ARG)%
+CALL_STR:1 = %CSTR:ARG:4%
+$SETTING_TOP
+LOCAL = 0
+PRINTL 
+PRINTFORML {ARG:0}人目のキャラ『%CALLNAME:ARG%』 の一人称を設定してください
+PRINTL ･････････････････････････････････････････････････････
+PRINT 　[0] 読み：
+IF CALL_VAR:0 == 0
+	PRINT わたし
+ELSEIF CALL_VAR:0 == 1
+	PRINT わたくし
+ELSEIF CALL_VAR:0 == 2
+	PRINT あたし
+ELSEIF CALL_VAR:0 == 3
+	PRINT あたい
+ELSEIF CALL_VAR:0 == 4
+	PRINT わらわ
+ELSEIF CALL_VAR:0 == 5
+	PRINT ぼく
+ELSEIF CALL_VAR:0 == 6
+	PRINT おれ
+ELSEIF CALL_VAR:0 == 19
+	PRINTFORM %CALL_STR:0%
+ENDIF
+PRINTL 
+PRINT 　[1] 表記：
+IF CALL_VAR:0 == 0
+	IF CALL_VAR:1 == 0
+		PRINT 私
+		CALL_STR:1 = 私
+	ELSEIF CALL_VAR:1 == 1
+		PRINT わたし
+		CALL_STR:1 = わたし
+	ELSEIF CALL_VAR:1 == 2
+		PRINT ワタシ
+		CALL_STR:1 = ワタシ
+	ELSE
+		PRINT 　－
+		LOCAL = 1
+	ENDIF
+ELSEIF CALL_VAR:0 == 1
+	IF CALL_VAR:1 == 0
+		PRINT 私
+		CALL_STR:1 = 私
+	ELSEIF CALL_VAR:1 == 1
+		PRINT わたくし
+		CALL_STR:1 = わたくし
+	ELSEIF CALL_VAR:1 == 2
+		PRINT ワタクシ
+		CALL_STR:1 = ワタクシ
+	ELSE
+		PRINT 　－
+		LOCAL = 1
+	ENDIF
+ELSEIF CALL_VAR:0 == 2
+	IF CALL_VAR:1 == 0
+		PRINT 私
+		CALL_STR:1 = 私
+	ELSEIF CALL_VAR:1 == 1
+		PRINT あたし
+		CALL_STR:1 = あたし
+	ELSEIF CALL_VAR:1 == 2
+		PRINT アタシ
+		CALL_STR:1 = アタシ
+	ELSE
+		PRINT 　－
+		LOCAL = 1
+	ENDIF
+ELSEIF CALL_VAR:0 == 3
+	IF CALL_VAR:1 == 0
+		PRINT 私
+		CALL_STR:1 = 私
+	ELSEIF CALL_VAR:1 == 1
+		PRINT あたい
+		CALL_STR:1 = あたい
+	ELSEIF CALL_VAR:1 == 2
+		PRINT アタイ
+		CALL_STR:1 = アタイ
+	ELSE
+		PRINT 　－
+		LOCAL = 1
+	ENDIF
+ELSEIF CALL_VAR:0 == 4
+	IF CALL_VAR:1 == 0
+		PRINT 妾
+		CALL_STR:1 = 妾
+	ELSEIF CALL_VAR:1 == 1
+		PRINT わらわ
+		CALL_STR:1 = わらわ
+	ELSEIF CALL_VAR:1 == 2
+		PRINT ワラワ
+		CALL_STR:1 = ワラワ
+	ELSE
+		PRINT 　－
+		LOCAL = 1
+	ENDIF
+ELSEIF CALL_VAR:0 == 5
+	IF CALL_VAR:1 == 0
+		PRINT 僕
+		CALL_STR:1 = 僕
+	ELSEIF CALL_VAR:1 == 1
+		PRINT ぼく
+		CALL_STR:1 = ぼく
+	ELSEIF CALL_VAR:1 == 2
+		PRINT ボク
+		CALL_STR:1 = ボク
+	ELSE
+		PRINT 　－
+		LOCAL = 1
+	ENDIF
+ELSEIF CALL_VAR:0 == 6
+	IF CALL_VAR:1 == 0
+		PRINT 俺
+		CALL_STR:1 = 俺
+	ELSEIF CALL_VAR:1 == 1
+		PRINT おれ
+		CALL_STR:1 = おれ
+	ELSEIF CALL_VAR:1 == 2
+		PRINT オレ
+		CALL_STR:1 = オレ
+	ELSE
+		PRINT 　－
+		LOCAL = 1
+	ENDIF
+ELSEIF CALL_VAR:0 == 19
+	IF CALL_STR:1 == ""
+		PRINT 　－
+		LOCAL = 1
+	ELSE
+		PRINTFORM %CALL_STR:1%
+	ENDIF
+ENDIF
+PRINTL 
+SIF LOCAL
+	SETCOLOR 128, 128, 128
+PRINT [99]決定　　　　
+RESETCOLOR
+PRINTL [98]キャンセル
+$INPUT_LOOP
+INPUT
+
+IF RESULT == 0
+	PRINTL 
+	PRINTL 一人称の読みを選択してください
+	PRINTL ･････････････････････････････････････････････････････
+	PRINTL 　[ 0] わたし　　[ 1] わたくし　[ 2] あたし　　
+	PRINTL 　[ 3] あたい　　[ 4] わらわ　　[ 5] ぼく　　　
+	PRINTL 　[ 6] おれ　　　
+	PRINT 　[10] 性格によるデフォルト一人称
+	IF TALENT:ARG:古風
+		PRINTL （わらわ）
+	ELSEIF TALENT:ARG:かるい性格
+		PRINTL （あたし）
+	ELSE
+		PRINTL （わたし）
+	ENDIF
+	CALL SELF_CALL_ANALYSIS, CALLNAME:ARG
+	IF RESULT >= 0
+		PRINTFORML 　[11] キャラの名前（%CALLNAME:ARG%）
+	ENDIF
+	PRINTL 　[19] 自分で設定
+	PRINTL [99]もどる
+
+	$INPUT_LOOP0
+	INPUT
+	IF RESULT >= 0 && RESULT <= 6
+		CALL_VAR:0 = RESULT
+		IF RESULT == 0
+			CALL_STR:0 = わたし
+		ELSEIF RESULT == 1
+			CALL_STR:0 = わたくし
+		ELSEIF RESULT == 2
+			CALL_STR:0 = あたし
+		ELSEIF RESULT == 3
+			CALL_STR:0 = あたい
+		ELSEIF RESULT == 4
+			CALL_STR:0 = わらわ
+		ELSEIF RESULT == 5
+			CALL_STR:0 = ぼく
+		ELSEIF RESULT == 6
+			CALL_STR:0 = おれ
+		ENDIF
+	ELSEIF RESULT == 10
+		IF TALENT:ARG:古風
+			CALL_VAR:0 = 4
+			CALL_STR:0 = わらわ
+		ELSEIF TALENT:ARG:かるい性格
+			CALL_VAR:0 = 2
+			CALL_STR:0 = あたし
+		ELSE
+			CALL_VAR:0 = 0
+			CALL_STR:0 = わたし
+		ENDIF
+	ELSEIF RESULT == 11
+		CALL_VAR:0 = 9
+		CALL_STR:0 = %CALLNAME:ARG%
+		SIF CALL_VAR:1 < 3
+			CALL_STR:1 = 
+		CALL SELF_CALL_ANALYSIS, CALL_STR:0
+		FOR LCOUNT, 0, PRN_MAX
+			PRN_VAR:(LCOUNT) = RESULT:(LCOUNT + 1)
+		NEXT
+		CHR_VAR = RESULT:0
+	ELSEIF RESULT == 19
+		PRINTL 読みは全て「ひらがなのみ、もしくはカタカナのみ」「ヴ」「ー」で、
+		PRINTFORML {PRN_MAX}音以内で入力してください
+		PRINTL （「きゃ」「ふぁ」「てぃ」等の拗音は1音にカウントされます）
+		PRINTL 　　　　　　　　　　　　　　　[99] キャンセル　[98] 拗音リスト
+		$INPUT_PRN
+		INPUTS
+		IF RESULTS == "" || RESULTS == "99"
+			PRINTL 
+			PRINTL 変更しませんでした
+			PRINTW 
+			GOTO SETTING_TOP
+		ELSEIF RESULTS == "98"
+			PRINTL 　イェ ウァ ウィ ウェ ウォ ヴァ ヴィ ヴェ ヴォ
+			PRINTL 　クァ グァ キャ キュ キョ ギャ ギュ ギョ
+			PRINTL 　シャ シュ シェ ショ ジャ ジュ ジェ ジョ スィ ズィ
+			PRINTL 　チャ チュ チェ チョ ヂャ ヂュ ヂェ ヂョ
+			PRINTL 　ツァ ツィ ツェ ツォ ヅァ ヅィ ヅェ ヅォ
+			PRINTL 　ティ テュ ディ デュ トゥ ドゥ
+			PRINTL 　ニャ ニュ ニョ
+			PRINTL 　ヒャ ヒュ ヒョ ビャ ビュ ビョ ピャ ピュ ピョ
+			PRINTL 　ファ フィ フュ フェ フォ
+			PRINTL 　ミャ ミュ ミョ リャ リュ リェ リョ
+			GOTO INPUT_PRN
+		ENDIF
+		CALL_STR:2 = %RESULTS%
+		CALL SELF_CALL_ANALYSIS, RESULTS
+		IF RESULT == -1
+			PRINTL 
+			PRINTL 規定外の文字があります
+			PRINTW 
+			GOTO SETTING_TOP
+		ENDIF
+		IF RESULT == -2
+			PRINTL 
+			PRINTL ひらがなとカタカナが混在しています
+			PRINTW 
+			GOTO SETTING_TOP
+		ENDIF
+		IF RESULT == -3
+			PRINTL 
+			PRINTL 読みが多すぎます
+			PRINTW 
+			GOTO SETTING_TOP
+		ELSE
+		ENDIF
+
+		CALL_STR:0 = %CALL_STR:2%
+		SIF CALL_VAR:1 < 3
+			CALL_STR:1 = 
+		FOR LCOUNT, 0, PRN_MAX
+			PRN_VAR:(LCOUNT) = RESULT:(LCOUNT + 1)
+		NEXT
+		CHR_VAR = RESULT:0
+		CALL_VAR:0 = 19
+	ELSEIF RESULT == 99
+	ELSE
+		CLEARLINE 1
+		GOTO INPUT_LOOP0
+	ENDIF
+	GOTO SETTING_TOP
+ELSEIF RESULT == 1
+	PRINTL 
+	PRINTL 一人称の表記を選択してください
+	PRINTL ･････････････････････････････････････････････････････
+
+	IF CALL_VAR:0 == 0
+		LOCALS:0 = 私
+		LOCALS:1 = わたし
+		LOCALS:2 = ワタシ
+	ELSEIF CALL_VAR:0 == 1
+		LOCALS:0 = 私
+		LOCALS:1 = わたくし
+		LOCALS:2 = ワタクシ
+	ELSEIF CALL_VAR:0 == 2
+		LOCALS:0 = 私
+		LOCALS:1 = あたし
+		LOCALS:2 = アタシ
+	ELSEIF CALL_VAR:0 == 3
+		LOCALS:0 = 私
+		LOCALS:1 = あたい
+		LOCALS:2 = アタイ
+	ELSEIF CALL_VAR:0 == 4
+		LOCALS:0 = 妾
+		LOCALS:1 = わらわ
+		LOCALS:2 = ワラワ
+	ELSEIF CALL_VAR:0 == 5
+		LOCALS:0 = 僕
+		LOCALS:1 = ぼく
+		LOCALS:2 = ボク
+	ELSEIF CALL_VAR:0 == 6
+		LOCALS:0 = 俺
+		LOCALS:1 = おれ
+		LOCALS:2 = オレ
+	ENDIF
+	IF CALL_VAR:0 < 19
+		PRINTFORML 　[0] 漢字：%LOCALS:0%
+		PRINTFORML 　[1] かな：%LOCALS:1%
+		PRINTFORML 　[2] カナ：%LOCALS:2%
+	ELSE
+		PRINTFORML 　[3] 読みのまま（%CALL_STR:0%）
+		PRINTFORML 　[4] キャラの名前（%CALLNAME:ARG%）
+	ENDIF
+	SIF CALL_VAR:0 == 19
+		PRINTL  [19] 自分で設定
+	PRINTL [99]もどる
+
+	$INPUT_LOOP1
+	INPUT
+	IF RESULT >= 0 && RESULT <= 2 && CALL_VAR:0 < 7
+		CALL_VAR:1 = RESULT
+		CALL_STR:1 = %LOCALS:RESULT%
+	ELSEIF RESULT == 3
+		CALL_VAR:1 = 9
+		CALL_STR:1 = %CALL_STR:0%
+	ELSEIF RESULT == 4
+		CALL_VAR:1 = 9
+		CALL_STR:1 = %CALLNAME:ARG%
+	ELSEIF RESULT == 19 && CALL_VAR:0 == 19
+		PRINTPLAIN 一人称の表記を入力してください　　　
+		PRINTL [99] キャンセル
+		INPUTS
+		IF RESULTS == "" || RESULTS == "99"
+			PRINTL 
+			PRINTL 変更しませんでした
+			PRINTW 
+			GOTO SETTING_TOP
+		ENDIF
+		CALL_VAR:1 = 19
+		CALL_STR:1 = %RESULTS%
+	ELSEIF RESULT == 99
+	ELSE
+		CLEARLINE 1
+		GOTO INPUT_LOOP1
+	ENDIF
+	GOTO SETTING_TOP
+ELSEIF RESULT == 98
+	RETURN 98
+ELSEIF RESULT == 99 && LOCAL == 0
+	IF CALL_VAR:0 < 19
+		CFLAG:ARG:8 = CALL_VAR:0 * 5 + CALL_VAR:1
+	ELSE
+		CFLAG:ARG:8 = 0
+		LOCAL = 1
+		FOR LCOUNT, 0, PRN_MAX
+			CFLAG:ARG:8 = CFLAG:ARG:8 + PRN_VAR:(LCOUNT) * LOCAL
+			LOCAL *= 1000
+		NEXT
+		CFLAG:ARG:8 = CFLAG:ARG:8 * 100 + 99 - CHR_VAR
+	ENDIF
+	CSTR:ARG:4 = %CALL_STR:1%
+	PRINTL 
+	PRINTL 
+	IF FLAG:999 == 1
+		SETCOLOR 96,96,96
+		PRINTL 
+		PRINTFORML CFLAG{CFLAG:ARG:8} CSTR%CSTR:ARG:4% %SELF_CALL(0, 0, ARG)%
+		PRINTL 
+		RESETCOLOR
+	ENDIF
+	RETURN 99
+ELSE
+	CLEARLINE 1
+	GOTO INPUT_LOOP
+ENDIF
+GOTO SETTING_TOP
+
+
+;-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+;CSVからキャラデータをロードする
+@FIRSTSETTING_CHARA_LOADCSV, ARG
+;LOCALリスト
+;0	ループで使用
+;1	ページ数
+;2	CSVにデータのあるキャラの数を記録
+;3	入力数値の保存用
+VARSET LOCAL
+$INPUT_LOADCSV
+PRINTL 
+PRINTFORML {ARG:0}人目のキャラデータを選んでください
+PRINTL ･････････････････････････････････････････････････････
+LOCAL:2 = 0
+FOR LOCAL:0, 0, 9999
+	;非定義のキャラの場合、次のキャラを探す
+	SIF !EXISTCSV(LOCAL:0, 0) || LOCAL:0 == 999
+		CONTINUE
+	LOCAL:2 += 1
+	;30人ずつ表示する
+	IF (LOCAL:2 > 30 * LOCAL:1) && (LOCAL:2 <= 30 * (LOCAL:1 + 1))
+		PRINTFORMLC [{LOCAL:0, 4}] %CSVNAME(LOCAL:0, 0), 32, LEFT%
+		;2人毎に改行
+		SIF LOCAL:2 % 2 == 0 && !(LOCAL:2 % 30 == 0)
+			PRINTL 
+	ENDIF
+NEXT
+PRINTL 
+PRINTL ･････････････････････････････････････････････････････
+PRINTLC [-1] 前のページ
+;PRINTC間隔の真ん中になるまでスペース
+PRINTFORMLC         Page({LOCAL:1}/{(LOCAL:2) / 30})
+PRINTC [-2] 次のページ
+PRINTL 
+PRINTLC [99] もどる
+INPUT
+IF RESULT == 99
+	RETURN
+ELSEIF RESULT == -1
+	;前ページへ
+	LOCAL:1 -= 1
+	SIF LOCAL:1 < 0
+		LOCAL:1 = 0
+	GOTO INPUT_LOADCSV
+ELSEIF RESULT == -2
+	;次ページへ
+	LOCAL:1 += 1
+	SIF LOCAL:1 > (LOCAL:2 / 30)
+		LOCAL:1 = LOCAL:2 / 30
+	GOTO INPUT_LOADCSV
+ELSEIF (RESULT >= 0 && RESULT < 9999) && EXISTCSV(RESULT, 0) && RESULT != 999
+	;汎用キャラ(男性)をロードした場合
+	IF RESULT == 1
+		;キャラの追加作業
+		LOCAL:3 = 0
+		ADDCHARA LOCAL:3
+		SWAPCHARA ARG, CHARANUM - 1
+		DELCHARA CHARANUM - 1
+		TALENT:ARG:オトコ = 1
+		NAME:ARG = 汎用キャラ(♂)
+	ELSE
+		;キャラの追加作業
+		LOCAL:3 = RESULT
+		ADDCHARA LOCAL:3
+		SWAPCHARA ARG, CHARANUM - 1
+		DELCHARA CHARANUM - 1
+	ENDIF
+
+	;名前や変身後名の一時保存の初期化
+	REPEAT 4
+		SAVESTR:(COUNT) = %STRCLEAR()%
+	REND
+	PRINTFORMW {ARG:0}人目のキャラを%NAME:ARG%にしました
+
+	CALL FIRSTSETTING_CHARA_CSVFIX, ARG
+
+	;固有キャラ判定
+	SIF TALENT:ARG:固有キャラ == 0
+		NO:ARG = 0
+
+	;性格補正をリセット
+	FOR LOCAL:3, 0, 7
+		LOCAL:1 = LOCAL:3
+		SIF LOCAL:3 > 2
+			LOCAL:1 = LOCAL:3 + 7
+		CSVBASE NO:ARG, LOCAL:1
+		BASE:ARG:(LOCAL:1) = RESULT
+		MAXBASE:ARG:(LOCAL:1) = BASE:ARG:(LOCAL:1)
+	NEXT
+
+	;汎用キャラの場合、性格補正を再計算
+	IF NO:ARG == 0
+		;体力などのBASE値の計算
+		CALL SEIKAKU_CHECK,"GET_TALENT_VALUE",ARG
+		LOCAL = RESULT
+		LOCAL:1 = 0
+		LOCAL:2 = 0
+		FOR LOCAL:3, 0, 7
+			LOCAL:1 = LOCAL:3
+			SIF LOCAL:3 > 2
+				LOCAL:1 = LOCAL:3 + 7
+			LOCAL:2 = BASE:ARG:(LOCAL:1)
+			;性格補正
+			BASE:ARG:(LOCAL:1) = SEIKAKU_HOSEI_F(LOCAL, LOCAL:1, LOCAL:2)
+			MAXBASE:ARG:(LOCAL:1) = BASE:ARG:(LOCAL:1)
+		NEXT
+	ENDIF
+
+	;遺伝ボーナスを加算
+	BASE:ARG:体力 += CFLAG:ARG:60
+	BASE:ARG:気力 += CFLAG:ARG:61
+	BASE:ARG:性耐性 += CFLAG:ARG:62
+	BASE:ARG:攻撃 += CFLAG:ARG:63
+	BASE:ARG:防御 += CFLAG:ARG:64
+	BASE:ARG:敏捷 += CFLAG:ARG:65
+	BASE:ARG:知性 += CFLAG:ARG:66
+ELSE
+	GOTO INPUT_LOADCSV
+ENDIF
+
+;-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+;キャラクターCSV未定義値の設定処理を行う関数
+@FIRSTSETTING_CHARA_CSVFIX, ARG
+;ARG:0	対象のCHARANUM
+
+;レベルが1未満ならレベル1に設定
+SIF ABL:ARG:レベル < 1
+	ABL:ARG:レベル = 1
+
+;CSV未定義のステータスを基本値に設定
+LOCAL:3 = 0
+FOR LOCAL:3, 0, 7
+	LOCAL:1 = LOCAL:3
+	SIF LOCAL:3 > 2
+		LOCAL:1 = LOCAL:3 + 7
+	CSVBASE (NO:ARG), LOCAL:1
+	IF RESULT == 0 && (LOCAL:1 == 0 || LOCAL:1 == 1)
+		MAXBASE:ARG:(LOCAL:1) = 1000
+		BASE:ARG:(LOCAL:1) = MAXBASE:ARG:(LOCAL:1)
+	ELSEIF RESULT == 0
+		MAXBASE:ARG:(LOCAL:1) = 100
+		BASE:ARG:(LOCAL:1) = MAXBASE:ARG:(LOCAL:1)
+	ENDIF
+NEXT
+
+;別人改造版0.34α以前の初期セットキャラや@EXPORT_CSVで出力したCSVのカラー設定を現行仕様へとコンバート
+;該当するCSVはCSTR:36が空白のはず
+IF CSTR:ARG:36 == ""
+	;肌の色を移行
+	CSTR:ARG:36 = %CSTR:ARG:34%
+	;変身中の瞳の色をコピー
+	CSTR:ARG:34 = %CSTR:ARG:32%
+	CSTR:ARG:35 = %CSTR:ARG:33%
+	;変身中の肌の色をコピー
+	CSTR:ARG:37 = %CSTR:ARG:36%
+ENDIF
+
+;圧縮武器データの解凍
+SIF CSTR:ARG:15 != ""
+	CALL DECODE_WEAPON_DATA, ARG, 1
+SIF CSTR:ARG:16 != ""
+	CALL DECODE_WEAPON_DATA, ARG, 2
+SIF CSTR:ARG:17 != ""
+	CALL DECODE_WEAPON_DATA, ARG, 3
+;圧縮武器データのクリア
+CSTR:ARG:15 =
+CSTR:ARG:16 =
+CSTR:ARG:17 =
+

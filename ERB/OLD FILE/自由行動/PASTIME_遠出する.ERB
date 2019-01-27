@@ -1,0 +1,456 @@
+@PASTIME_遠出する, ARG
+#DIMS 目的地
+
+PRINTL 遠出する
+PRINTL 
+IF TALENT:オトコ <= 0 && TALENT:変身時ＴＳ > 0 && CFLAG:1 > 0
+	IF TALENT:淫乱 > 0
+		PRINTFORML 女性の姿に変身した%PRINT_TRANSCALLNAME(TARGET)%は、身綺麗にして出掛けていった。
+		PRINTW 
+		PRINTFORML 露出の多い服装に下着が見えそうなマイクロミニスカート。
+		PRINTFORML とどめに派手な色のサイハイソックスを身に付けた姿はいかにも腰の軽そうなギャル風だ。
+	ELSEIF TALENT:女体受容 > 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は女性化した状態で少し遠出することにした。
+		PRINTW 
+		PRINTFORML 以前に感じていた違和感を今は全く感じなくなり
+		PRINTFORML すっかり変身中のカラダに慣れた事を実感する。
+	ELSE
+		PRINTFORML 少しでも変身中のカラダに慣れておこうと考え
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は女性化した状態で少し遠出することにした。
+		PRINTW 
+		PRINTFORML ネットや雑誌を参考に服装はしっかり整えたつもりだが、
+		PRINTFORML 不慣れな為か変な目で見られていないかと気になってしまう。
+	ENDIF
+ELSEIF TALENT:淫乱 > 0
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は、身綺麗にして出掛けていった。
+	PRINTW 
+	PRINTFORML 露出の多い服装に下着が見えそうな%SPLIT_SEX(TARGET,"マイクロミニスカート／ミニホットパンツ")%。。
+	PRINTFORML とどめに派手な色のサイハイソックスを身に付けた姿はいかにも腰の軽そうなギャル風だ。
+ELSE
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は、少し遠出することにした。
+ENDIF
+PRINTW 
+PRINTL 
+PRINTFORML 電車を待つ%PRINT_TRANSCALLNAME(TARGET)%の行き先は・・・
+PRINTL 
+PRINT [0]動物園　　　　　　　　
+PRINT [1]水族館　　　　　　　　
+PRINTL 
+PRINT [2]遊園地　　　　　　　　
+PRINT [3]植物園　　　　　　　　
+PRINTL 
+PRINT [4]ライブ　　　　　　　　
+PRINT [5]ウォーターパーク　　　
+PRINTL 
+PRINT [6]海辺　　　　　　　　　
+PRINT [7]温泉　　　　　　　　　
+PRINTL 
+;PRINT [8]何か思いついた時用　　
+;PRINT [9]何か思いついた時用　　
+PRINTL 
+DRAWLINE
+$INPUT_LOOP
+INPUT
+PRINTL 
+DRAWLINE
+IF RESULT == 0
+	PRINTL 動物園
+ELSEIF RESULT == 1
+	PRINTL 水族館
+ELSEIF RESULT == 2
+	PRINTL 遊園地
+ELSEIF RESULT == 3
+	PRINTL 植物園
+ELSEIF RESULT == 4
+	PRINTL ライブ
+ELSEIF RESULT == 5
+	PRINTL ウォーターパーク
+ELSEIF RESULT == 6
+	PRINTL 海辺
+ELSEIF RESULT == 7
+	PRINTL 温泉
+ELSE
+	PRINTL 正しい値を入力してください
+	GOTO INPUT_LOOP
+ENDIF
+LOCAL = RESULT
+PRINTL 
+
+PRINTW 
+PRINTW ・・
+PRINTW ・・・・
+PRINTW ・・・・・・
+PRINTL 
+CALL PASTIME_CHIKAN, ARG	
+IF RESULT == 0
+	IF LOCAL == 0
+		目的地 = 動物園
+		CALL MESSAGE_PASTIME_Zoo
+	ELSEIF LOCAL == 1
+		目的地 = 水族館
+		CALL MESSAGE_PASTIME_Aquarium
+	ELSEIF LOCAL == 2
+		目的地 = 遊園地
+		CALL MESSAGE_PASTIME_AmusementPark
+	ELSEIF LOCAL == 3
+		目的地 = 植物園
+		CALL MESSAGE_PASTIME_BotanicalGarden
+	ELSEIF LOCAL == 4
+		目的地 = ライブ
+		CALL MESSAGE_PASTIME_LiveShow
+	ELSEIF LOCAL == 5
+		目的地 = ウォーターパーク
+		CALL MESSAGE_PASTIME_WaterPark
+	ELSEIF LOCAL == 6
+		目的地 = 海辺
+		CALL MESSAGE_PASTIME_BeachSide
+	ELSEIF LOCAL == 7
+		目的地 = 温泉
+		CALL MESSAGE_PASTIME_Spa
+	ENDIF
+	CALL PASTIME_NANPA
+	IF RESULT > 0
+		;繁華街と同じナンパ
+		CALL MESSAGE_PASTIME_NANPA,ARG
+	ELSE
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は、%目的地%を楽しんできたようだ。
+		PRINTW 
+	ENDIF
+ENDIF
+
+;----------------------------------------------------------------------------------------------------------------------------
+;動物園の内容
+@MESSAGE_PASTIME_Zoo
+
+PRINTFORML 動物園を訪れた%PRINT_TRANSCALLNAME(TARGET)%は
+IF RAND:4 == 0
+	PRINTFORML 園内を散策して様々な動物を観ている。
+	PRINTL 
+	PRINTFORML ・・・
+ELSEIF RAND:3 == 0
+	PRINTFORML ふれあいコーナーに入っていった。
+	PRINTL 
+	PRINTFORML もこもこした羊を撫でたりもふもふのウサギを抱き上げたりと
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は可愛い動物達に癒やされている・・・
+ELSE
+	PRINTFORML 園内を散策して様々な動物を眺めている。
+	PRINTL 
+	PRINTFORML ふと気になる動物を見つけた%PRINT_TRANSCALLNAME(TARGET)%はケージの前に立った。
+	IF RAND:3 == 0 && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0) && TALENT:巨乳 > 0
+		PRINTFORML もっとよく見ようと前のめりになっているが
+		PRINTFORML すれ違う男共の視線が
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の
+		PRINTFORML 柵に乗っかかっている服の上からでもわかる
+		IF TALENT:巨乳 > 2
+			PRINT ダイナミックな大きさの
+		ELSE
+			PRINT 豊満な
+		ENDIF
+		PRINTFORML バストにささっている・・・
+	ELSEIF RAND:3 == 0 && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0)
+		SIF CFLAG:1 == 0
+			LOCAL = TALENT:外見
+		SIF CFLAG:1 >= 1
+			LOCAL = TALENT:変身時外見
+		PRINTFORML すれ違う男共の視線が
+		PRINTFORML もっとよく見ようと前のめりになっている%PRINT_TRANSCALLNAME(TARGET)%の無防備に晒された
+		IF LOCAL == 2
+			PRINT むちむちとした
+		ELSEIF LOCAL == 1
+			PRINT 豊満な
+		ELSEIF LOCAL == 0
+			PRINT 整った
+		ELSE
+			PRINT 小振りな
+		ENDIF
+		PRINTFORML ヒップにささっているが
+		PRINTFORML 集中のあまり%PRINT_TRANSCALLNAME(TARGET)%は気付いていない・・・
+	ELSE
+		PRINTFORML じっくり観察して満足すると次は何を見ようかと離れていった・・・
+	ENDIF
+ENDIF
+PRINTW 
+
+
+;----------------------------------------------------------------------------------------------------------------------------
+;水族館の内容
+@MESSAGE_PASTIME_Aquarium
+
+PRINTFORM 水族館を訪れた%PRINT_TRANSCALLNAME(TARGET)%は
+IF RAND:3 == 0 && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0)
+	PRINTFORML イルカショーを楽しんでいる。
+	PRINTL 
+	PRINTFORML 飼育員の指示に従い、イルカ達が次々と芸をこなしていく。
+	PRINTFORML 特にイルカ達がジャンプする度に激しく水飛沫があがっる様は壮観だ。
+	PRINTL 
+	PRINTFORML しかし、最前列に座っていたせいで
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%に飛沫がかかり服が濡れてしまっている。
+	PRINTL 
+	PRINTFORML 隣に座る男からチラチラと視線を感じその先にある自分の体を見ると
+	PRINTFORML 濡れた服からうっすらと下着が透けてしまっている事に気がついた。
+	PRINTFORML 男の視線はイルカではなく%PRINT_TRANSCALLNAME(TARGET)%のカラダに釘付けになっている。
+	PRINTL 
+	IF TALENT:淫乱 > 0 || ABL:露出癖 > 2
+		PRINTFORML ショーが終わると%PRINT_TRANSCALLNAME(TARGET)%は
+		PRINTFORML 濡れ透けたカラダを他の客にも見せ付けるような足取りで会場を立ち去った・・・
+	ELSE
+		PRINTFORML ショーが終わるや否や%PRINT_TRANSCALLNAME(TARGET)%は
+		PRINTFORML 顔を真赤にして濡れ透けたカラダを隠すように足早で会場を立ち去った・・・
+	ENDIF
+ELSEIF RAND:2 == 0
+	PRINTFORML アシカショーを楽しんでいる。
+	PRINTFORML 次々に芸をこなしていくアシカ達が可愛らしい。
+	PRINTL 
+	PRINTFORML 客がアシカにエサを上げられるプログラムで指名された%PRINT_TRANSCALLNAME(TARGET)%は
+	PRINTFORML あざとくエサを強請るアシカ達にエサを与えている。
+	PRINTL 
+	PRINTFORML アシカと直接触れ合えた%PRINT_TRANSCALLNAME(TARGET)%はご満悦な顔で会場を去った・・・
+ELSE
+	PRINTFORML 水槽を眺めながら順路を進んでいる。
+	PRINTL 
+	PRINTFORML ふと気になる魚を見つけた%PRINT_TRANSCALLNAME(TARGET)%は水槽の前に貼り付いている。
+	IF RAND:3 == 0 && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0) && TALENT:巨乳 > 0
+		PRINTFORML すれ違う男共の視線が
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の水槽に押し潰された服の上からでもわかる
+		IF TALENT:巨乳 > 2
+			PRINT ダイナミックな大きさの
+		ELSE
+			PRINT 豊満な
+		ENDIF
+		PRINTFORML バストにささっているが
+		PRINTFORML 集中のあまり%PRINT_TRANSCALLNAME(TARGET)%は気付いていない・・・
+	ELSEIF RAND:3 == 0 && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0)
+		SIF CFLAG:1 == 0
+			LOCAL = TALENT:外見
+		SIF CFLAG:1 >= 1
+			LOCAL = TALENT:変身時外見
+		PRINTFORML すれ違う男共の視線が
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の無防備に晒された
+		IF LOCAL == 2
+			PRINT むちむちとした
+		ELSEIF LOCAL == 1
+			PRINT 豊満な
+		ELSEIF LOCAL == 0
+			PRINT 整った
+		ELSE
+			PRINT 小振りな
+		ENDIF
+		PRINTFORML ヒップにささっているが
+		PRINTFORML 集中のあまり%PRINT_TRANSCALLNAME(TARGET)%は気付いていない・・・
+	ELSE
+		PRINTFORML じっくり観察して満足すると次の水槽へと順路を進んでいった・・・
+	ENDIF
+ENDIF
+PRINTW 
+
+
+;----------------------------------------------------------------------------------------------------------------------------
+;遊園地の内容
+@MESSAGE_PASTIME_AmusementPark
+
+PRINTFORM 遊園地に訪れた%PRINT_TRANSCALLNAME(TARGET)%は
+IF RAND:2 == 0
+	PRINTFORML ウォーター・ライドに列にならんでいる。
+	PRINTL 
+	PRINTFORML 大人気アトラクションだけあって待ち時間は長かったが、それだけに期待感は膨らんでいく。
+	PRINTFORML やがて順番が来ると、%PRINT_TRANSCALLNAME(TARGET)%を乗せたライドが発進していった。
+	PRINTL 
+	PRINTFORML 発進して暫くすると、急な加減速や坂の昇降、噴霧など次々に乗客を楽しませるギミックが作動していく。
+	PRINTFORML それらに気持ちを盛り上げられていると徐々にライドの速度が上昇していくのを感じる。
+	PRINTFORML アトラクションの目玉、クライマックスの滝下りだ！
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%を乗せたライドが一気に滝を駆け下りて行くと
+	PRINTFORML 盛大な水飛沫と上方へ水が噴射され悲鳴混じりの歓声が沸き起こった。
+	PRINTL 
+	IF RAND:3 == 0 && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0)
+		PRINTFORML しかし、レインコートを忘れてしまっていた為に
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%に飛沫がかかり服が濡れてしまっている。
+		PRINTL 
+		PRINTFORML 隣に座る男からチラチラと視線を感じその先にある自分の体を見ると
+		PRINTFORML 濡れた服からうっすらと下着が透けてしまっている事に気がついた。
+		PRINTFORML 男の視線は%PRINT_TRANSCALLNAME(TARGET)%のカラダに釘付けになっている。
+		PRINTL 
+		IF TALENT:淫乱 > 0 || ABL:露出癖 > 2
+			PRINTFORML ライドが乗り場に到着すると%PRINT_TRANSCALLNAME(TARGET)%は
+			PRINTFORML 濡れ透けたカラダを他の客にも見せ付けるような足取りで会場を立ち去った・・・
+		ELSE
+			PRINTFORML ライドが乗り場に到着すると%PRINT_TRANSCALLNAME(TARGET)%は
+			PRINTFORML 顔を真赤にして濡れ透けたカラダを隠すように足早で会場を立ち去った・・・
+		ENDIF
+	ELSE
+		PRINTFORML 人気に違わぬ興奮ぶりに満足した%PRINT_TRANSCALLNAME(TARGET)%は
+		PRINTFORML 興奮冷めやらぬままにアトラクションを後にした・・・
+	ENDIF
+ELSE
+	PRINTFORML 観覧車に乗っている。
+	PRINTL 
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%を乗せたゴンドラは
+	PRINTFORML ゆっくり回転していくとやがて頂点にさしかかった。
+	PRINTFORML 窓の外を見ると園内どころか遥か遠く海の水平線まで見渡すことが出来た。
+	PRINTFORML 広大な景色に感動していると徐々にゴンドラは下界へと降りて行った。
+	PRINTL 
+	PRINTFORML 高所からの風景を堪能した%PRINT_TRANSCALLNAME(TARGET)%は観覧車を後にした・・・
+ENDIF
+PRINTW 
+
+
+;----------------------------------------------------------------------------------------------------------------------------
+;植物園の内容
+@MESSAGE_PASTIME_BotanicalGarden
+;申し訳程度の触手くん要素。一般植物にまぎれて襲撃とかあってもいいかも
+
+PRINTFORM 植物園に訪れた%PRINT_TRANSCALLNAME(TARGET)%は、
+PRINTFORML 色とりどりの草花を眺めながら順路を進んでいる。
+PRINTL 
+IF RAND:3 == 0
+	PRINTFORML ふと気になる花を見つけた%PRINT_TRANSCALLNAME(TARGET)%は花の前に貼り付いている。
+	IF RAND:3 == 0 && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0) && TALENT:巨乳 > 0
+		PRINTFORML すれ違う男共の視線が
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の無防備に晒された服の上からでもわかる
+		IF TALENT:巨乳 > 2
+			PRINT ダイナミックな大きさの
+		ELSE
+			PRINT 豊満な
+		ENDIF
+		PRINTFORML バストにささっているが
+		PRINTFORML 集中のあまり%PRINT_TRANSCALLNAME(TARGET)%は気付いていない・・・
+	ELSEIF RAND:3 == 0 && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0)
+		SIF CFLAG:1 == 0
+			LOCAL = TALENT:外見
+		SIF CFLAG:1 >= 1
+			LOCAL = TALENT:変身時外見
+		PRINTFORML すれ違う男共の視線が
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の無防備に晒された
+		IF LOCAL == 2
+			PRINT むちむちとした
+		ELSEIF LOCAL == 1
+			PRINT 豊満な
+		ELSEIF LOCAL == 0
+			PRINT 整った
+		ELSE
+			PRINT 小振りな
+		ENDIF
+		PRINTFORML ヒップにささっているが
+		PRINTFORML 集中のあまり%PRINT_TRANSCALLNAME(TARGET)%は気付いていない・・・
+	ELSE
+		PRINTFORML じっくり観察して満足すると次の水槽へと順路を進んでいった・・・
+	ENDIF
+ELSE
+	PRINTFORML 触手との戦いに役立つような知識はないかと思い
+	PRINTFORML 真剣な面持ちで一つ一つ立て札の説明を読んでいる・・・
+ENDIF
+PRINTW 
+
+
+;----------------------------------------------------------------------------------------------------------------------------
+;ライブの内容
+@MESSAGE_PASTIME_LiveShow
+PRINTFORM ライブ会場に訪れた%PRINT_TRANSCALLNAME(TARGET)%は
+IF RAND:100 == 0
+	PRINTFORML 本業は農家のアイドルグループのライブを楽しんでいる。
+ELSEIF RAND:90 == 0
+	PRINTFORML 世界的なスター歌手のライブを楽しんでいる。
+ELSEIF RAND:70 == 0
+	PRINTFORML 人気絶頂の有名バンドのライブを楽しんでいる。
+ELSEIF RAND:80 == 0
+	PRINTFORML 国民的人気アイドルのライブを楽しんでいる。
+ELSEIF RAND:10 == 0
+	PRINTFORML 有名バンドのライブを楽しんでいる。
+ELSEIF RAND:8 == 0
+	PRINTFORML 人気アイドルのライブを楽しんでいる。
+ELSEIF RAND:2 == 0
+	PRINTFORML デビューしたばかりのバンドグループのライブを楽しんでいる。
+ELSE
+	PRINTFORML デビューしたばかりの新人アイドルのライブを楽しんでいる。
+ENDIF
+PRINTL 
+PRINTFORML 周囲の熱に浮かされ、%PRINT_TRANSCALLNAME(TARGET)%の声援にも熱が入ってる。
+PRINTFORML 最後の一曲まで熱中し、祭り後の静けさに一抹の寂しさを覚えつつも会場を後にした・・・
+PRINTW 
+
+
+;----------------------------------------------------------------------------------------------------------------------------
+;ウォーターパークの内容
+@MESSAGE_PASTIME_WaterPark
+
+PRINTFORM ウォーターパークに訪れた%PRINT_TRANSCALLNAME(TARGET)%は
+PRINTFORML 水着に着替えると水遊びを始めた。
+PRINTL 
+IF RAND:3 == 0 && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0) && TALENT:巨乳 > 0
+	PRINTFORML すれ違う男共の視線が%PRINT_TRANSCALLNAME(TARGET)%の無防備に晒された
+	IF TALENT:巨乳 > 2
+		PRINT ダイナミックな大きさの
+	ELSE
+		PRINT 豊満な
+	ENDIF
+	PRINTFORML バストにささっている。
+	PRINTL 
+ELSEIF RAND:3 == 0 && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0)
+	SIF CFLAG:1 == 0
+		LOCAL = TALENT:外見
+	SIF CFLAG:1 >= 1
+		LOCAL = TALENT:変身時外見
+	PRINTFORML すれ違う男共の視線が%PRINT_TRANSCALLNAME(TARGET)%の無防備に晒された
+	IF LOCAL == 2
+		PRINT むちむちとした
+	ELSEIF LOCAL == 1
+		PRINT 豊満な
+	ELSEIF LOCAL == 0
+		PRINT 整った
+	ELSE
+		PRINT 小振りな
+	ENDIF
+	PRINTFORML ヒップにささっている。
+	PRINTL 
+ELSEIF RAND:3 == 0 && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0) && TALENT:巨乳 > 0
+	SIF CFLAG:1 == 0
+		LOCAL = TALENT:外見
+	SIF CFLAG:1 >= 1
+		LOCAL = TALENT:変身時外見
+	PRINTFORML すれ違う男共の視線が%PRINT_TRANSCALLNAME(TARGET)%の無防備に晒された
+	IF TALENT:巨乳 > 2
+		PRINT ダイナミックな大きさの
+	ELSE
+		PRINT 豊満な
+	ENDIF
+	PRINT バストと
+	IF LOCAL == 2
+		PRINT むちむちとした
+	ELSEIF LOCAL == 1
+		PRINT 豊満な
+	ELSEIF LOCAL == 0
+		PRINT 整った
+	ELSE
+		PRINT 小振りな
+	ENDIF
+	PRINTFORML ヒップにささっている。
+	PRINTL 
+ENDIF
+IF RAND:3 == 0
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はウォータースライダーを楽しんだ。
+ELSEIF RAND:2 == 0
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は流れるプールを楽しんだ。
+ELSE 
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は波の出るプールを楽しんだ。
+ENDIF
+PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は少し休憩しようとその場を後にした・・・
+PRINTW 
+
+
+;----------------------------------------------------------------------------------------------------------------------------
+;海辺の内容
+@MESSAGE_PASTIME_BeachSide
+PRINTFORM 海辺に訪れた%PRINT_TRANSCALLNAME(TARGET)%は
+PRINTFORML 水着に着替えると水遊びを始めた。
+PRINTL 
+PRINTFORML 海辺を楽しんだ様だ・・・
+PRINTW 
+
+
+;----------------------------------------------------------------------------------------------------------------------------
+;温泉の内容
+@MESSAGE_PASTIME_Spa
+PRINTFORM 温泉に訪れた%PRINT_TRANSCALLNAME(TARGET)%は
+PRINTFORML 早速温泉につかることにした。
+PRINTL 
+PRINTFORML ゆっくり疲れが取れた様だ・・・
+PRINTW 

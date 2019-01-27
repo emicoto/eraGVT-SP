@@ -1,0 +1,161 @@
+
+;------------------------------
+;出産(正常)
+;------------------------------
+;妊娠日数のリセット、素質[妊娠]の削除
+@CHILD_BIRTH_NORMAL
+#DIM CCOUNT
+
+;出産するキャラは疲労度が蓄積する
+CFLAG:99 += 45
+CFLAG:222 = 0
+CFLAG:227 = 0
+CFLAG:228 = 0
+TALENT:妊娠 = 0
+LOCAL:0 = 0
+DRAWLINE
+FONTBOLD
+PRINTFORML 出産（%PRINT_CALLNAME(TARGET,1)%）
+FONTREGULAR
+IF CFLAG:0 != 10
+	CALL MESSAGE_PRISON_CHILD_SHUSSAN_NORMAL
+ELSE
+	CALL MESSAGE_CHILD_SHUSSAN_NORMAL
+	PRINTW ・・
+	PRINTW ・・・・
+	PRINTW ・・・・・・
+	PRINTL 
+	PRINTFORML 数時間後、病室に戻された%PRINT_CALLNAME(TARGET)%は
+	PRINTFORML 自分の腕の中の小さな赤ん坊を見つめながら思案に暮れていた…
+	PRINTW 
+	IF CFLAG:230 <= -100
+		FOR CCOUNT,0,CHARANUM
+			SIF CCOUNT == MASTER
+				CONTINUE
+			SIF TARGET == CCOUNT
+				CONTINUE
+			IF CFLAG:CCOUNT:240 == CFLAG:230 * -1 - 100
+				PRINTFORML それは、%PRINT_CALLNAME(TARGET)%と%CALLNAME:CCOUNT%の子だった。
+				IF TALENT:800 == 2
+					PRINTFORML 付き合っている彼に本当のことは明かしていない。
+					PRINTFORML それに、この子をどうするべきかもまだ決めていなかった…
+				ELSEIF TALENT:800 == 3
+					PRINTFORML 婚約者の彼に本当のことは明かしていない。
+					PRINTFORML もちろん、相手の両親には彼との子だと説明はしてあるが、
+					PRINTFORML この子をどうするべきか、正直まだ迷っている…
+				ELSEIF TALENT:800 == 4
+					PRINTFORML 愛する夫に本当のことは明かしていない。
+					PRINTFORML 自分の子供だと信じて疑わない彼を前に、ついに真実を言い出せなかった。
+					PRINTFORML 夫は自分一人でも子供を育てるつもりだと言っているが…
+				ELSEIF CFLAG:CCOUNT:0 == 0
+					PRINTFORML 見舞いに来た%CALLNAME:CCOUNT%は二人で一緒に育てようと言ってくれたが、
+					PRINTFORML どうするべきなのだろうか…
+				ELSE
+					PRINTFORML 触手との戦いを続けながら子供を育てるのは困難だ。
+					PRINTFORML 危険を避けるためにも安全な場所に預けるべきなのではないだろうか…？
+				ENDIF
+			ENDIF
+		NEXT
+	ELSEIF CFLAG:230 == 誰とも知れない相手
+		IF TALENT:800 == 2
+			PRINTFORML 付き合っている彼に本当のことは明かしていないが、それは行きずりの相手との子だった。
+			PRINTFORML 当然と言うべきか、彼には子供を育てる意志はまったく無いようで
+			PRINTFORML 話し合ってもなおこの子をどうするか決めかねている…
+		ELSEIF TALENT:800 == 3
+			PRINTFORML 婚約者の彼に本当のことは明かしていないが、それは行きずりの相手との子だった。
+			PRINTFORML 相手の両親には何とかそれらしい説明をしたが、罪悪感が心に重くのしかかる。
+			PRINTFORML 話し合いの結果、子供は婚約者の元で預かってくれると言ってくれたが…
+		ELSEIF TALENT:800 == 4
+			PRINTFORML 愛する夫に本当のことは明かしていないが、それは行きずりの相手との子だった。
+			PRINTFORML 重く鈍い岩塊のような罪悪感に打ち明けて楽になりたい気持ちで一杯になったが
+			PRINTFORML 心の底から嬉しそうにしている夫の顔を見ると、どうしても言い出せなくなってしまう。
+			PRINTFORML 夫は自分一人でも子供を育てるつもりだと言っているが…
+		ELSE
+			PRINTFORML それはどこの誰とも知れない、行きずりの相手との子だった。
+			PRINTFORML 子供に愛情を感じないわけではないが、触手との戦いのことを考えると、
+			PRINTFORML この子を手放した方が良いのではないかという考えが浮かんでは消える…
+		ENDIF
+	ELSEIF CFLAG:230 == 近親相姦
+		PRINTFORML だがそれは近親相姦によって産まれた禁忌の子だった。
+		PRINTFORML このことは誰にも、子供本人にすら言えないという罪悪感を飲み込みながら、
+		PRINTFORML %CALLNAME%はこれから育児をどうするべきか悩み続けた…
+	ELSEIF CFLAG:230 == 愛する人
+		IF TALENT:800 == 2
+			PRINTFORML それは付き合っている彼との愛の結晶だった。
+			PRINTFORML しかし%PRINT_CALLNAME(TARGET)%が自分で育児するには不都合が大きく、何より危険だということで
+			PRINTFORML 話し合いの結果、子供は彼の実家で預かってくれると言うのだが…
+		ELSEIF TALENT:800 == 3
+			PRINTFORML それは婚約者の彼との愛の結晶だった。
+			PRINTFORML 未婚ながら子供が生まれたことを相手の両親は喜んでくれて、
+			PRINTFORML もし良ければ子供は彼の実家で預かってくれると言うのだが…
+		ELSEIF TALENT:800 == 4
+			PRINTFORML それは正真正銘、愛する夫との愛の結晶だった。
+			PRINTFORML %PRINT_CALLNAME(TARGET)%としても出来るだけ自分の手で子供を育てたい気持ちだが
+			PRINTFORML 夫は自分一人でも育てる覚悟だと%PRINT_CALLNAME(TARGET)%に言ってくれた。
+			PRINTFORML 家族三人で抱き合い、束の間の水入らずに心が温まる気持ちだ…
+		ENDIF
+	ELSEIF CFLAG:230 == 望まない相手
+		PRINTFORML それは望まぬ性交を強要されて、無理やり孕まされた子だった。
+		PRINTFORML 子供に罪はないが、正直なところ母親らしい愛情を抱けるか自信がない。
+		PRINTFORML ましてや使命のことを考えると、自分で育てるのは難しいように思える…
+	ENDIF
+	PRINTW 
+	IF MONEY >= 10000 && CHARANUM < (登録最大人数 + 1)
+		PRINTFORML しばらくして新生児の遺伝子検査の結果が伝えられた。
+		PRINTFORML 幸か不幸か、この子には非常に高い潜在能力が秘められていることが分かったらしい。
+		PRINTFORML 政府に$10000を支払えば、人工的に成長を促進させて育児の負担を小さくすることができるが、
+		PRINTFORML その代わり、子供は%PRINT_CALLNAME(TARGET)%と同じく触手と戦う道を歩むことになるだろう。
+		PRINTW 
+		PRINTFORML 我が子に過酷な運命を課してまで、手元に置いておくべきだろうか？
+		PRINTL
+		PRINTFORML [0]いいえ
+		PRINTFORML [1]はい（所持金:${MONEY}）
+		$INPUT_CHILD_CRADLE
+		INPUT
+		IF RESULT == 1
+			MONEY -= 10000
+			PRINTL やはり、母親の居ない子供にしてしまうわけにはいかない。
+			CALL MESSAGE_CHILD_CRADLE
+			CFLAG:0 = 11
+		ELSEIF RESULT == 0
+			IF CFLAG:230 == 望まない相手
+				PRINTFORML 熟考の末、子供を施設に預けて忘れることにしました。
+			ELSEIF (CFLAG:230 == 愛する人 && TALENT:800 == 2) || (CFLAG:230 != 近親相姦 && TALENT:800 == 3)
+				PRINTFORML 熟考の末、子供は彼の実家に預けることにしました。
+			ELSEIF TALENT:800 == 4
+				PRINTFORML 熟考の末、子供は夫が自宅で育てることになりました。
+			ELSE
+				PRINTFORML 熟考の末、子供に別れを告げて施設に預けることにしました。
+			ENDIF
+			CALL RECOVER_TO_PARTY,TARGET
+		ELSE
+			PRINTL 正しい数値を入力してください
+			GOTO INPUT_CHILD_CRADLE
+		ENDIF
+	ELSEIF MONEY < 10000 || CHARANUM >= (登録最大人数 + 1)
+		IF CHARANUM >= (登録最大人数 + 1)
+			PRINTL （これ以上仲間を増やせないので選択肢を省略します）
+		ELSEIF MONEY < 10000
+			PRINTL （資金不足なので選択肢を省略します）
+		ENDIF
+		IF CFLAG:230 == 望まない相手
+			PRINTFORML 熟考の末、子供を施設に預けて忘れることにしました。
+		ELSEIF (CFLAG:230 == 愛する人 && TALENT:800 == 2) || (CFLAG:230 != 近親相姦 && TALENT:800 == 3)
+			PRINTFORML 熟考の末、子供は彼の実家に預けることにしました。
+		ELSEIF TALENT:800 == 4
+			PRINTFORML 熟考の末、子供は夫が自宅で育てることになりました。
+		ELSE
+			PRINTFORML 熟考の末、子供に別れを告げて施設に預けることにしました。
+		ENDIF
+		SIF CFLAG:0 == 10
+			CALL RECOVER_TO_PARTY,TARGET
+	ENDIF
+ENDIF
+
+CALL ABL_UP_BIRTH,1
+CALL _ABLUP,1
+
+
+
+
+

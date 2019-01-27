@@ -1,0 +1,36 @@
+@SHOKISET_NAME_3
+PRINTL [ 3]３人：侍女式自動人形
+;-----------------------------
+;侍女式自動人形に対する説明
+;------------------------------
+@SHOKISET_SETUMEI_3
+PRINTL
+PRINTL 　　　 *遊び方
+PRINTL 　　　3番目のキャラが全身敏感,体力気力極小など明らかに戦えるステータスではありません
+PRINTL 　　　そこで最速で3番目を触手に貢いで残るロボ子2人で
+PRINTL 　　　「触手に攫われたご主人様を何としてでも助けなくては!」
+PRINTL 　　　という脳内妄想で進めてください。
+PRINTL 　　　助けたら即座にまた別の触手に貢ぎましょう
+PRINTL
+PRINTL 　　　(いろんな意味で)上級者向け
+PRINTL
+;-------------------------------
+;グループの選択-侍女式自動人形
+;-------------------------------
+@SHOKISET_SELECT_3
+
+FLAG:5 = 1
+SAVESTR:10=侍女式自動人形
+
+ADDCHARA 331
+FLAG:8 ++
+ADDCHARA 332
+FLAG:8 ++
+ADDCHARA 333
+FLAG:8 ++
+
+CALL SHOKISET_CSVFIX
+JUMP CHARA_MAKE_MAIN, 0
+
+
+

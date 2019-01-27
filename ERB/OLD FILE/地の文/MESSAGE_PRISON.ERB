@@ -1,0 +1,1530 @@
+;**********************************************************
+;幽閉中の地の文
+
+
+;------------------------------------------------
+;初めての幽閉
+@MESSAGE_PRISON_PRISENTENCE_FIRST
+;幽閉された娘
+IF CFLAG:6 == -1
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は全身を這う触手の感触にも嫌悪の表情を見せることがない。
+	PRINTFORML この場所で生まれ育った彼女にとっては触手に囲まれているのが自然なことで、
+	PRINTFORML 触手が存在しない環境・・・
+	PRINTFORML "外の世界"という概念すら知らずに生きてきたのだから。
+	PRINTW 
+	IF RAND:3 == 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%にとって、触手は頼れる存在だった。
+		PRINTFORML お腹がすけば白い液体状の"ごはん"を飲ませてくれるし、
+		PRINTFORML 寒いと感じれば触手が体温を暖めてくれた。
+		PRINTFORML だから、触手が全身に絡みついたとき%PRINT_TRANSCALLNAME(TARGET)%は
+		PRINTFORML "構ってくれるなんて、嬉しいな"くらいにしか思っていなかった。
+		PRINTL 
+		PRINTFORML 乳首に触手が吸いついて、%PRINT_TRANSCALLNAME(TARGET)%は思わずびくりと身を震わせる。
+		PRINTFORML 不安げに触手を見上げると、今度は小さなワレメをくちゅくちゅと愛撫されて悶絶する。
+		PRINTFORML "なにこれ、気持ちいい"――
+		PRINTW 
+		PRINTFORML 全身を愛撫される未知の感覚に頬を染めながら、
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は目の前に差し出された触手を知らずに口に咥えていた。
+		PRINTFORML "私も気持ちよくしてあげたい"
+		PRINTFORML ちゅぱちゅぱと幼稚なフェラをする%PRINT_TRANSCALLNAME(TARGET)%に無数の触手が集まり、
+		PRINTFORML 初めての奉仕快楽に表情を蕩けさせる彼女の全身を包みこんでいく・・・
+	ELSEIF RAND:2 == 0
+		PRINTFORML あれ、もう"ごはん"の時間かな――
+		PRINTFORML 頬に一本の触手が擦りつけられ、%PRINT_TRANSCALLNAME(TARGET)%はそう思った。
+		PRINTFORML 小さな両手で触手を掴み、ぺろぺろとその先端を舐める。
+		PRINTFORML こうしていれば白い液体状の"ごはん"が出てくる。
+		PRINTFORML お腹一杯になるまで飲んだら昼寝をしよう。
+		PRINTFORML そう思っていたはずが――
+		PRINTW 
+		PRINTFORML 様子がおかしいことに気が付いたときにはもう手遅れだった。
+		PRINTFORML 不意に%PRINT_TRANSCALLNAME(TARGET)%の手足がきつく拘束され、口元の触手が乱暴に唇の奥に捻じ込まれる。
+		PRINTFORML "んむ、んぐっ、痛い、痛いよぅ！"
+		PRINTFORML 抵抗しても幼い身体で振り解きようがあるはずもなく、
+		PRINTFORML 突然の乱暴な扱いに戸惑う%PRINT_TRANSCALLNAME(TARGET)%の周囲に無数の触手が群がっていく・・・
+	ELSE
+		PRINTFORML 自分と触手は別の生き物なのだということ、
+		PRINTFORML その意味を%PRINT_TRANSCALLNAME(TARGET)%は完全には理解はしていなかった。
+		PRINTFORML 何処からともなく連れてこられる自分とよく似た"種族"――
+		PRINTFORML その"種族"が触手と何やらよく分からない"お遊戯"をしているのを見かけることもあったが、
+		PRINTFORML それがどういう意味を持つのか%PRINT_TRANSCALLNAME(TARGET)%には興味がなかったし、
+		PRINTFORML 無関心でいても%PRINT_TRANSCALLNAME(TARGET)%とは何の関係もなかった。
+		PRINTW 
+		PRINTFORML ――今日という日までは。
+		PRINTW 
+		PRINTFORML 股間に触手があてがわれ、大きく動いて小さなワレメを擦り上げる。
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はびくりと背を仰け反らせながら驚きの叫びを上げるが、
+		PRINTFORML 逃げようとしても手足にがっちりと触手が巻きついて身動きを封じられてしまう。
+		PRINTFORML "これ・・・まさか、お遊戯？"
+		PRINTFORML ようやく理解が追いつき、これから何をされるのか本能的な恐怖がゆっくりと込み上げる。
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は涙を堪えながら、両目をきゅっと閉じて縮こまるしかない・・・
+	ENDIF
+	PRINTW 
+ELSEIF CHARATALENT_F(TARGET,0,"オトコ") > 0 && CONFIG_CHECK_OTHER_F(1) > 0
+	PRINTFORML 生温かく湿った感触に%PRINT_TRANSCALLNAME(TARGET)%が意識を取り戻すと、
+	PRINTFORML そこはまるで怪物の内臓を剥き出しにしたような肉の牢獄の中だった。
+	PRINTFORML 壁からは無数の触手が生えて%PRINT_TRANSCALLNAME(TARGET)%の四肢を拘束しており、
+	PRINTFORML 下半身を前に突き出すような姿勢で固定されているため何とも屈辱的だ。
+	PRINTFORML 晒しものにされるような姿勢で身動きできず、%PRINT_TRANSCALLNAME(TARGET)%は歯噛みする。
+	PRINTFORML 
+	PRINTFORML と、そこで一本の触手が無造作に%PRINT_TRANSCALLNAME(TARGET)%の身体に針を突き立てた。
+	PRINTFORML 予想していたよりも遥かに軽い、チクリという刺すような感覚が走ったかと思うと、
+	IF TALENT:主観視点 > 0
+		PRINTFORML 全身にあり得ないほどの快楽が走り抜け、%PRINT_TRANSCALLNAME(TARGET)%は絶叫する。
+	ELSE
+		PRINTFORML 全身にあり得ないほどの快楽が走り抜け、%PRINT_TRANSCALLNAME(TARGET)%は絶叫した。
+	ENDIF
+	PRINTFORMW 
+	IF TALENT:変身時ＴＳ > 0 && CFLAG:1 == 1
+		FONTBOLD
+		PRINTL 完全女体化
+		FONTREGULAR
+		PRINTFORML 瞬間的に理性を吹き飛ばすほどのオーガズムに思考を焼かれ、
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の変身はあっけなく解けてしまった。
+		PRINTFORML ボロボロになった変身衣装が光に包まれて消え去り、身を守る術が失われる。
+		PRINTFORML しかし、そこまでだった。本来ならばその後に続くはずの変化が訪れない。
+		PRINTFORML 
+		PRINTFORML 平らに戻るはずの胸は膨らんだままで、
+		PRINTFORML 丸みを帯びた肉付きや腰のラインも変化する様子がない。
+		PRINTFORML 変身が解けたのに、オトコに戻れない――
+		PRINTFORML それが何を意味するのか深く考えるより前に快楽の波が再び押し寄せ、
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は２度３度と絶頂に襲われ続けた。
+		PRINTFORML 
+		PRINTFORML ４度目の絶頂で股間から高らかに潮を吹き、
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は混濁した意識の中で
+		PRINTFORML 自分が完全に"オンナ"になってしまったことをようやく認識した・・・
+	ELSE
+		FONTBOLD
+		PRINTL 強制女体化
+		FONTREGULAR
+		PRINTFORML オトコの身ではまるで感じたことのない激しいオーガズム
+		PRINTFORML ――女のオーガズムに思考を焼かれながら、
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の身体がみるみる丸みを帯びた形状へと変化していく。
+		PRINTFORML 
+		IF TALENT:巨乳 > 0
+			PRINTFORM 胸板は急速に膨らんでたわわな乳房となり、
+		ELSEIF TALENT:貧乳 > 0
+			PRINTFORM 硬かった胸板は柔らかく丸みを帯び、
+		ELSE
+			PRINTFORM 胸板は膨らんで乳房となり、
+		ENDIF
+		PRINTFORML 性器は胎内へと引っ込んでヴァギナとなり、
+		PRINTFORML 叫び声すら可愛らしい物へと変化していく。
+		IF TALENT:外見 == 1 || TALENT:外見 == 2 
+			PRINTFORM 骨格が華奢になりつつも体は丸みを帯びて
+		ELSE
+			PRINTFORM 肉付きや骨格も引きしめられて
+		ENDIF
+		PRINTFORML 顔つきが女性らしくなってしまい、
+		PRINTFORML 髪も伸びた%PRINT_TRANSCALLNAME(TARGET)%の姿はどこからどう見ても"オンナ"にしか見えない。
+		PRINTFORML 
+		PRINTFORML 経験したことのない快楽で既に虫の息になっている%PRINT_TRANSCALLNAME(TARGET)%。
+		PRINTFORML 自分はオトコだと心の中で言い聞かせながら辛うじて顔をあげると、
+		PRINTFORML そこには無数の触手が先端から先走り汁を垂れ流しながら待ち構えていた・・・
+	ENDIF
+	PRINTW 
+	;口上
+	TRYCALLFORM KOJO_ROOT(CFLAG:6, "PRISON_PRISENTENCE_FIRST")
+;変身時ＴＳキャラ♀→♂が男に変身できなくなる
+ELSEIF CHARATALENT_F(TARGET,1,"オトコ") > 0 && CONFIG_CHECK_OTHER_F(1) > 0
+	PRINTFORML 生温かく湿った感触に%PRINT_TRANSCALLNAME(TARGET)%が意識を取り戻すと、
+	PRINTFORML そこはまるで怪物の内臓を剥き出しにしたような肉の牢獄の中だった。
+	PRINTFORML 壁からは無数の触手が生えており、%PRINT_TRANSCALLNAME(TARGET)%の四肢を拘束している。
+	PRINTFORML そして周囲には強烈な甘い香りが漂い、息をするたびにむせ返るようだ。
+	PRINTFORMW 
+	FONTBOLD
+	PRINTL 完全女体化
+	FONTREGULAR
+	PRINTFORML 全身を這いまわるヌルリとした触手の感触のひとつひとつが甘美な刺激となって背筋を走り抜け、
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は思わず黄色い声を上げてしまう。
+	PRINTFORML そこで%PRINT_TRANSCALLNAME(TARGET)%はある違和感に気付く――
+	IF CFLAG:1 == 1
+		PRINTFORML 変身していたはずなのに、女性の姿に戻っている。
+		PRINTFORML …と言うより、オトコの姿になれなくなっている……？
+	ELSE
+		PRINTFORML 変身しようとしても、オトコの姿になれなくなっている……？
+	ENDIF
+	PRINTFORML 
+	PRINTFORML 気絶している間に何をされたのか分からないが、明らかに原因は触手によるものだ。
+	PRINTFORML そしてわざわざ%PRINT_TRANSCALLNAME(TARGET)%を女性の姿で生かしておいたということは――
+	PRINTFORML そう思った矢先、目の前の肉床が盛り上がり、
+	PRINTFORML 無数の触手が次から次へと現れて獲物を狙うようにとぐろを巻いた・・・！
+	PRINTW 
+	;口上
+	TRYCALLFORM KOJO_ROOT(CFLAG:6, "PRISON_PRISENTENCE_FIRST")
+	PRINTL 
+;通常
+ELSE
+	PRINTL まだ生きてる――
+	PRINTL 
+	PRINTFORML そう思った%PRINT_TRANSCALLNAME(TARGET)%は、重く湿った物音に目を覚ました。
+	PRINTFORML 朦朧としながら耳にしたその音は、壁越しに聞こえてくるようにくぐもっている。
+	PRINTFORML しかし、覚醒するにつれてその音をはっきり認識できるようになると、
+	PRINTFORML それが自分のすぐ傍――いや、耳元から響いているようだということに気が付いた。
+	PRINTFORML 
+	PRINTFORML ヌルリ、と柔軟なくせに恐ろしく堅い何かが皮膚を舐める感触。
+	PRINTFORML 反射的に粟立った肌と共に
+	PRINTFORML 一気に目の覚めた%PRINT_TRANSCALLNAME(TARGET)%の目に飛び込んできたのは───
+	PRINTFORML 
+	PRINTFORML 卑猥な姿勢で拘束された自分の身体と、周囲全てを埋め尽くし、
+	PRINTFORML 今もまた自分の身体を這い回る触手が集まった肉壁だった・・・！
+	PRINTW 
+	;口上
+	TRYCALLFORM KOJO_ROOT(CFLAG:6, "PRISON_PRISENTENCE_FIRST")
+	PRINTL 
+ENDIF
+
+;------------------------------------------------
+;二度目からの幽閉後の初被姦
+@MESSAGE_PRISON_PRISENTENCE_START
+PRINTFORML 深い意識の遮断から目が覚めた%PRINT_TRANSCALLNAME(TARGET)%は、
+PRINTFORM 肌を這い回る%STR:2500%の感触に
+IF (MESSAGE_BRANCH_F(TARGET) & 堕落) || (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け) || ABL:奉仕精神 >= 3 || ABL:触手中毒 >= 2
+	IF TALENT:主観視点 > 0
+		PRINTFORML 思わず身を震わせながら、
+	ELSE
+		PRINTFORML 思わず身を震わせて、
+	ENDIF
+ELSEIF TALENT:主観視点 > 0
+	PRINTFORML 、
+ELSE
+	PRINTFORML 嫌悪感を覚えて眉をしかめ、
+ENDIF
+PRINTFORM 自らが先の戦闘で
+CALL TENTACLE_ACCESS_PRISON, TARGET, "NAME"
+PRINTFORML に捕らえられてしまったことを思い出した───
+PRINTW 
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "PRISON_PRISENTENCE_START")
+PRINTL 
+
+;------------------------------------------------
+;幽閉後の被姦開始文
+@MESSAGE_PRISON_PRISENTENCE
+PRINTFORML 薄暗い闇の中───
+IF CFLAG:6 == -1 && (MESSAGE_BRANCH_F(TARGET) & 堕落)
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はまだ幼い身体で凌辱を受け入れ、
+	PRINTFORML 自分から触手に奉仕を行っている・・・
+ELSEIF CFLAG:6 == -1 && CFLAG:31 < 6
+	PRINTFORML まだ幼さの抜けきらない%PRINT_TRANSCALLNAME(TARGET)%の全身に触手が絡みつき、
+	PRINTFORML 与えられる快楽に抵抗する術も知らない少女はされるがままに任せている・・・
+ELSEIF CFLAG:6 == -1
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はぜぇぜぇと小さな肩で息をしながらも、
+	PRINTFORML 触手から与えられる快楽を受け入れはじめている・・・
+ELSEIF CFLAG:0 == 2 && FLAG:0 == 0
+	PRINTFORML 洗脳され、逆らうことを許されない%PRINT_TRANSCALLNAME(TARGET)%は
+	PRINTFORML 虚ろな目をしながら自ら脚を開き、触手の凌辱を受け入れた・・・
+ELSEIF CFLAG:0 == 3 && FLAG:0 == 0
+	PRINTFORML 自ら触手の孕み妻となった%PRINT_TRANSCALLNAME(TARGET)%は期待に瞳を潤わせながら、
+	PRINTFORML 媚びるような表情で跪いて手近な触手を引き寄せると、
+	IF TALENT:主観視点 > 0
+		PRINTFORML 上目づかいで種付けをして欲しいと懇願してしまう・・・
+	ELSE
+		PRINTFORML 上目づかいで種付けをして欲しいと懇願した・・・
+	ENDIF
+ELSEIF CFLAG:0 == 9 && FLAG:0 == 0
+	PRINTFORML 触手に取り込まれ、肉壁に同化しつつある%PRINT_TRANSCALLNAME(TARGET)%は
+	PRINTFORML 壊れた人形のように力なくうなだれている・・・
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落) && TALENT:主観視点 > 0
+	PRINTFORML 完全に快楽に屈した%PRINT_TRANSCALLNAME(TARGET)%は
+	PRINTFORML 凌辱されることに至上の幸福を感じてしまう・・・
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+	PRINTFORML 完全に快楽に屈した%PRINT_TRANSCALLNAME(TARGET)%は
+	PRINTFORML 凌辱されることに至上の幸福を感じているようだ・・・
+ELSEIF CFLAG:31 < 6 && FLAG:0 != 0
+	IF (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はあっさりと快楽に屈して
+		PRINTFORML されるがままになっている・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 絶望)
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は%STR:2500%から与えられる快楽に
+		PRINTFORML 辛うじて理性を保っている・・・
+	ELSE
+		PRINTFORML %STR:2500%による凌辱で疲弊しつつも、%PRINT_TRANSCALLNAME(TARGET)%は
+		PRINTFORML まだ完全に脱出を諦めていない・・・
+	ENDIF
+ELSEIF CFLAG:31 < 12 && FLAG:0 != 0
+	IF (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け) || (MESSAGE_BRANCH_F(TARGET) & 絶望)
+		PRINTFORML 長期間に渡って快楽を注ぎ込まれ続けた%PRINT_TRANSCALLNAME(TARGET)%は
+		PRINTFORML 正常な思考を失いつつある・・・
+	ELSE
+		PRINTFORML 度重なる凌辱によって%PRINT_TRANSCALLNAME(TARGET)%は
+		PRINTFORML 希望を失いつつある・・・
+	ENDIF
+ELSE
+	IF (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け) && TALENT:主観視点 > 0
+		PRINTFORML ついに快楽の許容量を超えてしまった%PRINT_TRANSCALLNAME(TARGET)%は
+		PRINTFORML 壊れたような笑みを浮かべ、自ら凌辱を懇願してしまった・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)
+		PRINTFORML ついに快楽の許容量を超えてしまった%PRINT_TRANSCALLNAME(TARGET)%は
+		PRINTFORML 壊れたような笑みを浮かべている・・・
+	ELSE
+		PRINTFORML なおも%STR:2500%に陵辱され続ける%PRINT_TRANSCALLNAME(TARGET)%は
+		PRINTFORML 生気のあせた瞳で虚空を見詰め続けている・・・
+	ENDIF
+ENDIF
+PRINTW 
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "PRISON_PRISENTENCE")
+PRINTL 
+
+;------------------------------------------------
+;洗脳になった
+@MESSAGE_PRISON_SENNOU
+FONTBOLD
+PRINTL 洗脳　　　　　　
+FONTREGULAR
+PRINTFORML ───
+IF TALENT:主観視点 > 0
+	PRINTFORML ──────ｭク・・・グチュッ・・・
+	PRINTFORML 無限に繰り返される絶頂と被虐に%PRINT_TRANSCALLNAME(TARGET)%の自我は、
+	PRINTFORML 人智を超越した存在に容赦なく蹂躙され、形なく崩壊しつつある・・・
+	PRINTFORML 
+	PRINTFORML グチュリと耳元で粘ついた音がするが、
+	PRINTFORML 耳内に侵入してきた極細触手の感触にも%PRINT_TRANSCALLNAME(TARGET)%は弱々しく呻くことしかできない。
+	PRINTFORML ヌチャヌチャと頭蓋にあってはならない音が鳴り響き、
+	PRINTFORML まるで意識が、脳が攪拌されているように、現実と夢の区別すら混濁していく。
+	PRINTFORML にじり寄ってくる「終焉」の意味を%PRINT_TRANSCALLNAME(TARGET)%はもはや知覚することもできず───
+	PRINTFORML 
+	PRINTFORML 数刻後、%PRINT_TRANSCALLNAME(TARGET)%は歪んだ夢の中で、再び目を覚ます・・・
+ELSE
+	PRINTFORML ──────ｨヤ・・・アァァ・・・
+	PRINTFORML 無限に繰り返される絶頂と被虐に%PRINT_TRANSCALLNAME(TARGET)%の自我は、
+	PRINTFORML 人智を超越した存在に容赦なく蹂躙され、形なく崩壊しつつある・・・
+	PRINTFORML 
+	PRINTFORML グチュリと耳元で粘ついた音がするが、
+	PRINTFORML 耳内に侵入してきた極細触手の感触にも%PRINT_TRANSCALLNAME(TARGET)%は弱々しく呻くばかり。
+	PRINTFORML ヌチャヌチャと頭蓋にあってはならない音が鳴り響き、
+	PRINTFORML まるで意識が、脳が攪拌されているように、現実と夢の区別すら混濁していく。
+	PRINTFORML にじり寄ってくる「終焉」の意味を%PRINT_TRANSCALLNAME(TARGET)%はもはや知覚することもできず───
+	PRINTFORML 
+	PRINTFORML 数刻後、昏い瞳を携えた%PRINT_TRANSCALLNAME(TARGET)%が触手の群の中に立ち尽くしていた・・・
+ENDIF
+PRINTFORML 
+PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は触手に洗脳されました
+PRINTW 
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "PRISON_SENNOU")
+PRINTL 
+
+;------------------------------------------------
+;悪堕ちになった
+@MESSAGE_PRISON_AKUOTI
+FONTBOLD
+PRINTL 悪堕ち　　　　　　
+FONTREGULAR
+PRINTFORML ───
+PRINTFORML ──────ァァアアアアアッ！
+PRINTFORML 無限に繰り返され快楽と愉悦。
+PRINTFORML 訪れた絶頂に愉悦の絶叫を上げた%PRINT_TRANSCALLNAME(TARGET)%は深く息を吐き、嗤った。
+PRINTFORML これほどの幸福を前に無駄な抵抗をするなど、以前の自分はなんて愚かだったのだろう、と。
+PRINTFORML 目の前に擡げられた一本の触手を手繰り寄せ、
+PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はその先端に愛おしげに舌を這わす・・・
+PRINTFORML 
+PRINTFORML もはや%PRINT_TRANSCALLNAME(TARGET)%の脳裏に在るのは、
+PRINTFORML 気高き使命ではなくただ今を愉しむという悦びだけ。
+CALL FILTER_CHECK,6
+CALL TATTOO_ACCESS, "POSITION_STR"
+IF RESULTS != "" && RESULT == 0
+	PRINTFORML %CALLNAME%の内側でドロドロと渦巻く情欲を示すかのように
+	PRINTFORML 屈服の証である%RESULTS%の「淫紋」が淫靡な輝きを放つ。
+	PRINTFORML その紋様を指先で撫でながら、%PRINT_TRANSCALLNAME(TARGET)%は夢中で触手への奉仕を続ける。
+ENDIF
+IF TALENT:主観視点 > 0
+	PRINTFORML 舌使いに耐えきれず触手が吐き出した精をたっぷりとその身に浴びた%PRINT_TRANSCALLNAME(TARGET)%は、
+	PRINTFORML 不意に拘束を解いた触手の意図を理解し、口元が思わず緩んでしまう。
+	PRINTFORML 
+	PRINTFORML ───さあ、この世界に触手の楽園を築いてやろう。
+	PRINTFORML 
+	PRINTFORML おぞましい衣装に身を包んだ%PRINT_TRANSCALLNAME(TARGET)%が
+ELSE
+	PRINTFORML 舌使いに耐えきれず触手が吐き出した精を浴びて妖しげな微笑みを見せた%PRINT_TRANSCALLNAME(TARGET)%は、
+	PRINTFORML 不意に拘束を解いた触手の挙動に、ソレの意図を理解して口元を緩めた。
+	PRINTFORML 
+	PRINTFORML 蠱惑的な笑みを携えた%PRINT_TRANSCALLNAME(TARGET)%が
+ENDIF
+PRINTFORML 触手の群と共に”狩り”に出発したのは、数刻後のことだった・・・
+PRINTFORML 
+PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は悪堕ちしました
+PRINTW 
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "PRISON_AKUOTI")
+PRINTL 
+
+@MESSAGE_SHOP_AKUOTI
+FONTBOLD
+PRINTL 悪堕ち　　　　　　
+FONTREGULAR
+PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は悪堕ちし、そのまま姿を消しました
+PRINTW 
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "SHOP_AKUOTI")
+PRINTL 
+
+@MESSAGE_SHOP_PRISON
+FONTBOLD
+PRINTL 幽閉　　　　　　
+FONTREGULAR
+PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は姿を消し、どこかへ行ってしまいました
+PRINTW 
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "SHOP_PRISON")
+PRINTL 
+
+;------------------------------------------------
+;取り込まれ
+@MESSAGE_PRISON_DEAD
+FONTBOLD
+PRINTL 取り込まれ　　　　　　
+FONTREGULAR
+PRINTFORML ───
+PRINTFORML ──────ゥ・・・ン・・・ぁ・・・
+PRINTFORML 光届かぬ深遠───
+PRINTFORML もはや喘ぎ声すら上がらなくなった%PRINT_TRANSCALLNAME(TARGET)%。
+PRINTFORML どんなに激しい陵辱を受けようとも鈍い反応しか返せず、零れるのは薄い吐息と僅かな呻きだけ。
+PRINTFORML 意志は壊れ、生理反応も消えかかった%PRINT_TRANSCALLNAME(TARGET)%の様子に触手はぶるりと一度大きく身体を震わせ───
+PRINTFORML 
+PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は静かに触手の群の中に飲み込まれていった・・・
+PRINTFORML 
+PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は完全に取り込まれました
+PRINTW 
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "PRISON_DEAD")
+PRINTL 
+
+;------------------------------------------------
+;ふたなり化
+@MESSAGE_PRISON_HUTANARI
+FONTBOLD
+PRINTL ふたなり化
+FONTREGULAR
+PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の眼前に、
+PRINTFORML 針のように尖った1本の触手がこれ見よがしに掲げられる。
+PRINTL 
+IF (MESSAGE_BRANCH_F(TARGET) & 堕落) || (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)
+	PRINTFORML 快楽への期待を瞳に浮かべる%PRINT_TRANSCALLNAME(TARGET)%の反応を楽しんでいるのか、
+ELSEIF TALENT:感情乏しい > 0
+ELSE
+	PRINTFORML 恐怖に引き攣った%PRINT_TRANSCALLNAME(TARGET)%の表情を楽しんでいるのか、
+ENDIF
+PRINTFORML 触手はそのままゆっくりとずり下がっていき、
+PRINTFORML 剥き出しにされていた%PRINT_TRANSCALLNAME(TARGET)%のクリトリスに静かにその先端を突き刺した。
+PRINTFORML ちくりとしたかすかな痛みを感じたが、
+IF (MESSAGE_BRANCH_F(TARGET) & 堕落) || (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)
+	IF TALENT:主観視点 > 0
+		PRINTFORML 予想していたような激しい刺激ではなかったことに内心では失望を感じてしまう。
+	ELSE
+		PRINTFORML 予想していたような激しい刺激ではなかったことに失望を禁じ得ない。
+	ENDIF
+ELSE
+	PRINTFORML 予想していたような激痛ではないことに安堵の息を吐く。
+ENDIF
+PRINTL 
+PRINTFORML しかし次の瞬間───
+PRINTFORML 刺された部分から強烈な熱を感じて、%PRINT_TRANSCALLNAME(TARGET)%は思わず腰を跳ね上げ絶叫した。
+PRINTFORML 得体の知れない快楽に我を見失い、混乱のままに慌てて下げた視線の先には、
+IF TALENT:性別変化 > 0
+	PRINTFORML どこか見覚えのあるモノがそそり立っていた・・・
+ELSE
+	PRINTFORML 本来自分の性別には在り得ないはずのモノがそそり立っていた・・・
+ENDIF
+PRINTW 
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "PRISON_HUTANARI")
+PRINTL 
+PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は触手によって%TALENTNAME:300%にされました
+PRINTW 
+
+
+;-----------------------------------------------
+;母乳体質化
+@MESSAGE_PRISON_BONYU
+FONTBOLD
+PRINTL 母乳体質化
+FONTREGULAR
+PRINTFORML 2本のイソギンチャク型の触手が%PRINT_TRANSCALLNAME(TARGET)%の乳首に吸い付く。
+PRINTFORML 触手から与えられる刺激に身悶えしていた%PRINT_TRANSCALLNAME(TARGET)%は突然、
+IF ABL:マゾっ気 >= 2
+	PRINTFORML 胸に突き立てられた痛みに強い快楽を感じた。
+ELSE
+	PRINTFORML 胸に鋭い痛みを受けて短い悲鳴をあげた。
+ENDIF
+PRINTFORML その痛みはやがて熱さに変わり、触手が離れたあとでも%PRINT_TRANSCALLNAME(TARGET)%の胸に
+PRINTFORML 異常な火照りを残し続けていた・・・
+PRINTW 
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "PRISON_BONYU")
+PRINTL 
+PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は触手によって%TALENTNAME:1%にされました
+PRINTW 
+
+
+
+;-----------------------------------------------
+;苗床化
+@MESSAGE_PRISON_NAEDOKO
+FONTBOLD
+PRINTL 苗床化
+FONTREGULAR
+PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の膣に挿入された触手の先端が開き、
+PRINTFORML ごく微細な触手が伸びて子宮の内部へと侵入していく。
+PRINTL 
+PRINTFORML 直接胎内を浸食される強い違和感を感じながらも、
+IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+	PRINTFORML 膣穴を犯される快楽に夢中になっている%PRINT_TRANSCALLNAME(TARGET)%は
+	PRINTFORML 恐怖が幸福感で上書きされてしまう。
+ELSE
+	PRINTFORML 女性器を犯す触手から分泌される媚薬効果で強い快楽を得ている%PRINT_TRANSCALLNAME(TARGET)%は
+	PRINTFORML 抵抗に力が入らない。
+ENDIF
+PRINTFORML やがて子宮の最奥にまで到達した微細触手が%PRINT_TRANSCALLNAME(TARGET)%の卵巣に
+PRINTFORML 顕微鏡サイズの針を突き刺し、薬液を注入していった・・・
+PRINTL 
+PRINTFORML 触手の精液で孕みやすいように作り変えられてしまった下腹部の火照りに、
+PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%は
+IF (MESSAGE_BRANCH_F(TARGET) & 堕落) && TALENT:主観視点 > 0
+	PRINTFORML 思わず切ない声を上げてしまう。
+	PRINTFORML 触手に媚びるような視線を向けながら、
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は種付けをして貰えるよう自分から口で奉仕を始めてしまう・・・
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+	PRINTFORML 切ない声を上げている。
+	PRINTFORML 触手に媚びるような視線を向け、種付けをして貰えるよう自分から口で奉仕を始めた・・・
+ELSEIF TALENT:主観視点 > 0
+	PRINTFORML 戸惑いを隠すことができない。
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の意志に反して、子宮は触手の精液を求めて強く疼き始めた・・・
+ELSE
+	PRINTFORML 戸惑いを隠せない。
+	PRINTFORML 自分の意志に反して、子宮が触手の精液を求めて疼いた・・・
+ENDIF
+PRINTW 
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "PRISON_NAEDOKO")
+PRINTL 
+PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は触手によって%TALENTNAME:161%されました
+PRINTW 
+
+
+;-----------------------------------------------
+;C中心攻め
+@MESSAGE_PRISON_COM_0
+FONTBOLD
+PRINTL Ｃ中心攻め
+FONTREGULAR
+IF SHIELD:3 <= 0
+	PRINTFORML 触手は%PRINT_TRANSCALLNAME(TARGET)%の胸を絞り上げるようにうごめき、
+ELSE
+	PRINTFORM 触手に拘束された%PRINT_TRANSCALLNAME(TARGET)%の
+ENDIF
+IF TALENT:オトコ <= 0 && SHIELD:1 <= 0
+	PRINTFORM 股の間では
+	SIF SHIELD:3
+		PRINTL 
+	PRINTFORML 膣を貫く触手の体液と分泌される愛液が混じりあって、泡だった音を立てている。
+ENDIF
+IF EXP:Ａ経験 > 0 && SHIELD:2 <= 0
+	PRINTFORM 尻には
+	SIF SHIELD:3
+		PRINTL 
+	PRINTFORM 注射器のような触手が得体のしれない粘液を注入し続けて
+	IF SHIELD:0 <= 0
+		PRINTL おり、
+		PRINT 更には
+	ELSE
+		PRINTL いる・・・
+	ENDIF
+ENDIF
+IF SHIELD:0 <= 0
+	IF TALENT:ふたなり > 0 || TALENT:オトコ > 0
+		PRINTFORML 勃起したペニスに数本の細い触手が巻きついて、
+		IF TALENT:主観視点 > 0
+			PRINTFORML 激しく上下にコキ上げてくる・・・
+		ELSE
+			PRINTFORML 激しく上下にコキ上げている・・・
+		ENDIF
+	ELSE
+		IF TALENT:パイパン
+			PRINT 隠すもののない
+		ELSE
+			PRINT 陰毛に隠された
+		ENDIF
+		PRINTFORML 陰核に数本の細い触手が巻きついて包皮を剥き上げ、
+		IF TALENT:主観視点 > 0
+			PRINTFORML 無数のヒダを備えた口のある触手がじゅるじゅると音を立てながら吸い上げていく・・・
+		ELSE
+			PRINTFORML 無数のヒダを備えた口のある触手がじゅるじゅると音を立てながら吸い上げている・・・
+		ENDIF
+	ENDIF
+ELSE
+	IF TALENT:ふたなり > 0 || TALENT:オトコ > 0
+		PRINTFORML 勃起したペニスに数本の細い触手が巻こうとしたが、
+	ELSE
+		IF TALENT:パイパン
+			PRINT 隠すもののない
+		ELSE
+			PRINT 陰毛に隠された
+		ENDIF
+		PRINTFORML 陰核に数本の細い触手が巻きついて包皮を剥き上げようとしたが、
+	ENDIF
+	PRINTFORML Ｃ結界が何とか接触を防ぎきった・・・
+ENDIF
+PRINTW 
+
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "PRISON_COM_0")
+PRINTL 
+
+
+;-----------------------------------------------
+;V中心攻め
+@MESSAGE_PRISON_COM_1
+FONTBOLD
+PRINTL Ｖ中心攻め
+FONTREGULAR
+;とりあえず処女の時は処女口上でってことで。
+IF RAND:3 == 0 && SHIELD:1 <= 0
+	PRINTFORML 二つ折りにされるように触手に拘束され、
+	PRINTFORML 脚を高く上げさせられた姿勢で宙吊りになっている%PRINT_TRANSCALLNAME(TARGET)%。
+	PRINTL 
+	PRINTFORM 前方に向けて広げられた股間で
+	IF EXP:Ａ経験 > 0 && SHIELD:2 <= 0
+		PRINTFORML 2本の触手が膣口と肛門を交互に突き上げている。
+	ELSE
+		PRINTFORML 突き入れられた触手が膣口をぐちゃぐちゃとかき回している。
+	ENDIF
+	IF TALENT:主観視点 > 0
+		PRINTFORML 肉と肉がぶつかる音を響き渡らせながら抽送はどんどん加速していき、
+		PRINTFORML 乱暴なピストンが%PRINT_TRANSCALLNAME(TARGET)%の膣襞をめくり上げていく。
+		PRINTFORML 普通なら苦しいだけのはずのその行為にも、発情した%PRINT_TRANSCALLNAME(TARGET)%の体は
+		PRINTFORML その刺激を余すことなく快感に変換し、%PRINT_TRANSCALLNAME(TARGET)%の脳を犯す。
+		PRINTL 
+		PRINTFORML がくがくと揺さぶられる%PRINT_TRANSCALLNAME(TARGET)%の恥丘から、
+		PRINTFORML 触手のものだけではない、粘ついた液体が糸を引いて垂れていく。
+		PRINTFORML 潤滑を増した%PRINT_TRANSCALLNAME(TARGET)%の膣はますます敏感になり―――
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の感じる快感は際限なく上がっていく・・・
+	ELSE
+		PRINTFORML 肉と肉がぶつかる音を響き渡らせながら抽送が加速していき、
+		PRINTFORML がくがくと揺さぶられる%PRINT_TRANSCALLNAME(TARGET)%の恥丘からは、
+		PRINTFORML 触手のものだけではない粘ついた液体が糸を引いて垂れている・・・
+	ENDIF
+	;ランダム分岐フラグ
+	FLAG:900 = 1
+ELSEIF SHIELD:1 <= 0
+	PRINTFORML 大量の触手に背後から圧し掛かられて、
+	PRINTFORML 尻を突きだすような屈服の姿勢を取らされた%PRINT_TRANSCALLNAME(TARGET)%。
+	PRINTL 
+	IF EXP:Ａ経験 > 0 && SHIELD:2 <= 0
+		PRINTFORML 膣口と肛門には何本もの触手が突き入れられ、
+		PRINTFORML 容赦のない乱暴なストロークで抽送を叩きつけられるたびに
+		PRINTFORML 下腹部がボコボコと不規則に膨らんでいる。
+	ELSE
+		PRINTFORML 無数の触手に容赦のない乱暴なストロークで子宮を犯され、
+		PRINTFORML 抽送を叩きつけられるたびに下腹部がボコボコと不規則に膨らんでいる。
+	ENDIF
+	IF RAND:3 == 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%が腰を浮かすたびに両腕が背後に引っ張られ、
+		PRINTFORML 胎内に叩きつけられるピストンがより強烈さを増して快楽を脳髄に刻みこんでいく・・・
+		;ランダム分岐フラグ
+		FLAG:900 = 32
+	ELSEIF RAND:2 == 0
+		PRINTFORML 首に巻きつけられた触手に無理やり姿勢を起こされ、
+		PRINTFORML 地面に両手を突いた%PRINT_TRANSCALLNAME(TARGET)%は窒息寸前になりながら
+		IF (MESSAGE_BRANCH_F(TARGET) & 堕落) || (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)
+			IF TALENT:主観視点 > 0
+				PRINTFORML 膣肉を抉られる快楽に涎を垂らして喘いでしまう・・・
+			ELSE
+				PRINTFORML 膣肉を抉られる快楽に涎を垂らして喘いでいる・・・
+			ENDIF
+		ELSEIF TALENT:主観視点 > 0
+			PRINTFORML 無様に涎を垂らして喘いでしまう・・・
+		ELSE
+			PRINTFORML 無様に涎を垂らして喘いでいる・・・
+		ENDIF
+		;ランダム分岐フラグ
+		FLAG:900 = 22
+	ELSE
+		PRINTFORML 後ろ手に両腕を拘束され、顔は地面の肉壁に押し付けられる。
+		PRINTFORML 逃れようのない快楽に%PRINT_TRANSCALLNAME(TARGET)%の脳髄は芯から焦がされていく・・・
+		;ランダム分岐フラグ
+		FLAG:900 = 12
+	ENDIF
+ELSE
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の秘裂に向かって何度も触手が擦りつけられる。
+	PRINTFORML 結界に阻まれているので挿入するまでには至らないが、
+	IF SHIELD:0 <= 0
+		IF TALENT:ふたなり > 0 || TALENT:オトコ > 0
+			PRINT 勃起しきったペニスを撫で上げられて快楽に身を震わせている・・・
+		ELSE
+			PRINTFORML 敏感なクリトリスを撫で上げられて秘裂からは愛液が垂れ流しになっている・・・
+		ENDIF
+	ELSEIF TALENT:主観視点 > 0
+		PRINTFORML このままでは結界が破られるのは時間の問題だ・・・
+	ELSE
+		PRINTFORML このままでは結界が破られるのは時間の問題であることは明らかだ・・・
+	ENDIF
+	;ランダム分岐フラグ
+	FLAG:900 = 3
+ENDIF
+PRINTW 
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "PRISON_COM_1")
+PRINTL 
+
+
+;-----------------------------------------------
+;A中心攻め
+@MESSAGE_PRISON_COM_2
+FONTBOLD
+PRINTL Ａ中心攻め
+FONTREGULAR
+PRINTFORML 体液を塗りたくるように%PRINT_TRANSCALLNAME(TARGET)%の尻周りを蠢く触手。
+IF SHIELD:2 <= 0
+	PRINTFORML 肌を滑る感触に%PRINT_TRANSCALLNAME(TARGET)%が身震いしたその瞬間、
+	PRINTFORML 触手は容赦なく%PRINT_TRANSCALLNAME(TARGET)%の前の穴とアナルの奥を目指してずるりと侵入していく。
+	PRINTL 
+	PRINTFORML 深く直腸にもぐり込んだ触手が内臓をめくり上げんばかりのストロークで往復し、
+	IF TALENT:主観視点 > 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はビクビクと尻肉を震わせながら悶えてしまう・・・
+	ELSE
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はビクビクと尻肉を震わせながら悶えている・・・
+	ENDIF
+ELSE
+	PRINTFORML 結界に阻まれて直接に触れられているわけではないが、
+	IF TALENT:主観視点 > 0
+		PRINTFORML 間接的な接触の感触を肌に感じて%PRINT_TRANSCALLNAME(TARGET)%は思わず身を震わせてしまう・・・
+	ELSE
+		PRINTFORML 間接的な接触の感触を肌に感じて%PRINT_TRANSCALLNAME(TARGET)%は身を震わせている・・・
+	ENDIF
+ENDIF
+PRINTW 
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "PRISON_COM_2")
+PRINTL 
+
+
+;-----------------------------------------------
+;B中心攻め
+@MESSAGE_PRISON_COM_3
+FONTBOLD
+PRINTL Ｂ中心攻め
+FONTREGULAR
+PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の胸を触手が攻め立てる。
+IF SHIELD:3 <= 0
+	PRINTFORML 螺旋バネのようにように胸を締め上げては緩め、さらに先端を乳首に擦り付けてくる。
+	PRINTFORML その動きに%PRINT_TRANSCALLNAME(TARGET)%が思わず甘い吐息を漏らすと、
+	PRINTFORM 快楽で弛緩しきったところを狙ったのか%PRINT_TRANSCALLNAME(TARGET)%の
+ELSE
+	PRINTFORML 結界がすぐさま触手を遠ざけて接触を防ぐが、
+	PRINTFORM 全身を拘束されて身動きできない%PRINT_TRANSCALLNAME(TARGET)%の
+ENDIF
+SIF (TALENT:オトコ <= 0 && SHIELD:1 <= 0) || (EXP:Ａ経験 > 0 && SHIELD:2 <= 0)
+	PRINTFORM 下半身と
+PRINTFORML 口元に触手が突っ込まれ、
+IF TALENT:主観視点 > 0
+	PRINTFORML 乱暴に喉の奥まで犯されてしまう・・・
+ELSE
+	PRINTFORML 無茶苦茶に犯される・・・
+ENDIF
+PRINTW 
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "PRISON_COM_3")
+PRINTL 
+
+
+;-----------------------------------------------
+;Sな攻め
+@MESSAGE_PRISON_COM_4
+FONTBOLD
+PRINTL 拷問レイプ
+FONTREGULAR
+IF RAND:2 == 0
+	PRINTFORML 細い触手が%PRINT_TRANSCALLNAME(TARGET)%の全身に巻きつき、ぎちぎちと締め付けてくる。
+	PRINTFORML 食い込む痛みに%PRINT_TRANSCALLNAME(TARGET)%が呻き声をあげると、
+	PRINTFORML 今度は別の触手が鞭のように激しく打ちつけられる・・・
+	PRINTW 
+	IF ABL:マゾっ気 >= 2
+		PRINTFORML 容赦ない打撃に柔肌に幾筋もの赤い痕が刻み付けられるが、
+		IF TALENT:主観視点 > 0
+			PRINTFORML 調教されきった%PRINT_TRANSCALLNAME(TARGET)%の体は、それすらも快感として受け取ってしまう。
+		ELSE
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は被虐的な悦びを感じてしまっている。
+		ENDIF
+	ELSE
+		PRINTFORML 痛みに叫ぶ%PRINT_TRANSCALLNAME(TARGET)%の柔肌に幾筋もの赤い痕が刻み付けられていく。
+	ENDIF
+	;ランダム分岐フラグ
+	FLAG:900 = 1
+ELSEIF TALENT:主観視点 > 0
+	PRINTFORML 触手が%PRINT_TRANSCALLNAME(TARGET)%の首元を容赦なく締め上げ、空中に持ち上げる。
+	PRINTFORML 呼吸困難と喉を潰される痛みに頭の中は恐怖で塗りつぶされ、
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は少しでも自重を支えるため、宙吊りの状態で首元の触手を必死に掴む。
+	PRINTFORML ひたすら脚をじたばたと動かして抵抗するも、首に食い込む触手の力はどんどん増していき・・・
+	PRINTW 
+	PRINTFORML 酸欠で視界が暗く染まり、%PRINT_TRANSCALLNAME(TARGET)%が意識を失いかけた瞬間、ふいに拘束が解かれる。
+	PRINTFORML 地面に崩折れた%PRINT_TRANSCALLNAME(TARGET)%が空気を求めて咳き込むと、直後に再び締め上げられる―――
+ELSE
+	PRINTFORML 触手が%PRINT_TRANSCALLNAME(TARGET)%の首元を容赦なく締め上げ、空中に持ち上げた。
+	PRINTFORML 呼吸困難と喉を潰される痛みで必死にもがく%PRINT_TRANSCALLNAME(TARGET)%は
+	PRINTFORML 宙吊りの状態で首元の触手を掴んで涎を垂らしながら、
+	PRINTFORML ひたすら脚をじたばたと動かしている・・・
+	PRINTW 
+	PRINTFORML 段々と反応が薄くなって意識を失う寸前で拘束が解かれ、
+	PRINTFORML 地面に崩折れて何度も咳き込み続けていると、直後に再び締め上げられる。
+	;ランダム分岐フラグ
+	FLAG:900 = 2
+ENDIF
+PRINTW 
+IF ABL:マゾっ気 >= 2
+	PRINTFORM 強すぎる苦痛快楽にピクピクと痙攣する%PRINT_TRANSCALLNAME(TARGET)%の
+ELSE
+	PRINTFORM 完全に抵抗する気概を失ってピクピクと痙攣する%PRINT_TRANSCALLNAME(TARGET)%の
+ENDIF
+IF ((EXP:Ｖ経験 > 0 && TALENT:処女 < 1) || RESULT == 1) && TALENT:オトコ <= 0 && SHIELD:1 <= 0
+	IF EXP:Ａ経験 > 0 && SHIELD:2 <= 0
+		PRINT 無防備なヴァギナとアナル
+	ELSE
+		PRINT 無防備なヴァギナ
+	ENDIF
+ELSEIF EXP:Ａ経験 > 0 && SHIELD:2 <= 0
+	PRINT 無防備なアナル
+ELSE
+	PRINT 全身
+ENDIF
+PRINTFORML に
+IF TALENT:主観視点 > 0
+	PRINTFORML 周囲の触手が殺到し、穴という穴を凌辱し始める・・・
+ELSE
+	PRINTFORML 周囲の触手が殺到し、穴という穴を凌辱し始めた・・・
+ENDIF
+PRINTW 
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "PRISON_COM_4")
+PRINTL 
+
+
+;-----------------------------------------------
+;強制奉仕
+@MESSAGE_PRISON_COM_5
+FONTBOLD
+PRINTL 強制奉仕
+FONTREGULAR
+IF (EXP:Ｖ経験 > 0 && TALENT:処女 < 1) || RESULT == 1
+	IF EXP:Ａ経験 > 0 && SHIELD:2 <= 0
+		PRINTFORM 前後の穴を同時に犯されて
+	ELSE
+		PRINTFORM 凌辱されて
+	ENDIF
+ELSEIF EXP:Ａ経験 > 0 && SHIELD:2 <= 0
+	PRINTFORM 尻穴を犯されて
+ENDIF
+PRINTFORM 身動きのとれない
+SIF ((EXP:Ｖ経験 > 0 && TALENT:処女 < 1) || RESULT == 1) && EXP:Ａ経験 > 0 && SHIELD:2 <= 0
+	PRINTL 
+PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の口元に一本の触手が突き出される。
+IF (MESSAGE_BRANCH_F(TARGET) & 堕落) || (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)
+	PRINTFORML 鼻につく触手の濃厚な体液の匂いに、
+	PRINTFORML 恍惚とした表情で%PRINT_TRANSCALLNAME(TARGET)%は知らず口を開けてしまう。
+	PRINTFORML その瞬間を触手が見逃さすはずもなく、
+	PRINTFORML 一気に口内に侵入すると精を吐き出さんとしてストロークを開始した。
+	PRINTL 
+	PRINTFORML 口内を無遠慮にかき乱す触手の激しい行為に涎を撒き散らしながら、
+	IF TALENT:主観視点 > 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は表情を惚けさせ、くぐもった声を漏らしてしまう・・・
+	ELSE
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は惚けた表情でくぐもった声を漏らしている・・・
+	ENDIF
+ELSE
+	PRINTFORML 必死に唇を閉じて抵抗する%PRINT_TRANSCALLNAME(TARGET)%だったが、
+	PRINTFORML ぐにぐにと力任せに擦り付けられる触手をいつまでも防ぐ事はできず、
+	PRINTFORML ついにはその侵入を許してしまった。
+	PRINTL 
+	PRINTFORML 口内を無遠慮にかき乱す触手の激しい行為に、
+	IF TALENT:主観視点 > 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は不快感に表情を歪めてしまう・・・
+	ELSEIF TALENT:感情乏しい > 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は不快感に表情を歪めている・・・
+	ELSE
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は目に涙を浮かべて表情を歪めている・・・
+	ENDIF
+ENDIF
+PRINTW 
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "PRISON_COM_5")
+PRINTL 
+
+
+;-----------------------------------------------
+;羞恥な攻め
+@MESSAGE_PRISON_COM_6
+FONTBOLD
+PRINTL 羞恥攻め
+FONTREGULAR
+IF RAND:5 == 0
+	PRINTFORML 突然%PRINT_TRANSCALLNAME(TARGET)%の顔目がけて幾つかの触手が殺到した。
+	PRINTFORML 驚愕の声をあげる間もなく視界を覆われた%PRINT_TRANSCALLNAME(TARGET)%の目に飛び込んできたのは、
+	PRINTFORML 自らが触手に犯されている過去の光景だった。
+	PRINTL 
+	PRINTFORML まざまざと見せ付けられる陵辱の記憶は、
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の羞恥心をいやと言うほどに煽っていく・・・
+	;ランダム分岐フラグ
+	FLAG:900 = 1
+ELSEIF RAND:3 == 0
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の目の前で少女が犯されている。
+	PRINTFORML まだ幼さの残る少女は自分が何をされているのか理解できず、
+	PRINTFORML 下腹部を蹂躙する痛みに悲鳴を上げ続けていた。
+	PRINTL 
+	PRINTFORM 泣き叫んでお母さん助けてと繰り返す少女の姿を
+	IF CFLAG:6 == -1
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は頬を染めながら見つめている・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落) || (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)
+		PRINTFORML 見つめながら、
+		IF TALENT:主観視点 > 0
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は羨ましさに濡れた股を擦り合わせてしまった・・・
+		ELSE
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は羨ましそうに濡れた股を擦り合わせた・・・
+		ENDIF
+	ELSE
+		PRINTL 
+		PRINTFORML 直視できない%PRINT_TRANSCALLNAME(TARGET)%は思わず目をつぶったが、
+		PRINTFORML 横から現れた細い触手が「無力を思い知れ」と言わんばかりに瞼を抉じ開け、
+		IF TALENT:主観視点
+			PRINTFORML 見ることを強制してくる・・・
+		ELSE
+			PRINTFORML 見ることを強制させる・・・
+		ENDIF
+	ENDIF
+	;ランダム分岐フラグ
+	FLAG:900 = 2
+ELSEIF RAND:2 == 0
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の目の前で別の女性が犯されている。
+	PRINTFORML 自分より少し以前に捕まったらしいその女性は白濁液に汚れた姿で尚も精液を注がれ続けており、
+	PRINTFORML 大きく膨らんだ腹部から明らかに妊娠している様子だった。
+	PRINTL 
+	PRINTFORM 快楽に理性を融かされて正気を失いながら悦んでいる女性の姿
+	IF CFLAG:6 == -1
+		PRINTL を
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は頬を染めながら見つめている・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落) || (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)
+		PRINTFORML を見つめながら、
+		IF TALENT:主観視点 > 0
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は羨ましさに濡れた股を擦り合わせてしまった・・・
+		ELSE
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は羨ましそうに濡れた股を擦り合わせた・・・
+		ENDIF
+	ELSE
+		PRINTL から
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は目を逸らそうとするが、
+		PRINTFORML 横から現れた触手が「お前もすぐにこうなるのだ」と言わんばかりに顔の向きを固定し、
+		IF TALENT:主観視点 > 0
+			PRINTFORML 見ることを強制してくる・・・
+		ELSE
+			PRINTFORML 見ることを強制させる・・・
+		ENDIF
+	ENDIF
+	;ランダム分岐フラグ
+	FLAG:900 = 3
+ELSE
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の目の前で別の女性が連れてこられた。
+	PRINTFORML 捕まったばかりと思しきその女性の着衣が触手にいとも簡単に剥ぎ取られていき、
+	PRINTFORML あっという間にストッキングと下着が引き裂かれる。
+	PRINTL 
+	IF RAND:2 == 0
+		PRINTFORML まだ処女だったらしい女性はこれから何が行われるか察し、
+		PRINTFORM 貞操を守ろうと
+	ELSE
+		PRINTFORML 何が起こっているのか把握できていない女性は処女のようで、
+		PRINTFORM ようやく我に返って
+	ENDIF
+	PRINTFORML 必死に抵抗するが、
+	PRINTFORML 罵倒しても懇願しても秘裂にあてがわれた触手を止めることはできず、
+	PRINTFORML ミチミチと処女膜が破られていく。
+	PRINTL 
+	PRINTFORML 目の前で繰り広げられる処女貫通式を
+	IF CFLAG:6 == -1
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は頬を染めながら見つめている・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落) || (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)
+		PRINTFORML 見つめながら、
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は羨ましそうに濡れた股を擦り合わせた・・・
+	ELSE
+		PRINTFORML ただ見ていることしかできない%PRINT_TRANSCALLNAME(TARGET)%は、
+		IF TALENT:主観視点 > 0
+			PRINTFORML 己の無力さを噛み締めさせられた・・・
+		ELSE
+			PRINTFORML 己の無力さに唇を噛み締めている・・・
+		ENDIF
+	ENDIF
+	;ランダム分岐フラグ
+	FLAG:900 = 4
+ENDIF
+PRINTW 
+IF CFLAG:6 == -1
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の股間にも幾つもの触手が取りついており、
+	PRINTFORML ぬちゃぬちゃと卑猥な音を立てて責め立てていた・・・
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落) || (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)
+	PRINTFORML 興奮が抑えられなくなった%PRINT_TRANSCALLNAME(TARGET)%は
+	PRINTFORML 早く犯して欲しいと懇願し始めてしまった・・・
+ELSE
+	PRINTFORML 悔しさに涙を浮かべる%PRINT_TRANSCALLNAME(TARGET)%の股間にも幾つもの触手が取りついており、
+	IF TALENT:主観視点 > 0
+		PRINTFORML ぬちゃぬちゃと卑猥な音を立てて責め立ててくる・・・
+	ELSE
+		PRINTFORML ぬちゃぬちゃと卑猥な音を立てて責め立てていた・・・
+	ENDIF
+ENDIF
+PRINTW 
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "PRISON_COM_6")
+PRINTL 
+
+;-----------------------------------------------
+;子触手に犯される
+@MESSAGE_PRISON_COM_7
+FONTBOLD
+PRINTL 子触手に犯される
+FONTREGULAR
+IF EXP:近親交配経験 == 0
+	PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%が産んだ子触手
+	SIF CFLAG:220 >= 2
+		PRINT たち
+	PRINTFORML は成長して大きくなったにも関わらず、
+	PRINTFORML 乳を飲むために乳首に貪りついている・・・
+	PRINTFORM すると突然
+	IF CFLAG:220 >= 2
+		PRINT そのうちの一匹が
+	ELSE
+		PRINT 、先ほどまで穏やかだった子触手が
+	ENDIF
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%を押し倒し、
+	PRINTFORML 陰茎のようになっている部分の先端を股間に擦りつけ始めた。
+ELSE
+	PRINTFORM 子触手
+	SIF CFLAG:220 >= 2
+		PRINT たち
+	IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+		PRINTFORML は母親に甘えるように%PRINT_TRANSCALLNAME(TARGET)%にすり寄りながらも、
+		PRINTFORML 陰茎部を大きく勃起させている・・・
+	ELSE
+		PRINTFORML は完全に%PRINT_TRANSCALLNAME(TARGET)%を犯すべきメスだと認識するようになったのか、
+		SIF CFLAG:220 >= 2
+			PRINT 我先にと
+		PRINTFORML 勃起した陰茎部を押し付けてくる・・・
+	ENDIF
+ENDIF
+PRINTW 
+IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+	IF EXP:近親交配経験 == 0
+		PRINTFORML 曲がりなりにも母性を発揮して油断していた%PRINT_TRANSCALLNAME(TARGET)%は
+		IF TALENT:主観視点 > 0
+			PRINTFORML 最初こそ驚いてしまったものの、我が子が自分に発情していることを理解すると、
+			PRINTFORML 不思議なほど抵抗感が薄れていき、自ら身体を開いてしまった。
+		ELSE
+			PRINTFORML 驚いたような表情をしたが、我が子が自分に発情していることを理解すると、
+			PRINTFORML 優しく微笑みながら自ら身体を開いた。
+		ENDIF
+	ELSE
+		IF TALENT:主観視点 > 0
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は”思春期”に至った我が子たちの微笑ましい姿に、
+		ELSE
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は”思春期”に至った我が子を見て妖しく頬笑み、
+		ENDIF
+		PRINT 息子
+		SIF CFLAG:220 >= 2
+			PRINT たち
+		PRINTFORML の欲情を子宮で受け止めるべく、自ら身体を開いた。
+	ENDIF
+	PRINTFORM 不器用に
+	SIF EXP:近親交配経験 == 0
+		PRINT 初めての
+	PRINTFORML 挿入に失敗する陰茎の先端を膣口に導き、
+	PRINTFORML 皮を被った未熟な息子を愛撫して剥いてやりながら、
+	PRINTFORML 優しく膣圧で受け入れていく・・・
+	IF CFLAG:220 >= 2 && EXP:近親交配経験 == 0
+		PRINTFORML それを見た他の子触手たちにも興奮が伝播したのか、
+		IF TALENT:主観視点 > 0
+			PRINTFORML 我先にと一斉に%PRINT_TRANSCALLNAME(TARGET)%の身体に群がってきた。
+		ELSE
+			PRINTFORML 我先にと一斉に%PRINT_TRANSCALLNAME(TARGET)%の身体に群がった。
+		ENDIF
+		PRINTL 
+	ELSE
+		PRINTL 
+	ENDIF
+	PRINTW 
+	IF EXP:近親交配経験 == 0
+		PRINTFORML 最も身近なメスである己の母親を初めての交尾相手に選んだ子触手は
+		PRINTFORML 幼体とは思えないほど強いストロークを繰り返し、欲情のボルテージを上げていく。
+	ELSEIF EXP:近親交配経験 < 20
+		PRINTFORM 深い愛情をもって母親としての顔を崩さない%PRINT_TRANSCALLNAME(TARGET)%は
+		SIF CFLAG:220 >= 2
+			PRINT 他の子供
+		SIF CFLAG:220 >= 3
+			PRINT たち
+		SIF CFLAG:220 >= 2
+			PRINT が順番を争わないよう手淫をしてやりながら
+		PRINTFORML 、
+		IF TALENT:主観視点 > 0
+			PRINTFORML 我が子が立派なオスになるよう激励するため、褒め言葉を口にする。
+		ELSE
+			PRINTFORML 我が子が立派なオスになるよう激励するため、褒め言葉を口にしている。
+		ENDIF
+	ELSE
+		PRINTFORML すでに母親ではなく孕まされるメスの顔になっている%PRINT_TRANSCALLNAME(TARGET)%は、
+		PRINTFORML 快楽を貪るのに夢中になっている子触手に脚を搦めて引き寄せると、
+		PRINTFORML 恋人にするようなディープキスを交わした。
+	ENDIF
+	PRINTW 
+	PRINTFORML やがて限界に達した子触手が痙攣し、最後の一滴まで実母の膣奥に精を放つと、
+	PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%は脱力した子触手を誇らしげに撫で
+	IF CFLAG:220 >= 2
+		PRINTFORML ながら、
+		PRINTFORML 次の息子を受け入れるべく白濁液の滴る秘部を広げて見せた・・・
+	ELSE
+		PRINTFORML 、
+		PRINTFORML 優しく口づけをした・・・
+	ENDIF
+ELSE
+	IF EXP:近親交配経験 == 0
+		PRINTFORML 曲がりなりにも母性を発揮して油断していた%PRINT_TRANSCALLNAME(TARGET)%は
+		PRINTFORML ろくな抵抗もできず、我が子の挿入を受け入れてしまう。
+		IF CFLAG:220 >= 2
+			PRINTFORML それを見た他の子触手たちにも興奮が伝播したのか、
+			PRINTFORML 一斉に%PRINT_TRANSCALLNAME(TARGET)%の身体に群がった。
+			PRINTL 
+		ELSE
+			PRINTL 
+		ENDIF
+	ELSE
+		IF (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)
+			PRINTFORML 欲情に頬を染めて無言で身体を開く%PRINT_TRANSCALLNAME(TARGET)%を押さえつけ、
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORML 強く拒絶できない%PRINT_TRANSCALLNAME(TARGET)%を無理やり押さえつけ、
+		ELSE
+			PRINTFORML それだけは駄目と拒絶する%PRINT_TRANSCALLNAME(TARGET)%を無理やり押さえつけ、
+		ENDIF
+		PRINTFORM 興奮しきった子触手
+		IF CFLAG:220 >= 2
+			PRINTFORML たちが%PRINT_TRANSCALLNAME(TARGET)%の身体に群がると、
+		ELSE
+			PRINTFORML が陰茎部を強引に挿入すると、
+		ENDIF
+		IF (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け) && TALENT:主観視点 > 0
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は母親の立場すら忘れて悦楽に表情を蕩けさせてしまう。
+		ELSEIF (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は母親の顔を忘れて悦楽に表情を蕩けさせた。
+		ELSE
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は諦めたように目を閉じて唇を噛んだ。
+		ENDIF
+	ENDIF
+	PRINTW
+	IF EXP:近親交配経験 == 0
+		PRINTFORML 必死に止めるように言って聞かせる%PRINT_TRANSCALLNAME(TARGET)%だが、
+		PRINTFORM 最も身近なメスである己の母親を初めての交尾相手に選んだ子触手
+		SIF CFLAG:220 >= 2
+			PRINT たち
+		PRINTFORML の力は強く、
+		IF (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)
+			PRINTFORML 組み伏せられた%PRINT_TRANSCALLNAME(TARGET)%は制止の言葉を口にしつつも
+			PRINTFORML これほど強く求められている事への悦びを感じてしまっている。
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORML 組み伏せられた%PRINT_TRANSCALLNAME(TARGET)%は母性の方が勝ったのか
+			PRINTFORML 抵抗することを諦めてしまった。
+		ELSE
+			PRINTFORML 疲弊しきった%PRINT_TRANSCALLNAME(TARGET)%が相手になるはずもなかった。
+		ENDIF
+		PRINTW 
+	ENDIF
+	PRINTFORML 我が子に膣肉を抉られる背徳的な悦楽が%PRINT_TRANSCALLNAME(TARGET)%の理性を麻痺させていき、
+	PRINTFORML やがてピストンがボルテージの限界に達した子触手が痙攣し、射精の瞬間を迎えた。
+	PRINTFORM 最後の一滴まで実母の膣奥に精を放つと
+	IF CFLAG:220 >= 2
+		PRINTFORML 次の子触手が場所を代わり、
+		PRINTFORML すぐさま再び交尾を開始するのだった。
+	ELSE
+		PRINTFORML 、まだ興奮が覚めやらないのか
+		PRINTFORML 再びピストンを開始するのだった。
+	ENDIF
+	PRINTL 
+	PRINTFORML 何度も中出しされ、
+	PRINTFORML ボロ雑巾のように打ち捨てられた%PRINT_TRANSCALLNAME(TARGET)%は、
+	IF EXP:近親交配経験 == 0
+		IF (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)
+			PRINTFORML 触手にとって自分は母親ですらなく
+			PRINTFORML 単なる肉奴隷なのだということを改めて思い知った・・・
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORML 膣穴から母子交尾してしまった証である白濁液を垂れ流しながら
+			PRINTFORML 力なく肩で息をしている・・・
+		ELSEIF TALENT:感情乏しい > 0
+			PRINTFORML 茫然と虚空を見つめている・・・
+		ELSEIF TALENT:主観視点 > 0
+			PRINTFORML それでも自分の子の子種で妊娠することだけは避けようと
+			PRINTFORML 必死に白濁液を掻き出した・・・
+		ELSE
+			PRINTFORML それでも自分の子の子種で妊娠することだけは避けようと
+			PRINTFORML 必死に白濁液を掻き出そうとしている・・・
+		ENDIF
+	ELSE
+		IF (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)
+			PRINTFORML 完全に理性を見失ったメスの顔になって
+			PRINTFORML 近親交尾の余韻に浸っている・・・
+		ELSEIF ABL:奉仕精神 >= 3
+			PRINTFORML 自分の子を満足させてあげられた充実感を感じながら
+			PRINTFORML 種付けされた下腹部を静かに撫でた・・・
+		ELSEIF TALENT:感情乏しい > 0
+			PRINTFORML 静かに起き上がり、擦り寄ってくる子触手に再び乳を与え始めた・・・
+		ELSE
+			PRINTFORML 白濁液を垂れ流す自身の股間を力なく見つめながら、
+			PRINTFORML 静かに嗚咽した・・・
+		ENDIF
+	ENDIF
+ENDIF
+PRINTW 
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "PRISON_COM_7")
+PRINTL 
+
+;-----------------------------------------------
+;ふたなり攻め
+@MESSAGE_PRISON_COM_100
+FONTBOLD
+PRINTL ふたなり攻め
+FONTREGULAR
+PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%のペニスの前に１本の触手が姿を現した。
+PRINTFORML 半透明のそれの内部は細かな触手が幾本も蠢いており、
+PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は思わずごくりと息を呑む。
+PRINTL 
+PRINTFORML まるで焦らすようにゆっくりと押し付けられていくそれに、
+PRINTFORML はちきれんばかりに膨れ上がった%PRINT_TRANSCALLNAME(TARGET)%のペニスは
+PRINTFORML 埋もれた鈴口から露を零してびくりと震えた。
+PRINTL 
+PRINTFORML 直後、激しく吸引されて悶絶する%PRINT_TRANSCALLNAME(TARGET)%の嬌声が響き渡った・・・
+PRINTW 
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "PRISON_COM_100")
+PRINTL 
+
+
+;-----------------------------------------------
+;V拡張
+@MESSAGE_PRISON_COM_101
+FONTBOLD
+PRINTL Ｖ拡張攻め
+FONTREGULAR
+IF EXP:Ｖ拡張経験 >= 10
+	PRINTFORML 息絶え絶えに触手の攻めを受けていた%PRINT_TRANSCALLNAME(TARGET)%の膣に
+	PRINTFORML ひときわ太い巨大触手が挿入されていく。
+	PRINTL 
+	PRINTFORML 度重なる拡張で広がった%PRINT_TRANSCALLNAME(TARGET)%の肉穴は
+	PRINTFORML 腕ほどのサイズもある触手を容易く呑み込んでいく。
+	PRINTFORML 凌辱の快楽に身悶える%PRINT_TRANSCALLNAME(TARGET)%はそのことの異常性に
+	PRINTFORML 疑問を感じなくなってきている・・・
+ELSE
+	PRINTFORML 息絶え絶えに触手の攻めを受けていた%PRINT_TRANSCALLNAME(TARGET)%は
+	IF EXP:Ｖ拡張経験 == 0
+		PRINTFORML 見たことのない新しい触手が自らに迫っていることに気付いた。
+		PRINTL 
+		PRINTFORML 明らかに他の触手より太いそれを見せつけるように一度身振したそれは、
+		IF (MESSAGE_BRANCH_F(TARGET) & 堕落) || (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け) || ABL:Ｖ感覚 >= 4 || ABL:マゾっ気 >= 3
+			PRINTFORML これから襲い来る快楽を想像して表情の引き攣る%PRINT_TRANSCALLNAME(TARGET)%の目の前で
+		ELSE
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の制止の声を振り切って、
+		ENDIF
+		IF TALENT:主観視点 > 0
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の膣をめりめりと押し広げていく。
+		ELSE
+			PRINTFORML 彼女の膣をめりめりと押し広げていく。
+		ENDIF
+	ELSE
+		PRINTFORM 目の前に現れた巨大な触手を見た瞬間に
+		IF (MESSAGE_BRANCH_F(TARGET) & 堕落) || (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け) || ABL:Ｖ感覚 >= 4 || ABL:マゾっ気 >= 3
+			IF TALENT:主観視点 > 0
+				PRINTFORML これから何が行われるかを察してしまい、表情が引き攣っていく。
+				PRINTL 
+				PRINTFORML ゆっくりと挿入された巨大触手が膣をめりめりと押し広げていくと、
+				PRINTFORML 苦痛とそれを超える快楽に、%PRINT_TRANSCALLNAME(TARGET)%は歯を食いしばりながらも悶えてしまう。
+			ELSE
+				PRINTFORML これから何が行われるかを察して表情を引き攣らせた。
+				PRINTL 
+				PRINTFORML ゆっくり巨大触手が挿入されて膣をめりめりと押し広げていくと、
+				PRINTFORML 苦痛より快楽が勝っている様子の%PRINT_TRANSCALLNAME(TARGET)%が愉悦に歯を食いしばる。
+			ENDIF
+		ELSE
+			IF TALENT:主観視点 > 0
+				PRINTFORML これから何が行われるかを察して蒼白となる。
+			ELSE
+				PRINTFORML これから何が行われるかを察して蒼白となった。
+			ENDIF
+			PRINTL 
+			PRINTFORML 半狂乱になって制止を懇願する%PRINT_TRANSCALLNAME(TARGET)%の言葉が聞き入られるはずもなく
+			PRINTFORML ゆっくり挿入された巨大触手が膣をめりめりと押し広げていく。
+		ENDIF
+	ENDIF
+	PRINTFORML ありえない大きさに膨らんだ下腹部に圧迫されて%PRINT_TRANSCALLNAME(TARGET)%の
+	IF TALENT:主観視点 > 0
+		PRINTFORML 口から空気が声にならない叫びとなって絞り出されていく・・・
+	ELSE
+		PRINTFORML 口から空気が声にならない叫びとなって絞り出される・・・
+	ENDIF
+ENDIF
+PRINTW 
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "PRISON_COM_101")
+PRINTL 
+
+
+;-----------------------------------------------
+;A拡張
+@MESSAGE_PRISON_COM_102
+FONTBOLD
+PRINTL Ａ拡張攻め
+FONTREGULAR
+IF EXP:Ａ拡張経験 >= 10
+	PRINTFORML 大胆な姿勢で尻を突き出した%PRINT_TRANSCALLNAME(TARGET)%のアナルに巨大な触手が挿入されると、
+	PRINTFORML すでに拡張されきった尻穴は大した抵抗もなく触手を飲み込んでいった。
+	IF CHECK_PREGNANT_F(TARGET) > 0
+		PRINTFORML 妊娠している%PRINT_TRANSCALLNAME(TARGET)%の腹部は更に押し広げられて
+		PRINTFORML 人体の限界を超えた大きさにまで膨れ上がっている。
+	ELSE
+		PRINTFORML 人体の限界まで押し広げられた%PRINT_TRANSCALLNAME(TARGET)%の腹部は
+		PRINTFORML 傍目からも異様な大きさに膨れ上がっている。
+	ENDIF
+	PRINTL 
+	PRINTFORML 触手が前後に動きはじめるとピストンのたびに腸壁が激しく変形し、
+	PRINTFORML 肺からは空気が押し出されてしまって呼吸することもままならない。
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は脳髄を貫き続ける強烈な感覚に悶絶しながら、
+	PRINTFORML 触手が満足するまで玩具にされ続けた・・・
+ELSE
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はバックから激しくアナルを突き続けられていた。
+	IF EXP:Ａ拡張経験 > 0
+		PRINTFORML 細い触手の絶え間ない責めでほぐされた%PRINT_TRANSCALLNAME(TARGET)%の尻穴に
+		PRINTFORML 腕よりも太い巨大な触手がズブズブと挿入されていく。
+		PRINTL 
+	ELSE
+		PRINTFORML ゆっくりと触手を引き抜かれ、乱れた呼吸を整えようと息を吐いた次の瞬間、
+		PRINTFORML 唐突に襲い掛かった激しい衝撃に目を見開いたまま振り返ると、そこには───
+		PRINTL 
+		PRINTFORML かつて見たことのないほどの太さの触手がアナルに深々と突き刺さっていたのだった。
+	ENDIF
+	IF (MESSAGE_BRANCH_F(TARGET) & 堕落) || (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け) || ABL:Ａ感覚 >= 4 || ABL:マゾっ気 >= 3
+		PRINTFORML 肛門を無理やり押し広げられる今まで感じたことのない強烈な苦痛快楽に
+		IF TALENT:主観視点 > 0
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は裏返ったような喘ぎ声を上げてしまう・・・
+		ELSE
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は裏返ったような喘ぎ声を上げている・・・
+		ENDIF
+	ELSE
+		PRINTFORML 肛門を無理やり押し広げられる苦痛に%PRINT_TRANSCALLNAME(TARGET)%は泣き叫ぶが、
+		PRINTFORML 触手の動きには一切の手加減がなく、ズンズン突き上げられてしまう・・・
+	ENDIF
+ENDIF
+PRINTW 
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "PRISON_COM_102")
+PRINTL 
+
+
+;-----------------------------------------------
+;搾乳攻め
+@MESSAGE_PRISON_COM_103
+FONTBOLD
+PRINTL 搾乳攻め
+FONTREGULAR
+PRINTFORML 透明な先端部分を持った２本の触手が乳首に覆いかぶさり、
+PRINTFORML まるで牧場の機械のように強烈にそれを吸い始める。
+PRINTL 
+PRINTFORML 乳首を集中的に狙う触手の攻めに%PRINT_TRANSCALLNAME(TARGET)%のそれは赤く腫れ上がっており、
+PRINTFORML 透明な管の部分を吸い上げられていく乳白色の母乳に、
+IF TALENT:感情乏しい > 0 && TALENT:主観視点 > 0
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の頬が上気していく・・・
+ELSEIF TALENT:感情乏しい > 0
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は頬を上気させている・・・
+ELSEIF TALENT:主観視点 > 0
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の頬は羞恥に染まっていく・・・
+ELSE
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は羞恥に頬を染めた・・・
+ENDIF
+PRINTW 
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "PRISON_COM_103")
+PRINTL 
+
+;-----------------------------------------------
+;種付け
+@MESSAGE_PRISON_COM_104
+FONTBOLD
+PRINTL 種付け
+FONTREGULAR
+PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はもう何時間も休む間もなく犯され続けている。
+PRINTFORML 押し広げられた膣穴には複数の触手が突き立てられ不規則に抽送を繰り返しており、
+PRINTFORML ひとつの触手が射精を終えたかと思うとすぐに次の触手が挿入される。
+IF CHECK_PREGNANT_F(TARGET) > 0
+	PRINTFORML 既に妊娠している%PRINT_TRANSCALLNAME(TARGET)%の腹部は
+	PRINTFORML 注ぎ込まれた精液でさらに大きく膨れており、
+ELSE
+	PRINTFORML ただひたすら精液を注ぎ続けられた%PRINT_TRANSCALLNAME(TARGET)%の腹部は
+	PRINTFORML 妊婦のように大きく膨れ上がり、
+ENDIF
+PRINTFORML 射精を終えた触手が引き抜かれるたびに収まりきらない白濁液が
+IF TALENT:主観視点 > 0
+	PRINTFORML 勢いよく噴き出す・・・
+ELSE
+	PRINTFORML 勢いよく噴き出した・・・
+ENDIF
+PRINTW 
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "PRISON_COM_104")
+PRINTL 
+
+;-----------------------------------------------
+;Vに産卵
+@MESSAGE_PRISON_COM_200
+FONTBOLD
+PRINTL Ｖに産卵
+FONTREGULAR
+PRINTFORML 膣奥を抉るように往復を繰り返す触手に
+PRINTFORML びくびくと腰を震わて戦く%PRINT_TRANSCALLNAME(TARGET)%。
+PRINTFORML 暫くしてどくんと脈打った触手は、精の放出に続けて
+PRINTFORML 何か塊状のものを吐き出していった。
+PRINTFORML 膣内の激しい圧迫感に顔を歪めた%PRINT_TRANSCALLNAME(TARGET)%の腹はみるみる膨れ───
+PRINTL 
+PRINTFORML 脈動を終えた触手が%PRINT_TRANSCALLNAME(TARGET)%の中から引き抜かれると、
+PRINTFORML 閉じなくなってしまった%PRINT_TRANSCALLNAME(TARGET)%の膣から、
+PRINTFORML 触手の植えつけた卵が精液混じりに零れ落ちていった・・・
+PRINTW 
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "PRISON_COM_200")
+PRINTL 
+
+
+;-----------------------------------------------
+;Aに産卵
+@MESSAGE_PRISON_COM_201
+FONTBOLD
+PRINTL Ａに産卵
+FONTREGULAR
+PRINTFORML アナルの深いところをかき乱していた触手が突然ぶるりと震えて卵を吐き出し始めた。
+PRINTFORML 腸内を強烈に圧迫する卵の感触に%PRINT_TRANSCALLNAME(TARGET)%は
+IF TALENT:主観視点 > 0
+	PRINTFORML 脂汗を浮かべてしまう───
+ELSE
+	PRINTFORML 脂汗を浮かべて苦しそうに呻く───
+ENDIF
+PRINTL 
+PRINTFORML やがて放出を終えて満足したのか触手は腸内を下がっていき、
+PRINTFORML それにつられるかのように卵も腸内を摺り落ちていく。
+PRINTFORML 触手が勢いよく引き抜かれ、
+PRINTFORML その衝撃にあられもない声をあげる%PRINT_TRANSCALLNAME(TARGET)%。
+PRINTL 
+PRINTFORML 弛緩したそのアナルからは大量の精液とともに
+PRINTFORML 産みつけられた卵が垂れ流されている・・・
+PRINTW 
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "PRISON_COM_201")
+PRINTL 
+
+
+;-----------------------------------------------
+;注射
+@MESSAGE_PRISON_COM_300
+FONTBOLD
+PRINTL 毒液注射
+FONTREGULAR
+PRINTFORML 間断なく続けられる陵辱によって、
+PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は思考すらままならなくなっていた。
+PRINTFORML 更に触手は容赦なく針状の触手を%PRINT_TRANSCALLNAME(TARGET)%の首に突き立て、
+PRINTFORML 分泌した毒液を直接%PRINT_TRANSCALLNAME(TARGET)%の身体に打ち込んでいく。
+PRINTL 
+PRINTFORML 瞬間、ビクンッと身体を跳ね上げて
+PRINTFORML 目を見開いた%PRINT_TRANSCALLNAME(TARGET)%の反応に手ごたえを得たのか、
+PRINTFORML 続けて%PRINT_TRANSCALLNAME(TARGET)%の乳首、陰核を中心に、
+PRINTFORM その身体を芯まで作り変えるべく毒液が注がれていく
+IF (FILTER_CHECK_F(14) > 0)
+	PRINTL ・・・
+ELSE
+	PRINTL 。
+	PRINTL 
+	PRINTFORML 針を刺される度に%PRINT_TRANSCALLNAME(TARGET)%は痛みで涙や涎を撒き散らし、
+	IF TALENT:主観視点 > 0
+		PRINTFORML 限界まで身体を反らしながら吼え叫んでしまう・・・
+	ELSE
+		PRINTFORML 限界まで身体を反らして吼え叫んでいた・・・
+	ENDIF
+ENDIF
+PRINTW 
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "PRISON_COM_300")
+PRINTL 
+
+;-----------------------------------------------
+;触手の寄生
+@MESSAGE_PRISON_COM_301
+FONTBOLD
+PRINTL 寄生
+FONTREGULAR
+IF (FILTER_CHECK_F(14) > 0)
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%に向かって、先端が瘤状に肥大した一本の触手が差し出される。
+	PRINTFORML まるで凌辱の用途に向かない奇妙な形状をした瘤に縦に亀裂が入ったかと思うと、
+	PRINTFORML 先端部がぐちゃりと左右に開いて%PRINT_TRANSCALLNAME(TARGET)%の顔面に飛びかかり、
+	IF TALENT:主観視点 > 0
+		PRINTFORML まるでマスクのように鼻と口を覆い吸い付いてきた！
+		PRINTW 
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の力では顔から触手を引き剥がすことはできず、
+		PRINTFORML そのまま触手に喉の奥まで管のようなものを挿し込まれてしまう。
+		PRINTFORML すると触手の根元から何か卵のような肉塊が幾つも送り出され、
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の喉を押し広げながら、食道の奥へと注ぎ込まれていく。
+	ELSE
+		PRINTFORML まるでマスクのように鼻と口を覆い吸い付いた！
+		PRINTW 
+		PRINTFORML 驚き戸惑う%PRINT_TRANSCALLNAME(TARGET)%はしかし顔から触手を引き剥がすことはできず、
+		PRINTFORML そのまま触手は喉の奥に管のようなものを挿し込んでいく。
+		PRINTFORML すると触手の根元から何か卵のような肉塊が幾つも送り出され、
+		PRINTFORML 強引に%PRINT_TRANSCALLNAME(TARGET)%の食道へと注ぎ込まれていった。
+	ENDIF
+	PRINTL 
+	PRINTFORML 暫くして触手が引き抜かれると、体内の違和感は自分の意志を持つかのように脈動し、
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は触手に寄生されてしまったことを自覚した・・・
+ELSE
+	PRINTFORML 際限なく続く淫辱の時間に、流石の%PRINT_TRANSCALLNAME(TARGET)%の気力も枯れ果てつつある。
+	PRINTFORML 何十、何百度目かの絶頂が訪れ、脳裏が白く塗りつぶされたその一瞬の喪失、
+	PRINTFORML その瞬間を触手は見逃さなかった。
+	PRINTL 
+	PRINTFORML 徐に%PRINT_TRANSCALLNAME(TARGET)%身体が水平に持ち上げられ、
+	PRINTFORML 肌を舐める白濁液が%PRINT_TRANSCALLNAME(TARGET)%のへそに薄く溜まる。
+	PRINTFORML その可愛らしい窪みの前に細く鋭い触手が擡げられ、怪しく揺らめく。
+	IF TALENT:主観視点 > 0
+		PRINTFORML 朦朧としている%PRINT_TRANSCALLNAME(TARGET)%はそんな触手の行動を感知できずに───
+		PRINTW 
+		PRINTFORML ―――次の瞬間、
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は腹部に強烈な痛みと圧迫感を覚える。
+	ELSE
+		PRINTFORML いまだに気を失っている%PRINT_TRANSCALLNAME(TARGET)%はそんな触手の行動を感知できずに───
+		PRINTW 
+		PRINTFORML 次の瞬間！
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は腹部に強烈な圧迫感を覚えて声にならない声をあげる！
+	ENDIF
+	PRINTFORML 一気に覚醒されられ、状況を飲み込めないままに反射的に違和感の元を確認すると、
+	PRINTFORML なんとそこには、自らの腹を、正確にはへそを串刺しにする触手の姿があった！
+	PRINTW 
+	IF (MESSAGE_BRANCH_F(TARGET) & 堕落) == 0
+		IF TALENT:主観視点 > 0
+			PRINTFORML 内臓をまさぐられる感覚に%PRINT_TRANSCALLNAME(TARGET)%の全身から冷や汗が噴き出す。
+		ELSE
+			PRINTFORML 内臓をまさぐられる感覚に%PRINT_TRANSCALLNAME(TARGET)%は錯乱して泣き叫ぶ。
+		ENDIF
+		PRINTFORML 痛みはなく、ただただ壮絶な違和感が意識を押し潰していく中、
+		PRINTFORML 暫くして触手が引き抜かれるが、違和感が消えることはない。
+		PRINTFORML 自分の意志とは無関係に体内の違和感が脈動するのを感じ、
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は触手に寄生されてしまったことを自覚した・・・
+	ELSE
+		IF TALENT:主観視点 > 0
+			PRINTFORML 内臓をまさぐられる背徳感に%PRINT_TRANSCALLNAME(TARGET)%は背筋をぞくぞくと震わせてしまう。
+		ELSE
+			PRINTFORML 内臓をまさぐられるという背徳に%PRINT_TRANSCALLNAME(TARGET)%は背筋をぞくぞくと震わせる。
+		ENDIF
+		PRINTFORML 痛みはなく、ただ圧倒的な充足感が意識を埋め尽くしていく――
+		PRINTFORML 暫くして触手が引き抜かれると、体内の充足感は自分の意志を持つかのように脈動し、
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は触手に寄生されてしまったことを自覚した・・・
+	ENDIF
+ENDIF
+PRINTW 
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "PRISON_COM_301")
+PRINTL 
+PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は触手に寄生にされました
+PRINTW 

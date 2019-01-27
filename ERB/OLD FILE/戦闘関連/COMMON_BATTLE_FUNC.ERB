@@ -1,0 +1,539 @@
+;--------------------------------------------------
+;戦闘に関する共通関数
+
+
+;--------------------------------------------------
+;敏捷の差による補正
+@CORRECTION_BINSYOU, ARG
+IF ARG < 10
+	LOCAL = ARG * 15 / 100
+ELSEIF ARG < 25
+	LOCAL = ARG * 38 / 100
+ELSEIF ARG < 45
+	LOCAL = ARG * 75 / 100
+ELSEIF ARG >= 75
+	LOCAL = 64 + ARG * 15 / 100
+ELSE
+	LOCAL = ARG
+ENDIF
+RETURN LOCAL
+
+;式中関数版
+@CORRECTION_BINSYOU_F(ARG)
+#FUNCTION
+IF ARG < 10
+	LOCAL = ARG * 15 / 100
+ELSEIF ARG < 25
+	LOCAL = ARG * 38 / 100
+ELSEIF ARG < 45
+	LOCAL = ARG * 75 / 100
+ELSEIF ARG >= 75
+	LOCAL = 64 + ARG * 15 / 100
+ELSE
+	LOCAL = ARG
+ENDIF
+RETURNF LOCAL
+
+;--------------------------------------------------
+;変身能力のあるキャラの補正
+@CORRECTION_TRANS(ARG)
+#FUNCTION
+IF (TALENT:変身能力 == 1 && CFLAG:1 == 0) || TALENT:変身能力 == -1
+	ARG = ARG * CFLAG:10 / 100
+ELSEIF TALENT:変身能力 == 1 && CFLAG:1 == 2
+	;ＳＰ変身の能力倍率は１００未満にならない
+	LOCAL = CFLAG:11
+	SIF LOCAL < 100
+		LOCAL = 100
+	ARG = ARG * LOCAL / 100
+ENDIF
+RETURNF ARG
+
+;--------------------------------------------------
+;戦技による行動成功値の補正
+@CORRECTION_SENGI(ARG:0, ARG:1 ,ARG:2)
+#FUNCTION
+IF ARG:1 == 0
+	LOCAL = 30
+ELSEIF ARG:1 == 1
+	LOCAL = 31
+ELSEIF ARG:1 == 2
+	LOCAL = 32
+ENDIF
+IF ABL:(ARG:2):LOCAL == 0
+	TIMES ARG:0, 0.90
+ELSEIF ABL:(ARG:2):LOCAL == 1
+	TIMES ARG:0, 0.95
+ELSEIF ABL:(ARG:2):LOCAL == 2
+	TIMES ARG:0, 1.00
+ELSEIF ABL:(ARG:2):LOCAL == 3
+	TIMES ARG:0, 1.025
+ELSEIF ABL:(ARG:2):LOCAL == 4
+	TIMES ARG:0, 1.05
+ELSEIF ABL:(ARG:2):LOCAL == 5
+	TIMES ARG:0, 1.075
+ELSEIF ABL:(ARG:2):LOCAL == 6
+	TIMES ARG:0, 1.10
+ELSEIF ABL:(ARG:2):LOCAL == 7
+	TIMES ARG:0, 1.125
+ELSEIF ABL:(ARG:2):LOCAL == 8
+	TIMES ARG:0, 1.1375
+ELSEIF ABL:(ARG:2):LOCAL == 9
+	TIMES ARG:0, 1.15
+ENDIF
+RETURNF ARG:0
+
+;--------------------------------------------------
+;戦技による攻撃力の補正
+@CORRECTION_SENGI_DAMAGE(ARG:0, ARG:1 ,ARG:2)
+#FUNCTION
+IF ARG:1 == 0
+	LOCAL = 30
+	IF ABL:(ARG:2):LOCAL == 0
+		TIMES ARG:0, 1.00
+	ELSEIF ABL:(ARG:2):LOCAL == 1
+		TIMES ARG:0, 1.10
+	ELSEIF ABL:(ARG:2):LOCAL == 2
+		TIMES ARG:0, 1.15
+	ELSEIF ABL:(ARG:2):LOCAL == 3
+		TIMES ARG:0, 1.20
+	ELSEIF ABL:(ARG:2):LOCAL == 4
+		TIMES ARG:0, 1.25
+	ELSEIF ABL:(ARG:2):LOCAL == 5
+		TIMES ARG:0, 1.30
+	ELSEIF ABL:(ARG:2):LOCAL == 6
+		TIMES ARG:0, 1.35
+	ELSEIF ABL:(ARG:2):LOCAL == 7
+		TIMES ARG:0, 1.40
+	ELSEIF ABL:(ARG:2):LOCAL == 8
+		TIMES ARG:0, 1.45
+	ELSEIF ABL:(ARG:2):LOCAL == 9
+		TIMES ARG:0, 1.50
+	ENDIF
+ELSEIF ARG:1 == 1
+	LOCAL = 31
+	IF ABL:(ARG:2):LOCAL == 0
+		TIMES ARG:0, 0.95
+	ELSEIF ABL:(ARG:2):LOCAL == 1
+		TIMES ARG:0, 1.00
+	ELSEIF ABL:(ARG:2):LOCAL == 2
+		TIMES ARG:0, 1.10
+	ELSEIF ABL:(ARG:2):LOCAL == 3
+		TIMES ARG:0, 1.20
+	ELSEIF ABL:(ARG:2):LOCAL == 4
+		TIMES ARG:0, 1.30
+	ELSEIF ABL:(ARG:2):LOCAL == 5
+		TIMES ARG:0, 1.40
+	ELSEIF ABL:(ARG:2):LOCAL == 6
+		TIMES ARG:0, 1.45
+	ELSEIF ABL:(ARG:2):LOCAL == 7
+		TIMES ARG:0, 1.50
+	ELSEIF ABL:(ARG:2):LOCAL == 8
+		TIMES ARG:0, 1.55
+	ELSEIF ABL:(ARG:2):LOCAL == 9
+		TIMES ARG:0, 1.60
+	ENDIF
+ELSEIF ARG:1 == 2
+	LOCAL = 32
+	IF ABL:(ARG:2):LOCAL == 0
+		TIMES ARG:0, 0.90
+	ELSEIF ABL:(ARG:2):LOCAL == 1
+		TIMES ARG:0, 0.95
+	ELSEIF ABL:(ARG:2):LOCAL == 2
+		TIMES ARG:0, 1.05
+	ELSEIF ABL:(ARG:2):LOCAL == 3
+		TIMES ARG:0, 1.15
+	ELSEIF ABL:(ARG:2):LOCAL == 4
+		TIMES ARG:0, 1.30
+	ELSEIF ABL:(ARG:2):LOCAL == 5
+		TIMES ARG:0, 1.40
+	ELSEIF ABL:(ARG:2):LOCAL == 6
+		TIMES ARG:0, 1.50
+	ELSEIF ABL:(ARG:2):LOCAL == 7
+		TIMES ARG:0, 1.60
+	ELSEIF ABL:(ARG:2):LOCAL == 8
+		TIMES ARG:0, 1.65
+	ELSEIF ABL:(ARG:2):LOCAL == 9
+		TIMES ARG:0, 1.70
+	ENDIF
+ENDIF
+RETURNF ARG:0
+
+;--------------------------------------------------
+;戦技による回避値の補正
+@CORRECTION_SENGI_AVOID(ARG:0, ARG:1 = 0, ARG:2)
+#FUNCTION
+;近距離のみ補正を持つ
+SIF ARG:1 != 0
+	RETURNF ARG:0
+LOCAL = 30
+IF ABL:(ARG:2):LOCAL == 0
+	TIMES ARG:0, 0.75
+ELSEIF ABL:(ARG:2):LOCAL == 1
+	TIMES ARG:0, 0.80
+ELSEIF ABL:(ARG:2):LOCAL == 2
+	TIMES ARG:0, 0.85
+ELSEIF ABL:(ARG:2):LOCAL == 3
+	TIMES ARG:0, 0.90
+ELSEIF ABL:(ARG:2):LOCAL == 4
+	TIMES ARG:0, 0.95
+ELSEIF ABL:(ARG:2):LOCAL == 5
+	TIMES ARG:0, 1.00
+ELSEIF ABL:(ARG:2):LOCAL == 6
+	TIMES ARG:0, 1.025
+ELSEIF ABL:(ARG:2):LOCAL == 7
+	TIMES ARG:0, 1.05
+ELSEIF ABL:(ARG:2):LOCAL == 8
+	TIMES ARG:0, 1.075
+ELSEIF ABL:(ARG:2):LOCAL == 9
+	TIMES ARG:0, 1.10
+ENDIF
+RETURNF ARG:0
+
+;--------------------------------------------------
+;行動制限
+;各種刻印や特定の素質がついていると低確率で体が竦んで行動できなくなる
+@ACT_LIMIT
+LOCAL = 0
+LOCAL:1 = 0
+IF TALENT:触手の虜 == 1
+	LOCAL = RAND:100
+	IF LOCAL < 6
+		;空中にいる場合は着地する
+		SIF (TCVAR:216 & 1)
+			TCVAR:216 = 4
+		;FEAT効果による着地時の反動
+		SIF TALENT:有翼 > 0
+			TFLAG:99 += 1
+		;距離表示
+		CALL PRINT_DISTANCE
+		PRINTL 
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の様子がおかしい・・・
+		;地の文 敵キャラの虜で体が竦む
+		CALL MESSAGE_BATTLE_DISACTION_TORIKO
+		;地の文：洗脳/悪堕ちキャラが操作キャラの「触手の虜で体が竦む」を見た
+		SIF FLAG:110 == 1
+			CALL MESSAGE_OTHER_BATTLE_DISACTION_TORIKO
+			
+		RETURN 1
+	ENDIF
+ENDIF
+IF TALENT:寄生 == 1
+	LOCAL = RAND:100
+	IF LOCAL < 6
+		;空中にいる場合は着地する
+		SIF (TCVAR:216 & 1)
+			TCVAR:216 = 4
+		;FEAT効果による着地時の反動
+		SIF TALENT:有翼 > 0
+			TFLAG:99 += 1
+		;距離表示
+		CALL PRINT_DISTANCE
+		PRINTL 
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の様子がおかしい・・・
+		;地の文 寄生した触手が暴れて体が竦む
+		CALL MESSAGE_BATTLE_DISACTION_PARASITE
+		;地の文：洗脳/悪堕ちキャラが操作キャラの「寄生で体が竦む」を見た
+		SIF FLAG:110 == 1
+			CALL MESSAGE_OTHER_BATTLE_DISACTION_PARASITE
+			
+		RETURN 1
+
+	ENDIF
+ENDIF
+IF (TALENT:妊娠 == 4 || TALENT:妊娠 == 5) && CFLAG:222 >= 56
+	LOCAL = RAND:100
+	IF LOCAL < 3 + SQRT(CFLAG:222 / 4)
+		;空中にいる場合は着地する
+		SIF (TCVAR:216 & 1)
+			TCVAR:216 = 4
+		;FEAT効果による着地時の反動
+		SIF TALENT:有翼 > 0
+			TFLAG:99 += 1
+		;距離表示
+		CALL PRINT_DISTANCE
+		PRINTL 
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の様子がおかしい・・・
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は突然強い吐き気を感じて
+		PRINTL 体が竦んでしまった・・・
+		RETURN 1
+
+	ENDIF
+ENDIF
+
+
+LOCAL = 0
+
+REPEAT 5
+	;基本確率を設定
+	IF MARK:COUNT == 0
+		LOCAL = 0
+	ELSEIF MARK:COUNT == 1
+		LOCAL = 60
+	ELSEIF MARK:COUNT == 2
+		LOCAL = 120
+	ELSEIF MARK:COUNT == 3
+		LOCAL = 180
+	ELSEIF MARK:COUNT == 4
+		LOCAL = 240
+	ELSEIF MARK:COUNT == 5
+		LOCAL = 300
+	ENDIF
+
+	;性格補正を設定
+	IF COUNT == 0
+		LOCAL:2 = 13
+	ELSEIF COUNT == 1
+		LOCAL:2 = 16
+	ELSEIF COUNT == 2
+		LOCAL:2 = 14
+	ELSEIF COUNT == 3
+		LOCAL:2 = 17
+	ELSEIF COUNT == 4
+		LOCAL:2 = 15
+	ELSE
+		PRINTW ERROR 刻印の呼び出し先が不正です
+		RETURN 0
+	ENDIF
+	LOCAL = SEIKAKU_HOSEI_PALAM_F(SEIKAKU_CHECK_F(TARGET), LOCAL:2, LOCAL)
+
+	;刻印怯み無効の効果
+	IF FLAG:905
+		LOCAL = 0
+	;刻印怯み２倍の効果
+	ELSEIF FLAG:910
+		LOCAL *= 2
+	ENDIF
+	
+	IF LOCAL > 0
+		LOCAL:1 = RAND:10000
+		IF LOCAL:1 < LOCAL
+			;空中にいる場合は着地する
+			SIF (TCVAR:216 & 1)
+				TCVAR:216 = 4
+			;FEAT効果による着地時の反動
+			SIF TALENT:有翼 > 0
+				TFLAG:99 += 1
+			;距離表示
+			CALL PRINT_DISTANCE
+			PRINTL 
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の様子がおかしい・・・
+			IF COUNT == 0
+				;地の文 快楽で体が竦む
+				CALL MESSAGE_BATTLE_DISACTION_KAIRAKU
+				;地の文：洗脳/悪堕ちキャラが操作キャラの「快楽で体が竦む」を見た
+				SIF FLAG:110 == 1
+					CALL MESSAGE_OTHER_BATTLE_DISACTION_KAIRAKU
+					
+			ELSEIF COUNT == 1
+				;地の文 苦痛で体が竦む
+				CALL MESSAGE_BATTLE_DISACTION_KUTUU
+				;地の文：洗脳/悪堕ちキャラが操作キャラの「苦痛で体が竦む」を見た
+				SIF FLAG:110 == 1
+					CALL MESSAGE_OTHER_BATTLE_DISACTION_KUTUU
+					
+			ELSEIF COUNT == 2
+				;地の文 屈辱で体が竦む
+				CALL MESSAGE_BATTLE_DISACTION_KUTUZYOKU
+				;地の文：洗脳/悪堕ちキャラが操作キャラの「屈辱で体が竦む」を見た
+				SIF FLAG:110 == 1
+					CALL MESSAGE_OTHER_BATTLE_DISACTION_KUTUZYOKU
+
+			ELSEIF COUNT == 3
+				;地の文 恐怖で体が竦む
+				CALL MESSAGE_BATTLE_DISACTION_KYOUHU
+				;地の文：洗脳/悪堕ちキャラが操作キャラの「恐怖で体が竦む」を見た
+				SIF FLAG:110 == 1
+					CALL MESSAGE_OTHER_BATTLE_DISACTION_KYOUHU
+
+			ELSEIF COUNT == 4
+				;地の文 恥辱で体が竦む
+				CALL MESSAGE_BATTLE_DISACTION_TIZYOKU
+				;地の文：洗脳/悪堕ちキャラが操作キャラの「恥辱で体が竦む」を見た
+				SIF FLAG:110 == 1
+					CALL MESSAGE_OTHER_BATTLE_DISACTION_TIZYOKU
+
+			ENDIF
+			RETURN 1
+		ENDIF
+	ENDIF
+REND
+RETURN 0
+
+
+
+;--------------------------------------------------
+;撤退可能かどうかを判定する式中関数
+@CHECK_CAN_RETREAT_F()
+#FUNCTION
+;デバッグ中は条件を無視して使用可能
+IF FLAG:999 == 0
+	;拘束されているならだめ
+	SIF TCVAR:0 == 0
+		RETURNF 0
+	;クズ市民機能がオフの場合、8ターン目以降か体力気力どちらかが50%未満でないとだめ
+	SIF CONFIG_CHECK_EVENT_F(3) == 0 && TFLAG:0 < 8 && PERCENT_CAL_F(BASE:体力, MAXBASE:体力) > 50 && PERCENT_CAL_F(BASE:気力, MAXBASE:気力) > 50
+		RETURNF 0
+	;クズ市民機能がオンの場合、避難が完了していないとだめ
+	SIF CONFIG_CHECK_EVENT_F(3) > 0 && (FLAG:70 + FLAG:71) > 0
+		RETURNF 0
+	;襲撃イベント中ならだめ
+	SIF FLAG:45 > 0
+		RETURNF 0
+ENDIF
+;ここまで抜けて来たら使用可能
+RETURNF 1
+
+
+
+
+
+;--------------------------------------------------
+;キャラクターの変身処理
+;ARG	変身
+@TRANSFORM, ARG, ARG:1 = -999
+#DIM AIRPLUS
+
+;ARG:1が省略された場合はTARGETを優先
+SIF ARG:1 == -999
+	ARG:1 = TARGET
+
+;現在の変身状況（CFLAG:1）と目的となる変身状況（ARG）が同じなら終了
+SIF CFLAG:(ARG:1):1 == ARG
+	RETURN 0
+SIF CFLAG:(ARG:1):1 == 0 && ARG == 0
+	RETURN 0
+
+;変身前の空中性能強化
+CALL CLOTH_BATTLE_HOSEI, "AIRPLUS",ARG:1
+AIRPLUS = RESULT
+
+;空中性能強化の変動
+CALL CLOTH_BATTLE_HOSEI, "AIRPLUS",ARG:1
+IF AIRPLUS == 0 && RESULT > 0
+	MAXBASE:(ARG:1):空中ダッシュ += 1
+	BASE:(ARG:1):空中ダッシュ = MAXBASE:(ARG:1):空中ダッシュ
+	SIF BASE:(ARG:1):空中ダッシュ >= 5
+		BASE:(ARG:1):空中ダッシュ = 5
+ELSEIF AIRPLUS == 1 && RESULT == 0
+	MAXBASE:(ARG:1):空中ダッシュ -= 1
+	BASE:(ARG:1):空中ダッシュ = MAXBASE:(ARG:1):空中ダッシュ
+	SIF BASE:(ARG:1):空中ダッシュ < 0
+		BASE:(ARG:1):空中ダッシュ = 0
+ENDIF
+
+;通常→変身
+IF ARG > 0
+	;オトコが変身中に女体化する場合
+	IF TALENT:(ARG:1):変身時ＴＳ > 0 && CHARATALENT_F(ARG:1,1,"オトコ") == 0
+		TALENT:(ARG:1):オトコ = -1
+		TALENT:(ARG:1):処女 = 1
+		SIF TALENT:(ARG:1):変身時非処女 > 0
+			TALENT:(ARG:1):処女 = -1
+		IF TALENT:(ARG:1):貧乳 + TALENT:(ARG:1):巨乳 + TALENT:(ARG:1):変身時胸サイズ変動 <= -2
+			TALENT:(ARG:1):貧乳 = 2
+			TALENT:(ARG:1):巨乳 *= -1
+		ELSEIF TALENT:(ARG:1):貧乳 + TALENT:(ARG:1):巨乳 + TALENT:(ARG:1):変身時胸サイズ変動 == -1
+			TALENT:(ARG:1):貧乳 = 1
+			TALENT:(ARG:1):巨乳 *= -1
+		ELSEIF TALENT:(ARG:1):貧乳 + TALENT:(ARG:1):巨乳 + TALENT:(ARG:1):変身時胸サイズ変動 == 1
+			TALENT:(ARG:1):貧乳 *= -1
+			TALENT:(ARG:1):巨乳 = 1
+		ELSEIF TALENT:(ARG:1):貧乳 + TALENT:(ARG:1):巨乳 + TALENT:(ARG:1):変身時胸サイズ変動 == 2
+			TALENT:(ARG:1):貧乳 *= -1
+			TALENT:(ARG:1):巨乳 = 2
+		ELSEIF TALENT:(ARG:1):貧乳 + TALENT:(ARG:1):巨乳 + TALENT:(ARG:1):変身時胸サイズ変動 >= 3
+			TALENT:(ARG:1):貧乳 *= -1
+			TALENT:(ARG:1):巨乳 = 3
+		ENDIF
+		;変身時濡れやすさ
+		IF TALENT:(ARG:1):変身時濡れやすさ変動 == 1
+			TALENT:(ARG:1):濡れやすい = 1
+		ELSEIF TALENT:(ARG:1):変身時濡れやすさ変動 == -1
+			TALENT:(ARG:1):濡れにくい = 1
+		ENDIF
+		;変身時Ｖ感覚
+		IF TALENT:(ARG:1):変身時Ｖ感覚変動 == 1
+			TALENT:(ARG:1):Ｖ敏感 = 1
+		ELSEIF TALENT:(ARG:1):変身時Ｖ感覚変動 == -1
+			TALENT:(ARG:1):Ｖ鈍感 = 1
+		ENDIF
+	;女が変身中にオトコになる場合
+	ELSEIF TALENT:(ARG:1):変身時ＴＳ > 0 && CHARATALENT_F(ARG:1,1,"オトコ") > 0
+		TALENT:(ARG:1):オトコ = 1
+		SIF TALENT:(ARG:1):処女 > 0
+			TALENT:(ARG:1):処女 = -2
+		SIF (TCVAR:12 & 排卵)
+			TCVAR:12 -= 排卵
+		TALENT:(ARG:1):貧乳 *= -1
+		TALENT:(ARG:1):巨乳 *= -1
+	ENDIF
+	IF TALENT:(ARG:1):長身 - TALENT:(ARG:1):小柄 + TALENT:(ARG:1):変身時体格変動 < 0
+		TALENT:(ARG:1):小柄 = 1
+		TALENT:(ARG:1):長身 *= -1
+	ELSEIF TALENT:(ARG:1):長身 - TALENT:(ARG:1):小柄 + TALENT:(ARG:1):変身時体格変動 > 0
+		TALENT:(ARG:1):小柄 *= -1
+		TALENT:(ARG:1):長身 = 1
+	ENDIF
+	;ふたなりの入れ替え
+	SWAP TALENT:(ARG:1):ふたなり,TALENT:(ARG:1):変身時ふたなり
+	;変身済みフラグを立てる
+	SIF TFLAG:700 > 0
+		TCVAR:10 = 1
+;変身→通常
+ELSE
+	;オトコが変身中に女体化している場合
+	IF TALENT:(ARG:1):変身時ＴＳ > 0 && CHARATALENT_F(ARG:1,0,"オトコ") > 0
+		TALENT:(ARG:1):オトコ = 1
+		SIF TALENT:(ARG:1):処女 == -1
+			TALENT:(ARG:1):変身時非処女 = 1
+		TALENT:(ARG:1):処女 = 0
+		SIF (TCVAR:12 & 排卵)
+			TCVAR:12 -= 排卵
+		;濡れやすさ変動
+		TALENT:(ARG:1):濡れやすい = 0
+		TALENT:(ARG:1):濡れにくい = 0
+		;Ｖ感覚変動
+		TALENT:(ARG:1):Ｖ敏感 = 0
+		TALENT:(ARG:1):Ｖ鈍感 = 0
+	;女が変身中にオトコになっている場合
+	ELSEIF TALENT:(ARG:1):変身時ＴＳ > 0 && CHARATALENT_F(ARG:1,0,"オトコ") == 0
+		TALENT:(ARG:1):オトコ = 0
+		SIF TALENT:(ARG:1):処女 == -2
+			TALENT:(ARG:1):処女 = 1
+	ENDIF
+	IF CHARATALENT_F(ARG:1,0,"絶壁") > 0
+		TALENT:(ARG:1):貧乳 = 2
+	ELSEIF CHARATALENT_F(ARG:1,0,"貧乳") > 0
+		TALENT:(ARG:1):貧乳 = 1
+	ELSEIF CHARATALENT_F(ARG:1,0,"奇乳") > 0
+		TALENT:(ARG:1):巨乳 = 5
+	ELSEIF CHARATALENT_F(ARG:1,0,"魔乳") > 0
+		TALENT:(ARG:1):巨乳 = 4
+	ELSEIF CHARATALENT_F(ARG:1,0,"超乳") > 0
+		TALENT:(ARG:1):巨乳 = 3
+	ELSEIF CHARATALENT_F(ARG:1,0,"爆乳") > 0
+		TALENT:(ARG:1):巨乳 = 2
+	ELSEIF CHARATALENT_F(ARG:1,0,"巨乳") > 0
+		TALENT:(ARG:1):巨乳 = 1
+	ELSE
+		TALENT:(ARG:1):貧乳 = 0
+		TALENT:(ARG:1):巨乳 = 0
+	ENDIF
+	IF CHARATALENT_F(ARG:1,0,"小柄") > 0
+		TALENT:(ARG:1):小柄 = 1
+		TALENT:(ARG:1):長身 = 0
+	ELSEIF CHARATALENT_F(ARG:1,0,"長身") > 0
+		TALENT:(ARG:1):小柄 = 0
+		TALENT:(ARG:1):長身 = 1
+	ELSE
+		TALENT:(ARG:1):小柄 = 0
+		TALENT:(ARG:1):長身 = 0
+	ENDIF
+	;ふたなりの入れ替え
+	SWAP TALENT:(ARG:1):ふたなり,TALENT:(ARG:1):変身時ふたなり
+ENDIF
+;変身状況をARGに
+CFLAG:(ARG:1):1 = ARG
+
+RETURN 1

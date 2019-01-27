@@ -1,0 +1,128 @@
+;V攻め弱
+
+;性コマンド分類
+@SEX_TYPE_COM2
+RETURN 通常
+
+@SEX_COM2,ARG = 0, ARG:1 = 0
+;EX_COM	追加責め実行部位（ビット）
+;	1：Ｃ　2：Ｖ　4：Ａ　8：Ｂ
+;追加責め
+CALL SEX_COMEX_RANDOM, Ｖ, ARG:1
+EX_COM = RESULT:0
+SH_COM = RESULT:1
+
+;取得パラメータ計算
+;ベース値の明示的初期化
+REPEAT 12
+	LOCAL:COUNT = 0
+REND
+
+;油断度の上昇
+TFLAG:3 += 25
+
+;射精値 50
+CALL TENTACLE_SYASEI_UP, 50
+
+;触手サイズの設定
+CALL SET_TENTACLE_SIZE, FLAG:10, FLAG:11, FLAG:110, FLAG:111, 2
+
+IF FLAG:10 == 2
+	CALLFORM MESSAGE_MOB_{ARG}_COM2, EX_COM, SH_COM
+ELSE
+	;地の文：洗脳/悪堕ちキャラが操作キャラにV攻め弱をした
+	SIF FLAG:110 == 1
+		CALL MESSAGE_OTHER_SEX_COM2
+	;地の文:COM2
+	CALL MESSAGE_SEX_COM2, EX_COM, SH_COM
+ENDIF
+
+;結界による触手本数の変動
+CALL SET_TENTACLE_POOL
+;服へのダメージ
+CALL CLOTH_BATTLE_DAMAGE, 4
+
+;ベース
+SIF EX_COM & Ｖ
+	EXP:Ｖ経験 += 1
+
+;快V
+IF ABL:Ｖ感覚 == 0
+	LOCAL:1 = 500
+ELSEIF ABL:Ｖ感覚 == 1
+	LOCAL:1 = 1000
+ELSEIF ABL:Ｖ感覚 == 2
+	LOCAL:1 = 2000
+ELSEIF ABL:Ｖ感覚 == 3
+	LOCAL:1 = 4000
+ELSEIF ABL:Ｖ感覚 == 4
+	LOCAL:1 = 6000
+ELSEIF ABL:Ｖ感覚 >= 5
+	LOCAL:1 = 8000
+ENDIF
+;Ｖ防御効果
+SIF TCVAR:2 == 体勢：Ｖ防御
+	LOCAL:1 /= 4
+
+;V感覚が低くて潤滑が低いと苦痛が入る
+SIF ABL:Ｖ感覚 < 3 && PALAM:潤滑 < 2000 && BASE:Ｖ結界耐久力 <= 0
+	LOCAL:10 = 100
+
+;潤滑が入る
+LOCAL:4 = 200
+
+;処女だと恐怖が少し入る
+IF TALENT:処女 > 0
+	IF ABL:Ｖ感覚 == 0
+		LOCAL:11 = 200
+	ELSEIF ABL:Ｖ感覚 == 1
+		LOCAL:11 = 100
+	ELSEIF ABL:Ｖ感覚 == 2
+		LOCAL:11 = 20
+	ELSE
+	ENDIF
+ENDIF
+SIF BASE:Ｖ結界耐久力 > 0
+	LOCAL:11 /= 2
+
+;追加責め実行
+IF EX_COM
+	CALL SEX_COMEX, Ｖ, 0, EX_COM | SH_COM
+	REPEAT 12
+		LOCAL:COUNT += RESULT:COUNT
+	REND
+ENDIF
+
+;次のターン、確率で挿入しようとする
+IF RAND:2 == 0 && TALENT:オトコ <= 0
+	TFLAG:17 = 3
+ELSE
+	;行動予約なし
+	TFLAG:17 = -1
+ENDIF
+;触手の行動を記録
+TFLAG:20 = 2
+
+;習得基本値
+LOCAL:6 += 0
+
+;欲情基本値
+LOCAL:7 += 0
+
+;屈服基本値
+LOCAL:8 += 500
+
+;恥情基本値
+LOCAL:9 += 100
+
+;苦痛基本値
+LOCAL:10 += 50
+
+;恐怖基本値
+LOCAL:11 += 0
+
+;体力消費基本値
+LOCAL:12 += 50
+
+;計算へ
+CALL PALAM_CAL, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, LOCAL:12

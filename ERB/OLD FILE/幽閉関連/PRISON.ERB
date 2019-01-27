@@ -1,0 +1,543 @@
+;**********************************************************
+;キャラの幽閉処理
+@PRISON
+LOCAL = 0
+IF FLAG:999 == -998
+	FLAG:999 = 0
+	RESETBGCOLOR
+ENDIF
+;キャラが幽閉中かどうか
+FOR LOCAL:999, 0, CHARANUM
+	SIF LOCAL:999 == MASTER
+		CONTINUE
+	IF CFLAG:(LOCAL:999):0 == 1 || FLAG:0 == 0
+		SIF LOCAL == 0
+			DRAWLINE
+		;該当したキャラを一時的にTARGETにする
+		TARGET = LOCAL:999
+		IF LOCAL == 0
+			PRINTL 
+			PRINTL ・・・
+			PRINTL ・・・・・・
+			PRINTL ・・・・・・・・・
+			PRINTL 
+		ENDIF
+		LOCAL = 1
+		
+		;幽閉中のイベントへ
+		CALL PRISON_EVENT
+
+		LOCAL += 1
+	ENDIF
+	SIF FLAG:999 == -998
+		BREAK
+NEXT
+
+;**********************************************************
+;幽閉中の処理
+@PRISON_EVENT
+#DIM LCOUNT
+#DIM CCOUNT
+
+FONTBOLD
+CALL TENTACLE_ACCESS_PRISON, TARGET, "NAME" 
+PRINTFORML 幽閉：%PRINT_CALLNAME(TARGET,1)%
+FONTREGULAR
+PRINTL 
+
+;幽閉に関する変数の初期化
+IF CFLAG:20 < 2
+	FLAG:110 = 0
+	FLAG:111 = 0
+ELSEIF CFLAG:20 == 2
+	FLAG:110 = 1
+	FOR CCOUNT, 0, CHARANUM
+		SIF CCOUNT == MASTER
+			CONTINUE
+		SIF CFLAG:CCOUNT:240 == CFLAG:21
+			FLAG:111 = CCOUNT
+	NEXT
+ENDIF
+
+;幽閉されてから初の被姦かどうか
+;ＴＳオプション
+IF (CHARATALENT_F(TARGET,0,"オトコ") > 0 || CHARATALENT_F(TARGET,1,"オトコ") > 0) && CONFIG_CHECK_OTHER_F(1) > 0
+
+	;今回の出産数フラグを初期化
+	CFLAG:220 = 0
+
+	;変身しないキャラか、ＴＳしないキャラの場合
+	IF CHARATALENT_F(TARGET,0,"オトコ") > 0 && (TALENT:変身能力 < 1 || CHARATALENT_F(TARGET,1,"オトコ") > 0)
+		;20%で貧乳か巨乳のどちらかになる
+		LOCAL = RAND:10
+		IF LOCAL == 0
+			TALENT:貧乳 = 1 + RAND:2
+		ELSEIF LOCAL == 1
+			TALENT:巨乳 = 1 + RAND:3
+		ENDIF
+		;15%で安産型かむちむちかスレンダーになる
+		LOCAL = RAND:100
+		IF LOCAL < 5
+			TALENT:外見 = 1
+		ELSEIF LOCAL < 10
+			TALENT:外見 = 2
+		ELSEIF LOCAL < 15
+			TALENT:外見 = 4
+		ENDIF
+	ELSE
+		TALENT:変身時体格変動 = 0
+		TALENT:変身時胸サイズ変動 = 0
+		IF TALENT:変身時濡れやすさ変動 > 0
+			TALENT:濡れやすい = 1
+		ELSEIF TALENT:変身時濡れやすさ変動 < 0
+			TALENT:濡れにくい = 1
+		ENDIF
+		IF TALENT:変身時Ｖ感覚変動 > 0
+			TALENT:Ｖ敏感 = 1
+		ELSEIF TALENT:変身時Ｖ感覚変動 < 0
+			TALENT:Ｖ鈍感 = 1
+		ENDIF
+	ENDIF
+
+	;地の文:初めての幽閉
+	CALL MESSAGE_PRISON_PRISENTENCE_FIRST
+
+	IF TALENT:変身時ＴＳ > 0 && CHARATALENT_F(TARGET,0,"オトコ") > 0
+		TALENT:性別変化 = 1
+		TALENT:外見 = TALENT:変身時外見
+		;体格を変身後に合わせる
+		IF CHARATALENT_F(TARGET,1,"小柄") > 0
+			TALENT:小柄 = 1
+			TALENT:長身 = 0
+		ELSEIF CHARATALENT_F(TARGET,1,"長身") > 0
+			TALENT:小柄 = 0
+			TALENT:長身 = 1
+		ENDIF
+		TALENT:ふたなり = TALENT:変身時ふたなり
+	ELSEIF TALENT:変身時ＴＳ > 0 && CHARATALENT_F(TARGET,0,"オトコ") == 0
+		TALENT:性別変化 = 10
+		TALENT:変身時外見 = TALENT:外見
+		;胸の大きさを変身前に合わせる
+		IF CHARATALENT_F(TARGET,0,"絶壁") > 0
+			TALENT:貧乳 = 2
+			TALENT:巨乳 = 0
+		ELSEIF CHARATALENT_F(TARGET,0,"貧乳") > 0
+			TALENT:貧乳 = 1
+			TALENT:巨乳 = 0
+		ELSEIF CHARATALENT_F(TARGET,0,"奇乳") > 0
+			TALENT:貧乳 = 0
+			TALENT:巨乳 = 5
+		ELSEIF CHARATALENT_F(TARGET,0,"魔乳") > 0
+			TALENT:貧乳 = 0
+			TALENT:巨乳 = 4
+		ELSEIF CHARATALENT_F(TARGET,0,"超乳") > 0
+			TALENT:貧乳 = 0
+			TALENT:巨乳 = 3
+		ELSEIF CHARATALENT_F(TARGET,0,"爆乳") > 0
+			TALENT:貧乳 = 0
+			TALENT:巨乳 = 2
+		ELSEIF CHARATALENT_F(TARGET,0,"巨乳") > 0
+			TALENT:貧乳 = 0
+			TALENT:巨乳 = 1
+		ENDIF
+		;体格を変身前に合わせる
+		IF CHARATALENT_F(TARGET,0,"小柄") > 0
+			TALENT:小柄 = 1
+			TALENT:長身 = 0
+		ELSEIF CHARATALENT_F(TARGET,0,"長身") > 0
+			TALENT:小柄 = 0
+			TALENT:長身 = 1
+		ENDIF
+		TALENT:変身時ふたなり = TALENT:ふたなり
+	ELSEIF TALENT:変身能力 > 0
+		TALENT:性別変化 = 11
+		TALENT:変身時外見 = TALENT:外見
+	ELSE
+		TALENT:性別変化 = 1
+		TALENT:変身時外見 = TALENT:外見
+	ENDIF
+
+	;男体化する女性はオトコになれなくなる
+	IF TALENT:オトコ > 0 && TALENT:変身時ＴＳ
+		MAXBASE:身長 = BASE:身長
+		MAXBASE:体重 = BASE:体重
+		MAXBASE:胸囲 = BASE:胸囲
+		MAXBASE:胴囲 = BASE:胴囲
+		MAXBASE:腰囲 = BASE:腰囲
+		MAXBASE:年齢 = BASE:年齢
+		CSTR:14 = %CSTR:13%
+		CSTR:31 = %CSTR:30%
+		CSTR:34 = %CSTR:32%
+		CSTR:35 = %CSTR:33%
+		CSTR:37 = %CSTR:36%
+	ENDIF
+	
+	;変身時ＴＳならそのまま戻れなくなる
+	IF TALENT:変身時ＴＳ > 0
+		TALENT:変身時ＴＳ = -1
+		TALENT:変身時非処女 = 0
+		BASE:身長 = MAXBASE:身長
+		BASE:体重 = MAXBASE:体重
+		BASE:胸囲 = MAXBASE:胸囲
+		BASE:胴囲 = MAXBASE:胴囲
+		BASE:腰囲 = MAXBASE:腰囲
+		BASE:年齢 = MAXBASE:年齢
+		CSTR:13 = %CSTR:14%
+		CSTR:30 = %CSTR:31%
+		CSTR:32 = %CSTR:34%
+		CSTR:33 = %CSTR:35%
+		CSTR:36 = %CSTR:37%
+	ENDIF
+	;それ以外は元の身体がＴＳする
+	IF TALENT:変身時ＴＳ == 0
+		CALL GENERATE_CHAR_SIZE, TARGET, 0
+		BASE:身長 = RESULT:2
+		BASE:体重 = RESULT:3
+		BASE:胸囲 = RESULT:4
+		BASE:胴囲 = RESULT:5
+		BASE:腰囲 = RESULT:6
+
+		;変身能力があれば変身先もＴＳする
+		IF TALENT:変身能力 > 0
+			CALL GENERATE_CHAR_SIZE, TARGET, 1
+			MAXBASE:身長 = RESULT:2
+			MAXBASE:体重 = RESULT:3
+			MAXBASE:胸囲 = RESULT:4
+			MAXBASE:胴囲 = RESULT:5
+			MAXBASE:腰囲 = RESULT:6
+		ENDIF
+	ENDIF
+
+	SIF TALENT:変身時非処女 == 0
+		TALENT:処女 = 1
+	TALENT:オトコ = 0
+
+ELSEIF CFLAG:31 == 0
+
+	;今回の出産数フラグを初期化
+	CFLAG:220 = 0
+
+	;幽閉自体が初めてかどうか
+	IF EXP:幽閉経験 <= 1
+		;地の文:初めての幽閉
+		CALL MESSAGE_PRISON_PRISENTENCE_FIRST
+	ELSE
+		;地の分:二度目からの幽閉後の初被姦
+		CALL MESSAGE_PRISON_PRISENTENCE_START
+	ENDIF
+ELSE
+	;地の分:幽閉後の被姦開始文
+	CALL MESSAGE_PRISON_PRISENTENCE
+ENDIF
+
+;地の文：悪堕ちキャラが幽閉中の操作キャラに被姦開始した
+SIF CFLAG:20 == 2
+	CALL MESSAGE_OTHER_PRISON_PRISENTENCE
+
+;結界判定を更新
+FOR LOCAL,0,感覚数
+	IF BASE:(LOCAL + 30) > 0
+		SHIELD:LOCAL = 1
+	ELSE
+		SHIELD:LOCAL = 0
+	ENDIF
+NEXT
+
+SIF TALENT:オトコ > 0 && FILTER_CHECK_F(5)
+	GOTO SKIP
+
+;幽閉コマンドの選択
+;子触手を出産している場合
+IF CFLAG:220 > 0 && RAND:100 < 30
+	;子触手に犯される
+	CALL PRISON_COMABLE, 7
+ELSE
+	;専用ルーチン（幽閉）による処理
+	CALL TENTACLE_ACCESS_PRISON, TARGET, "PRISON_ROUTINE"
+	LOCAL = RESULT
+
+	;汎用ルーチン（幽閉）による処理
+	IF LOCAL == 0
+		;汎用行動の種類　幽閉処理関連のフォルダ内のPRISON_COMX,ERBの数を記述
+		LOCAL:1 = RAND:100
+	
+		IF LOCAL:1 < 12
+			;C中心攻め
+			CALL PRISON_COMABLE, 0
+		ELSEIF LOCAL:1 < 24
+			;V中心攻め
+			CALL PRISON_COMABLE, 1
+		ELSEIF LOCAL:1 < 36
+			;A中心攻め
+			CALL PRISON_COMABLE, 2
+		ELSEIF LOCAL:1 < 48
+			;B中心攻め
+			CALL PRISON_COMABLE, 3
+		ELSEIF LOCAL:1 < 60
+			;Sな攻め
+			CALL PRISON_COMABLE, 4
+		ELSEIF LOCAL:1 < 72
+			;強制奉仕
+			CALL PRISON_COMABLE, 5
+		ELSEIF LOCAL:1 < 84
+			;羞恥な攻め
+			CALL PRISON_COMABLE, 6
+		ELSEIF LOCAL:1 < 89
+			;苗床化
+			CALL PRISON_COMABLE, 104
+		ELSEIF LOCAL:1 < 94
+			;注射
+			CALL PRISON_COMABLE, 300
+		ELSE
+			;寄生
+			CALL PRISON_COMABLE, 301
+		ENDIF
+	ENDIF
+	PRINTL 
+ENDIF
+
+;被姦経験を加算
+EXP:被姦経験 += 1
+CFLAG:31 += 1
+;汚染度の自動上昇
+CFLAG:30 += 3 + RAND:4
+;FEAT効果による汚染度補正
+SIF TALENT:神器の担い手 > 0
+	CFLAG:30 += 3
+SIF TALENT:闘争本能 > 0
+	CFLAG:30 += 6
+
+;搾精強化機能
+IF CONFIG_CHECK_BALANCE_F(3) > 0 && LOCAL:2 > 0
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は触手の精液からエネルギーを吸収した！
+	CALL GET_SYUREN, RAND:5 + RAND:5 + 6
+	PRINTL 
+ENDIF
+
+;汚染度のチェック
+CALL CHECK_CONTAMINATION
+LOCAL = 0
+LOCAL:1 = RESULT
+;汚染度が閾値を上回っていれば陥落フラグを立てる
+SIF CFLAG:30 > LOCAL:1
+	LOCAL = 1
+IF FLAG:999 == 1
+	SETCOLOR 96,96,96
+	PRINTL 
+	PRINTFORML 　DEBUG　汚染値 = {CFLAG:30}/{LOCAL:1}
+	RESETCOLOR
+ENDIF
+
+;触手の虜があると淫紋がつく
+;コンフィグのチェック
+IF TALENT:触手の虜 && FILTER_CHECK_F(6) == 0
+	;まだ淫紋がない
+	IF CFLAG:32 == 0
+		PRINTL 
+		;複数箇所チェック
+		IF FILTER_CHECK_F(7) && (TALENT:淫核 + TALENT:淫壷 + TALENT:淫尻 + TALENT:淫乳) > 0
+			PRINTFORM 激しい責めを受け続ける%PRINT_CALLNAME(TARGET)%の
+			IF TALENT:淫核 > 0 || TALENT:淫壷 > 0 || TALENT:淫尻 > 0 || TALENT:淫乳 > 0
+				IF TALENT:淫尻 == 0 && TALENT:淫乳 == 0
+					PRINT 腹部
+				ELSEIF TALENT:淫乳 == 0
+					PRINT 下半身
+				ELSE
+					PRINT 体中
+				ENDIF
+			ELSEIF TALENT:淫核 > 0
+				PRINT 下腹部
+			ELSEIF TALENT:淫壷 > 0
+				PRINT 腹部
+			ELSEIF TALENT:淫尻 > 0
+				PRINT 右臀部
+			ELSEIF TALENT:淫乳 > 0
+				PRINT 左乳房
+			ENDIF
+			PRINTL に、奇妙な紋様が浮かびつつある・・・
+		ELSEIF FILTER_CHECK_F(7) && (TALENT:淫核 + TALENT:淫壷 + TALENT:淫尻 + TALENT:淫乳) == 0
+		ELSE
+			PRINTFORM 激しい責めを受け続ける%PRINT_CALLNAME(TARGET)%の
+			CALL TATTOO_POSITION
+			SIF RESULT == 0
+				PRINT 下腹部
+			SIF RESULT == 1
+				PRINT 下腹部
+			SIF RESULT == 2
+				PRINT 右臀部
+			SIF RESULT == 3
+				PRINT 左乳房
+			PRINTL に、奇妙な紋様が浮かびつつある・・・
+		ENDIF
+	;すでに淫紋がある場合の地の文
+	ELSEIF LOCAL == 0
+		LOCAL:2 = 0
+		;複数箇所フラグチェック
+		IF FILTER_CHECK_F(7)
+			LOCAL:2 = 0
+			CALL TATTOO_ACCESS, "POSITION_BIT"
+			;新規に淫紋が出る部位がないかをチェック
+			FOR LCOUNT, 0, 感覚数
+				IF GETBIT(RESULT, LCOUNT) == 0 && TALENT:(LCOUNT + 153)
+					LOCAL:2 = LCOUNT + 1
+				ENDIF
+			NEXT
+		ENDIF
+		IF LOCAL:2 == 0
+			CALL TATTOO_ACCESS, "POSITION_STR"
+			PRINTL 
+			PRINTFORML %PRINT_CALLNAME(TARGET)%本人は気づいていないが、%RESULTS%にある紋様がその色を鮮やかに増してきているように見える・・・
+		ELSE
+			PRINTFORM %PRINT_CALLNAME(TARGET)%の
+			SIF LOCAL:2 == 1
+				PRINT 下腹部
+			SIF LOCAL:2 == 2
+				PRINT 腹部
+			SIF LOCAL:2 == 3
+				PRINT 右臀部
+			SIF LOCAL:2 == 4
+				PRINT 左乳房
+			PRINTL に、新たな紋様が浮き出したようだ・・・
+		ENDIF
+	ELSE
+	ENDIF
+	CALL PERCENT_CAL, CFLAG:30, LOCAL:1
+	CALL SAVE_TATTOO, RESULT
+	IF LOCAL == 0
+		CALL TATTOO_POSITION
+		CALL PRINT_TATTOO, RESULT
+	ENDIF
+	PRINTL 
+ENDIF
+
+;幽閉中に変身したキャラが通常に戻る
+SIF CONFIG_CHECK_BALANCE_F(6) == 0
+	CALL TRANSFORM, 0
+
+$SKIP
+
+;ソロモードは5日以上の幽閉で脱出判定
+IF FLAG:0 == 2 && CFLAG:6 != -1 && CFLAG:31 > 10 && RAND:4 == 0
+	PRINTL 　　　　　　
+	PRINTFORML そのとき、触手の拘束が僅かに緩んだ！
+	IF TALENT:触手の虜
+		PRINTFORML まだ辛うじて理性が残っていた%PRINT_CALLNAME(TARGET)%は使命を思い出し、
+		IF CFLAG:220
+			PRINT 我が子
+			SIF CFLAG:220 >= 2
+				PRINT たち
+			PRINTL に別れを告げて外部へと脱出した・・・
+		ELSE
+			PRINTL 刹那の逡巡を捨て去って外部へと脱出した・・・
+		ENDIF
+	ELSE
+		PRINTFORML 最後の力を温存していた%PRINT_CALLNAME(TARGET)%はこの機を逃さず、
+		PRINTFORML 決死の脱出劇を演じた末に、何とか外部へと逃れることができた・・・
+	ENDIF
+	PRINTW 
+	DRAWLINE
+	BASE:体力 = 0
+	BASE:気力 = 0
+	BASE:性耐性 = 0
+	CFLAG:20 = 0
+	CFLAG:21 = 0
+	CFLAG:23 = 0
+	CFLAG:30 = 0
+	CFLAG:31 = 0
+	CFLAG:220 = 0
+	CALL AFTER_RESCUED,TARGET
+	PRINTW 
+	DRAWLINE
+	RETURN
+ENDIF	
+
+;非戦闘員持ちは洗脳/悪堕ちにならない
+IF LOCAL == 1 && CFLAG:0 == 1 && TALENT:変身能力 >= 0 && CONFIG_CHECK_OTHER_F(3) == 0
+	PRINTL 
+	DRAWLINE
+	;触手の虜があれば悪堕ちに、なければ洗脳に
+	IF TALENT:触手の虜 == 0
+		CFLAG:0 = 2
+		;地の文：洗脳になった
+		CALL MESSAGE_PRISON_SENNOU
+		;地の文：悪堕ちキャラが幽閉中の操作キャラを洗脳した
+		SIF CFLAG:20 == 2
+			CALL MESSAGE_OTHER_PRISON_SENNOU
+
+	ELSEIF TALENT:触手の虜 == 1
+		CFLAG:0 = 3
+		;陥落経験を加算しておく
+		EXP:陥落経験 += 1
+		;変身可能キャラならアウターが変更される
+		SIF TALENT:変身能力 == 1
+			CFLAG:41 = 401
+
+		;追加淫紋の判定・保存
+		CALL SAVE_TATTOO_ADDITIONAL
+		;地の文：悪堕ちになった
+		CALL MESSAGE_PRISON_AKUOTI
+		;地の文：悪堕ちキャラが幽閉中の操作キャラを悪堕ち
+		SIF CFLAG:20 == 2
+			CALL MESSAGE_OTHER_PRISON_AKUOTI
+	ENDIF
+
+	;ソロモードでキャラ全員が洗脳/悪堕ちになるとゲームオーバー
+	LOCAL:1 = 0
+	FOR LOCAL,0,CHARANUM
+		SIF CFLAG:LOCAL:0 == 2 || CFLAG:LOCAL:0 == 3
+			LOCAL:1 ++
+	NEXT
+	IF FLAG:0 == 2 && (CHARANUM - LOCAL:1) < 2
+		CALL ENDING_4
+		DRAWLINE
+		RETURN
+	ENDIF
+
+	PRINTFORML %STR:2500%の尖兵となった%PRINT_CALLNAME(TARGET)%に邪悪な力が流れ込む・・・
+	PRINTL 
+	;洗脳/悪堕ち時に大量の経験値が手に入る
+	CALL TENTACLE_LEVEL
+	IF CFLAG:0 == 2
+		LOCAL = 20 * (5 + ABL:レベル) + RAND:25
+	ELSEIF CFLAG:0 == 3
+		LOCAL = 40 * (5 + ABL:レベル) + RAND:50
+	ENDIF
+	SIF LOCAL < 50
+		LOCAL = 50
+	CALL GET_EXP,min(LOCAL,750)
+	;遭遇率アップ効果をリセット
+	CFLAG:23 = 0
+	PRINTW 
+;10日以上幽閉（幽閉中の被姦回数が20回以上）されていて洗脳/悪堕ちでないなら触手に取り込まれて死亡する
+ELSEIF CFLAG:31 > 20 && CFLAG:0 == 1
+	PRINTL 
+	DRAWLINE
+	CFLAG:0 = 9
+	;地の文：取り込まれ
+	CALL MESSAGE_PRISON_DEAD
+	;地の文：悪堕ちキャラが幽閉中の操作キャラを取り込んだ
+	SIF CFLAG:20 == 2
+		CALL MESSAGE_OTHER_PRISON_DEAD
+	;遭遇率アップ効果をリセット
+	CFLAG:23 = 0
+ENDIF
+
+DRAWLINE
+PRINTW 
+
+
+@CHECK_CONTAMINATION
+;汚染度は一回のコマンドで平均10~20程度の増加量なので、300あればおよそ10日耐えるという計算になる。
+LOCAL = 0
+LOCAL:1 = 260 + MIN(SQRT(MAX(BASE:性耐性基礎 - 60, 0) * 10) * 4, 340)
+LOCAL:1 -= ABL:触手中毒 * 16 + ABL:従順 * 8 + ABL:欲望 * 8 + ABL:奉仕精神 * 8 + ABL:露出癖 * 2 + ABL:マゾっ気 * 2 + ABL:精液中毒 * 4 + ABL:噴乳中毒 * 4 + ABL:射精中毒 * 4
+SIF LOCAL:1 < 160
+	LOCAL:1 = 160
+;オプションで苗床化しても陥落しにくくなる（取り込まれやすくなる）
+SIF CONFIG_CHECK_OTHER_F(2) > 0
+	LOCAL:1 += TALENT:苗床化 * 80
+;洗脳/悪堕ちしやすいの効果
+SIF FLAG:904
+	LOCAL:1 = LOCAL:1 * 3 / 4
+RETURN LOCAL:1
+

@@ -1,0 +1,174 @@
+
+;---------------------------
+;救出中判定
+;---------------------------
+@KYUSHUTU_NOW,ARG
+IF TFLAG:19 == 1
+	ARG /= 4
+ENDIF
+;---------------------------
+;油断判定
+;---------------------------
+@KYUSHUTU_YUDAN
+IF (TFLAG:19 == 1) || (FLAG:13 < (FLAG:12 / 5))
+	TFLAG:2 = 0
+	;救出中および瀕死時は油断しない	
+	RETURN 1
+ENDIF
+RETURN 0
+;---------------------------
+;いずれかのキャラが戦闘中の触手に幽閉されているか
+;---------------------------
+@PRISON_CHARA
+FOR LOCAL, 0, CHARANUM
+	SIF LOCAL == MASTER
+		CONTINUE
+	SIF FLAG:11 == CFLAG:LOCAL:21 && CFLAG:LOCAL:0 == 1
+		RETURN LOCAL
+NEXT
+RETURN -1
+
+;---------------------------------
+;救出内容
+;---------------------------------
+@COM15
+;刻印による行動制限判定　１で行動できない
+CALL ACT_LIMIT
+SIF RESULT == 1
+	RETURN 1
+
+;距離表示
+CALL PRINT_DISTANCE
+PRINTL 
+
+;地の文
+CALL MESSAGE_BATTLE_CHARA_KYUUSHUTU
+CALL ACT_HANTEI_CHARA_TO_TENTACLE_KYUUSHUTU
+IF RESULT == 1
+	;地の文：	救出成功
+	CALL MESSAGE_BATTLE_CHARA_KYUUSHUTU_SUCCESS
+	TFLAG:19 = 1
+ELSE
+	;地の文：救出失敗
+	CALL MESSAGE_BATTLE_CHARA_KYUUSHUTU_FALSE
+ENDIF
+PRINTW 
+;行動ポイントを+1
+EX:行動ポイント += 1
+
+RETURN 1
+;-----------------------------------
+;救出時間切れ判定
+;-----------------------------------
+@KYUSHUTU_TIMEUP_HANTEI
+SIF TFLAG:9 == 1
+	CALL MESSAGE_KYUUSHUTU_TIMEUP
+
+;-----------------------------------
+;救出成功判定
+;-----------------------------------
+@KYUSHUTU_SUCCESS_HANTEI
+IF TFLAG:19 == 1
+	CALL KYUSHUTU_SUCCESS
+ENDIF
+;-----------------------------------
+;救出最終成功時
+;-----------------------------------
+@KYUSHUTU_SUCCESS
+LOCAL:0 = 0
+CALL PRISON_CHARA
+SIF RESULT <0
+	RETURN 0
+LOCAL:0 = RESULT
+CALL MESSAGE_KYUUSHUTU_SUCCESS
+LOCAL:1 = TARGET
+TARGET = LOCAL:0
+;地の文：救出された側の口上
+CALL MESSAGE_ESCAPE_RESCUED
+TARGET = LOCAL:1
+LOCAL:1 = 1
+CFLAG:(LOCAL:0):0 = -1
+CFLAG:(LOCAL:0):20 = 0
+CFLAG:(LOCAL:0):21 = 0
+CFLAG:(LOCAL:0):30 = 0
+CFLAG:(LOCAL:0):31 = 0
+BASE:(LOCAL:0):体力 = 1
+BASE:(LOCAL:0):気力 = 1
+BASE:(LOCAL:0):性耐性 = 1
+
+;-----------------------------------
+;救出コマンド成功判定
+;-----------------------------------	
+@ACT_HANTEI_CHARA_TO_TENTACLE_KYUUSHUTU
+;幽閉中のキャラでなければ救出成功しない
+
+
+;キャラの体力＋気力の残量求める
+LOCAL:0 = PERCENT_CAL_F(BASE:体力 * 2 + BASE:気力, MAXBASE:体力 * 2 + MAXBASE:気力)
+
+;触手の体力残量による補正
+CALL PERCENT_CAL, FLAG:13, FLAG:12
+IF RESULT > 50
+	LOCAL:1 = 100
+ELSEIF RESULT > 25
+	LOCAL:1 = 105
+ELSE
+	LOCAL:1 = 110
+ENDIF
+
+;キャラの敏捷
+LOCAL:2 = MAXBASE:敏捷
+
+;小柄・長身なら敏捷に補正
+SIF TALENT:小柄 == 1
+	TIMES LOCAL:2, 0.90
+SIF TALENT:長身 == 1
+	TIMES LOCAL:2, 1.20
+
+;変身能力のあるキャラの補正
+LOCAL:2 = CORRECTION_TRANS(LOCAL:2)
+
+;衣装による補正
+CALL CLOTH_BATTLE_HOSEI, "BINSYOU"
+LOCAL:2 = LOCAL:2 * RESULT / 100
+
+;心境の補正
+CALL SHINKYOU_CHECK, "BINSYOU", LOCAL:2
+LOCAL:2 = RESULT
+
+;触手の敏捷
+CALL TENTACLE_ACCESS, "BINSYOU"
+LOCAL:3 = RESULT
+
+;触手の油断による補正
+SIF TFLAG:2 == 1
+	TIMES LOCAL:3, 0.50
+
+;敏捷の差による補正
+LOCAL:4 = CORRECTION_BINSYOU_F(PERCENT_CAL_F(LOCAL:2, LOCAL:3))
+
+;成功値計算
+LOCAL:5 = (LOCAL:0 / 2 + 50) * LOCAL:1 * LOCAL:4 / 10000
+;救出成功の最高値
+SIF LOCAL:5 > 50
+	LOCAL:5 = 50
+;救出成功の最低値
+SIF LOCAL:5 < 10
+	LOCAL:5 = 10
+
+IF FLAG:999 == 1
+	PRINTFORML LOCAL:0 ＝ {LOCAL:0}
+	PRINTFORML LOCAL:1 ＝ {LOCAL:1}
+	PRINTFORML LOCAL:2 ＝ {LOCAL:2}
+	PRINTFORML LOCAL:3 ＝ {LOCAL:3}
+	PRINTFORML LOCAL:4 ＝ {LOCAL:4}
+	PRINTFORML 行動成功値：{LOCAL:5}
+ENDIF
+
+IF RAND:100 < LOCAL:5
+	RETURN 1
+ELSE 
+	RETURN 0
+ENDIF
+
+RETURN RESULT

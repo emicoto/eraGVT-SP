@@ -1,0 +1,698 @@
+;==================================================
+;【基本】
+;--------------------------------------------------
+;雑魚敵
+@TENTACLE_MOB_701
+;--------------------------------------------------
+;名前
+@TENTACLE_MOB_701_GETNAME
+RESULTS = チキチキ蜂 
+
+;--------------------------------------------------
+;解説
+@TENTACLE_MOB_701_DEFENITION
+PRINTFORML （触手に寄生された大型の蜂）
+PRINTFORML （その毒針で獲物を気絶させてから）
+PRINTFORML （じっくりと繁殖を行う）
+
+
+;==================================================
+;【ステータス】
+;--------------------------------------------------
+;HP
+@TENTACLE_MOB_701_HP
+LOCAL = 750
+CALL TENTACLE_STATUS_HOSEI, LOCAL, 500
+RETURN RESULT
+
+;--------------------------------------------------
+;射精限界値
+@TENTACLE_MOB_701_SYASEI
+CALL TENTACLE_LEVEL
+LOCAL = 480 + RESULT * 5
+RETURN LOCAL
+
+;--------------------------------------------------
+;搾精ダメージ補正
+@TENTACLE_MOB_701_SAKUSEI
+LOCAL = 100
+RETURN LOCAL
+
+;--------------------------------------------------
+;油断度閾値
+@TENTACLE_MOB_701_YUDAN
+LOCAL = 250
+RETURN LOCAL
+
+;--------------------------------------------------
+;攻撃
+@TENTACLE_MOB_701_KOUGEKI
+LOCAL = 200
+CALL TENTACLE_STATUS_HOSEI, LOCAL
+RETURN RESULT
+
+;--------------------------------------------------
+;防御
+@TENTACLE_MOB_701_BOUGYO
+LOCAL = 35
+CALL TENTACLE_STATUS_HOSEI, LOCAL
+RETURN RESULT
+
+;--------------------------------------------------
+;敏捷
+@TENTACLE_MOB_701_BINSYOU
+LOCAL = 225
+CALL TENTACLE_STATUS_HOSEI, LOCAL
+RETURN RESULT
+
+;--------------------------------------------------
+;知性
+@TENTACLE_MOB_701_CHISEI
+LOCAL = 50
+CALL TENTACLE_STATUS_HOSEI, LOCAL,10
+RETURN RESULT
+
+;--------------------------------------------------
+;近距離
+@TENTACLE_MOB_701_SHORT
+RESULT = 100
+RETURN RESULT
+
+;--------------------------------------------------
+;中距離
+@TENTACLE_MOB_701_MIDDLE
+RESULT = 85
+RETURN RESULT
+
+;--------------------------------------------------
+;遠距離
+@TENTACLE_MOB_701_LONG
+RESULT = 85
+RETURN RESULT
+
+;--------------------------------------------------
+;拘束力
+@TENTACLE_MOB_701_HOLD
+RESULT = 50
+RETURN RESULT
+
+;--------------------------------------------------
+;PALAM補正 百分率で返す
+@TENTACLE_MOB_701_PALAM_HOSEI
+;快C
+LOCAL:0 = 75
+;快V
+LOCAL:1 = 75
+;快A
+LOCAL:2 = 75
+;快B
+LOCAL:3 = 75
+;潤滑
+LOCAL:4 = 25
+;恭順
+LOCAL:5 = 150
+;取得
+LOCAL:6 = 25
+;欲情
+LOCAL:7 = 25
+;屈服
+LOCAL:8 = 25
+;恥辱
+LOCAL:9 = 50
+;苦痛
+LOCAL:10 = 125
+;恐怖
+LOCAL:11 = 125
+
+RETURN LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11
+
+
+
+;==================================================
+;【専用ルーチン（戦闘）】
+;--------------------------------------------------
+@TENTACLE_MOB_701_ATTACK_ROUTINE, ARG:0, ARG:1
+LOCAL = RAND:100
+IF LOCAL < 45
+	RETURN 2
+ELSE
+	RETURN 0
+ENDIF
+
+
+
+;==================================================
+;【専用ルーチン（性行為）】
+;--------------------------------------------------
+@TENTACLE_MOB_701_SEX_ROUTINE, ARG:0, ARG:1
+
+;気絶かつ服の防御力が低い場合で、催眠姦で繁殖
+IF TCVAR:12 & 気絶 && CLOTH_OUTER_PER < 90 && CLOTH_INNER_PER < CLOTH_INNER_DEF
+	RETURN 3
+;服の防御力が低い場合で、毒針で気絶させる
+ELSEIF CLOTH_OUTER_PER < 90 && CLOTH_INNER_PER < CLOTH_INNER_DEF
+	RETURN 9
+;服のダメージが少ない間は普通の性行動
+ELSE
+	LOCAL = RAND:100
+
+	;20%以下の攻撃（アウター&インナーの防御無視、男女平等）
+	;C攻め弱
+	IF LOCAL < 20
+		RETURN 0
+
+	;40%-20%=20%の確率
+	;V攻め弱
+	ELSEIF LOCAL < 40
+		IF TALENT:オトコ > 0
+			RETURN 0
+		ELSE
+			RETURN 2
+		ENDIF
+
+	;60%-40%=20%の確率
+	;A攻め弱
+	ELSEIF LOCAL < 60
+		RETURN 4
+
+	;80%-60%=20%の確率
+	;B攻め弱
+	ELSEIF LOCAL < 80
+		RETURN 6
+
+	;100%-80%=20%の（男女平等）
+	;羞恥プレイ
+	ELSE
+		RETURN 10
+	ENDIF
+ENDIF	
+RETURN 1
+
+
+;==================================================
+;【性コマンドレファレンス】
+;--------------------------------------------------
+;ARG=1　素股焦らし成功時の行動指定
+;ARG=2　素股焦らし失敗時の行動指定
+;ARG=3　フェラチオ誘発時の行動指定
+@TENTACLE_MOB_701_REACTION_REF, ARG = 0
+IF ARG == 1
+	RETURN -1
+ELSEIF ARG == 2
+	RETURN -1
+ELSEIF ARG == 3
+	RETURN -1
+ENDIF
+RETURN -1
+
+;==================================================
+;【コマンド使用時の描写】
+;--------------------------------------------------
+;==================================================
+;【Ｃ攻め弱】
+;--------------------------------------------------
+;性コマンド分類
+@SEX_TYPE_MOB_701_COM0
+RETURN 通常
+
+@MESSAGE_MOB_701_COM0, ARG:0, ARG:1
+FONTBOLD
+PRINTL Ｃ攻め弱
+FONTREGULAR
+
+;口上
+TRYCALLFORM KOJO_{CFLAG:6}_COM0
+PRINTL 
+
+;動画撮影フラグの処理
+IF FLAG:71
+	;愛撫されたところを見られた
+	SIF (ARG & Ｃ) || (ARG & Ｖ) || (ARG & Ａ) || (ARG & Ｂ)
+		SETBIT TFLAG:21,1
+ENDIF
+@SEXCOM_OPTION_MOB_701_COM0
+;追加攻め部位指定
+RETURN 1
+
+
+
+;==================================================
+;【Ｖ攻め弱】
+;--------------------------------------------------
+;性コマンド分類
+@SEX_TYPE_MOB_701_COM2
+RETURN 通常
+
+@MESSAGE_MOB_701_COM2, ARG:0, ARG:1
+FONTBOLD
+PRINTL Ｖ攻め弱
+FONTREGULAR
+
+;口上
+TRYCALLFORM KOJO_{CFLAG:6}_COM2
+PRINTL 
+
+;動画撮影フラグの処理
+IF FLAG:71
+	;愛撫されたところを見られた
+	SIF (ARG & Ｃ) || (ARG & Ｖ) || (ARG & Ａ) || (ARG & Ｂ)
+		SETBIT TFLAG:21,1
+ENDIF
+
+
+
+;==================================================
+;【V攻め強】
+;--------------------------------------------------
+;性コマンド分類
+@SEX_TYPE_MOB_701_COM3
+RETURN 通常
+
+@MESSAGE_MOB_701_COM3, ARG:0, ARG:1
+FONTBOLD
+PRINTL チキチキ催眠姦　Ｖ挿入
+FONTREGULAR
+
+
+IF (TCVAR:12 & 気絶)
+	CALL TENTACLE_ACCESS, "NAME"
+	PRINTFORML は、気絶した%PRINT_TRANSCALLNAME(TARGET)%の頭部に帽子状の器官をかぶせ、
+	PRINTFORML 頭部と両耳を覆って密閉させた。
+	PRINTL 
+	PRINTL …プーッ、ザザザッ、キュルルルルルッ……
+	PRINTL 
+	PRINTFORML ノイズとも何かの作動音とも付かない、奇妙な音が微かに漏れる……
+	PRINTL
+	PRINTL ---
+	PRINTL ----
+	PRINTL -----
+	PRINTW
+
+	;--------------------------------------------------
+	;分岐 片思い
+	;--------------------------------------------------
+	IF TALENT:交際相手 == 1
+		PRINTFORML 「%PRINT_TRANSCALLNAME(TARGET)%、%PRINT_TRANSCALLNAME(TARGET)%」
+		PRINTFORML …呼ばれてる？そして、抱かれている？誰に？
+		PRINTFORML 
+		PRINTFORML 苦労してこじ開けた、重たい瞼の隙間に居たのは…「彼」。
+		PRINTFORML 数瞬遅れてやってきた驚きと恥じらいに慌てふためき
+		PRINTFORML 声にならない声を漏らしかけたその口は…すぐさま塞がれた。
+		PRINTFORML 
+		PRINTFORML 甘く、優しく、それでいて激しい大人のキス。
+		PRINTFORML 
+		PRINTFORML 理解が状況に追い付かないまま、硬直するばかりの%PRINT_TRANSCALLNAME(TARGET)%の肢体を
+		PRINTFORML 情け世謝なく飲み込むキスと愛撫の濁流。
+		PRINTFORML 
+		PRINTFORML 顔が、耳が、唇が、体の芯が、そして…
+		PRINTFORML 愛撫を受けた全ての場所が焼けるように熱い。
+		PRINTFORML 
+		PRINTFORML 身を焦がす情炎に思考回路をも焼き切られた%PRINT_TRANSCALLNAME(TARGET)%は
+		PRINTFORML ただただ本能の赴くままに「彼」を求めた。
+
+
+	;--------------------------------------------------
+	;【彼氏持ちor婚約or既婚者】
+	;--------------------------------------------------
+	ELSEIF TALENT:交際相手 == 2 || TALENT:交際相手 == 3 || TALENT:交際相手 == 4
+		PRINTFORML 「%PRINT_TRANSCALLNAME(TARGET)%、%PRINT_TRANSCALLNAME(TARGET)%」
+		PRINTFORML 呼びかける声に導かれ、%PRINT_TRANSCALLNAME(TARGET)%は重たい瞼を持ち上げた。
+		PRINTFORML 
+		PRINTFORM 見慣れた寝室の、布団の中の、愛しい
+		SIF TALENT:交際相手 == 2 || TALENT:交際相手 == 3
+			PRINTFORML 恋人の腕の中。
+		SIF TALENT:交際相手 == 4
+			PRINTFORML 夫の腕の中。
+		PRINTFORML 
+		PRINTFORML …あれ？敵は？
+		PRINTFORML 当然の疑問を発しようとしたその口はすぐさま塞がれた。
+		PRINTFORML 
+		PRINTFORML 甘く、優しく、それでいて激しい大人のキス。
+		PRINTFORML 
+		PRINTFORML まぁ…いいか。
+		PRINTFORML 
+		PRINTFORML 心地よい微睡みに包まれて　愛し、愛される悦びに
+		SIF TALENT:処女 > 0
+			PRINTFORML このまま初めてを捧げてしまいたい。
+		SIF TALENT:処女 <= 0
+			PRINTFORML 身も心も全て委ねてしまいたい。
+		PRINTFORML その甘い誘惑は、微かに残っていた違和感をたやすく吹き飛ばした。
+
+
+	;--------------------------------------------------
+	;【未亡人】
+	;--------------------------------------------------
+	ELSEIF TALENT:交際相手 == 5
+		PRINTFORML 「%PRINT_TRANSCALLNAME(TARGET)%、%PRINT_TRANSCALLNAME(TARGET)%」
+		PRINTFORML 呼びかける声に導かれ、%PRINT_TRANSCALLNAME(TARGET)%は重たい瞼をこじ開けた。
+		PRINTFORML 
+		PRINTFORML どこか懐かしい寝室、見覚えのある布団、そして…
+		PRINTFORML もうどこにも居ないはずの「夫」。
+		PRINTFORML 
+		PRINTFORML どうしてここに？迎えに来てくれたの？私も「同じところ」へ逝くの？
+		PRINTFORML 何て声を掛けよう？…疑問符が次々ど涌いて出る。
+		PRINTFORML …しかしその一切合切は、丸ごと飲み込まれた。
+		PRINTFORML 
+		PRINTFORML 甘く、優しく、それでいて激しい大人のキス。
+		PRINTFORML 
+		PRINTFORML ここは夢か、死後の世界なのか、分からない。
+		PRINTFORML 何が何やらさっぱりだ…だけど…「本物」だ！
+		PRINTFORML 匂いも、キスの味も、些細な仕草も、自分しか知らない彼の癖も、
+		PRINTFORML その全てが亡くして久しい「夫」そのものだった。
+		PRINTFORML 
+		PRINTFORML 求めに応えたい、いや欲しがってるのは自分だ。
+		SIF TALENT:処女 > 0
+			PRINTFORML ついに捧げる事が叶わなかった「初めて」も今ここでなら…
+		PRINTFORML 
+		PRINTFORML 大人のキスの「その先」を
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は生涯最大の素直さでもって求め、受け止めた。
+
+	ELSE
+		PRINTFORML 「%PRINT_TRANSCALLNAME(TARGET)%、おかえりなさい」
+		PRINTFORML 触手たちとの戦いに疲弊している%PRINT_TRANSCALLNAME(TARGET)%に
+		PRINTFORML 優しく声をかけて励ましてくれる ”あの人” 
+		PRINTFORML いつも、防衛拠点に帰還するたびに優しくしてくれた ”あの人”
+		PRINTFORML 
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は、そんな彼を自室に誘い
+		SIF TALENT:処女 > 0
+			PRINTFORML まだ誰の侵入を許していない身を捧げるために、
+		PRINTFORML その身を委ねるのだった。
+	ENDIF
+ENDIF
+PRINTL
+PRINTL -----
+PRINTL ----
+PRINTL ---
+PRINTW
+IF TALENT:処女 > 0
+	PRINTL 
+	PRINTL 処女喪失
+	PRINTL 
+	PRINTFORML 初めこそ漏らしていた破瓜の苦悶も何処へやら。
+	PRINTFORM 純潔を奪った
+	SETBIT CFLAG:TARGET:206,3
+
+CALL TENTACLE_ACCESS, "NAME"
+PRINTFORML に膣奥を突かれるその度に、
+IF TALENT:交際相手 == 1
+	PRINTFORM 片思いのあの人
+ELSEIF TALENT:交際相手 == 2
+	PRINTFORM 大好きな恋人
+ELSEIF TALENT:交際相手 == 3
+	PRINTFORM 将来を誓ったフィアンセ
+ELSEIF TALENT:交際相手 == 4
+	PRINTFORM 愛する夫
+ELSEIF TALENT:交際相手 == 5
+	PRINTFORM 今は無き夫
+ELSE
+	PRINTFORM 抱きとめてくれる ”あの人”
+ENDIF
+PRINTFORML の名を叫ぶ%PRINT_TRANSCALLNAME(TARGET)%。
+PRINTFORML 
+PRINTFORML 夢と完全にリンクした愛撫と抽送は
+PRINTFORML 一切の抵抗なく%PRINT_TRANSCALLNAME(TARGET)%を高みへと押し上げた。
+PRINTFORML 
+PRINTFORML 限界が迫り、一層激しく戦慄く%PRINT_TRANSCALLNAME(TARGET)%。
+PRINTFORML 求める声、膣内射精をねだる声、そして
+PRINTFORML 言葉にならない悦びの叫びが辺りに響き渡った。
+ENDIF
+
+;射精判定
+IF FLAG:15 >= FLAG:14 && TFLAG:4 > 0
+	PRINTFORML ついに限界に達した触手の根元が膨れ上がり、子宮に精液が叩きつけられた！
+	PRINTFORML ビュルビュルと無遠慮に種付けされているにも関わらず、
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は真顔で射精を迎え入れている・・・
+	PRINTW 
+ENDIF
+ 
+
+
+
+;口上
+TRYCALLFORM KOJO_{CFLAG:6}_COM3
+PRINTL 
+
+;動画撮影フラグの処理
+IF FLAG:71
+	;愛撫されたところを見られた
+	SIF (ARG & Ｃ) || (ARG & Ｖ) || (ARG & Ａ) || (ARG & Ｂ)
+		SETBIT TFLAG:21,1
+	;挿入されたところを見られた
+	SIF (ARG & Ｖ) || (ARG & Ａ)
+		SETBIT TFLAG:21,3
+ENDIF
+
+
+
+;==================================================
+;【Ａ攻め弱】
+;--------------------------------------------------
+;性コマンド分類
+@SEX_TYPE_MOB_701_COM4
+RETURN 通常
+
+@MESSAGE_MOB_701_COM4, ARG:0, ARG:1
+FONTBOLD
+PRINTL Ａ攻め弱
+FONTREGULAR
+
+;口上
+TRYCALLFORM KOJO_{CFLAG:6}_COM4
+PRINTL 
+
+;動画撮影フラグの処理
+IF FLAG:71
+	;愛撫されたところを見られた
+	SIF (ARG & Ｃ) || (ARG & Ｖ) || (ARG & Ａ) || (ARG & Ｂ)
+		SETBIT TFLAG:21,1
+ENDIF
+
+
+
+;==================================================
+;【Ｂ攻め弱】
+;--------------------------------------------------
+;性コマンド分類
+@SEX_TYPE_MOB_701_COM6
+RETURN 通常
+
+@MESSAGE_MOB_701_COM6, ARG:0, ARG:1
+FONTBOLD
+PRINTL Ｂ攻め弱
+FONTREGULAR
+
+;口上
+TRYCALLFORM KOJO_{CFLAG:6}_COM6
+PRINTL 
+
+;動画撮影フラグの処理
+IF FLAG:71
+	;愛撫されたところを見られた
+	SIF (ARG & Ｃ) || (ARG & Ｖ) || (ARG & Ａ) || (ARG & Ｂ)
+		SETBIT TFLAG:21,1
+ENDIF
+
+
+
+;==================================================
+;【針】
+;--------------------------------------------------
+;性コマンド分類
+@SEX_TYPE_MOB_701_COM9
+RETURN 通常
+
+@MESSAGE_MOB_701_COM9, ARG:0, ARG:1
+FONTBOLD
+PRINTL 毒針
+FONTREGULAR
+PRINTL 
+CALL TENTACLE_ACCESS, "NAME"
+PRINTFORML は、尻先についた謎の液体が滴る凶悪な針を%PRINT_TRANSCALLNAME(TARGET)%に突き刺した。
+PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%は毒液を注がれて、
+
+SELECTCASE RAND:3
+	CASE 0
+		CALL STATE_CHANGE_HAIRAN, 100
+	CASE 1
+		CALL STATE_CHANGE_HATUJOU, 100
+	CASE 2
+		CALL STATE_CHANGE_KIZETU, 100
+ENDSELECT
+PRINTL  
+
+
+;口上
+TRYCALLFORM KOJO_{CFLAG:6}_COM9
+PRINTL 
+
+;動画撮影フラグの処理
+IF FLAG:71
+	;愛撫されたところを見られた
+	SIF (ARG & Ｃ) || (ARG & Ｖ) || (ARG & Ａ) || (ARG & Ｂ)
+		SETBIT TFLAG:21,1
+	;口を犯されたところを見られた
+	SIF (ARG & Ｖ) == 0
+		SETBIT TFLAG:21,2
+	;挿入されたところを見られた
+	SIF (ARG & Ｖ) || (ARG & Ａ)
+		SETBIT TFLAG:21,3
+	;膣内射精されたところを見られた
+	SIF (STAIN:3 & 4)
+		SETBIT TFLAG:21,4
+	;アナルに射精されたところを見られた
+	SIF (STAIN:4 & 4)
+		SETBIT TFLAG:21,5
+	;精液ぶっかけされたところを見られた
+	SIF (STAIN:0 & 4) || (STAIN:1 & 4) || (STAIN:2 & 4)
+		SETBIT TFLAG:21,6
+	;嬲りものにされるところを見られた
+	SETBIT TFLAG:21,7
+	;絶頂したところを見られた
+	SIF NOWEX:0 + NOWEX:1 + NOWEX:2 + NOWEX:3
+		SETBIT TFLAG:21,8
+ENDIF
+
+
+
+;==================================================
+;【手淫】
+;--------------------------------------------------
+;性コマンド分類
+@SEX_TYPE_MOB_701_COM10
+RETURN 通常
+
+@MESSAGE_MOB_701_COM10, ARG:0, ARG:1
+FONTBOLD
+PRINTL チキチキ
+FONTREGULAR
+
+CALL TENTACLE_ACCESS, "NAME"
+PRINTFORML は、%PRINT_TRANSCALLNAME(TARGET)%の耳の穴の中に頭部の触覚触手を侵入させてきた
+PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は、手足を操られた手で愛撫を始めてしまった
+PRINTFORML その上、%PRINT_TRANSCALLNAME(TARGET)%の記憶を辿り
+PRINTL ---
+PRINTL ----
+PRINTL -----
+PRINTW
+CALL MESSAGE_SEX_VIDEO_SITE_Window()
+PRINTFORML
+PRINTFORML
+PRINTL -----
+PRINTL ----
+PRINTL ---
+CALL TENTACLE_ACCESS, "NAME"
+PRINTFORML は、読み取った%PRINT_TRANSCALLNAME(TARGET)%の情報を動画として配信した
+PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の秘密は、全世界に流れることとなってしまった
+
+
+
+;口上
+TRYCALLFORM KOJO_{CFLAG:6}_COM10
+PRINTL 
+
+;動画撮影フラグの処理
+IF FLAG:71
+	;愛撫されたところを見られた
+	SIF (ARG & Ｃ) || (ARG & Ｖ) || (ARG & Ａ) || (ARG & Ｂ)
+		SETBIT TFLAG:21,1
+	;口を犯されたところを見られた
+	SIF (ARG & Ｖ) == 0
+		SETBIT TFLAG:21,2
+	;挿入されたところを見られた
+	SIF (ARG & Ｖ) || (ARG & Ａ)
+		SETBIT TFLAG:21,3
+	;膣内射精されたところを見られた
+	SIF (STAIN:3 & 4)
+		SETBIT TFLAG:21,4
+	;アナルに射精されたところを見られた
+	SIF (STAIN:4 & 4)
+		SETBIT TFLAG:21,5
+	;精液ぶっかけされたところを見られた
+	SIF (STAIN:0 & 4) || (STAIN:1 & 4) || (STAIN:2 & 4)
+		SETBIT TFLAG:21,6
+	;嬲りものにされるところを見られた
+	SETBIT TFLAG:21,7
+	;絶頂したところを見られた
+	SIF NOWEX:0 + NOWEX:1 + NOWEX:2 + NOWEX:3
+		SETBIT TFLAG:21,8
+ENDIF
+
+
+
+;==================================================
+;【衣装を破く】
+;--------------------------------------------------
+;性コマンド分類
+@SEX_TYPE_MOB_701_COM14
+RETURN 通常
+
+@MESSAGE_MOB_701_COM14, ARG:0, ARG:1
+FONTBOLD
+PRINTL 衣装を破く
+FONTREGULAR
+CALL TENTACLE_ACCESS, "NAME"
+IF RAND:3 == 0
+	PRINTFORML は触手の先端から濁った色の粘液を勢いよく吐き出した！
+	PRINTFORML 異臭のする粘液が%PRINT_TRANSCALLNAME(TARGET)%の全身に降りかかり、
+	PRINTFORML 衣装がみるみる溶かされていく・・・
+	PRINTL 
+	;口上
+	TRYCALLFORM KOJO_{CFLAG:6}_SEX_COM14
+	PRINTL 
+	;状態異常：べとべと
+	CALL STATE_CHANGE_BETOBETO, 15
+ELSE
+	PRINTFORML は%PRINT_TRANSCALLNAME(TARGET)%の全身に絡まり、激しく蠢いている！
+	PRINTFORML もみくちゃにされた%PRINT_TRANSCALLNAME(TARGET)%の衣装が引き裂かれていく・・・
+	PRINTL 
+	;口上
+	TRYCALLFORM KOJO_{CFLAG:6}_SEX_COM14
+	PRINTL 
+ENDIF
+
+
+
+;==================================================
+;【絡みつく】
+;--------------------------------------------------
+@MESSAGE_BATTLE_MOB_701_KARAMITUKU
+
+CALL TENTACLE_ACCESS, "NAME"
+IF TFLAG:12 == 3
+	PRINTFORM が、%PRINT_TRANSCALLNAME(TARGET)%の近距離から飛びかかってきた！
+ELSEIF RAND:2 == 0
+	PRINTFORM が、%PRINT_TRANSCALLNAME(TARGET)%の中距離から飛びかかってきた！
+ELSE
+	PRINTFORM が、%PRINT_TRANSCALLNAME(TARGET)%の遠距離から飛びかかってきた！
+ENDIF
+PRINT （
+IF TFLAG:11 & 1
+	PRINT 近
+ELSE
+	PRINT 　
+ENDIF
+IF TFLAG:11 & 2
+	PRINT 中
+ELSE
+	PRINT 　
+ENDIF
+IF TFLAG:11 & 4
+	PRINT 遠
+ELSE
+	PRINT 　
+ENDIF
+PRINTL ）
+
+
+
+;==================================================
+;【絡みつく成功】
+;--------------------------------------------------
+@MESSAGE_BATTLE_MOB_701_KARAMITUKU_SUCCESS
+
+PRINTFORM 避けきれなかった%PRINT_TRANSCALLNAME(TARGET)%は
+CALL TENTACLE_ACCESS, "NAME"
+PRINTFORML に絡み付かれてしまった！
+
+
+

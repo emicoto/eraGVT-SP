@@ -1,0 +1,303 @@
+;追加責め関連
+;LOCAL:0 快Ｃ
+;LOCAL:1 快Ｖ
+;LOCAL:2 快Ａ
+;LOCAL:3 快Ｂ
+;LOCAL:4 潤滑
+;LOCAL:5 恭順
+;LOCAL:6 習得
+;LOCAL:7 欲情
+;LOCAL:8 屈服
+;LOCAL:9 恥情
+;LOCAL:10 苦痛
+;LOCAL:11 恐怖
+
+;追加部位決定
+;**********************************************************
+@SEX_COMEX_RANDOM, ARG, ARG:1 = 0
+;AT_RAND
+;AT_FLAG
+;SHIELDED
+;**********************************************************
+#DIM LCOUNT
+#DIM AT_RAND
+#DIM AT_FLAG
+#DIM SHIELDED, 感覚数 + 1
+
+AT_FLAG = 0
+;責める部位の決定
+FOR LCOUNT, 0, 感覚数
+	AT_RAND = 30
+
+	;レベル補正
+	CALL TENTACLE_LEVEL
+	SIF RESULT > 30
+		RESULT = 30
+	AT_RAND += RESULT
+
+	;それぞれの触手は該当部位を責める確率が高い
+	SIF LCOUNT + 1 == FLAG:11
+		AT_RAND += 25
+	;ラスボス触手は全部位を責める確率が高い
+	SIF FLAG:10
+		AT_RAND += 15
+	;判定
+	SIF RAND:100 < AT_RAND
+		SETBIT AT_FLAG, LCOUNT
+NEXT
+;固有の責めパターンがある場合
+IF ARG:1 > 0
+	AT_FLAG = ARG:1
+ELSEIF ARG:1 < 0
+	AT_FLAG = 0
+ENDIF
+
+;調教対象がオトコの場合でＶ攻めがある場合はＣ攻めかＡ攻めに変更
+IF (AT_FLAG & 2) && TALENT:オトコ > 0
+	AT_FLAG -= 2
+	IF RAND:2 == 0
+		SETBIT AT_FLAG, 0
+	ELSE
+		SETBIT AT_FLAG, 2
+	ENDIF
+ENDIF
+
+;相手が洗脳/悪堕ちで寄生されていない場合、追加責めフラグをリセット
+IF FLAG:110 && TALENT:(FLAG:111):寄生 == 0
+	AT_FLAG = 0
+	;Ｃ攻め系統でオトコでないならなら50%でＶ攻めフラグを立てる
+	SIF ARG == Ｃ && TALENT:オトコ <= 0 && RAND:2 == 0
+		SETBIT AT_FLAG, (Ｖ - 1)
+ENDIF
+
+;もともとの性コマンドもフラグを立てる
+SIF (ARG & Ｃ)
+	AT_FLAG |= Ｃ
+SIF (ARG & Ｖ) && TALENT:オトコ <= 0
+	AT_FLAG |= Ｖ
+SIF (ARG & Ａ)
+	AT_FLAG |= Ａ
+SIF (ARG & Ｂ)
+	AT_FLAG |= Ｂ
+
+;部位結界の有無の確認
+SHIELDED:感覚数 = 0
+FOR LCOUNT, 0, 感覚数
+	IF BASE:(LCOUNT + 30) > 0
+		SETBIT SHIELDED:感覚数, LCOUNT
+		SHIELDED:LCOUNT = 1
+	ELSE
+		SHIELDED:LCOUNT = 0
+	ENDIF
+NEXT
+
+;責め部位がすべて部位結界に阻まれた
+IF (AT_FLAG & ~SHIELDED:感覚数) == 0 && ARG:1 == 0
+	DO
+		AT_RAND = RAND:感覚数
+		;調教対象がオトコ
+		SIF (TALENT:オトコ > 0 && AT_RAND == 1) || SHIELDED:AT_RAND
+			AT_RAND = -1
+	LOOP AT_RAND == -1
+	SETBIT AT_FLAG, AT_RAND
+ENDIF
+
+RETURN AT_FLAG & ~SHIELDED:感覚数, AT_FLAG & SHIELDED:感覚数
+
+
+
+;追加部位責め実行
+;**********************************************************
+@SEX_COMEX, ARG:0, ARG:1, ARG:2
+;ARG:0	もともとの性コマンドが、どの部位を責めるものか（ビット）
+;	0：なし　1：Ｃ　2：Ｖ　4：Ａ　8：Ｂ
+;ARG:1	コマンドの強度（変数）
+;	0：弱　1：強　2：SP
+;ARG:2	追加責め実行部位（ビット）
+;	1：Ｃ　2：Ｖ　4：Ａ　8：Ｂ
+;AT_PART	追加責め実行部位
+;		0：Ｃ　1：Ｖ　2：Ａ　3：Ｂ　それぞれ1なら実行、2は元コマンドでの責め
+;AT_MAG		
+;SHIEDED	
+;L_VAR		
+;**********************************************************
+#DIM LCOUNT
+#DIM CAL_VAR, 2
+#DIM AT_PART, 感覚数
+#DIM AT_MAG, 感覚数
+#DIM SHIEDED, 感覚数
+#DIM L_VAR, 15
+
+;ローカル変数の初期化
+VARSET L_VAR:LCOUNT
+
+;責め状況をローカル変数に取得
+CAL_VAR:0 = 1
+FOR LCOUNT, 0, 感覚数
+	IF ARG:2 & CAL_VAR:0
+		AT_PART:LCOUNT = 1
+		AT_MAG:LCOUNT = 100
+	ELSE
+		AT_PART:LCOUNT = 0
+	ENDIF
+	IF BASE:(LCOUNT + 30) > 0
+		SHIEDED:LCOUNT = 1
+	ELSE
+		SHIEDED:LCOUNT = 0
+	ENDIF
+	CAL_VAR:0 *= 2
+NEXT
+
+;元の性コマンド部位
+FOR LCOUNT, 0, 感覚数
+	IF ARG:0 & POWER(2, LCOUNT)
+		AT_PART:LCOUNT = 2
+		AT_MAG:LCOUNT = 200
+	ENDIF
+NEXT
+
+;部位結界・箇所数による倍率の変化
+;CAL_VAR:0	阻まれた倍率の総量
+;CAL_VAR:1	通った責めの数
+CAL_VAR:0 = 0
+CAL_VAR:1 = 0
+FOR LCOUNT, 0, 感覚数
+	;箇所数に応じて軽減
+	SIF AT_PART:0 + AT_PART:1 + AT_PART:2 + AT_PART:3 > 2
+		AT_MAG:LCOUNT = AT_MAG:LCOUNT * (130 - (AT_PART:0 + AT_PART:1 + AT_PART:2 + AT_PART:3) * 15) / 100
+
+	IF AT_PART:LCOUNT
+		IF SHIEDED:LCOUNT
+			CAL_VAR:0 += AT_MAG:LCOUNT
+		ELSE
+			CAL_VAR:1 += 1
+		ENDIF
+	ENDIF
+NEXT
+
+FOR LCOUNT, 0, 感覚数
+	IF AT_PART:LCOUNT > 0
+		;各快追加ベース
+		IF LCOUNT != 2
+			IF ABL:LCOUNT == 0
+				L_VAR:LCOUNT = 400
+			ELSEIF ABL:LCOUNT == 1
+				L_VAR:LCOUNT = 1000
+			ELSEIF ABL:LCOUNT == 2
+				L_VAR:LCOUNT = 2000
+			ELSEIF ABL:LCOUNT == 3
+				L_VAR:LCOUNT = 4000
+			ELSEIF ABL:LCOUNT == 4
+				L_VAR:LCOUNT = 6000
+			ELSEIF ABL:LCOUNT >= 5
+				L_VAR:LCOUNT = 8000
+			ENDIF
+		ELSE
+			;快A　感覚が低いうちは少なめ
+			IF ABL:LCOUNT == 0
+				L_VAR:LCOUNT = 40
+			ELSEIF ABL:LCOUNT == 1
+				L_VAR:LCOUNT = 400
+			ELSEIF ABL:LCOUNT == 2
+				L_VAR:LCOUNT = 1000
+			ELSEIF ABL:LCOUNT == 3
+				L_VAR:LCOUNT = 2000
+			ELSEIF ABL:LCOUNT == 4
+				L_VAR:LCOUNT = 4000
+			ELSEIF ABL:LCOUNT >= 5
+				L_VAR:LCOUNT = 10000
+			ENDIF
+		ENDIF
+
+	;阻まれた分の倍率を通った箇所に加算
+	AT_MAG:LCOUNT += CAL_VAR:0 / CAL_VAR:1
+	;部位倍率適用
+	L_VAR:LCOUNT = L_VAR:LCOUNT * AT_MAG:LCOUNT / 100
+	ENDIF
+NEXT
+
+;各部位ごとの処理
+;Ｃ
+IF AT_PART:0 == 1
+	;ペニス持ちには効果大
+	SIF TALENT:オトコ > 0 || TALENT:ふたなり > 0
+		L_VAR:0 += 100
+ENDIF
+
+;Ｖ
+IF AT_PART:1 == 1
+;Ｖ防御効果
+	SIF TCVAR:2 == 体勢：Ｖ防御
+		L_VAR:1 /= 4
+
+;Ｖ経験+1
+	SIF SHIEDED:1 == 0
+		EXP:Ｖ経験 += 1
+
+;処女だと恐怖が少し入る
+	CAL_VAR:0 = 0
+	IF TALENT:処女 > 0
+		IF ABL:Ｖ感覚 == 0
+			CAL_VAR:0 = 200
+		ELSEIF ABL:Ｖ感覚 == 1
+			CAL_VAR:0 = 100
+		ELSEIF ABL:Ｖ感覚 == 2
+			CAL_VAR:0 = 20
+		ENDIF
+	ENDIF
+	SIF SHIEDED:1
+		CAL_VAR:0 /= 2
+	L_VAR:11 += CAL_VAR:0
+
+ENDIF
+
+;Ａ
+IF AT_PART:2 == 1
+;Ａ経験+1
+	SIF SHIEDED:2 == 0
+		EXP:Ａ経験 += 1
+
+;感覚と潤滑が低いと苦痛が入る
+	CAL_VAR:0 = 0
+	IF ABL:Ａ感覚 < 3
+		IF PALAM:潤滑 < 100
+			CAL_VAR:0 += 1000
+		ELSEIF PALAM:潤滑 < 10000
+			CAL_VAR:0 += 100
+		ELSE
+			CAL_VAR:0 += 10
+		ENDIF
+	ELSE
+		IF PALAM:潤滑 < 100
+			CAL_VAR:0 += 100
+		ELSEIF PALAM:潤滑 < 10000
+			CAL_VAR:0 += 10
+		ELSE
+		ENDIF
+	ENDIF
+	SIF SHIEDED:2 == 0
+		L_VAR:10 += CAL_VAR:0
+
+;感覚が低いと恐怖が入る
+	CAL_VAR:0 = 0
+	IF ABL:Ａ感覚 == 0
+		CAL_VAR:0 += 1000
+	ELSEIF ABL:Ａ感覚 == 1
+		CAL_VAR:0 += 500
+	ELSEIF ABL:Ａ感覚 == 2
+		CAL_VAR:0 += 200
+	ELSE
+	ENDIF
+	SIF SHIEDED:2
+		CAL_VAR:0 /= 2
+	L_VAR:11 += CAL_VAR:0
+
+ENDIF
+
+;Ｂ
+IF AT_PART:3 == 1
+;該当処理なし
+
+ENDIF
+
+RETURN L_VAR:0, L_VAR:1, L_VAR:2, L_VAR:3, L_VAR:4, L_VAR:5, L_VAR:6, L_VAR:7, L_VAR:8, L_VAR:9, L_VAR:10, L_VAR:11

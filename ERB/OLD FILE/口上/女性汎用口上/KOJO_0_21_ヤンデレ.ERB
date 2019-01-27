@@ -1,0 +1,2116 @@
+;◆このファイルについて
+;当ファイルは不足している口上の補完のために用意された本体の付属品です。
+;誤字修正や加筆は誰でもウェルカムですが、別の口上として改変/再配布する際はファイルをコピーし、
+;リネームすることを推奨します（defaultとあると混乱するため）。
+;作成者　Ｔの人
+;
+;◆ライセンス表記
+;改変/再配布を認めますが、商業利用は全面禁止です。その際はこのライセンス表記をreadmeなど目につく場所にコピーし、改変/再配布物である旨を明記してください。
+;改変/再配布を行った後のファイルであっても、当ファイルの延長線上にある限りは商業利用禁止です。
+;--------------------------------------------------
+
+;一口メッセージ
+;ヤンデレ口上　仲間のうち一人を狙っているクレイジーサイコレズ。最初は単なる（過剰な）仲間思いだったのが、だんだん壊れていく。
+;　　　　　　　病みの要素を増やしたら無感情かつバトルジャンキーなイメージになってしまった。自分の刻印ではなく思い人の刻印を参照する。
+
+;CFLAG:279 意中相手の固有番号
+;CFLAG:280 意中相手の現在位置
+
+;ヤンデレ専用サーチ処理
+;--------------------------------------------------
+@YANDERE_SEARCH
+;対象サーチ
+CFLAG:280 = 0
+FOR LOCAL,0,CHARANUM
+	SIF CFLAG:LOCAL:240 == CFLAG:279
+		CFLAG:280 = LOCAL
+NEXT
+
+;キャラ個別のオープニング
+;--------------------------------------------------
+@KOJO_0_FIRST_21
+CALL YANDERE_SEARCH
+;ソロモードの場合
+IF FLAG:0 == 2
+	RETURN
+;娘口上の場合
+ELSEIF CFLAG:231
+	RETURN
+ELSEIF CFLAG:280 == 0
+	;まずは思い人を決めよう
+	CALL LB
+	PRINTFORML %CALLNAME%の思い人を選択してください。
+	FOR LOCAL, 0, CHARANUM
+		SIF LOCAL == MASTER || LOCAL == TARGET
+			CONTINUE
+		VARSET RESULTS
+		CALL GET_RELATION, TARGET, LOCAL
+		PRINTFORML 　[{LOCAL}] %NAME:LOCAL, 24,LEFT%　%RESULTS%
+	NEXT
+	PRINTFORML [99]ランダム
+	$INPUT_LOOP
+	INPUT
+	IF RESULT >= 0 && RESULT <= CHARANUM && RESULT != MASTER && RESULT != TARGET
+		CFLAG:279 = RESULT
+	ELSEIF RESULT == 99
+		$LOOP_0
+		CFLAG:279 = (RAND:(CHARANUM - 1) + 1)
+		SIF CFLAG:279 == 0 || CFLAG:279 == CFLAG:240
+			GOTO LOOP_0
+	ELSE
+		GOTO INPUT_LOOP
+	ENDIF
+	;相手の名前を心に刻みつけよう
+	CSTR:20 = %CALLNAME:(CFLAG:279)%
+	CALL YANDERE_SEARCH
+	DRAWLINE
+	PRINTFORML オープニング：『%CALLNAME%』の場合
+	PRINTW 
+	PRINTFORML 「%SELF_CALL()%ね、%CSTR:20%ちゃんのことが好き……」
+	PRINTFORML  唐突な%CALLNAME%の言葉に、%CALLNAME:(CFLAG:280)%は面食らった。
+	PRINTW 
+	PRINTFORML  好きというのはどういうことか、友達としてかと聞くと、
+	PRINTW 
+	PRINTFORML 「嫌だなあ、好きって、もちろん愛してるって意味だよ」
+	PRINTW 
+	PRINTFORMW 「今までずっと言えなかったんだけど、やっぱり思いは伝えておこうと思って」
+	PRINTFORMW 「これからは%CSTR:20%ちゃんのことは、%SELF_CALL()%が守ってあげるからね」
+	PRINTFORMW 「%SELF_CALL()%が戦うのも、全部%CSTR:20%ちゃんのためだから！%CSTR:20%ちゃんに近づく悪い奴は、%SELF_CALL()%が全部退治するから！」
+	PRINTFORMW 「だから%CSTR:20%ちゃんは安心して良いんだよ？」
+	PRINTFORMW  素敵な笑みを浮かべて%CALLNAME%は言う。
+	PRINTL 
+	IF SEIKAKU_CHECK_F(CFLAG:280) == 21
+		IF CFLAG:(CFLAG:280):280 == TARGET
+			PRINTFORML  その言葉に、%CALLNAME:(CFLAG:280)%は素直に嬉しそうにしている……
+		ELSE
+			PRINTFORML  その言葉に、%CALLNAME:(CFLAG:280)%は動じた様子もない……
+		ENDIF
+	ELSE
+		PRINTFORML  なんとか『ありがとう』といった返答で誤魔化した%CALLNAME:(CFLAG:280)%だったが、
+		PRINTFORML  背筋に何やら冷たいものを感じずには居られなかった……
+	ENDIF
+	CFLAG:279 = CFLAG:(CFLAG:279):240
+	PRINTW 
+ENDIF
+
+;ターン終了時の処理
+;--------------------------------------------------
+@KOJO_0_TURNEND_21
+;ソロモードの場合
+IF FLAG:0 == 2
+	RETURN
+;娘口上の場合
+ELSEIF CFLAG:231
+	RETURN
+ELSE
+	CALL YANDERE_SEARCH
+ENDIF
+
+
+;ショップ画面
+;--------------------------------------------------
+@KOJO_0_HITOKUTI_SHOP_21
+;ソロモードの場合
+IF FLAG:0 == 2
+	RETURN
+;娘口上の場合
+ELSEIF CFLAG:231
+	RETURN
+ELSE
+	CALL YANDERE_SEARCH
+	;体力が少ない場合
+	IF BASE:体力 <= 500
+		PRINTFORML 「%CSTR:20%ちゃんのために、少し休んでおかなきゃ」
+		PRINTFORML  %CALLNAME%は疲れが溜まっているようだ。
+	;思い人が死亡、洗脳、悪堕ち
+	ELSEIF CFLAG:(CFLAG:280):0 == 9 || CFLAG:(CFLAG:280):0 == 2 || CFLAG:(CFLAG:280):0 == 3
+		SELECTCASE RAND:3
+			CASE 0
+				PRINTFORML 「%CSTR:20%ちゃん、%CSTR:20%ちゃん、%CSTR:20%ちゃん」
+				PRINTFORML 「%CSTR:20%%CSTR:20%%CSTR:20%%CSTR:20%%CSTR:20%――」
+				PRINTFORML  %CALLNAME%は虚ろな目で%CALLNAME:(CFLAG:280)%の名前を呟き続けている……。
+			CASE 1
+				PRINTFORML 「あはは、%CSTR:20%ちゃん、そんなところに居たんだ――」
+				PRINTFORML  %CALLNAME%は血走った目をしながら壁に話しかけている……。
+			CASE 2
+				PRINTFORML 「%CSTR:20%ちゃんが負けるはずない、だからアレは偽物だ、偽物なんだ」
+				PRINTFORML 「本物を探さなきゃ、本物の%CSTR:20%ちゃんはどこだ、どこで間違えた――」
+				PRINTFORML  %CALLNAME%は狂乱状態で部屋のゴミ袋を漁っている……。
+		ENDSELECT
+	;思い人が幽閉
+	ELSEIF CFLAG:(CFLAG:280):0 == 1
+		SELECTCASE RAND:5
+			CASE 0
+				PRINTFORML 「どうしよう、%CSTR:20%ちゃんが汚されちゃう、汚されちゃうよお…！」
+				PRINTFORML  %CALLNAME%は半狂乱になっている……。
+			CASE 1
+				PRINTFORML 「%CSTR:20%ちゃんのこと、守るって言ったのに、絶対守るって約束したのに！！」
+				PRINTFORML  %CALLNAME%の部屋から悲痛な叫びが聞こえる……。
+			CASE 2
+				PRINTFORML 「%CSTR:20%ちゃん、どこに行っちゃったの？」
+				PRINTFORML  %CALLNAME%は%CALLNAME:(CFLAG:280)%を探して彷徨っている……。
+			CASE 3
+				PRINTFORML 「もっと真剣に探しなさいよッ！　%CSTR:20%ちゃんを助けられなかったら、アンタを許さないッ」
+				PRINTFORML  %CALLNAME%は周囲に当たり散らしている……。
+			CASE 4
+				PRINTFORML 「早くしなきゃ%CSTR:20%ちゃんが……！」
+				PRINTFORML  %CALLNAME%は焦燥感に駆られている。
+		ENDSELECT
+	;思い人が生存
+	ELSE
+		SELECTCASE RAND:7
+			CASE 0
+				PRINTFORML 「%CSTR:20%ちゃんのために頑張らなきゃ」
+				PRINTFORML  %CALLNAME%は張り切っている。
+			CASE 1
+				PRINTFORML 「ああ…　今日も%CSTR:20%ちゃんは可愛いなぁ」
+				PRINTFORML  %CALLNAME%は恍惚としている。
+			CASE 2
+				PRINTFORML 「ねえ%CSTR:20%ちゃん、今日の予定、空いてるよね？」
+				PRINTFORML  %CALLNAME%は目を輝かせている。
+			CASE 3
+				PRINTFORML 「%CSTR:20%ちゃんと一緒に戦えるなんて、幸せ……」
+				PRINTFORML  %CALLNAME%は恍惚としている。
+			CASE 4
+				PRINTFORML 「%CSTR:20%ちゃん、なんでそんな奴と一緒に居んの？」
+				PRINTFORML  %CALLNAME%は冷たい目つきをしている。
+			CASE 5
+				PRINTFORML 「%CSTR:20%ちゃんさえ居てくれれば、他に何もいらない……」
+				PRINTFORML  %CALLNAME%は%CALLNAME:(CFLAG:280)%を見守っている。
+			CASE 6
+				PRINTFORML 「%SELF_CALL()%は%CSTR:20%ちゃんのものだから……」
+				PRINTFORML  %CALLNAME%は%CALLNAME:(CFLAG:280)%を見守っている。
+		ENDSELECT
+	ENDIF
+	PRINTL 
+ENDIF
+
+;鍛錬
+
+;走りこみ
+;--------------------------------------------------
+@KOJO_0_TRAINING_HASHIRI_21
+PRINTFORML 「………。」
+PRINTFORML  %CALLNAME%は息を乱す様子も無く走り続けている。
+
+;精神鍛錬
+;--------------------------------------------------
+@KOJO_0_TRAINING_SEISHIN_21
+PRINTFORML 「つッ、割と本気で殴って来るねぇ」
+PRINTFORML  %CALLNAME%は打撃を受ける訓練を無表情でこなしている。
+
+;瞑想
+;--------------------------------------------------
+@KOJO_0_TRAINING_MEISOU_21
+PRINTFORML 「（――%CSTR:20%ちゃんの耳、%CSTR:20%ちゃんの唇、%CSTR:20%ちゃんの睫毛――）」
+PRINTFORML  一見して%CALLNAME%は瞑想しているように見えるが、その心中には嵐が渦巻いている。
+
+;筋トレ
+;--------------------------------------------------
+@KOJO_0_TRAINING_KINTORE_21
+PRINTFORML 「悪い触手を倒すためには必要なことだから」
+PRINTFORML  %CALLNAME%は驚異的な速度でトレーニングメニューをこなしている。
+
+;自衛訓練
+;--------------------------------------------------
+@KOJO_0_TRAINING_JIEI_21
+PRINTFORML 「訓練なのにっ、殺気の籠められてる弾って、素敵ねッ！」
+PRINTFORML  %CALLNAME%は一発もゴム弾を喰らうことなく、訓練用弾幕を避わしていく。
+
+;ダッシュ
+;--------------------------------------------------
+@KOJO_0_TRAINING_DASH_21
+PRINTFORML 「………ッ！」
+PRINTFORML  %CALLNAME%は次々と好タイムを出し続けている。
+
+;近距離戦闘訓練
+;--------------------------------------------------
+@KOJO_0_TRAINING_SHORT_21
+PRINTFORML 「あはは、お人形遊びは好きだよ」
+PRINTFORML  %CALLNAME%が訓練用の標的を薙ぎ倒していく……
+
+;中距離戦闘訓練
+;--------------------------------------------------
+@KOJO_0_TRAINING_MIDDLE_21
+PRINTFORML 「こんなのより、早く%CSTR:20%ちゃんと遊びに行きたい……」
+PRINTFORML  %CALLNAME%は射撃訓練を行っている。
+
+;遠距離戦闘訓練
+;--------------------------------------------------
+@KOJO_0_TRAINING_LONG_21
+PRINTFORML 「射撃は好きじゃないないんだよね～、痙攣が楽しめないから」
+PRINTFORML  そう言いながら%CALLNAME%は正確に急所を狙った射撃を繰り返している……
+
+;戦術研究
+;--------------------------------------------------
+@KOJO_0_TRAINING_TACTICS_21
+PRINTFORML 「………。」
+PRINTFORML  %CALLNAME%は無言で触手の生態についての本を読破している。
+
+;触手拘束具が鍛錬の邪魔をする
+;--------------------------------------------------
+@KOJO_0_TRAINING_TENTACLECLOTH_21
+PRINTFORML  %CALLNAME%に取りついた触手が訓練中に蠢く。
+PRINTFORML  ぬっぷむっぷと卑猥な音と共に責め立てられても%CALLNAME%は動じる気配を見せないが、
+PRINTFORML  その頬はかすかに朱に染まっている……
+
+;触手と遭遇
+
+;ザコ触手と戦闘
+;--------------------------------------------------
+@KOJO_0_ENCOUNT_MOB_21
+SELECTCASE RAND:5
+	CASE 0
+		PRINTFORML 「バラバラにするのってさ、楽しいよね！」
+	CASE 1
+		PRINTFORML 「――邪魔だよ？」
+	CASE 2
+		PRINTFORML 「うーん、加減を間違えたかな」
+	CASE 3
+		PRINTFORML 「もうイッちゃったの？　――だらしない」
+	CASE 4
+		PRINTFORML 「はぁ、粉々になっちゃった」
+ENDSELECT
+PRINTFORML  %CALLNAME%の吐息は熱く、その声は氷よりも冷たく響く……。
+
+
+;ボス触手と戦闘
+;--------------------------------------------------
+@KOJO_0_ENCOUNT_BOSS_21
+;ソロモードの場合
+IF FLAG:0 == 2
+	RETURN
+;娘口上の場合
+ELSEIF CFLAG:231
+	RETURN
+ELSE
+	CALL YANDERE_SEARCH
+	CALL TENTACLE_SURVIVE,"NUM"
+	;思い人が死亡、洗脳、悪堕ち
+	IF CFLAG:(CFLAG:280):0 == 9 || CFLAG:(CFLAG:280):0 == 2 || CFLAG:(CFLAG:280):0 == 3
+		SELECTCASE RAND:4
+			CASE 0
+				PRINTFORML 「%CSTR:20%ちゃん、どこ――」
+				PRINTFORML 「どこに居るの――」
+				PRINTFORML  涙を流しながら彷徨う%CALLNAME%の様子は、儚げで今にも崩れ落ちそうだ……
+			CASE 1
+				PRINTFORML 「殺す」
+				PRINTFORML 「殺す殺す殺す殺殺殺殺殺――」
+				PRINTFORML  壊れたように感情を溢れさせる%CALLNAME%が武器を振りかざしながら襲い掛かった……！
+			CASE 2
+				PRINTFORML 「――返せっ、今すぐ%CSTR:20%ちゃんを返せぇぇえええっッッ！！」
+				PRINTFORML  溢れる激情の慟哭を上げ、%CALLNAME%は武器を振りかざしながら襲い掛かった……！
+			CASE 3
+				PRINTFORML 「%CSTR:20%ちゃんをぉぉおおッ、何処へやっタぁぁァァアアァァッッ！！」
+				PRINTFORML  溢れる激情の慟哭を上げ、%CALLNAME%は武器を振りかざしながら襲い掛かった……！
+		ENDSELECT
+	;思い人が幽閉
+	ELSEIF CFLAG:(CFLAG:280):0 == 1
+		PRINTFORML 「%CSTR:20%ちゃん、助けに来たよ――」
+		PRINTFORML  ポツリと囁かれる言葉、そしてカッと見開かれる%CALLNAME%の両目が、
+		PRINTFORML  触手に憎悪の眼差しを向ける。
+		SELECTCASE RAND:4
+			CASE 0
+				PRINTFORML 「――まずはその汚い肉塊を焼き尽くして、たっぷり後悔させてあげなくちゃ」
+				PRINTFORML  感情を抑えた冷たい声で言い放ち、%CALLNAME%は武器を振りかざしながら襲い掛かった……！
+			CASE 1
+				PRINTFORML 「――辛かったよね？　でもね、コイツはもっと苦しむの――」
+				PRINTFORML 「もっと、もっと、もっともっともっともっと――」
+				PRINTFORML  溢れる激情とは裏腹に、%CALLNAME%は無表情に武器を振りかざしながら襲い掛かった……！
+			CASE 2
+				PRINTFORML 「――どの辺りに居るのかな。早く連れ出してお風呂に入れてあげないと」
+				PRINTFORML 「あはは、まあいいや。切り抜いていけばすぐ分かるし、どうせ全部刻むんだから関係ないよね？」
+				PRINTFORML  %CALLNAME%の口元が歪んだ笑みを形作り、武器を振りかざしながら襲い掛かった……！
+			CASE 3
+				PRINTFORML 「――守るって約束、今から果たせばまだ間に合うよね？」
+				PRINTFORML  壊れた笑みを浮かべる%CALLNAME%が、武器を振りかざしながら襲い掛かった……！
+		ENDSELECT
+	;思い人が触手の虜取得後
+	ELSEIF TALENT:(CFLAG:280):触手の虜
+		SELECTCASE RAND:4
+			CASE 0
+				PRINTFORML 「最近%CSTR:20%ちゃんの様子がおかしいのは、あなたのせいだよね？」
+			CASE 1
+				PRINTFORML 「%CSTR:20%ちゃんは%SELF_CALL()%だけを見ていればいい、あなたみたいな化け物はお呼びじゃないの」
+			CASE 2
+				PRINTFORML 「まさか泥棒猫どもではなくて、こんな化け物に%CSTR:20%ちゃんを取られるなんてねぇ、アハハハ」
+			CASE 3
+				PRINTFORML 「大丈夫だよ、絶対に死なないよう解剖してあげるからね」
+		ENDSELECT
+		PRINTFORML  明らかに異常な%CALLNAME%の雰囲気に、触手は戸惑ったような反応を見せている……
+	;思い人の快楽刻印
+	ELSEIF MARK:(CFLAG:280):快楽刻印 > RAND:3
+		PRINTFORML 「%CSTR:20%ちゃんに悪いことした触手チ○ポは、どれかなぁ？」
+		PRINTFORML 「羨ましいなあ、殺しちゃいたいくらい」
+		PRINTFORML  殺気を隠そうともしない%CALLNAME%に触手がたじろぐ。
+	;思い人の苦痛、恐怖刻印
+	ELSEIF (MARK:(CFLAG:280):苦痛刻印 + MARK:(CFLAG:280):恐怖刻印 + 1)/2 > RAND:2
+		PRINTFORML 「%CSTR:20%ちゃんを苦しめたあなたたちには、罰を与えなきゃね」
+		PRINTFORML 「覚悟なんてしなくていいよ。苦しんで、死ね」
+		PRINTFORML  殺気を隠そうともしない%CALLNAME%に触手がたじろぐ。
+	;最初のボス戦
+	ELSEIF (FLAG:3 - RESULT) == 0
+		PRINTFORML 「――ふうん」
+		PRINTFORML 「放っておいたら%CSTR:20%ちゃんの害になるから、駆除だね」
+		PRINTFORML  %CALLNAME%は自然な動作で武器を抜き放ち、無表情に触手に近づいていく……
+	;出産経験
+	ELSEIF EXP:出産経験 && RAND:2 == 0
+		PRINTFORML 「別に気にしてないよ」
+		PRINTFORML 「産んであげたぶん、殺してあげないと」
+		PRINTFORML  そう呟きながら、%CALLNAME%は武器を抜き放った。
+	;快楽刻印
+	ELSEIF MARK:快楽刻印 > RAND:4
+		PRINTFORML 「触手チ○ポで%SELF_CALL()%を愛してくれるなんて、健気で良い子だよね」
+		PRINTFORML 「でもごめんね、%SELF_CALL()%好きな人が居るから」
+		PRINTFORML 「せめて%SELF_CALL()%の思い出にしてあげるね」
+		PRINTFORML  殺気を隠そうともしない%CALLNAME%に触手がたじろぐ。
+	;苦痛、恐怖刻印
+	ELSEIF (MARK:苦痛刻印 + MARK:恐怖刻印 + 1)/2 > RAND:3
+		PRINTFORML 「痛かったなぁ、すごく痛かった」
+		PRINTFORML 「そんなに愛されちゃうと、困っちゃうんだけど、%SELF_CALL()%」
+		PRINTFORML  殺気を隠そうともしない%CALLNAME%に触手がたじろぐ。
+	ELSE
+		SELECTCASE RAND:5
+			CASE 0
+				PRINTFORML 「ついでだけど、この街も守ってあげる」
+			CASE 1
+				PRINTFORML 「皆を守るのが、%CSTR:20%ちゃんの望みだから」
+			CASE 2
+				PRINTFORML 「大丈夫、怖くないよ。死ぬのって一瞬しか楽しめないから」
+			CASE 3
+				PRINTFORML 「%CSTR:20%ちゃんに近づく悪い触手チ○ポは、全部切り落とさなきゃ」
+			CASE 4
+				PRINTFORML 「%CSTR:20%ちゃんの害になるものは、何だろうと許さない」
+		ENDSELECT
+		PRINTFORML  %CALLNAME%は相手に視線を固定し、武器を抜き放った。
+	ENDIF
+ENDIF
+
+;ラスボス触手と戦闘
+;--------------------------------------------------
+@KOJO_0_ENCOUNT_LASTBOSS_21
+;ソロモードの場合
+IF FLAG:0 == 2
+	RETURN
+;娘口上の場合
+ELSEIF CFLAG:231
+	RETURN
+ELSE
+	CALL YANDERE_SEARCH
+	;思い人が死亡、洗脳、悪堕ち
+	IF CFLAG:(CFLAG:280):0 == 9 || CFLAG:(CFLAG:280):0 == 2 || CFLAG:(CFLAG:280):0 == 3
+		SELECTCASE RAND:4
+			CASE 0
+				PRINTFORML 「%CSTR:20%ちゃん、どこに居るの――」
+				PRINTFORML  涙を流しながら佇む%CALLNAME%の様子は、儚げで今にも崩れそうだ……
+			CASE 1
+				PRINTFORML 「殺す」
+				PRINTFORML 「殺す殺す殺す殺殺殺殺殺――」
+				PRINTFORML  壊れたように感情を溢れさせる%CALLNAME%が武器を振りかざしながら襲い掛かった……！
+			CASE 2
+				PRINTFORML 「――返せっ、今すぐ%CSTR:20%ちゃんを返せぇぇえええっッッ！！」
+				PRINTFORML  溢れる激情の慟哭を上げ、%CALLNAME%は武器を振りかざしながら襲い掛かった……！
+			CASE 3
+				PRINTFORML 「%CSTR:20%ちゃんをぉぉおおッ、何処へやっタぁぁァァアアァァッッ！！」
+				PRINTFORML  溢れる激情の慟哭を上げ、%CALLNAME%は武器を振りかざしながら襲い掛かった……！
+		ENDSELECT
+	;思い人が幽閉
+	ELSEIF CFLAG:(CFLAG:280):0 == 1
+		PRINTFORML 「%CSTR:20%ちゃん、助けに来たよ――」
+		PRINTFORML  ポツリと囁かれる言葉、そしてカッと見開かれる%CALLNAME%の両目が、
+		PRINTFORML  触手に憎悪の眼差しを向ける。
+		SELECTCASE RAND:4
+			CASE 0
+				PRINTFORML 「――まずはその汚い肉塊を焼き尽くして、たっぷり後悔させてあげなくちゃ」
+				PRINTFORML  感情を抑えた冷たい声で言い放ち、%CALLNAME%は武器を振りかざしながら襲い掛かった……！
+			CASE 1
+				PRINTFORML 「――辛かったよね？　でもね、コイツはもっと苦しむの――」
+				PRINTFORML 「もっと、もっと、もっともっともっともっと――」
+				PRINTFORML  溢れる激情とは裏腹に、%CALLNAME%は無表情に武器を振りかざしながら襲い掛かった……！
+			CASE 2
+				PRINTFORML 「――どの辺りに居るのかな。早く連れ出してお風呂に入れてあげないと」
+				PRINTFORML 「あはは、まあいいや。切り抜いていけばすぐ分かるし、どうせ全部刻むんだから関係ないよね？」
+				PRINTFORML  %CALLNAME%の口元が歪んだ笑みを形作り、武器を振りかざしながら襲い掛かった……！
+			CASE 3
+				PRINTFORML 「――守るって約束、今から果たせばまだ間に合うよね？」
+				PRINTFORML  壊れた笑みを浮かべる%CALLNAME%が、武器を振りかざしながら襲い掛かった……！
+		ENDSELECT
+	;出産経験
+	ELSEIF EXP:出産経験 && RAND:2 == 0
+		PRINTFORML 「別に気にしてないよ」
+		PRINTFORML 「産んであげたぶん、殺してあげないと」
+		PRINTFORML  そう呟きながら、%CALLNAME%は武器を抜き放った。
+	;快楽刻印
+	ELSEIF MARK:快楽刻印 > RAND:4
+		PRINTFORML 「触手チ○ポで%SELF_CALL()%を愛してくれるなんて、健気で良い子だよね」
+		PRINTFORML 「まあ結局殺すんだけどね」
+		PRINTFORML  殺気を隠そうともしない%CALLNAME%に触手がたじろぐ。
+	;苦痛、恐怖刻印
+	ELSEIF (MARK:苦痛刻印 + MARK:恐怖刻印 + 1)/2 > RAND:3
+		PRINTFORML 「痛かったなぁ、すごく痛かった」
+		PRINTFORML 「そんなに愛されちゃうと、困っちゃうんだけど、%SELF_CALL()%」
+		PRINTFORML  殺気を隠そうともしない%CALLNAME%に触手がたじろぐ。
+	ELSE
+		SELECTCASE RAND:5
+			CASE 0
+				PRINTFORML 「これが最後ってことは、全力で楽しまなくちゃね？」
+			CASE 1
+				PRINTFORML 「こいつさえ倒せば、もう%CSTR:20%ちゃんは安全だよね」
+			CASE 2
+				PRINTFORML 「触手の王様かあ。どれだけ血、出るかなあ」
+			CASE 3
+				PRINTFORML 「王様って言う割には、貧相な触手チ○ポだね」
+			CASE 4
+				PRINTFORML 「%CSTR:20%ちゃん、見ていて――」
+		ENDSELECT
+		PRINTFORML  %CALLNAME%は無造作に武器を抜き放ち、躊躇の無い動作で襲い掛った……！
+	ENDIF
+ENDIF
+
+;初めて洗脳キャラと対峙した
+;--------------------------------------------------
+@KOJO_0_ENCOUNT_SENNOU_FIRST_21
+;ソロモードの場合
+IF FLAG:0 == 2
+	RETURN
+;娘口上の場合
+ELSEIF CFLAG:231
+	RETURN
+ELSE
+	CALL YANDERE_SEARCH
+	;相手が思い人
+	IF FLAG:111 == CFLAG:280 && FLAG:110
+		PRINTFORML 「――%CSTR:20%ちゃん――！！」
+		PRINTFORML  %CALLNAME:(CFLAG:280)%の姿を認めた%CALLNAME%は必死の説得を試みるが、
+		PRINTFORML  通じる様子はない……
+		PRINTFORML 「%SELF_CALL()%だよ%CSTR:20%ちゃん、分からないの？　目を覚まして！！」
+	ELSE
+		PRINTFORML 「何だ、アナタなの」
+		PRINTFORML 「操り人形なんかに興味ないから、さっさと死んでくれていいよ？」
+	ENDIF
+ENDIF
+
+;洗脳キャラと対峙
+;--------------------------------------------------
+@KOJO_0_ENCOUNT_SENNOU_21
+;ソロモードの場合
+IF FLAG:0 == 2
+	RETURN
+;娘口上の場合
+ELSEIF CFLAG:231
+	RETURN
+ELSE
+	CALL YANDERE_SEARCH
+	;相手が思い人
+	IF FLAG:111 == CFLAG:280 && FLAG:110
+		PRINTFORML 「%CSTR:20%ちゃんは%SELF_CALL()%が助けてあげるからね……」
+	ELSE
+		PRINTFORML 「しつこいなあ、こっちは忙しいんだけど」
+	ENDIF
+ENDIF
+
+;始めて悪堕ちキャラと対峙した
+;--------------------------------------------------
+@KOJO_0_ENCOUNT_AKUOTI_FIRST_21
+;ソロモードの場合
+IF FLAG:0 == 2
+	RETURN
+;娘口上の場合
+ELSEIF CFLAG:231
+	RETURN
+ELSE
+	CALL YANDERE_SEARCH
+	;相手が思い人
+	IF FLAG:111 == CFLAG:280 && FLAG:110
+		PRINTFORML 「――嘘だよね、%CSTR:20%ちゃん……」
+		PRINTFORML 「嫌だよ、戦いたくないよ……」
+		PRINTFORML  信じられないという表情の%CALLNAME%を、%CALLNAME:(CFLAG:280)%は冷ややかに見つめている。
+	ELSE
+		PRINTFORML 「別に――%SELF_CALL()%は構わないんだけどさ――」
+		PRINTFORML  躊躇することなく%CALLNAME%は戦闘態勢に移っている。
+		PRINTFORML 「%CSTR:20%ちゃんに怒られないよう、こっそり後始末するのって大変なんだよね」
+		PRINTFORML 「まあ手足の二本か三本くらいは、安いと思ってよね」
+	ENDIF
+ENDIF
+
+;悪堕ちキャラと対峙
+;--------------------------------------------------
+@KOJO_0_ENCOUNT_AKUOTI_21
+;ソロモードの場合
+IF FLAG:0 == 2
+	RETURN
+;娘口上の場合
+ELSEIF CFLAG:231
+	RETURN
+ELSE
+	CALL YANDERE_SEARCH
+	;相手が思い人
+	IF FLAG:111 == CFLAG:280 && FLAG:110
+		PRINTFORML 「嫌だ、%CSTR:20%ちゃんとは戦えないよ――」
+	ELSE
+		PRINTFORML 「懲りないなあ…　今度こそ手加減できないよ？」
+	ENDIF
+ENDIF
+
+
+;戦闘関連の口上
+
+;キャラの行動
+
+;変身前のかけ声
+;口上オリジナルのかけ声を使用する場合のみコメントアウトを外して記述してください
+;@KOJO_0_BATTLE_CHARA_TRANSFORMCALL_21
+
+;変身後の名乗り
+;口上オリジナルの名乗りを使用する場合のみコメントアウトを外して記述してください
+;@KOJO_0_BATTLE_CHARA_NANORI_21
+
+;SP変身時のかけ声
+@KOJO_0_BATTLE_CHARA_SP_TRANSFORMCALL_21
+;相手が思い人
+IF FLAG:111 == CFLAG:280 && FLAG:110
+ELSE
+	PRINTL 「ブッ…潰してあげる……ッ！！」
+ENDIF
+
+;衣装の損傷が酷くなった関連
+
+;アウターが破れ始めた
+;--------------------------------------------------
+@KOJO_0_BATTLE_CLOTH_OUTERDAMAGE_21
+;相手が思い人
+IF FLAG:111 == CFLAG:280 && FLAG:110
+	PRINTFORML 「くっ、服が……！」
+ELSE
+	PRINTFORML 「……ふん」
+ENDIF
+
+;アウターが破れた
+;--------------------------------------------------
+@KOJO_0_BATTLE_CLOTH_OUTERBREAK_21
+SELECTCASE RAND:3
+	CASE 0
+		PRINTFORML 「（少しダメージを受けすぎたかしら）」
+	CASE 1
+		PRINTFORML 「（思ったより苦戦している……？）」
+	CASE 2
+		PRINTFORML 「（まだ行ける）」
+ENDSELECT
+
+;インナーが破れ始めた
+;--------------------------------------------------
+@KOJO_0_BATTLE_CLOTH_INNERDAMAGE_21
+;相手が思い人
+IF FLAG:111 == CFLAG:280 && FLAG:110
+	PRINTFORML 「うっ、これ以上はもう……！」
+ELSE
+	PRINTFORML 「ちっ……」（そろそろ余裕が……）
+ENDIF
+
+;インナーが破れた
+;--------------------------------------------------
+@KOJO_0_BATTLE_CLOTH_INNERBREAK_21
+SELECTCASE RAND:3
+	CASE 0
+		PRINTFORML 「ここまでやられるなんて…！」
+	CASE 1
+		PRINTFORML 「うっ、今のは……！」
+	CASE 2
+		PRINTFORML 「まだまだァッ！」
+	CASE 3
+		PRINTFORML 「あははっ！」
+ENDSELECT
+
+;気力が尽きて変身が強制的に解けた
+@KOJO_0_BATTLE_CHARA_TRANSRELEASE_21
+SELECTCASE RAND:3
+	CASE 0
+		PRINTFORML 「さすがに、これはまずいかな……」
+	CASE 1
+		PRINTFORML 「――――あっ」
+	CASE 2
+		PRINTFORML 「っ、こんな屈辱ッ……！」
+ENDSELECT
+
+;撤退成功
+;--------------------------------------------------
+@KOJO_0_BATTLE_CHARA_TETTAI_SUCCESS_21
+CALL PERCENT_CAL, BASE:体力, MAXBASE:体力
+CALL YANDERE_SEARCH
+;相手が思い人
+IF FLAG:111 == CFLAG:280 && FLAG:110
+	PRINTFORML 「ごめんね%CSTR:20%ちゃん、次は絶対に助けるから……」
+ELSEIF RESULT < 50
+	SELECTCASE RAND:3
+		CASE 0
+			PRINTFORML 「次は絶対に殺す……」
+		CASE 1
+			PRINTFORML 「ッ、はぁ、はぁ……」
+		CASE 2
+			PRINTFORML 「この恨み、忘れないから……！」
+	ENDSELECT
+ELSE
+	SELECTCASE RAND:3
+		CASE 0
+			PRINTFORML 「今は退くしかないみたいだけど、次は殺すから覚悟してね」
+		CASE 1
+			PRINTFORML 「また会おうね。次があればの話だけど」
+		CASE 2
+			PRINTFORML 「……あ～あ、何だか白けちゃった。もう帰る」
+	ENDSELECT
+ENDIF
+
+;撤退失敗
+;--------------------------------------------------
+@KOJO_0_BATTLE_CHARA_TETTAI_FALSE_21
+CALL PERCENT_CAL, BASE:体力, MAXBASE:体力
+CALL YANDERE_SEARCH
+;相手が思い人
+IF FLAG:111 == CFLAG:280 && FLAG:110
+	PRINTFORML 「……くっ、逃げられないなんて」
+ELSEIF RESULT < 50
+	SELECTCASE RAND:3
+		CASE 0
+			PRINTFORML 「はぁ、はぁ……ほ、本当にしつこい……」
+		CASE 1
+			PRINTFORML 「はぁ、はぁ……いいかげんに諦めてくれないと……」
+		CASE 2
+			PRINTFORML 「はぁ、はぁ……ピンチって、やつかしらね……」
+	ENDSELECT
+ELSE
+	SELECTCASE RAND:3
+		CASE 0
+			PRINTFORML 「そんなに%SELF_CALL()%のことが好きなんだ」
+		CASE 1
+			PRINTFORML 「気持ちは嬉しいんだけど、また今度にしてくれないかな」
+		CASE 2
+			PRINTFORML 「しょうがないなあ、もうちょっとだけだよ？」
+	ENDSELECT
+ENDIF
+
+;近距離攻撃
+;--------------------------------------------------
+@KOJO_0_BATTLE_CHARA_ATTACK_RANGE_SHORT_21
+CALL PERCENT_CAL, BASE:体力, MAXBASE:体力
+LOCAL = RESULT
+CALL YANDERE_SEARCH
+;相手が思い人
+IF FLAG:111 == CFLAG:280 && FLAG:110
+	PRINTFORML 「何とか手加減して攻撃しないと……！」
+ELSEIF RESULT < 50
+	SELECTCASE RAND:9
+		CASE 0
+			PRINTFORML 「はぁっ、はぁ……倒れろ、倒れろぉぉおおおッ！！！」
+		CASE 1
+			PRINTFORML 「死ねッ、死ねぇぇっ！！」
+		CASE 2
+			PRINTFORML 「くっ……叩き潰すッ！！」
+		CASE 3
+			PRINTFORML 「当たれッッッ！！！」
+		CASE 4
+			PRINTFORML 「そおぉぉぉりゃあああァァァッ！！」
+		CASE 5
+			PRINTFORML 「はぁっ、はぁ……めちゃくちゃにしてやるッ！！」
+		CASE 6
+			PRINTFORML 「うぉおおッ、内臓ブチ撒けろッ！！」
+		CASE 7
+			PRINTFORML 「細切れになれッッ！！」
+		CASE 8
+			PRINTFORML 「お前は絶対にッ、惨たらしく殺してやるッ！！」
+	ENDSELECT
+ELSE
+	SELECTCASE RAND:11
+		CASE 0
+			PRINTFORML 「――アハハハハ！！」
+		CASE 1
+			PRINTFORML 「死ねッ、死ねぇぇっ！！」
+		CASE 2
+			PRINTFORML 「悪い触手チンポは、叩き潰してあげるッ！！」
+		CASE 3
+			PRINTFORML 「当たったら死んじゃうかもよぉ――ッ？」
+		CASE 4
+			PRINTFORML 「そおぉぉぉりゃあああァァァッ！！」
+		CASE 5
+			PRINTFORML 「めちゃくちゃにしてやるッ！！」
+		CASE 6
+			PRINTFORML 「うぉおおッ、内臓ブチ撒けろッ！！」
+		CASE 7
+			PRINTFORML 「そーらそらそらッ！！　細切れだッ！！」
+		CASE 8
+			PRINTFORML 「お前の命をッ！！　引き千切ってやるッ！！」
+		CASE 9
+			PRINTFORML 「――うふっ、うふふふふふふふふっ♪」
+		CASE 10
+			PRINTFORML 「――%CALLNAME%ちゃんの触手解剖教室～～ッ♪」
+	ENDSELECT
+ENDIF
+
+;中距離攻撃
+;--------------------------------------------------
+@KOJO_0_BATTLE_CHARA_ATTACK_RANGE_MIDDLE_21
+CALL PERCENT_CAL, BASE:体力, MAXBASE:体力
+LOCAL = RESULT
+CALL YANDERE_SEARCH
+;相手が思い人
+IF FLAG:111 == CFLAG:280 && FLAG:110
+	PRINTFORML 「何とか手加減して攻撃しないと……！」
+ELSEIF RESULT < 50
+	SELECTCASE RAND:9
+		CASE 0
+			PRINTFORML 「射程に捉えたッッ！！」
+		CASE 1
+			PRINTFORML 「逃がさないよッ」
+		CASE 2
+			PRINTFORML 「はぁっ、はぁ……当たれッ！！」
+		CASE 3
+			PRINTFORML 「逃げるなゴルルァァアアッ！！」
+		CASE 4
+			PRINTFORML 「もっとたくさん撃ち込んであげるッ！！」
+		CASE 5
+			PRINTFORML 「そこだッ！！」
+		CASE 6
+			PRINTFORML 「今だッ！！」
+		CASE 7
+			PRINTFORML 「この距離なら……ッ！！」
+		CASE 8
+			PRINTFORML 「ちょこまか逃げてんじゃないわよッ！！」
+	ENDSELECT
+ELSE
+	SELECTCASE RAND:9
+		CASE 0
+			PRINTFORML 「ごめんね、そっちも射程内なの」
+		CASE 1
+			PRINTFORML 「逃がさないよッ」
+		CASE 2
+			PRINTFORML 「どうせ血の詰まった袋なんだからさァ――」
+		CASE 3
+			PRINTFORML 「アハハ、もっとこっちにおいでよっ！！」
+		CASE 4
+			PRINTFORML 「いっぱい撃ち込んであげるね？」
+		CASE 5
+			PRINTFORML 「アーッハッハッハハハハハッ、逃げろ逃げろォ！！」
+		CASE 6
+			PRINTFORML 「死んじゃえ死んじゃえ～～～♪」
+		CASE 7
+			PRINTFORML 「この距離ならリーチの差で有利だとでも思った？」
+		CASE 8
+			PRINTFORML 「そうやって避けるのは、予測済みなのよッ！！」
+	ENDSELECT
+ENDIF
+
+;遠距離攻撃
+;--------------------------------------------------
+@KOJO_0_BATTLE_CHARA_ATTACK_RANGE_LONG_21
+CALL PERCENT_CAL, BASE:体力, MAXBASE:体力
+LOCAL = RESULT
+CALL YANDERE_SEARCH
+;相手が思い人
+IF FLAG:111 == CFLAG:280 && FLAG:110
+	PRINTFORML 「何とか手加減して攻撃しないと……！」
+ELSEIF RESULT < 50
+	SELECTCASE RAND:9
+		CASE 0
+			PRINTFORML 「そのまま動かないでよね――」
+		CASE 1
+			PRINTFORML 「もっと痛みを感じさせてあげるッ！！」
+		CASE 2
+			PRINTFORML 「急所を撃ち抜く――」
+		CASE 3
+			PRINTFORML 「逃げても無駄だよッ」
+		CASE 4
+			PRINTFORML 「いいわよ、さっさと殺してやる――」
+		CASE 5
+			PRINTFORML 「逃げ場なんて無いのよ、あなたにはッ――」
+		CASE 6
+			PRINTFORML 「さっさと死んだ方が楽だと思わせてあげるッ」
+		CASE 7
+			PRINTFORML 「確実にブチ当てる――」
+		CASE 8
+			PRINTFORML 「………………ッ、当たれッ！」
+	ENDSELECT
+ELSE
+	SELECTCASE RAND:9
+		CASE 0
+			PRINTFORML 「ああもう、駄目だよ動いちゃ――」
+		CASE 1
+			PRINTFORML 「痛い？　ねえ痛い？」
+		CASE 2
+			PRINTFORML 「急所はどこかなあ――」
+		CASE 3
+			PRINTFORML 「ふふっ、あなたの弱点、みーつけたッ」
+		CASE 4
+			PRINTFORML 「動くともっと苦しいよ？」
+		CASE 5
+			PRINTFORML 「ごめんねぇ、この距離でもあなたに逃げ場は無いの――」
+		CASE 6
+			PRINTFORML 「さっさと死んだ方が楽だと思わせてあげるッ」
+		CASE 7
+			PRINTFORML 「大人しくやられちゃえば苦しまずに済むのに――」
+		CASE 8
+			PRINTFORML 「………………ッ、当たれッ！」
+	ENDSELECT
+ENDIF
+
+;防御
+;--------------------------------------------------
+@KOJO_0_BATTLE_CHARA_DEFENSE_21
+PRINTFORML 「………！！」
+
+;距離をとる
+;--------------------------------------------------
+@KOJO_0_BATTLE_CHARA_TAKEAWAY_21
+PRINTFORML 「………」（様子を見よう……）
+
+;何もしない
+;--------------------------------------------------
+@KOJO_0_BATTLE_CHARA_NOACTION_21
+PRINTFORML 「………。」
+
+;振り解く
+;--------------------------------------------------
+@KOJO_0_BATTLE_CHARA_HURIHODOKU_21
+CALL PERCENT_CAL, BASE:体力, MAXBASE:体力
+LOCAL = RESULT
+CALL PERCENT_CAL, BASE:性耐性, MAXBASE:性耐性
+LOCAL:2 = RESULT
+CALL YANDERE_SEARCH
+;相手が思い人
+IF FLAG:111 == CFLAG:280 && FLAG:110
+	PRINTFORML 「やだよ%CSTR:20%ちゃん、痛いよ……！」
+ELSEIF LOCAL < 50 || LOCAL:2 < 50
+	IF LOCAL < 50
+		SELECTCASE RAND:3
+			CASE 0
+				PRINTFORML 「……は、放せっ」
+			CASE 1
+				PRINTFORML 「い、いい加減にッ……」
+			CASE 2
+				PRINTFORML 「くっ……」
+		ENDSELECT
+	ELSE
+		SELECTCASE RAND:3
+			CASE 0
+				PRINTFORML 「放せッ、放せぇ！！」
+			CASE 1
+				PRINTFORML 「いい加減に離れてよ気色悪いッ！！」
+			CASE 2
+				PRINTFORML 「あんたなんか、大嫌いだッ！！」
+		ENDSELECT
+	ENDIF
+ELSE
+	SELECTCASE RAND:3
+		CASE 0
+			PRINTFORML 「%SELF_CALL()%、あなたなんかに興味ないのッ！」
+		CASE 1
+			PRINTFORML 「ああもう気持ち悪いッ！」
+		CASE 2
+			PRINTFORML 「放して欲しいんだけどッ！」
+	ENDSELECT
+ENDIF
+
+;暴れる
+;--------------------------------------------------
+@KOJO_0_BATTLE_CHARA_ABARERU_21
+CALL PERCENT_CAL, BASE:体力, MAXBASE:体力
+CALL YANDERE_SEARCH
+;相手が思い人
+IF FLAG:111 == CFLAG:280 && FLAG:110
+	PRINTFORML 「%CSTR:20%ちゃん、%SELF_CALL()%だよ、分からないの！？」
+ELSEIF RESULT < 50
+	SELECTCASE RAND:3
+		CASE 0
+			PRINTFORML 「くっ……めちゃくちゃにしてやるッ！」
+		CASE 1
+			PRINTFORML 「殺す、殺してやるっ……！！」
+		CASE 2
+			PRINTFORML 「死ね、死ね、死ね――」
+	ENDSELECT
+ELSE
+	SELECTCASE RAND:3
+		CASE 0
+			PRINTFORML 「お望み通り、めちゃくちゃにしてあげる」
+		CASE 1
+			PRINTFORML 「これだけ近ければ、外さないよッ」
+		CASE 2
+			PRINTFORML 「――絡みついちゃえば抵抗できないとでも思ったかしら」
+	ENDSELECT
+ENDIF
+
+;耐える
+;--------------------------------------------------
+@KOJO_0_BATTLE_CHARA_TAERU_21
+CALL PERCENT_CAL, BASE:性耐性, MAXBASE:性耐性
+CALL YANDERE_SEARCH
+;相手が思い人
+IF FLAG:111 == CFLAG:280 && FLAG:110
+	PRINTFORML 「いったいどうすればいいの――」
+ELSEIF RESULT < 50
+	SELECTCASE RAND:3
+		CASE 0
+			PRINTFORML 「はぁっ、はぁっ……」
+		CASE 1
+			PRINTFORML 「な、何をしてるつもりか知らないけど、無駄だから！」
+		CASE 2
+			PRINTFORML 「か、勝手にやってなさい！」
+	ENDSELECT
+ELSE
+	SELECTCASE RAND:3
+		CASE 0
+			PRINTFORML 「な、何をするつもりかと思えば」
+		CASE 1
+			PRINTFORML 「んっ……そんな貧相なモノじゃあ、モテないのも納得ね」
+		CASE 2
+			PRINTFORML 「せ、せいぜい頑張ることね」
+	ENDSELECT
+ENDIF
+
+;なすがまま
+;--------------------------------------------------
+@KOJO_0_BATTLE_CHARA_NASUGAMAMA_21
+SELECTCASE RAND:3
+	CASE 0
+		PRINTFORML 「ふっ、くっ……」
+	CASE 1
+		PRINTFORML 「……思ったように、身体が動かない……？」
+	CASE 2
+		PRINTFORML 「このまま、じゃあ……」
+ENDSELECT
+
+
+;受け入れる
+;--------------------------------------------------
+@KOJO_0_BATTLE_CHARA_UKEIRERU_21
+SELECTCASE RAND:3
+	CASE 0
+		PRINTFORML 「ンんっ、気持ち、いいなんて……」
+	CASE 1
+		PRINTFORML 「……」
+	CASE 2
+		PRINTFORML 「ひゃんっ！？　そこは、ちが……」
+ENDSELECT
+
+
+;奉仕する
+;--------------------------------------------------
+@KOJO_0_BATTLE_CHARA_HOUSI_21
+SELECTCASE RAND:3
+	CASE 0
+		PRINTFORML 「ちゅぱっ……はむっ、むちゅぅ……」
+	CASE 1
+		PRINTFORML 「はむっ……んぐっ……ちゅぱっ……」
+	CASE 2
+		PRINTFORML 「じゅぽっ、じゅぽっ……ちゅぷ……」
+ENDSELECT
+
+;SPバースト
+;--------------------------------------------------
+@KOJO_0_BATTLE_CHARA_SP_BURST_21
+;相手が思い人
+IF FLAG:111 == CFLAG:280 && FLAG:110
+ELSE
+	PRINTL 「邪魔ァッ！！」
+ENDIF
+
+
+
+;キャラの行動の結果
+
+;攻撃がクリティカルヒット
+;--------------------------------------------------
+@KOJO_0_BATTLE_CHARA_ATTACK_CRITICAL_HIT_21
+CALL PERCENT_CAL, BASE:体力, MAXBASE:体力
+LOCAL = RESULT
+CALL PERCENT_CAL, FLAG:13, FLAG:12
+LOCAL:1 = RESULT
+CALL YANDERE_SEARCH
+;相手が思い人
+IF FLAG:111 == CFLAG:280 && FLAG:110
+	PRINTFORML 「あ――　そんなッ、%CSTR:20%ちゃんッ！！」
+ELSEIF FLAG:13 <= 0
+	PRINTFORML 「あ、あれ……？　勢い余って粉々にしちゃったみたい……」
+ELSE
+	SELECTCASE RAND:9
+		CASE 0
+			PRINTFORML 「ああっ…　いいわッ、ゾクゾクする……！！」
+		CASE 1
+			PRINTFORML 「ｷｬﾊﾊﾊｯ、どうやら相当太い血管をヤっちゃったみたいねぇッ」
+		CASE 2
+			PRINTFORML 「ｳｪｯﾋﾋｯ…　この瞬間がたまらないのぉッ」
+		CASE 3
+			PRINTFORML 「これが…　これが好きなのッ…　命を絶ち切る感触…！」
+		CASE 4
+			PRINTFORML 「…ん～(返り血を舐めながら)　デリシャス～♪」
+		CASE 5
+			PRINTFORML 「ああっ…　快感だわ…！！」
+		CASE 6
+			PRINTFORML 「気持ちいいのが入ったわね♪」
+		CASE 7
+			PRINTFORML 「ほーらほらほらッ、もっと大きいお花を咲かせてッ！！」
+		CASE 8
+			PRINTFORML 「ああッ！！　今の感触だけでイッちゃいそう――ッ！！」
+	ENDSELECT
+ENDIF
+
+;攻撃が通常ヒット
+;--------------------------------------------------
+@KOJO_0_BATTLE_CHARA_ATTACK_HIT_21
+CALL PERCENT_CAL, BASE:体力, MAXBASE:体力
+LOCAL = RESULT
+CALL PERCENT_CAL, FLAG:13, FLAG:12
+LOCAL:1 = RESULT
+;相手が思い人
+IF FLAG:111 == CFLAG:280 && FLAG:110
+	PRINTFORML 「ごめんね、ごめんね%CSTR:20%ちゃん……」
+;とどめ演出
+ELSEIF FLAG:13 <= 0
+	PRINTFORML 「あ、あれ……？　勢い余って粉々にしちゃったみたい……」
+ELSEIF LOCAL < 25
+	SELECTCASE RAND:5
+		CASE 0
+			PRINTFORML 「くそっ、倒れろ、倒れろッ……なんで倒れないのよぉぉおおッ」
+		CASE 1
+			PRINTFORML 「ぜぇ、ぜぇ……ま、まだ倒れないなんて――」
+		CASE 2
+			PRINTFORML 「はぁっ、はぁ……もう、限界……」
+		CASE 3
+			PRINTFORML （もうこっちの体力がもたない――）
+		CASE 4
+			PRINTFORML 「ぜぇ、ぜぇ……負けない、絶対、ぶっころす――」
+	ENDSELECT
+ELSEIF LOCAL < 50
+	SELECTCASE RAND:7
+		CASE 0
+			PRINTFORML 「ちぃッ……パワーが十分じゃないからか……！？」
+		CASE 1
+			PRINTFORML 「うおぉぉぉッこのぉぉおおおォォッ！！！」
+		CASE 2
+			PRINTFORML 「くそっ、まさか効いてないの……！？」
+		CASE 3
+			PRINTFORML （何とか当てることができたみたいだけど――）
+		CASE 4
+			PRINTFORML 「この程度の相手にてこずるなんて……くっ」
+		CASE 5
+			PRINTFORML 「負けないッ、わたしは負けないッ、絶ッ対に！！」
+		CASE 6
+			PRINTFORML 「はぁっ、はぁ……た、楽しませてくれるじゃない」
+	ENDSELECT
+ELSE
+	SELECTCASE RAND:10
+		CASE 0
+			PRINTFORML （こいつらって血反吐も臭いのよね――）
+		CASE 1
+			PRINTFORML 「ああ――、その頑丈さが最っ高ぉッ……」
+		CASE 2
+			PRINTFORML （すぐに死んじゃったら、つまらないもんね？）
+		CASE 3
+			PRINTFORML 「あははははっ、残念。　――直撃だよ？」
+		CASE 4
+			PRINTFORML 「――その動き、０点ね」
+		CASE 5
+			PRINTFORML 「…チッ、もう少しで急所だったのに」
+		CASE 6
+			PRINTFORML 「あ、ごめん痛くなかった？　…じゃあもっとだね」
+		CASE 7
+			PRINTFORML 「もっとだよっ、もっと苦しんでみせてッ！！」
+		CASE 8
+			PRINTFORML 「気持ちいいッ！！　ああッ気持ちいいよ最高だよぉ――ッ！！」
+		CASE 9
+			PRINTFORML 「ＢＩＮＧＯ！！　予想通りの回避パターンッ！！」
+	ENDSELECT
+ENDIF
+
+;攻撃失敗
+;--------------------------------------------------
+@KOJO_0_BATTLE_CHARA_ATTACK_FALSE_21
+CALL PERCENT_CAL, BASE:体力, MAXBASE:体力
+LOCAL = RESULT
+CALL PERCENT_CAL, FLAG:13, FLAG:12
+LOCAL:1 = RESULT
+;相手が思い人
+IF FLAG:111 == CFLAG:280 && FLAG:110
+	PRINTFORML 「%CSTR:20%ちゃん、お願いだから大人しくして！」
+;カス当たりでとどめの場合
+ELSEIF LOCAL:1 <= 0
+	IF TFLAG:0 < 2
+		PRINTFORML 「あ、あれ……？　もう終わりなの……？」
+	ELSEIF LOCAL == 0
+		PRINTFORML 「はぁ……はぁ……な、何とか勝てたみたい……」
+	ELSEIF LOCAL < 50
+		PRINTFORML 「はぁ……はぁ……ざまぁ……みやがれッ」
+	ELSE
+		PRINTFORML 「あ～あ……もう終わりかぁ」
+	ENDIF
+ELSEIF LOCAL < 50
+	SELECTCASE RAND:5
+		CASE 0
+			PRINTFORML 「今のを避けるなんて……」
+		CASE 1
+			PRINTFORML 「くっ、身体が思うように動かない……！」
+		CASE 2
+			PRINTFORML 「外したっ！？」
+		CASE 3
+			PRINTFORML 「うそっ！？」
+		CASE 4
+			PRINTFORML 「……ああもう、さっさと死んでよッ！！」
+	ENDSELECT
+ELSE
+	SELECTCASE RAND:6
+		CASE 0
+			PRINTFORML 「へぇ、そうやって避けるんだぁ」
+		CASE 1
+			PRINTFORML 「なんで逃げるの？」
+		CASE 2
+			PRINTFORML 「すごいすごーい！！」
+		CASE 3
+			PRINTFORML 「あれ？　隠れんぼかなぁ？　どこかなぁ――」
+		CASE 4
+			PRINTFORML 「……ふぅん、避けちゃうんだ……？」
+		CASE 5
+			PRINTFORML 「……あっ、駄目だよ避けちゃ」
+	ENDSELECT
+ENDIF
+
+;振り解く成功
+;--------------------------------------------------
+@KOJO_0_BATTLE_CHARA_HURIHODOKU_SUCCESS_21
+CALL PERCENT_CAL, BASE:体力, MAXBASE:体力
+LOCAL = RESULT
+CALL PERCENT_CAL, BASE:性耐性, MAXBASE:性耐性
+LOCAL:2 = RESULT
+;相手が思い人
+IF FLAG:111 == CFLAG:280 && FLAG:110
+	PRINTFORML 「態勢を立て直さなきゃ……%SELF_CALL()%が%CSTR:20%ちゃんを助けるんだ！！」
+ELSEIF LOCAL < 50 || LOCAL:2 < 50
+	SELECTCASE RAND:3
+		CASE 0
+			PRINTFORML 「はぁはぁ、ようやく離れ、た……」
+		CASE 1
+			PRINTFORML 「よくもやってくれたわね……」
+		CASE 2
+			PRINTFORML 「絶対に許さないから……」
+	ENDSELECT
+ELSE
+	SELECTCASE RAND:3
+		CASE 0
+			PRINTFORML 「じゃあ、今度はこっちの番ね」
+		CASE 1
+			PRINTFORML 「……楽に死なせてあげないから」
+		CASE 2
+			PRINTFORML 「……手間を掛けさせないでよね」
+	ENDSELECT
+ENDIF
+
+;振り解く失敗
+;--------------------------------------------------
+@KOJO_0_BATTLE_CHARA_HURIHODOKU_FALSE_21
+CALL PERCENT_CAL, BASE:体力, MAXBASE:体力
+LOCAL = RESULT
+CALL PERCENT_CAL, BASE:性耐性, MAXBASE:性耐性
+LOCAL:2 = RESULT
+;相手が思い人
+IF FLAG:111 == CFLAG:280 && FLAG:110
+	PRINTFORML 「な、何とかしなきゃ――」
+ELSEIF LOCAL < 50 || LOCAL:2 < 50
+	SELECTCASE RAND:5
+		CASE 0
+			PRINTFORML 「まだ離れない……早く何とかしなきゃ――」
+		CASE 1
+			PRINTFORML 「あっ……し、しまった……」
+		CASE 2
+			PRINTFORML 「離れない！？　このままじゃ……」
+		CASE 3
+			PRINTFORML 「……は、離れてよ！！」
+		CASE 4
+			PRINTFORML 「……これ以上は……ッ」
+	ENDSELECT
+ELSE
+	SELECTCASE RAND:5
+		CASE 0
+			PRINTFORML 「……聞こえなかったの？　放してってば」
+		CASE 1
+			PRINTFORML 「……そんなに赤ちゃん産んでほしいの？」
+		CASE 2
+			PRINTFORML 「……しつこいわね」
+		CASE 3
+			PRINTFORML 「……チッ、隙がない……」
+		CASE 4
+			PRINTFORML 「……あんまりイライラさせないでほしいわ」
+	ENDSELECT
+ENDIF
+
+
+;敵側の行動（攻撃など）
+
+;敵が攻撃
+;--------------------------------------------------
+@KOJO_0_BATTLE_TENTACLE_ATTACK_21
+
+;敵が絡みつく
+;--------------------------------------------------
+@KOJO_0_BATTLE_TENTACLE_KARAMITUKU_21
+
+;敵が体液を吐く
+;--------------------------------------------------
+@KOJO_0_BATTLE_TENTACLE_TAIEKI_21
+
+;敵が距離をとる
+;--------------------------------------------------
+@KOJO_0_BATTLE_TENTACLE_TAKEAWAY_21
+
+;敵が押し倒すを開始
+;--------------------------------------------------
+@KOJO_0_BATTLE_TENTACLE_OSHITAOSU_21
+
+
+
+;敵の行動の結果
+
+;敵の攻撃がクリティカルヒット
+;--------------------------------------------------
+@KOJO_0_BATTLE_TENTACLE_ATTACK_CRITICAL_HIT_21
+SELECTCASE RAND:9
+	CASE 0
+		PRINTFORML 「～～～ッッ――　う、腕がっ……腕がぁあああッ！！」
+	CASE 1
+		PRINTFORML 「ゴフッ……め、目が霞む――い、意識が――」
+	CASE 2
+		PRINTFORML 「脚がッ、脚がぁぁぁああああああ！！！！」
+	CASE 3
+		PRINTFORML 「うぼぉッ！？　うぐ……肋骨の一本や二本、くれてやるッ！！」
+	CASE 4
+		PRINTFORML 「しまッ……うげぇぇええぁぁぁッ！！？？」
+	CASE 5
+		PRINTFORML 「ぎゃぁあああッ！！？　……うぐッ、ゆ、油断した……ッ」
+	CASE 6
+		PRINTFORML 「ぐばぁッ！？　……い、今の大振りを避け損なうなんて……」
+	CASE 7
+		PRINTFORML 「ぐぎゃあッ！！　ッ……こ、こんなことがッ……」
+	CASE 8
+		PRINTFORML 「……ッ――　くっ、ダメージが大きすぎて、脚が……」
+ENDSELECT
+
+
+;敵の攻撃が通常ヒット
+;--------------------------------------------------
+@KOJO_0_BATTLE_TENTACLE_ATTACK_HIT_21
+CALL PERCENT_CAL, BASE:体力, MAXBASE:体力
+;相手が思い人
+IF FLAG:111 == CFLAG:280 && FLAG:110
+	PRINTFORML 「うぐッ……！！」
+ELSEIF RESULT == 0
+	SELECTCASE RAND:7
+		CASE 0
+			PRINTFORML 「ぐああぁッ……ま、まだまだッ……」
+		CASE 1
+			PRINTFORML 「ぐぼぉッ！！　う、うぷッ……」
+			PRINTFORML 「おえぇぇぇぇえぇえぇえぇッ……！！」
+		CASE 2
+			PRINTFORML 「かはっ――きゅう、きゅう――」（い、息がッ！！）
+		CASE 3
+			PRINTFORML 「いやぁぁあああっ！！」
+		CASE 4
+			PRINTFORML 「ぶべひッ！？　あ、あがぁぁぁ――」
+		CASE 5
+			PRINTFORML 「や、やめッ――痛い痛い痛い痛いイタいぎゃああああああ」
+		CASE 6
+			PRINTFORML 「ま、待ッ――あぁぁぁぁぁあああああァァァァああッ！！」
+	ENDSELECT
+ELSEIF RESULT < 50
+	SELECTCASE RAND:7
+		CASE 0
+			PRINTFORML 「ごハッ！？」
+		CASE 1
+			PRINTFORML 「ぐっ……このォ！！」
+		CASE 2
+			PRINTFORML 「きゃあっ！？」
+		CASE 3
+			PRINTFORML 「ひうッ！？」
+		CASE 4
+			PRINTFORML 「……この程度、ッ」
+		CASE 5
+			PRINTFORML 「ッう……調子に、乗るなァ！！」
+		CASE 6
+			PRINTFORML 「……ッ！　まだ余裕ッ！！」
+	ENDSELECT
+ELSE
+	SELECTCASE RAND:6
+		CASE 0
+			PRINTFORML 「ッ！　……まさか直撃をもらうなんて」
+		CASE 1
+			PRINTFORML 「痛ッ…たいなぁ……！」
+		CASE 2
+			PRINTFORML 「くっ、サービスはここまでよ……！」
+		CASE 3
+			PRINTFORML 「うぐっ……許さない、許さないッ」
+		CASE 4
+			PRINTFORML 「くッ！　ちっ、しくじった……」
+		CASE 5
+			PRINTFORML 「うぐッ……思ったよりやるわね」
+	ENDSELECT
+ENDIF
+
+;敵の攻撃を回避
+;--------------------------------------------------
+@KOJO_0_BATTLE_TENTACLE_ATTACK_FALSE_21
+CALL PERCENT_CAL, BASE:体力, MAXBASE:体力
+;相手が思い人
+IF FLAG:111 == CFLAG:280 && FLAG:110
+	PRINTFORML 「や、やめてッ！　%SELF_CALL()%だよ、思い出して、%CSTR:20%ちゃん！！」
+ELSEIF RESULT == 0
+	SELECTCASE RAND:6
+		CASE 0
+			PRINTFORML 「……うぐっ、何とか避けられた……！」
+		CASE 1
+			PRINTFORML 「はぁっ、はぁ……い、今のはギリギリだったかも……」
+		CASE 2
+			PRINTFORML 「くっ、このままじゃ不利だわ――」
+		CASE 3
+			PRINTFORML 「ッ、何とか避けられたけど――！」
+		CASE 4
+			PRINTFORML 「はぁっ、はぁ……そろそろ、限界……」
+		CASE 5
+			PRINTFORML 「ぜぇっ、ぜぇッ……」
+	ENDSELECT
+ELSEIF RESULT < 50
+	SELECTCASE RAND:6
+		CASE 0
+			PRINTFORML 「そんなの当たらないよッ」
+		CASE 1
+			PRINTFORML 「これ以上食らうわけには……」
+		CASE 2
+			PRINTFORML 「はぁっ、はぁ……まだ余裕ね」
+		CASE 3
+			PRINTFORML 「くっ、今のは危なかったッ……！」
+		CASE 4
+			PRINTFORML 「……この程度なら、ッ」
+		CASE 5
+			PRINTFORML 「避けて見せるッ！！」
+	ENDSELECT
+ELSE
+	SELECTCASE RAND:6
+		CASE 0
+			PRINTFORML 「あはっ、残念でしたぁっ」
+		CASE 1
+			PRINTFORML 「う～ん、惜しいおしい♪」
+		CASE 2
+			PRINTFORML 「遅いっ……そんなのに捕まるわけないでしょ」
+		CASE 3
+			PRINTFORML 「そんな動き、止まって見えるわッ」
+		CASE 4
+			PRINTFORML 「うふふ……当たると思ったの？」
+		CASE 5
+			PRINTFORML 「へぇ、そんなのもできるんだぁ？」
+	ENDSELECT
+ENDIF
+
+;敵の絡みつくが成功
+;--------------------------------------------------
+@KOJO_0_BATTLE_TENTACLE_KARAMITUKU_SUCCESS_21
+CALL PERCENT_CAL, BASE:体力, MAXBASE:体力
+;相手が思い人
+IF FLAG:111 == CFLAG:280 && FLAG:110
+	PRINTFORML 「くっ……こんなときに捕まるなんて……！」
+ELSEIF RESULT == 0
+	SELECTCASE RAND:2
+		CASE 0
+			PRINTFORML 「や、やめろぉ……」
+		CASE 1
+			PRINTFORML 「うぁ、く、苦しい……」
+	ENDSELECT
+ELSEIF RESULT < 50
+	SELECTCASE RAND:2
+		CASE 0
+			PRINTFORML 「くっ……こんな奴に捕まるなんて」
+		CASE 1
+			PRINTFORML 「油断したつもりは無かったんだけどね……」
+	ENDSELECT
+ELSE
+	SELECTCASE RAND:2
+		CASE 0
+			PRINTFORML 「%SELF_CALL()%に手を出すなんて、死にたいのかしら……？」
+		CASE 1
+			PRINTFORML 「隙があれば子作りしたいってわけ？　おめでたい奴ね……」
+	ENDSELECT
+ENDIF
+
+;敵の絡みつくを回避
+;--------------------------------------------------
+@KOJO_0_BATTLE_TENTACLE_KARAMITUKU_FALSE_21
+CALL PERCENT_CAL, BASE:体力, MAXBASE:体力
+;相手が思い人
+IF FLAG:111 == CFLAG:280 && FLAG:110
+	PRINTFORML 「ごめんね、でも捕まるわけにはいかないの――」
+ELSEIF RESULT == 0
+	SELECTCASE RAND:2
+		CASE 0
+			PRINTFORML 「いま捕まったらさすがにヤバいのよね……」
+		CASE 1
+			PRINTFORML 「ああもう、こんな奴さっさと死んじゃえばいいのに！」
+	ENDSELECT
+ELSEIF RESULT < 50
+	SELECTCASE RAND:2
+		CASE 0
+			PRINTFORML 「――見境いない奴は嫌いよ」
+		CASE 1
+			PRINTFORML 「――触らないでくれるかしら？」
+	ENDSELECT
+ELSE
+	SELECTCASE RAND:2
+		CASE 0
+			PRINTFORML 「うふふっ、発情してるのぉ？」
+		CASE 1
+			PRINTFORML 「あら、我慢できなくなっちゃったぁ？」
+	ENDSELECT
+ENDIF
+
+;敵の体液を吐くがヒット
+;--------------------------------------------------
+@KOJO_0_BATTLE_TENTACLE_TAIEKI_HIT_21
+SELECTCASE RAND:2
+	CASE 0
+		PRINTFORML 「ぶごぎゃッ！？　……よ、よくも顔にこんな……！」
+	CASE 1
+		PRINTFORML 「ふん、こけおどしにもならない……！」
+ENDSELECT
+
+;敵の体液を吐くを回避
+;--------------------------------------------------
+@KOJO_0_BATTLE_TENTACLE_TAIEKI_FALSE_21
+SELECTCASE RAND:2
+	CASE 0
+		PRINTFORML 「きゃははっ、狙いが甘い甘い」
+	CASE 1
+		PRINTFORML 「そういうのって女の子に嫌われるわよ？」
+ENDSELECT
+
+;敵の押し倒すがヒット
+;--------------------------------------------------
+@KOJO_0_BATTLE_TENTACLE_OSHITAOSU_SUCCESS_21
+;相手が思い人
+IF FLAG:111 == CFLAG:280 && FLAG:110
+	PRINTFORML 「ああっ%CSTR:20%ちゃん、そんな風に迫られたら、%SELF_CALL()%――」
+ELSE
+	PRINTFORML 「……！？　こ、この――」
+ENDIF
+
+;敵の押し倒すを回避
+;--------------------------------------------------
+@KOJO_0_BATTLE_TENTACLE_OSHITAOSU_FALSE_21
+;相手が思い人
+IF FLAG:111 == CFLAG:280 && FLAG:110
+	PRINTFORML 「ああ……%CSTR:20%ちゃんに襲われるなんて、悪くないかも――」
+ELSE
+	PRINTFORML 「……あのねぇ、ふざけてると本当に殺しちゃうよ？」
+ENDIF
+
+
+
+;敵から受ける性コマンド関連
+
+;COM0：C攻め弱　クリトリスを撫でる
+;--------------------------------------------------
+@KOJO_0_SEX_COM0_21
+;相手が思い人
+IF FLAG:111 == CFLAG:280 && FLAG:110
+ELSE
+	PRINTFORML 「くっ……こんなことに付き合ってるヒマは……」
+	PRINTFORML 「っんん、……こ、このっ」
+ENDIF
+
+;COM1：C攻め強　クリトリスに吸い付く
+;--------------------------------------------------
+@KOJO_0_SEX_COM1_21
+;相手が思い人
+IF FLAG:111 == CFLAG:280 && FLAG:110
+ELSE
+	PRINTFORML 「そ、そんなところを、さ、触るなぁ……！」
+	PRINTFORML 「ひあっ！？　や、やめ……」
+ENDIF
+
+;SPCOM0：C攻めSP　クリトリスに噛み付く
+;--------------------------------------------------
+@KOJO_0_SEX_SPCOM0_21
+;相手が思い人
+IF FLAG:111 == CFLAG:280 && FLAG:110
+ELSE
+	PRINTFORML 「か、身体が……熱いぃぃっ……！」
+	PRINTFORML 「イヤ、さ、さわるなっ、やぁぁあああっ！？」
+ENDIF
+
+;COM2：V攻め弱　膣口を愛撫（処女は奪いません）
+;--------------------------------------------------
+@KOJO_0_SEX_COM2_21
+;相手が思い人
+IF FLAG:111 == CFLAG:280 && FLAG:110
+ELSEIF TALENT:処女 > 0
+	PRINTFORML 「ちょっと、何するつもり……まさか」
+	PRINTFORML 「や、やめて、やめてやめてぇっ！」
+ELSE
+	PRINTFORML 「その汚いモノを近づけるな……！」
+	PRINTFORML 「うぐっ……こんな奴に弄ばれる、なんて……」
+ENDIF
+
+;COM3：V攻め強　挿入
+;--------------------------------------------------
+@KOJO_0_SEX_COM3_21
+;相手が思い人
+IF FLAG:111 == CFLAG:280 && FLAG:110
+ELSE
+	PRINTFORML 「うぁっ、んあっ、あぐっ、ああぁあぁっ！！」
+	IF RAND:2 == 0
+		PRINTFORML 「はぁっ、はぁっ……」
+	ELSE
+		PRINTFORML 「こ、こんなことで、%SELF_CALL()%をモノにしたと思わないことね……」
+	ENDIF
+ENDIF
+
+;SPCOM1：V攻めSP　奥を突く
+;--------------------------------------------------
+@KOJO_0_SEX_SPCOM1_21
+
+;COM4：A攻め弱　アナルを撫で回す
+;--------------------------------------------------
+@KOJO_0_SEX_COM4_21
+
+;COM5：A攻め強　アナルに挿入
+;--------------------------------------------------
+@KOJO_0_SEX_COM5_21
+
+;SPCOM2：A攻めSP　激しくアナルを犯す
+;--------------------------------------------------
+@KOJO_0_SEX_SPCOM2_21
+
+;COM6：B攻め弱　胸を揉みしだく
+;--------------------------------------------------
+@KOJO_0_SEX_COM6_21
+
+;COM7：B攻め強　乳首に吸い付く
+;--------------------------------------------------
+@KOJO_0_SEX_COM7_21
+
+;SPCOM3：B攻めSP　乳首に噛み付く
+;--------------------------------------------------
+@KOJO_0_SEX_SPCOM3_21
+
+;COM8：スパンキング
+;--------------------------------------------------
+@KOJO_0_SEX_COM8_21
+
+;COM9：針
+;--------------------------------------------------
+@KOJO_0_SEX_COM9_21
+
+;SPCOM4：電流
+;--------------------------------------------------
+@KOJO_0_SEX_SPCOM4_21
+
+;COM10：手淫
+;--------------------------------------------------
+@KOJO_0_SEX_COM10_21
+
+;COM11：フェラ
+;--------------------------------------------------
+@KOJO_0_SEX_COM11_21
+
+;COM12：イラマチオ
+;--------------------------------------------------
+@KOJO_0_SEX_COM12_21
+
+;SPCOM5：パイズリ
+;--------------------------------------------------
+@KOJO_0_SEX_SPCOM5_21
+
+;SPCOM6：強制自慰
+;--------------------------------------------------
+@KOJO_0_SEX_SPCOM6_21
+
+;SPCOM7：羞恥プレイ
+;--------------------------------------------------
+@KOJO_0_SEX_SPCOM7_21
+
+
+;キャラが射精
+;--------------------------------------------------
+@KOJO_0_SEX_CHARA_SYASEI_21
+
+;キャラが大量射精
+;--------------------------------------------------
+@KOJO_0_SEX_CHARA_SYASEI_HI_21
+
+;キャラが噴乳
+;--------------------------------------------------
+@KOJO_0_SEX_CHARA_HUNNYU_21
+
+;キャラが大量噴乳
+;--------------------------------------------------
+@KOJO_0_SEX_CHARA_HUNNYU_HI_21
+
+
+;絶頂関連
+
+;C絶頂
+;--------------------------------------------------
+@KOJO_0_SEX_ECSTASY_C_21
+
+;C強絶頂
+;--------------------------------------------------
+@KOJO_0_SEX_ECSTASY_C_HI_21
+
+;V絶頂
+;--------------------------------------------------
+@KOJO_0_SEX_ECSTASY_V_21
+
+;V強絶頂
+;--------------------------------------------------
+@KOJO_0_SEX_ECSTASY_V_HI_21
+
+;A絶頂
+;--------------------------------------------------
+@KOJO_0_SEX_ECSTASY_A_21
+
+;A強絶頂
+;--------------------------------------------------
+@KOJO_0_SEX_ECSTASY_A_HI_21
+
+;B絶頂
+;--------------------------------------------------
+@KOJO_0_SEX_ECSTASY_B_21
+
+;B強絶頂
+;--------------------------------------------------
+@KOJO_0_SEX_ECSTASY_B_HI_21
+
+
+
+;多重絶頂に関する口上
+
+;四重絶頂
+;--------------------------------------------------
+@KOJO_0_SEX_MULTIECSTASY_CVAB_21
+
+;CVA三重絶頂
+;--------------------------------------------------
+@KOJO_0_SEX_MULTIECSTASY_CVA_21
+
+;CVB三重絶頂
+;--------------------------------------------------
+@KOJO_0_SEX_MULTIECSTASY_CVB_21
+
+;CAB三重絶頂
+;--------------------------------------------------
+@KOJO_0_SEX_MULTIECSTASY_CAB_21
+
+;VAB三重絶頂
+;--------------------------------------------------
+@KOJO_0_SEX_MULTIECSTASY_VAB_21
+
+;CV二重絶頂
+;--------------------------------------------------
+@KOJO_0_SEX_MULTIECSTASY_CV_21
+
+;CA二重絶頂
+;--------------------------------------------------
+@KOJO_0_SEX_MULTIECSTASY_CA_21
+
+;CB二重絶頂
+;--------------------------------------------------
+@KOJO_0_SEX_MULTIECSTASY_CB_21
+
+;VA二重絶頂
+;--------------------------------------------------
+@KOJO_0_SEX_MULTIECSTASY_VA_21
+
+;VB二重絶頂
+;--------------------------------------------------
+@KOJO_0_SEX_MULTIECSTASY_VB_21
+
+;AB二重絶頂
+;--------------------------------------------------
+@KOJO_0_SEX_MULTIECSTASY_AB_21
+
+
+
+;触手が射精したときの処理
+
+;膣に通常射精
+;--------------------------------------------------
+@KOJO_0_SEX_TENTACLE_SYASEI_VAGINA_21
+
+;膣に大量射精
+;--------------------------------------------------
+@KOJO_0_SEX_TENTACLE_SYASEI_VAGINA_HI_21
+
+;アナルに通常射精
+;--------------------------------------------------
+@KOJO_0_SEX_TENTACLE_SYASEI_ANAL_21
+
+;アナルに大量射精
+;--------------------------------------------------
+@KOJO_0_SEX_TENTACLE_SYASEI_ANAL_HI_21
+
+;手に通常射精
+;--------------------------------------------------
+@KOJO_0_SEX_TENTACLE_SYASEI_HAND_21
+
+;手に大量射精
+;--------------------------------------------------
+@KOJO_0_SEX_TENTACLE_SYASEI_HAND_HI_21
+
+;口内に通常射精
+;--------------------------------------------------
+@KOJO_0_SEX_TENTACLE_SYASEI_MOUTH_21
+
+;口内に大量射精
+;--------------------------------------------------
+@KOJO_0_SEX_TENTACLE_SYASEI_MOUTH_HI_21
+
+;胸に通常射精
+;--------------------------------------------------
+@KOJO_0_SEX_TENTACLE_SYASEI_BUST_21
+
+;胸に大量射精
+;--------------------------------------------------
+@KOJO_0_SEX_TENTACLE_SYASEI_BUST_HI_21
+
+
+
+;戦闘終了関連
+
+;ボス触手・ラスボス触手に勝利
+;--------------------------------------------------
+@KOJO_0_BATTLE_END_WIN_21
+
+;敵キャラに勝利
+;--------------------------------------------------
+@KOJO_0_BATTLE_END_WIN_ENEMY_21
+
+;ラスボス触手出現
+;--------------------------------------------------
+@KOJO_0_BATTLE_END_LASTBOSSAPPEAR_21
+
+;完全殲滅
+;--------------------------------------------------
+@KOJO_0_BATTLE_END_PERFECT_21
+
+;捕らわれキャラの救出
+;--------------------------------------------------
+@KOJO_0_BATTLE_END_RESCUED_21
+
+;洗脳中キャラの救出
+;--------------------------------------------------
+@KOJO_0_BATTLE_END_RESCUE_SENNOU_21
+
+;敵キャラの救出
+;--------------------------------------------------
+@KOJO_0_BATTLE_END_RESCUE_ENEMY_21
+
+;敗北
+;--------------------------------------------------
+@KOJO_0_BATTLE_END_LOSS_21
+
+;時間切れ
+;--------------------------------------------------
+@KOJO_0_BATTLE_END_TIMEUP_21
+
+
+
+;素質関連
+
+;処女喪失
+;--------------------------------------------------
+@KOJO_0_SEX_LOSTVIRGIN_21
+;相手が思い人
+IF FLAG:111 == CFLAG:280 && FLAG:110
+ELSE
+	PRINTFORML 「あっ、あぐぅぅううぅぅ！？」
+	PRINTFORML 「%SELF_CALL_SINGLE()%、%SELF_CALL()%の……%SELF_CALL()%の処女が……%SELF_CALL()%の、処女がこんなふうに……」
+	PRINTFORML 「い、いやぁぁああああぁ！！」
+ENDIF
+
+;触手の虜取得
+;--------------------------------------------------
+@KOJO_0_GETTALENT_TORIKO_21
+
+;淫乱取得
+;--------------------------------------------------
+@KOJO_0_GETTALENT_INRAN_21
+
+;淫核取得
+;--------------------------------------------------
+@KOJO_0_GETTALENT_INKAKU_21
+
+;淫壷取得
+;--------------------------------------------------
+@KOJO_0_GETTALENT_INTUBO_21
+
+;淫尻取得
+;--------------------------------------------------
+@KOJO_0_GETTALENT_INJIRI_21
+
+;淫乳取得
+;--------------------------------------------------
+@KOJO_0_GETTALENT_INNYUU_21
+
+
+
+;刻印関連
+
+;快楽刻印１取得
+;--------------------------------------------------
+@KOJO_0_SEX_MARK_KAIRAKU_1_21
+
+;快楽刻印２取得
+;--------------------------------------------------
+@KOJO_0_SEX_MARK_KAIRAKU_2_21
+
+;快楽刻印３取得
+;--------------------------------------------------
+@KOJO_0_SEX_MARK_KAIRAKU_3_21
+
+;苦痛刻印１取得
+;--------------------------------------------------
+@KOJO_0_SEX_MARK_KUTUU_1_21
+
+;苦痛刻印２取得
+;--------------------------------------------------
+@KOJO_0_SEX_MARK_KUTUU_2_21
+
+;苦痛刻印３取得
+;--------------------------------------------------
+@KOJO_0_SEX_MARK_KUTUU_3_21
+
+;屈服刻印１取得
+;--------------------------------------------------
+@KOJO_0_SEX_MARK_KUPPUKU_1_21
+
+;屈服刻印２取得
+;--------------------------------------------------
+@KOJO_0_SEX_MARK_KUPPUKU_2_21
+
+;屈服刻印３取得
+;--------------------------------------------------
+@KOJO_0_SEX_MARK_KUPPUKU_3_21
+
+;恐怖刻印１取得
+;--------------------------------------------------
+@KOJO_0_SEX_MARK_KYOUHU_1_21
+
+;恐怖刻印２取得
+;--------------------------------------------------
+@KOJO_0_SEX_MARK_KYOUHU_2_21
+
+;恐怖刻印３取得
+;--------------------------------------------------
+@KOJO_0_SEX_MARK_KYOUHU_3_21
+
+;恥辱刻印１取得
+;--------------------------------------------------
+@KOJO_0_SEX_MARK_TIJYOKU_1_21
+
+;恥辱刻印２取得
+;--------------------------------------------------
+@KOJO_0_SEX_MARK_TIJYOKU_2_21
+
+;恥辱刻印３取得
+;--------------------------------------------------
+@KOJO_0_SEX_MARK_TIJYOKU_3_21
+
+
+
+;心境変化関連
+
+;倒錯
+;--------------------------------------------------
+@KOJO_0_BATTLE_SHINKYOU_CHANGE_TOUSAKU_21
+
+;怒り
+;--------------------------------------------------
+@KOJO_0_BATTLE_SHINKYOU_CHANGE_IKARI_21
+
+;諦観
+;--------------------------------------------------
+@KOJO_0_BATTLE_SHINKYOU_CHANGE_TEIKAN_21
+
+;冷静
+;--------------------------------------------------
+@KOJO_0_BATTLE_SHINKYOU_CHANGE_REISEI_21
+
+;動揺
+;--------------------------------------------------
+@KOJO_0_BATTLE_SHINKYOU_CHANGE_DOUYOU_21
+
+;高揚
+;--------------------------------------------------
+@KOJO_0_BATTLE_SHINKYOU_CHANGE_KOUYOU_21
+
+;消沈
+;--------------------------------------------------
+@KOJO_0_BATTLE_SHINKYOU_CHANGE_SYOUTIN_21
+
+
+
+;体が竦んだ関連
+
+;触手の虜で体が竦む
+;--------------------------------------------------
+@KOJO_0_BATTLE_DISACTION_TORIKO_21
+
+;快楽で体が竦む
+;--------------------------------------------------
+@KOJO_0_BATTLE_DISACTION_KAIRAKU_21
+
+;苦痛で体が竦む
+;--------------------------------------------------
+@KOJO_0_BATTLE_DISACTION_KUTUU_21
+
+;屈辱で体が竦む
+;--------------------------------------------------
+@KOJO_0_BATTLE_DISACTION_KUTUZYOKU_21
+
+;恐怖で体が竦む
+;--------------------------------------------------
+@KOJO_0_BATTLE_DISACTION_KYOUHU_21
+
+;恥辱で体が竦む
+;--------------------------------------------------
+@KOJO_0_BATTLE_DISACTION_TIZYOKU_21
+
+;寄生の影響で体が竦む
+;--------------------------------------------------
+@KOJO_0_BATTLE_DISACTION_PARASITE_21
+
+
+;自慰関連
+
+;戦闘後自慰
+;--------------------------------------------------
+@KOJO_0_SELF_BATTLEEND_21
+
+;普通の自慰
+;--------------------------------------------------
+@KOJO_0_SELF_N_21
+
+;胸自慰
+;--------------------------------------------------
+@KOJO_0_SELF_B_21
+
+;アナニー
+;--------------------------------------------------
+@KOJO_0_SELF_A_21
+
+
+;幽閉関係
+
+;初めての幽閉
+;--------------------------------------------------
+@KOJO_0_PRISON_PRISENTENCE_FIRST_21
+
+;二度目以降の幽閉後の初被姦
+;--------------------------------------------------
+@KOJO_0_PRISON_PRISENTENCE_START_21
+
+;幽閉後の被姦開始文
+;--------------------------------------------------
+@KOJO_0_PRISON_PRISENTENCE_21
+
+;洗脳になった
+;--------------------------------------------------
+@KOJO_0_PRISON_SENNOU_21
+
+;悪堕ちになった
+;--------------------------------------------------
+@KOJO_0_PRISON_AKUOTI_21
+
+;取り込まれ
+;--------------------------------------------------
+@KOJO_0_PRISON_DEAD_21
+
+;ふたなり化
+;--------------------------------------------------
+@KOJO_0_PRISON_HUTANARI_21
+
+;母乳体質化
+;--------------------------------------------------
+@KOJO_0_PRISON_BONYU_21
+
+;C中心攻め
+;--------------------------------------------------
+@KOJO_0_PRISON_COM_0_21
+
+;V中心攻め
+;--------------------------------------------------
+@KOJO_0_PRISON_COM_1_21
+
+;A中心攻め
+;--------------------------------------------------
+@KOJO_0_PRISON_COM_2_21
+
+;B中心攻め
+;--------------------------------------------------
+@KOJO_0_PRISON_COM_3_21
+
+;Sな攻め
+;--------------------------------------------------
+@KOJO_0_PRISON_COM_4_21
+
+;強制奉仕
+;--------------------------------------------------
+@KOJO_0_PRISON_COM_5_21
+
+;羞恥な攻め
+;--------------------------------------------------
+@KOJO_0_PRISON_COM_6_21
+
+;子触手に犯される
+;--------------------------------------------------
+@KOJO_0_PRISON_COM_7_21
+
+;ふたなり攻め
+;--------------------------------------------------
+@KOJO_0_PRISON_COM_100_21
+
+;V拡張
+;--------------------------------------------------
+@KOJO_0_PRISON_COM_101_21
+
+;A拡張
+;--------------------------------------------------
+@KOJO_0_PRISON_COM_102_21
+
+;搾乳攻め
+;--------------------------------------------------
+@KOJO_0_PRISON_COM_103_21
+
+;Vに産卵
+;--------------------------------------------------
+@KOJO_0_PRISON_COM_200_21
+
+;Aに産卵
+;--------------------------------------------------
+@KOJO_0_PRISON_COM_201_21
+
+;注射
+;--------------------------------------------------
+@KOJO_0_PRISON_COM_300_21
+
+;触手の寄生
+;--------------------------------------------------
+@KOJO_0_PRISON_COM_301_21
+
+
+
+;サブイベント関連
+
+;戦闘のサブイベント
+
+;悪堕ちキャラに敗北して犯される
+;--------------------------------------------------
+@KOJO_0_SUBEVENT_BATTLE_RAPED_ENEMY_21
+
+;触手拘束具を着せられた
+;--------------------------------------------------
+@KOJO_0_SUBEVENT_BATTLE_SETTENTACLECLOTH_21
+
+;触手拘束具による被姦
+;--------------------------------------------------
+@KOJO_0_SUBEVENT_BATTLE_ACTTENTACLECLOTH_21

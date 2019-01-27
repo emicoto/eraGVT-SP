@@ -1,0 +1,29 @@
+;戦闘履歴変数　大目にとる
+#DIM TCREPORT,100
+#DIM CONST TCRLENGTH = 100
+#DIM CONST TCR体力零 = 0
+#DIM CONST TCR気力零 = 1
+#DIM CONST TCR耐性零 = 2
+#DIM CONST TCR外装耐久零 = 3
+#DIM CONST TCR変装耐久零 = 4
+#DIM CONST TCR内装耐久零 = 5
+;
+#DIM CONST TCR体力零時絶頂回数 = 10
+#DIM CONST TCR気力零時絶頂回数 = 10
+#DIM CONST TCR耐性零時絶頂回数 = 10
+
+#DIM CONST TFターン = 0
+
+#DIM CONST TCV外装耐久= 21
+#DIM CONST TCV変装耐久= 23
+#DIM CONST TCV内装耐久= 25
+
+
+
+;敗北時　零になった順番
+#DIM CONST 体気性 = 1
+#DIM CONST 体性気 = 2
+#DIM CONST 気体性 = 3
+#DIM CONST 気性体 = 4
+#DIM CONST 性体気 = 5
+#DIM CONST 性気体 = 6

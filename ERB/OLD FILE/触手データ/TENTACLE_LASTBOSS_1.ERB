@@ -1,0 +1,255 @@
+;--------------------------------------------------
+;ラスボス触手1 K触手
+;↓触手の存在確認用関数　何も処理しない
+@TENTACLE_LASTBOSS_1
+;--------------------------------------------------
+;名前
+@TENTACLE_LASTBOSS_1_GETNAME
+RESULTS = Ｋ触手
+
+;--------------------------------------------------
+;名前
+@TENTACLE_LASTBOSS_1_DEFENITION
+PRINTFORML （数十メートルはある巨大な図体をしたラスボス触手）
+PRINTFORML （その禍々しい威容はまさしく触手たちの王を名乗るにふさわしい）
+
+;--------------------------------------------------
+;HP
+@TENTACLE_LASTBOSS_1_HP
+LOCAL = 30000
+CALL TENTACLE_STATUS_HOSEI, LOCAL,2000
+RETURN RESULT
+
+;--------------------------------------------------
+;射精限界値
+@TENTACLE_LASTBOSS_1_SYASEI
+CALL TENTACLE_LEVEL
+LOCAL = 1250 + RESULT * 25
+RETURN LOCAL
+
+;--------------------------------------------------
+;搾精ダメージ補正
+@TENTACLE_LASTBOSS_1_SAKUSEI
+LOCAL = 100
+RETURN LOCAL
+
+;--------------------------------------------------
+;油断度閾値
+@TENTACLE_LASTBOSS_1_YUDAN
+LOCAL = 2260
+RETURN LOCAL
+
+;--------------------------------------------------
+;攻撃
+@TENTACLE_LASTBOSS_1_KOUGEKI
+LOCAL = 300
+CALL TENTACLE_STATUS_HOSEI, LOCAL
+RETURN RESULT
+
+;--------------------------------------------------
+;防御
+@TENTACLE_LASTBOSS_1_BOUGYO
+LOCAL = 200
+CALL TENTACLE_STATUS_HOSEI, LOCAL,50
+RETURN RESULT
+
+;--------------------------------------------------
+;敏捷
+@TENTACLE_LASTBOSS_1_BINSYOU
+LOCAL = 100
+CALL TENTACLE_STATUS_HOSEI, LOCAL,50
+RETURN RESULT
+
+;--------------------------------------------------
+;知性
+@TENTACLE_LASTBOSS_1_CHISEI
+LOCAL = 65
+CALL TENTACLE_STATUS_HOSEI, LOCAL,10
+RETURN RESULT
+
+;--------------------------------------------------
+;近距離
+@TENTACLE_LASTBOSS_1_SHORT
+RESULT = 150
+RETURN RESULT
+
+;--------------------------------------------------
+;中距離
+@TENTACLE_LASTBOSS_1_MIDDLE
+RESULT = 150
+RETURN RESULT
+
+;--------------------------------------------------
+;遠距離
+@TENTACLE_LASTBOSS_1_LONG
+RESULT = 150
+RETURN RESULT
+
+;--------------------------------------------------
+;拘束力
+@TENTACLE_LASTBOSS_1_HOLD
+RESULT = 200
+RETURN RESULT
+
+;--------------------------------------------------
+;PALAM補正 百分率で返す
+@TENTACLE_LASTBOSS_1_PALAM_HOSEI
+
+;快C
+LOCAL:0 = 120
+;快V
+LOCAL:1 = 120
+;快A
+LOCAL:2 = 120
+;快B
+LOCAL:3 = 120
+;潤滑
+LOCAL:4 = 100
+;恭順
+LOCAL:5 = 100
+;取得
+LOCAL:6 = 100
+;欲情
+LOCAL:7 = 100
+;屈服
+LOCAL:8 = 100
+;恥辱
+LOCAL:9 = 100
+;苦痛
+LOCAL:10 = 100
+;恐怖
+LOCAL:11 = 100
+
+RETURN LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11
+
+
+
+;--------------------------------------------------
+;専用ルーチン（戦闘）
+@TENTACLE_LASTBOSS_1_ATTACK_ROUTINE
+LOCAL = 0
+LOCAL:1 = RAND:100
+LOCAL:2 = BASE:防御 - 200
+;油断していると距離を取る確率アップ
+IF FLAG:17 >= FLAG:16 && LOCAL:1 < 35
+	LOCAL = 4
+;防御力の高い相手に対して攻撃の使用頻度ダウン、粘液の使用頻度アップ
+ELSEIF LOCAL:2 && LOCAL:1 < (LOCAL:2 / 2)
+	IF LOCAL:1 < 5
+		LOCAL = 1
+	ELSEIF LOCAL:1 < 35
+		LOCAL = 3
+	ELSE
+		LOCAL = 2
+	ENDIF
+ELSEIF LOCAL:1 < 50
+	LOCAL = 1
+ELSEIF LOCAL:1 < 74
+	LOCAL = 2
+ELSEIF LOCAL:1 < 98
+	LOCAL = 3
+ELSE
+	LOCAL = 4
+ENDIF
+RETURN LOCAL
+
+;--------------------------------------------------
+;専用ルーチン（性行為）
+@TENTACLE_LASTBOSS_1_SEX_ROUTINE
+LOCAL = RAND:100
+IF LOCAL < 5
+	RETURN 1000
+ELSEIF LOCAL < 10
+	RETURN 1001
+ELSEIF LOCAL < 15
+	RETURN 1002
+ELSEIF LOCAL < 20
+	RETURN 1003
+ELSEIF LOCAL < 25
+	RETURN 1004
+ELSEIF LOCAL < 30
+	RETURN 1005
+ELSEIF LOCAL < 35
+	RETURN 1006
+ELSEIF LOCAL < 40
+	RETURN 1007
+ELSEIF LOCAL < 50
+	RETURN 1015
+ELSE
+	RETURN -1
+ENDIF
+
+;--------------------------------------------------
+;性コマンドレファレンス
+;ARG=1　素股焦らし成功時の行動指定
+;ARG=2　素股焦らし失敗時の行動指定
+;ARG=3　フェラチオ誘発時の行動指定
+@TENTACLE_LASTBOSS_1_REACTION_REF, ARG = 0
+IF ARG == 1
+	LOCAL = RAND:6
+	IF LOCAL < 2
+		RETURN 3
+	ELSEIF LOCAL < 4
+		RETURN 5
+	ELSEIF LOCAL < 5
+		RETURN 1001
+	ELSE
+		RETURN 1002
+	ENDIF
+ELSEIF ARG == 2
+	RETURN 15
+ELSEIF ARG == 3
+	RETURN 11
+ENDIF
+RETURN -1
+
+;--------------------------------------------------
+;専用ルーチン（幽閉）
+@TENTACLE_LASTBOSS_1_PRISON_ROUTINE
+LOCAL = RAND:100
+IF LOCAL < 10
+	CALL PRISON_COMABLE, 100
+	RETURN 1
+ELSEIF LOCAL < 20
+	CALL PRISON_COMABLE, 101
+	RETURN 1
+ELSEIF LOCAL < 30
+	CALL PRISON_COMABLE, 102
+	RETURN 1
+ELSEIF LOCAL < 40
+	CALL PRISON_COMABLE, 103
+	RETURN 1
+ELSEIF LOCAL < 50
+	CALL PRISON_COMABLE, 200
+	RETURN 1
+ELSEIF LOCAL < 60
+	CALL PRISON_COMABLE, 201
+	RETURN 1
+ELSEIF LOCAL < 70
+	CALL PRISON_COMABLE, 300
+	RETURN 1
+ELSEIF LOCAL < 75
+	CALL PRISON_COMABLE, 104
+	RETURN 1
+ELSE
+	RETURN 0
+ENDIF
+
+;--------------------------------------------------
+;触手サイズ補正
+;この補正の後に部位ごとの補正が入る
+@TENTACLE_LASTBOSS_1_TENTACLE_SIZE,ARG
+;C用触手
+LOCAL:0 = 90
+LOCAL:4 = RAND:5 + 1
+;V用触手
+LOCAL:1 = 120
+LOCAL:5 = RAND:3 + 1
+;A用触手
+LOCAL:2 = 120
+LOCAL:6 = RAND:3 + 1
+;B用触手
+LOCAL:3 = 90
+LOCAL:7 = RAND:5 + 1
+RETURN LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7
+

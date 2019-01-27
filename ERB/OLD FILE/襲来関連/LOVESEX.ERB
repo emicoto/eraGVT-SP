@@ -1,0 +1,387 @@
+;**********************************************************
+;恋人セックスの処理
+
+;セックス
+@LOVESEX_NIGHT
+VARSET LOCAL
+SIF TIME != 1
+	RETURN
+
+LOCAL:2 = TARGET
+FOR LOCAL, 0, CHARANUM
+	SIF LOCAL == MASTER
+		CONTINUE
+	SIF CFLAG:LOCAL:999 == 0
+		CONTINUE
+
+	TARGET = LOCAL
+
+	;キャラが生存中でなければ発生しない
+	SIF CFLAG:0 != 0
+		CONTINUE
+		
+	;恋人持ちでなければ発生しない　しかし片思いの場合は五分の一の確立で発生
+	SIF TALENT:交際相手 == 0 || TALENT:交際相手 >= 5 || (TALENT:交際相手 == 1 && RAND:10 > 4)
+		CONTINUE
+	
+	;男キャラの場合はコンフィグONかつA感度2以上の場合のみ
+	SIF FILTER_CHECK_F(5) > 0 && TALENT:オトコ > 0 && ABL:Ａ感覚 < 2
+		CONTINUE
+		
+	;男キャラで片思いの場合は弾く
+	SIF TALENT:オトコ > 0 && TALENT:交際相手 == 1
+		CONTINUE
+	;恋人セックス確率判定値を初期化
+	LOCAL:1 = 0
+	LOCAL:3 = 0
+	;処女の場合、交際相手によっては日数で制限を受ける
+	IF TALENT:処女 > 0
+		IF TALENT:交際相手 == 2
+			LOCAL:3 = 12
+		ELSEIF TALENT:交際相手 == 3
+			LOCAL:3 = 6
+		ELSEIF TALENT:交際相手 == 4
+			LOCAL:3 = 3
+		ENDIF
+		SIF TALENT:学生 == 1
+			LOCAL:3 += 16
+		SIF TALENT:学生 == 2
+			LOCAL:3 += 8
+		SIF TALENT:学生 == 3
+			LOCAL:3 += 4
+		SIF TALENT:学生 == 4
+			LOCAL:3 += 2
+		SIF DAY < LOCAL:3 && RAND:4 != 0
+			CONTINUE
+	ENDIF
+	;欲望を見る
+	LOCAL:1 += ABL:欲望 * 5
+	;精液中毒を見る
+	LOCAL:1 += ABL:精液中毒 * 2
+	;奉仕精神を見る
+	IF ABL:奉仕精神 >= 5
+		LOCAL:1 += 35
+	ELSEIF ABL:奉仕精神 == 4
+		LOCAL:1 += 30
+	ELSEIF ABL:奉仕精神 == 3
+		LOCAL:1 += 25
+	ELSEIF ABL:奉仕精神 == 2
+		LOCAL:1 += 20
+	ELSEIF ABL:奉仕精神 == 1
+		LOCAL:1 += 15
+	ENDIF
+	IF RAND:100 < LOCAL:1
+	;片思いの場合はセックスではなく告白するように
+		IF TALENT:交際相手 == 1
+			CALL MESSAGE_KATAOMOI_NIGHT
+		ELSE
+			;地の文：セックス
+			CALL MESSAGE_LOVESEX_NIGHT
+			CALL LOVESEX_KIND, TARGET, 0
+			CALL _ABLUP,0
+		ENDIF
+		PRINTW 
+		VARSET PALAM
+	ENDIF
+NEXT
+TARGET = LOCAL:2
+
+;----------------------------------------------------------
+;セックスの種類を決める
+@LOVESEX_KIND, ARG, ARG:1
+LOCAL:0 = 0
+LOCAL:1 = 0
+;乱数用の関数としてLOCAL:2を追加
+LOCAL:2 = 0
+
+;絶頂回数一度目のリセット
+VARSET NOWEX
+
+LOCAL:2 = RAND:10
+;淫○系の素質があればそれを優先
+IF TALENT:ARG:淫壷 > 0 && LOCAL:2 > 5
+	CALL SEX_V, ARG
+ELSEIF TALENT:ARG:淫尻 > 0
+	CALL SEX_A, ARG
+ENDIF
+
+;追加で自慰が発生した場合に備えて二度目のリセット
+VARSET NOWEX
+
+;A感覚が2以上ならアナルセックスできる
+SIF ABL:ARG:Ａ感覚 > 1
+	LOCAL:0 = 1
+
+IF LOCAL:0 == 0
+	CALL SEX_V, ARG
+ELSEIF LOCAL:0 == 1
+	LOCAL:1 = RAND:100 && TALENT:ARG:オトコ < 0
+	IF LOCAL:1 < 50
+		CALL SEX_V, ARG
+	ELSE
+		CALL SEX_A, ARG
+	ENDIF
+ENDIF
+RETURN 1
+
+;----------------------------------------------------------
+;普通の性行為
+@SEX_V, ARG
+;地の文：セックス
+CALL MESSAGE_SEX_V
+
+;ベース値の明示的初期化
+REPEAT 12
+	LOCAL:COUNT = 0
+REND
+
+;ベース
+EXP:ARG:Ｖ経験 += 1
+EXP:ARG:精液経験 += 1
+EXP:ARG:フェラ経験 += 1
+;快C
+IF ABL:ARG:Ｃ感覚 == 0
+	LOCAL:0 = 200
+ELSEIF ABL:ARG:Ｃ感覚 == 1
+	LOCAL:0 = 1000
+ELSEIF ABL:ARG:Ｃ感覚 == 2
+	LOCAL:0 = 2000
+ELSEIF ABL:ARG:Ｃ感覚 == 3
+	LOCAL:0 = 4000
+ELSEIF ABL:ARG:Ｃ感覚 == 4
+	LOCAL:0 = 10000
+ELSEIF ABL:ARG:Ｃ感覚 >= 5
+	LOCAL:0 = 20000
+ENDIF
+
+;快B
+IF ABL:ARG:Ｂ感覚 == 0
+	LOCAL:3 = 200
+ELSEIF ABL:ARG:Ｂ感覚 == 1
+	LOCAL:3 = 400
+ELSEIF ABL:ARG:Ｂ感覚 == 2
+	LOCAL:3 = 1000
+ELSEIF ABL:ARG:Ｂ感覚 == 3
+	LOCAL:3 = 2000
+ELSEIF ABL:ARG:Ｂ感覚 == 4
+	LOCAL:3 = 4000
+ELSEIF ABL:ARG:Ｂ感覚 >= 5
+	LOCAL:3 = 10000
+ENDIF
+
+;快V
+IF ABL:ARG:Ｖ感覚 == 0
+	LOCAL:1 = 200
+ELSEIF ABL:ARG:Ｖ感覚 == 1
+	LOCAL:1 = 400
+ELSEIF ABL:ARG:Ｖ感覚 == 2
+	LOCAL:1 = 1000
+ELSEIF ABL:ARG:Ｖ感覚 == 3
+	LOCAL:1 = 4000
+ELSEIF ABL:ARG:Ｖ感覚 == 4
+	LOCAL:1 = 10000
+ELSEIF ABL:ARG:Ｖ感覚 >= 5
+	LOCAL:1 = 20000
+ENDIF
+IF TALENT:処女 > 0
+	TALENT:処女 = -1
+	CFLAG:206 = 5
+	LOCAL:10 = 2500
+ENDIF
+
+;技巧の値に応じて快感度のボーナス
+IF ABL:ARG:技巧 == 0
+ELSEIF ABL:ARG:技巧 == 1
+ELSEIF ABL:ARG:技巧 == 2
+	TIMES LOCAL:0, 1.10
+	TIMES LOCAL:1, 1.10
+	TIMES LOCAL:3, 1.10
+ELSEIF ABL:ARG:技巧 == 3
+	TIMES LOCAL:0, 1.25
+	TIMES LOCAL:1, 1.25
+	TIMES LOCAL:3, 1.25
+ELSEIF ABL:ARG:技巧 == 4
+	TIMES LOCAL:0, 1.50
+	TIMES LOCAL:1, 1.50
+	TIMES LOCAL:3, 1.50
+ELSEIF ABL:ARG:技巧 >= 5
+	TIMES LOCAL:0, 2.00
+	TIMES LOCAL:1, 2.00
+	TIMES LOCAL:3, 2.00
+ENDIF
+
+;屈服　露出癖が高くなると多くなる
+IF ABL:ARG:露出癖 == 0
+	LOCAL:8 = 50
+ELSEIF ABL:ARG:露出癖 == 1
+	LOCAL:8 = 100
+ELSEIF ABL:ARG:露出癖 == 2
+	LOCAL:8 = 200
+ELSEIF ABL:ARG:露出癖 == 3
+	LOCAL:8 = 500
+ELSEIF ABL:ARG:露出癖 == 4
+	LOCAL:8 = 1000
+ELSEIF ABL:ARG:露出癖 >= 5
+	LOCAL:8 = 2000
+ENDIF
+
+;恥情　露出癖が高くなると多くなる
+IF ABL:ARG:露出癖 == 0
+	LOCAL:9 = 50
+ELSEIF ABL:ARG:露出癖 == 1
+	LOCAL:9 = 100
+ELSEIF ABL:ARG:露出癖 == 2
+	LOCAL:9 = 200
+ELSEIF ABL:ARG:露出癖 == 3
+	LOCAL:9 = 500
+ELSEIF ABL:ARG:露出癖 == 4
+	LOCAL:9 = 1000
+ELSEIF ABL:ARG:露出癖 >= 5
+	LOCAL:9 = 2000
+ENDIF
+
+;奉仕精神があると欲情にボーナス
+IF ABL:ARG:奉仕精神 == 1
+	LOCAL:7 = 1000
+ELSEIF ABL:ARG:奉仕精神 == 2
+	LOCAL:7 = 2000
+ELSEIF ABL:ARG:奉仕精神 == 3
+	LOCAL:7 = 5000
+ELSEIF ABL:ARG:奉仕精神 == 4
+	LOCAL:7 = 10000
+ELSEIF ABL:ARG:奉仕精神 >= 5
+	LOCAL:7 = 20000
+ENDIF
+
+;習得
+;奉仕精神に応じて上昇
+IF ABL:ARG:奉仕精神 == 0
+	LOCAL:6 = 200
+ELSEIF ABL:ARG:奉仕精神 == 1
+	LOCAL:6 = 400
+ELSEIF ABL:ARG:奉仕精神 == 2
+	LOCAL:6 = 800
+ELSEIF ABL:ARG:奉仕精神 == 3
+	LOCAL:6 = 1000
+ELSEIF ABL:ARG:奉仕精神 == 4
+	LOCAL:6 = 2000
+ELSEIF ABL:ARG:奉仕精神 >= 5
+	LOCAL:6 = 4000
+ENDIF
+
+;体力消費基本値
+LOCAL:12 = 150
+
+;計算へ
+CALL PALAM_CAL, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, LOCAL:12
+
+;アフターピル
+CALL AFTER_PILL, TARGET,75, 愛する人
+;妊娠判定
+SIF TALENT:オトコ <= 0
+	CALL NINSIN_HANTEI, 6, 800, 愛する人
+					
+;----------------------------------------------------------
+;アナルセックス
+@SEX_A, ARG
+;地の文：アナルセックス
+CALL MESSAGE_SEX_A
+
+;ベース値の明示的初期化
+REPEAT 12
+	LOCAL:COUNT = 0
+REND
+
+;ベース
+EXP:ARG:精液経験 += 1
+EXP:ARG:Ａ経験 += 1
+EXP:ARG:フェラ経験 += 1
+;快A
+IF ABL:ARG:Ａ感覚 == 2
+	LOCAL:2 = 2000
+ELSEIF ABL:ARG:Ａ感覚 == 3
+	LOCAL:2 = 4000
+ELSEIF ABL:ARG:Ａ感覚 == 4
+	LOCAL:2 = 10000
+ELSEIF ABL:ARG:Ａ感覚 >= 5
+	LOCAL:2 = 20000
+ENDIF
+
+;技巧の値に応じて快感度のボーナス
+IF ABL:ARG:技巧 == 0
+ELSEIF ABL:ARG:技巧 == 1
+ELSEIF ABL:ARG:技巧 == 2
+	TIMES LOCAL:2, 1.10
+ELSEIF ABL:ARG:技巧 == 3
+	TIMES LOCAL:2, 1.25
+ELSEIF ABL:ARG:技巧 == 4
+	TIMES LOCAL:2, 1.50
+ELSEIF ABL:ARG:技巧 >= 5
+	TIMES LOCAL:2, 2.00
+ENDIF
+
+;屈服　露出癖が高くなると多くなる
+IF ABL:ARG:露出癖 == 0
+	LOCAL:8 = 100
+ELSEIF ABL:ARG:露出癖 == 1
+	LOCAL:8 = 200
+ELSEIF ABL:ARG:露出癖 == 2
+	LOCAL:8 = 500
+ELSEIF ABL:ARG:露出癖 == 3
+	LOCAL:8 = 1000
+ELSEIF ABL:ARG:露出癖 == 4
+	LOCAL:8 = 2000
+ELSEIF ABL:ARG:露出癖 >= 5
+	LOCAL:8 = 4000
+ENDIF
+
+;恥情　露出癖が高くなると多くなる
+IF ABL:ARG:露出癖 == 0
+	LOCAL:9 = 100
+ELSEIF ABL:ARG:露出癖 == 1
+	LOCAL:9 = 200
+ELSEIF ABL:ARG:露出癖 == 2
+	LOCAL:9 = 500
+ELSEIF ABL:ARG:露出癖 == 3
+	LOCAL:9 = 1000
+ELSEIF ABL:ARG:露出癖 == 4
+	LOCAL:9 = 2000
+ELSEIF ABL:ARG:露出癖 >= 5
+	LOCAL:9 = 4000
+ENDIF
+
+;奉仕精神があると欲情にボーナス
+IF ABL:ARG:奉仕精神 == 1
+	LOCAL:7 = 1000
+ELSEIF ABL:ARG:奉仕精神 == 2
+	LOCAL:7 = 2000
+ELSEIF ABL:ARG:奉仕精神 == 3
+	LOCAL:7 = 5000
+ELSEIF ABL:ARG:奉仕精神 == 4
+	LOCAL:7 = 10000
+ELSEIF ABL:ARG:奉仕精神 >= 5
+	LOCAL:7 = 20000
+ENDIF
+
+;習得
+;奉仕精神に応じて上昇
+IF ABL:ARG:奉仕精神 == 0
+	LOCAL:6 = 200
+ELSEIF ABL:ARG:奉仕精神 == 1
+	LOCAL:6 = 400
+ELSEIF ABL:ARG:奉仕精神 == 2
+	LOCAL:6 = 800
+ELSEIF ABL:ARG:奉仕精神 == 3
+	LOCAL:6 = 1000
+ELSEIF ABL:ARG:奉仕精神 == 4
+	LOCAL:6 = 2000
+ELSEIF ABL:ARG:奉仕精神 >= 5
+	LOCAL:6 = 4000
+ENDIF
+
+;体力消費基本値
+LOCAL:12 = 150
+
+;計算へ
+CALL PALAM_CAL, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, LOCAL:12
+

@@ -1,0 +1,53 @@
+@SHOKISET_NAME_10
+PRINTL [10]６人：髙橋退魔団
+;-----------------------------
+;髙橋退魔団
+;------------------------------
+@SHOKISET_SETUMEI_10
+PRINTL
+PRINTL
+PRINTL 　　　半分が癖のあるキャラの集団（システム的な意味で）
+PRINTL 　　　神を憑依させて戦うJC・安定した闘いをする鬼っ娘JK
+PRINTL 　　　短期決戦型鬼っ娘JS・変身の度に得意(苦手)距離が変わる妖精上がりの神
+PRINTL 　　　それと、ツンデレ魔法使い・変身の度に攻撃スタイルがランダムに変わるゴーレムで合計6人
+PRINTL 　　　最後の2人は最初から悪落ちふたなり状態です。
+PRINTL
+PRINTL
+PRINTL 　　　中級者向け？※バランス未調整
+PRINTL
+;-------------------------------
+;グループの選択-髙橋退魔団
+;-------------------------------
+@SHOKISET_SELECT_10
+
+FLAG:5 = 1
+SAVESTR:10=髙橋退魔団
+
+ADDCHARA 361
+FLAG:8 ++
+ADDCHARA 362
+FLAG:8 ++
+ADDCHARA 363
+FLAG:8 ++
+ADDCHARA 364
+FLAG:8 ++
+
+;↓2キャラは最初から悪堕ち・レベル50・ふたなり・非処女にする
+ADDCHARA 365
+FLAG:8 ++
+CFLAG:5:0 = 3
+ABL:5:レベル = 50
+TALENT:5:ふたなり = 1
+EXP:5:Ｖ経験 += 10
+ADDCHARA 366
+FLAG:8 ++
+CFLAG:6:0 = 3
+ABL:6:レベル = 50
+TALENT:6:処女 = 0
+TALENT:6:ふたなり = 1
+EXP:6:Ｖ経験 += 10
+CFLAG:6:206 = 6
+
+CALL SHOKISET_CSVFIX
+JUMP CHARA_MAKE_MAIN, 0
+

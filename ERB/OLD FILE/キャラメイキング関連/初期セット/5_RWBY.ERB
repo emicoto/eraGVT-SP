@@ -1,0 +1,36 @@
+@SHOKISET_NAME_5
+PRINTL [ 5]４人：TEAM "RWBY"
+;-----------------------------
+;TEAM "RWBY"に対する説明
+;------------------------------
+@SHOKISET_SETUMEI_5
+PRINTL
+PRINTL 　　　3DCGアニメ『ＲＷＢＹ(ルビー)』より参戦！
+PRINTL 　　　人類に害を為す魔物を狩る"ハントレス"を目指す少女４人のチーム
+PRINTL 　　　魔法エネルギー"ダスト"で動作し、変形も可能な個性的な武器で華麗に敵を討つ
+PRINTL 　　　チーム名の"RWBY"は４人の頭文字から取られている
+PRINTL 
+PRINTL 　　　使えるキャラが４人と多い上に構成のバランスも良く、戦いやすいだろう
+PRINTL 　　　初～中級者向け
+PRINTL
+
+;-------------------------------
+;グループの選択-TEAM "RWBY"
+;-------------------------------
+@SHOKISET_SELECT_5
+
+FLAG:5 = 1
+SAVESTR:10=TEAM "RWBY"
+
+ADDCHARA 351
+FLAG:8 ++
+ADDCHARA 352
+FLAG:8 ++
+ADDCHARA 353
+FLAG:8 ++
+ADDCHARA 354
+FLAG:8 ++
+
+CALL SHOKISET_CSVFIX
+JUMP CHARA_MAKE_MAIN, 0
+

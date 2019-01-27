@@ -1,0 +1,571 @@
+;==================================================
+;【基本】
+;--------------------------------------------------
+;雑魚敵
+@TENTACLE_MOB_102
+;--------------------------------------------------
+;名前
+@TENTACLE_MOB_102_GETNAME
+RESULTS = ぷるぷるスライム・アス
+
+;--------------------------------------------------
+;解説
+@TENTACLE_MOB_102_DEFENITION
+PRINTFORML （あまり変形しない固体スライム生物の変種）
+PRINTFORML （無色透明な体は、水に入り込むと存在に気がつくのは困難である）
+PRINTFORML （死の間際に子孫を残す本能が有る）
+
+
+;==================================================
+;【ステータス】
+;--------------------------------------------------
+;HP
+@TENTACLE_MOB_102_HP
+LOCAL = 1000
+CALL TENTACLE_STATUS_HOSEI, LOCAL, 500
+RETURN RESULT
+
+;--------------------------------------------------
+;射精限界値
+@TENTACLE_MOB_102_SYASEI
+CALL TENTACLE_LEVEL
+LOCAL = 480 + RESULT * 5
+RETURN LOCAL
+
+;--------------------------------------------------
+;搾精ダメージ補正
+@TENTACLE_MOB_102_SAKUSEI
+LOCAL = 200
+RETURN LOCAL
+
+;--------------------------------------------------
+;油断度閾値
+@TENTACLE_MOB_102_YUDAN
+LOCAL = 500
+RETURN LOCAL
+
+;--------------------------------------------------
+;攻撃
+@TENTACLE_MOB_102_KOUGEKI
+LOCAL = 100
+CALL TENTACLE_STATUS_HOSEI, LOCAL
+RETURN RESULT
+
+;--------------------------------------------------
+;防御
+@TENTACLE_MOB_102_BOUGYO
+LOCAL = 200
+CALL TENTACLE_STATUS_HOSEI, LOCAL
+RETURN RESULT
+
+;--------------------------------------------------
+;敏捷
+@TENTACLE_MOB_102_BINSYOU
+LOCAL = 50
+CALL TENTACLE_STATUS_HOSEI, LOCAL
+RETURN RESULT
+
+;--------------------------------------------------
+;知性
+@TENTACLE_MOB_102_CHISEI
+LOCAL = 50
+CALL TENTACLE_STATUS_HOSEI, LOCAL,10
+RETURN RESULT
+
+;--------------------------------------------------
+;近距離
+@TENTACLE_MOB_102_SHORT
+RESULT = 150
+RETURN RESULT
+
+;--------------------------------------------------
+;中距離
+@TENTACLE_MOB_102_MIDDLE
+RESULT = 150
+RETURN RESULT
+
+;--------------------------------------------------
+;遠距離
+@TENTACLE_MOB_102_LONG
+RESULT = 150
+RETURN RESULT
+
+;--------------------------------------------------
+;拘束力
+@TENTACLE_MOB_102_HOLD
+RESULT = 150
+RETURN RESULT
+
+;--------------------------------------------------
+;PALAM補正 百分率で返す
+@TENTACLE_MOB_102_PALAM_HOSEI
+;快C
+LOCAL:0 = 100
+;快V
+LOCAL:1 = 100
+;快A
+LOCAL:2 = 100
+;快B
+LOCAL:3 = 100
+;潤滑
+LOCAL:4 = 50
+;恭順
+LOCAL:5 = 50
+;取得
+LOCAL:6 = 50
+;欲情
+LOCAL:7 = 40
+;屈服
+LOCAL:8 = 25
+;恥辱
+LOCAL:9 = 50
+;苦痛
+LOCAL:10 = 50
+;恐怖
+LOCAL:11 = 25
+
+RETURN LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11
+
+
+;==================================================
+;【専用ルーチン（戦闘）】
+;--------------------------------------------------
+@TENTACLE_MOB_102_ATTACK_ROUTINE
+IF LOCAL < 45
+	RETURN 2
+ELSE
+	RETURN 0
+ENDIF
+
+
+
+;==================================================
+;【専用ルーチン（性行為）】
+;--------------------------------------------------
+;専用ルーチン（性行為）
+@TENTACLE_MOB_102_SEX_ROUTINE
+
+;射精値が3/4（FLAG:15 > FLAG:14*3/4 ）かつ体力が1割以下（FLAG:13 < FLAG:12 /10 ）
+;A触手専用SPの浣腸拡張
+IF (FLAG:15 > FLAG:14 *3/4) && (FLAG:13 < FLAG:12 /10)
+	;衣装の耐久度が高ければ衣装破壊を優先する
+	IF CLOTH_OUTER_PER > 90 || CLOTH_INNER_PER > CLOTH_INNER_DEF / 4
+		RETURN 14
+	ELSE
+		;オトコかつ男女平等オフならC攻め強に振り替える
+		IF TALENT:オトコ > 0 && FILTER_CHECK_F(5) > 0
+			RETURN 1
+		;ソフトボディスーツの場合は貫通できないのでA攻め強に振り返る
+		ELSEIF CFLAG:41 == 299 && CFLAG:1 > 0
+			RETURN 5
+		ELSE
+			;専用コマンド「浣腸拡張」
+			RETURN 2000
+		ENDIF
+	ENDIF
+ELSE
+
+
+	;ランダム係数呼び出し（A攻め強、A攻め弱、CA攻め弱）
+	LOCAL = RAND:100
+
+	;アナルに潜り込む
+	IF LOCAL < 20 + (TALENT:オトコ > 0) * 20 || (TFLAG:20 == 5 && LOCAL < 80)
+		IF CLOTH_OUTER_PER > 90 || CLOTH_INNER_PER > CLOTH_INNER_DEF
+			RETURN 14
+		ELSE
+			IF TALENT:オトコ > 0 && FILTER_CHECK_F(5) > 0
+				RETURN 1
+			ELSE
+				RETURN 5
+			ENDIF
+		ENDIF
+
+	;CA攻め弱
+	ELSEIF LOCAL < 50
+		RETURN 0
+
+	;アナル攻め弱
+	ELSE
+		IF TALENT:オトコ > 0 && FILTER_CHECK_F(5) > 0
+			RETURN 1
+		ELSE
+			RETURN 4, FLAG:11, 1
+		ENDIF
+	ENDIF
+ENDIF
+
+RETURN 1
+
+;==================================================
+;【性コマンドレファレンス】
+;--------------------------------------------------
+;ARG=1　素股焦らし成功時の行動指定
+;ARG=2　素股焦らし失敗時の行動指定
+;ARG=3　フェラチオ誘発時の行動指定
+@TENTACLE_MOB_102_REACTION_REF, ARG = 0
+IF ARG == 1
+	RETURN 5
+ELSEIF ARG == 2
+	RETURN 5
+ENDIF
+RETURN -1
+
+
+
+;==================================================
+;C攻め弱
+;--------------------------------------------------
+;性コマンド分類
+@SEX_TYPE_MOB_102_COM0
+RETURN 通常
+
+@MESSAGE_MOB_102_COM0, ARG:0, ARG:1
+FONTBOLD
+PRINT ＣＡ愛撫
+FONTREGULAR
+CALL MESSAGE_SEX_STATE, ARG:0, ARG:1, Ｃ
+PRINTL 
+CALL TENTACLE_ACCESS, "NAME"
+PRINTFORML は%PRINT_TRANSCALLNAME(TARGET)%の背中から%T_SHAPE("透明","ブラシ")%の舌を伸ばし、
+PRINTFORML %SLANG_A(TARGET)%から%SLANG_C(TARGET)%を丹念に舐め回している
+PRINTFORM 透明な
+CALL TENTACLE_ACCESS, "NAME"
+PRINTFORML の舌で広げられ、シワを数えるように%SLANG_A(TARGET)%を舐めまわしている。
+PRINTFORML そのことに気がついた%PRINT_TRANSCALLNAME(TARGET)%は、その股を濡らすのであった……
+PRINTW 
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEX_COM0")
+PRINTL 
+;動画撮影フラグの処理
+IF FLAG:71
+	;愛撫されたところを見られた
+	SIF (ARG & Ｃ) || (ARG & Ｖ) || (ARG & Ａ) || (ARG & Ｂ)
+		SETBIT TFLAG:21,1
+ENDIF
+@SEXCOM_OPTION_MOB_102_COM0
+;追加攻め部位指定
+RETURN 5
+
+
+;--------------------------------------------------
+;A攻め弱
+;--------------------------------------------------
+;性コマンド分類
+@SEX_TYPE_MOB_102_COM4
+RETURN 通常
+
+@MESSAGE_MOB_102_COM4, ARG:0, ARG:1
+FONTBOLD
+PRINT アナル舐め
+FONTREGULAR
+CALL MESSAGE_SEX_STATE, ARG:0, ARG:1, Ａ
+PRINTL 
+CALL TENTACLE_ACCESS, "NAME"
+PRINTFORML は、%PRINT_TRANSCALLNAME(TARGET)%の背中から舌を伸ばし、
+PRINTFORML %SLANG_A(TARGET)%を中心に丹念に舐め回している。
+PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の%SLANG_A(TARGET)%は、舌の動きに過敏に反応してしまう。
+PRINTFORML 拒絶するように%PRINT_TRANSCALLNAME(TARGET)%は%SLANG_A(TARGET)%を締めるが、
+CALL TENTACLE_ACCESS, "NAME"
+PRINTFORML はその反応に気を良くした様に、%PRINT_TRANSCALLNAME(TARGET)%の%SLANG_A(TARGET)%を舐め続けた。
+PRINTW 
+
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEX_COM4")
+PRINTL 
+
+;動画撮影フラグの処理
+IF FLAG:71
+	;愛撫されたところを見られた
+	SIF (ARG & Ｃ) || (ARG & Ｖ) || (ARG & Ａ) || (ARG & Ｂ)
+		SETBIT TFLAG:21,1
+ENDIF
+
+@SEXCOM_OPTION_MOB_102_COM4
+;追加攻め部位指定
+RETURN 1
+
+
+;--------------------------------------------------
+;A攻め強
+;--------------------------------------------------
+;性コマンド分類
+@SEX_TYPE_MOB_102_COM5
+RETURN 挿入
+
+@MESSAGE_MOB_102_COM5, ARG:0, ARG:1
+FONTBOLD
+PRINT アナル侵入
+FONTREGULAR
+CALL MESSAGE_SEX_STATE, ARG:0, ARG:1, Ａ
+PRINTL 
+CALL TENTACLE_ACCESS, "NAME"
+PRINTFORML は%PRINT_TRANSCALLNAME(TARGET)%の背中から伸ばした舌を、
+PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の%SLANG_A(TARGET)%へ突き入れた。
+CALL TENTACLE_ACCESS, "NAME"
+PRINTFORML は、%PRINT_TRANSCALLNAME(TARGET)%の%SLANG_A(TARGET)%に、
+PRINTFORML 粘液に塗れる%T_SHAPE("透明","ブラシ")%をジュブジュブと出し入れし続けている。
+PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は、排泄するだけでは得られない快感を味わい続けた。
+PRINTW 
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEX_COM5")
+PRINTL 
+
+;動画撮影フラグの処理
+IF FLAG:71
+	;愛撫されたところを見られた
+	SIF (ARG & Ｃ) || (ARG & Ｖ) || (ARG & Ａ) || (ARG & Ｂ)
+		SETBIT TFLAG:21,1
+	;挿入されたところを見られた
+	SIF (ARG & Ｖ) || (ARG & Ａ)
+		SETBIT TFLAG:21,3
+ENDIF
+
+;================================================================================
+;固有コマンド：浣腸産卵
+;--------------------------------------------------------------------------------
+;性コマンド分類
+@SEX_TYPE_MOB_102_COM2000
+RETURN 挿入
+
+@SEXCOM_MOB_102_COM2000,ARG = 0,ARG:1 = 0
+;コマンドのＩＤ
+LOCAL:0 = 2000
+
+;メイン部位（なし0 Ｃ1 Ｖ2 Ａ4 Ｂ8）
+LOCAL:2 = Ａ
+
+;油断度上昇量
+LOCAL:3 = 100
+
+;射精フラグ（なし0 膣2 アナル4 胸8 口16 手32 ワレメ64 暴発128 ビット演算）
+LOCAL:4 = アナル
+
+;射精ゲージ上昇量
+LOCAL:5 = 2000
+
+;服へのダメージ
+LOCAL:6 = 2
+
+;コマンドの強度（弱=0 強=1 SP=2）
+;追加責めの効果とPALAM影響度の両方が強化される
+LOCAL:7 = 2
+
+;処女喪失の有無（なし0 あり1 あり、地の文なし2）
+LOCAL:8 = 0
+
+;特殊効果
+;1 = Ｖ挿入防御貫通（Ｖ挿入防御していても挿入される）
+;2 = 拡張責め（ＶまたはＡ強度が1以上なら屈服、恥情、苦痛、恐怖が入る）
+LOCAL:9 = 2
+
+;PALAM影響度　影響なしなら=0　基本値=5
+;-------------------------
+;快Ｃ強度
+LOCAL:10 = 0
+;快Ｖ強度
+LOCAL:11 = 0
+;快Ａ強度
+LOCAL:12 = 5
+;快Ｂ強度
+LOCAL:13 = 0
+
+;マゾによる屈服、恐怖影響度
+LOCAL:14 = 0
+;挿入による恭順影響度
+LOCAL:15 = 0
+;習得影響度
+LOCAL:16 = 5
+;露出癖による欲情、恥情、恐怖影響度（羞恥プレイなど）
+LOCAL:17 = 0
+;強制奉仕による屈服影響度（フェラ、イラマチオ、パイズリなど）
+LOCAL:18 = 0
+
+;フェラ経験
+EXP:フェラ経験 += 0
+;放尿経験
+EXP:放尿経験 += 0
+
+;共通処理を呼び出し
+VARSET RESULT
+CALL MOB_CREATE_COM, LOCAL:0, ARG:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, LOCAL:12, LOCAL:13, LOCAL:14, LOCAL:15, LOCAL:16, LOCAL:17, LOCAL:18
+
+;触手の行動を記録
+TFLAG:20 = LOCAL:0
+;行動予約なし
+TFLAG:17 = -1
+
+;潤滑基本値
+RESULT:4 += 0
+
+;習得基本値
+RESULT:6 += 2000
+
+;欲情基本値
+RESULT:7 += 0
+
+;屈服基本値
+RESULT:8 += 4000
+
+;恥情基本値
+RESULT:9 += 1000
+
+;苦痛基本値
+RESULT:10 += 2000
+
+;恐怖基本値
+RESULT:11 += 1000
+
+;体力消費基本値
+RESULT:12 += 50
+
+;計算へ
+CALL PALAM_CAL, RESULT:0, RESULT:1, RESULT:2, RESULT:3, RESULT:4, RESULT:5, RESULT:6, RESULT:7, RESULT:8, RESULT:9, RESULT:10, RESULT:11, RESULT:12
+
+;==================================================
+@MESSAGE_MOB_102_COM2000, ARG:0, ARG:1
+;--------------------------------------------------
+FONTBOLD
+PRINTL 浣腸産卵（拡張）
+FONTREGULAR
+
+PRINTFORM 自身の死期を悟った
+CALL TENTACLE_ACCESS, "NAME"
+PRINTFORML は、その体をイチジクの様な形に変化させた。
+PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の背中から、お尻に向けて触手の先が伸ばされていく。
+PRINTFORML 
+CALL TENTACLE_ACCESS, "NAME"
+PRINTFORML は身を窄み、%SLANG_A(TARGET)%を押し広げ容赦なくドロリとした体液を%PRINT_TRANSCALLNAME(TARGET)%の中に注ぎ入れた。
+PRINTFORML 
+PRINTFORML 下腹に来た圧迫感に%PRINT_TRANSCALLNAME(TARGET)%は、
+SIF EXP:Ａ経験 <= 10
+	PRINTFORML 顔を青ざめさせることしかできなかった。
+SIF EXP:Ａ経験 > 10 && EXP:Ａ経験 <= 30
+	PRINTFORML これから起こるであろうことを覚悟して、唇を噛み締めた。
+SIF EXP:Ａ経験 > 30
+	PRINTFORML 今何が起きているのか理解し、絶望に顔を歪めてしまった。
+PRINTFORML 
+PRINTFORML …
+PRINTFORML ……
+PRINTFORML ………
+PRINTW
+PRINTFORML 
+CALL TENTACLE_ACCESS, "NAME"
+PRINTFORML はイチジクの様な膨らみの中にあった卵入りの浣腸液を、全て%PRINT_TRANSCALLNAME(TARGET)%の直腸内に注ぎ込んだ。
+PRINTFORM そして、
+CALL TENTACLE_ACCESS, "NAME"
+PRINTFORML は小さくなった体で最期のピストン運動を始めた。、
+PRINTFORML 
+PRINTW
+PRINTFORML 
+PRINTFORML …
+PRINTFORML ……
+PRINTFORML ………
+PRINTFORML
+PRINTW
+PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の直腸に産み付けられた
+CALL TENTACLE_ACCESS, "NAME"
+PRINTFORML の卵は、腸内の精液を吸収して大きく膨らんでいった
+PRINTW
+PRINTFORML
+PRINTFORML プリッ
+PRINTW
+PRINTFORML
+PRINTFORML プリッ
+PRINTFORML 
+PRINTW
+PRINTFORML 自由の身となった%PRINT_TRANSCALLNAME(TARGET)%だったが、
+PRINTFORM その尻穴からは、一つまた一つと丸々とした卵が産み落とされていた。
+PRINTL
+PRINTFORML 数えるように%PRINT_TRANSCALLNAME(TARGET)%産まれ落ちるその卵は、
+CALL TENTACLE_ACCESS, "NAME"
+PRINTFORML  の死を悼む数珠の様であった…
+PRINTFORML
+SIF FLAG:13 > 0
+	FLAG:13 = 0
+
+PRINTW 
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "MOB_102_COM2000")
+PRINTL 
+;動画撮影フラグの処理
+IF FLAG:71
+	;愛撫されたところを見られた
+	SETBIT TFLAG:21,1
+	;挿入されたところを見られた
+	SETBIT TFLAG:21,3
+ENDIF
+
+;==================================================
+;【衣装を破く】
+;--------------------------------------------------
+;性コマンド分類
+@SEX_TYPE_MOB_102_COM14
+RETURN 通常
+
+@MESSAGE_MOB_102_COM14, ARG:0, ARG:1
+FONTBOLD
+PRINTL 衣装を破く
+FONTREGULAR
+CALL TENTACLE_ACCESS, "NAME"
+IF RAND:3 == 0
+	PRINTFORML は触手の先端から濁った色の粘液を勢いよく吐き出した！
+	PRINTFORML 異臭のする粘液が%PRINT_TRANSCALLNAME(TARGET)%の全身に降りかかり、
+	PRINTFORML 衣装がみるみる溶かされていく・・・
+	PRINTL 
+	;口上
+	TRYCALLFORM KOJO_{CFLAG:6}_SEX_COM14
+	PRINTL 
+	;状態異常：べとべと
+	CALL STATE_CHANGE_BETOBETO, 15
+ELSE
+	PRINTFORML は%PRINT_TRANSCALLNAME(TARGET)%の全身に絡まり、激しく蠢いている！
+	PRINTFORML もみくちゃにされた%PRINT_TRANSCALLNAME(TARGET)%の衣装が引き裂かれていく・・・
+	PRINTL 
+	;口上
+	TRYCALLFORM KOJO_{CFLAG:6}_SEX_COM14
+	PRINTL 
+ENDIF
+
+
+;==================================================
+;【絡みつく】
+;--------------------------------------------------
+@MESSAGE_BATTLE_MOB_102_KARAMITUKU
+PRINT 可愛いらしいスライム
+IF TFLAG:12 == 3
+	PRINTFORM が勢い良く%PRINT_TRANSCALLNAME(TARGET)%へ向かって跳ねてきた！
+ELSEIF RAND:2 == 0
+	PRINTFORM が体を地面に跳ねさせ、%PRINT_TRANSCALLNAME(TARGET)%の脚元から飛びかかってきた！
+ELSE
+	PRINTFORM がゴム鞠の様に飛び跳ねて、%PRINT_TRANSCALLNAME(TARGET)%の頭上から襲いかかってきた！
+ENDIF
+PRINT （
+IF TFLAG:11 & 1
+	PRINT 近
+ELSE
+	PRINT 　
+ENDIF
+IF TFLAG:11 & 2
+	PRINT 中
+ELSE
+	PRINT 　
+ENDIF
+IF TFLAG:11 & 4
+	PRINT 遠
+ELSE
+	PRINT 　
+ENDIF
+PRINTL ）
+
+
+;==================================================
+;【絡みつく成功】
+;--------------------------------------------------
+@MESSAGE_BATTLE_MOB_102_KARAMITUKU_SUCCESS
+PRINTFORM 避けきれなかった%PRINT_TRANSCALLNAME(TARGET)%は
+CALL TENTACLE_ACCESS, "NAME"
+PRINTFORML に背後に回り込まれ、
+PRINTFORML 背中に張り付かれてしまった！
+
+

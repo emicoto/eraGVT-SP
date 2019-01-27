@@ -1,0 +1,200 @@
+;**********************************************************
+;幽閉コマンド
+;PRISON_COM0
+;C中心攻め
+;**********************************************************
+@PRISON_COM0
+#DIM CCOUNT
+VARSET LOCAL
+
+;取得する珠
+;LOCAL:0 快Ｃ
+;LOCAL:1 快Ｖ
+;LOCAL:2 快Ａ
+;LOCAL:3 快Ｂ
+;LOCAL:4 潤滑 潤滑は未使用
+;LOCAL:5 恭順
+;LOCAL:6 習得
+;LOCAL:7 欲情
+;LOCAL:8 屈服
+;LOCAL:9 恥情
+;LOCAL:10 苦痛
+;LOCAL:11 恐怖
+
+;経験数の上量値記録用
+;LOCAL:120 V経験
+;LOCAL:121 A経験
+;LOCAL:122 絶頂経験
+;LOCAL:123 精液経験
+;LOCAL:124 フェラ経験
+;LOCAL:130 露出快楽経験
+;LOCAL:131 奉仕快楽経験
+;LOCAL:132 苦痛快楽経験
+;LOCAL:140 自慰経験
+;LOCAL:141 近親交配経験
+;LOCAL:150 異常経験
+;LOCAL:151 Ｖ拡張経験
+;LOCAL:152 Ａ拡張経験
+;LOCAL:153 射精経験
+;LOCAL:154 噴乳経験
+;LOCAL:155 放尿経験
+;LOCAL:156 寄生経験
+;LOCAL:157 出産経験
+
+;汚染度
+CFLAG:30 += 5 + RAND:6
+
+;近親交配経験
+SIF INCEST_F(TARGET, CFLAG:20 * 100 + CFLAG:21, 1) > 0
+	LOCAL:141 += 1
+
+;快C
+IF ABL:Ｃ感覚 == 0
+	LOCAL:0 = 1
+ELSEIF ABL:Ｃ感覚 == 1
+	LOCAL:0 = 10
+ELSEIF ABL:Ｃ感覚 == 2
+	LOCAL:0 = 100
+ELSEIF ABL:Ｃ感覚 == 3
+	LOCAL:0 = 500
+ELSEIF ABL:Ｃ感覚 == 4
+	LOCAL:0 = 1000
+ELSEIF ABL:Ｃ感覚 >= 5
+	LOCAL:0 = 2000
+ENDIF
+
+;快V
+IF TALENT:オトコ <= 0
+	IF ABL:Ｖ感覚 == 0
+		LOCAL:120 = 2
+		LOCAL:1 = 1
+	ELSEIF ABL:Ｖ感覚 == 1
+		LOCAL:120 = 5
+		LOCAL:1 = 2
+	ELSEIF ABL:Ｖ感覚 == 2
+		LOCAL:120 = 8
+		LOCAL:1 = 20
+	ELSEIF ABL:Ｖ感覚 == 3
+		LOCAL:120 = 11
+		LOCAL:1 = 100
+	ELSEIF ABL:Ｖ感覚 == 4
+		LOCAL:120 = 15
+		LOCAL:1 = 200
+	ELSEIF ABL:Ｖ感覚 >= 5
+		LOCAL:120 = 20
+		LOCAL:1 = 400
+	ENDIF
+ENDIF
+
+;快A
+IF ABL:Ａ感覚 == 0
+	LOCAL:121 = 2
+	LOCAL:2 = 1
+ELSEIF ABL:Ａ感覚 == 1
+	LOCAL:121 = 5
+	LOCAL:2 = 2
+ELSEIF ABL:Ａ感覚 == 2
+	LOCAL:121 = 8
+	LOCAL:2 = 20
+ELSEIF ABL:Ａ感覚 == 3
+	LOCAL:121 = 11
+	LOCAL:2 = 100
+ELSEIF ABL:Ａ感覚 == 4
+	LOCAL:121 = 15
+	LOCAL:2 = 200
+ELSEIF ABL:Ａ感覚 >= 5
+	LOCAL:121 = 20
+	LOCAL:2 = 400
+ENDIF
+
+;快B
+IF ABL:Ｂ感覚 == 0
+	LOCAL:3 = 1
+ELSEIF ABL:Ｂ感覚 == 1
+	LOCAL:3 = 5
+ELSEIF ABL:Ｂ感覚 == 2
+	LOCAL:3 = 50
+ELSEIF ABL:Ｂ感覚 == 3
+	LOCAL:3 = 250
+ELSEIF ABL:Ｂ感覚 == 4
+	LOCAL:3 = 500
+ELSEIF ABL:Ｂ感覚 >= 5
+	LOCAL:3 = 1000
+ENDIF
+
+;習得
+IF ABL:奉仕精神 == 0
+	LOCAL:6 = 5
+ELSEIF ABL:奉仕精神 == 1
+	LOCAL:6 = 12
+ELSEIF ABL:奉仕精神 == 2
+	LOCAL:6 = 25
+ELSEIF ABL:奉仕精神 == 3
+	LOCAL:6 = 40
+ELSEIF ABL:奉仕精神 == 4
+	LOCAL:6 = 62
+ELSEIF ABL:奉仕精神 >= 5
+	LOCAL:6 = 90
+ENDIF
+
+;処女であれば処女を破る
+IF TALENT:処女 > 0 && SHIELD:1 <= 0
+	LOCAL:10 = 500
+	CALL LOSTVIRGIN, 1
+ENDIF
+
+;習得基本値
+LOCAL:6 += 20
+
+;欲情基本値
+LOCAL:7 += 0
+
+;屈服基本値
+LOCAL:8 += 100
+
+;恥情基本値
+LOCAL:9 += 100
+
+;苦痛基本値
+LOCAL:10 += 100
+
+;恐怖基本値
+LOCAL:11 += 100
+
+;精液経験
+LOCAL:123 = 10
+
+;地の文：悪堕ちキャラが幽閉中の操作キャラにC中心攻めをした
+SIF CFLAG:20 == 2
+	CALL MESSAGE_OTHER_PRISON_COM_0
+;地の文：C中心攻め
+CALL MESSAGE_PRISON_COM_0
+
+;幽閉中パラメータ変動共通処理へ
+CALL COMMON_PRISON, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11
+
+;拡張度による拡張経験
+CALL PRISON_GAPING, LOCAL:120, LOCAL:121, LOCAL:151, LOCAL:152
+LOCAL:151 += RESULT:0
+LOCAL:152 += RESULT:1
+
+;経験数の増加
+CALL COMMON_PRISON_EXP_SH, LOCAL:120, LOCAL:121, LOCAL:151, LOCAL:152
+LOCAL:120 = RESULT:0
+LOCAL:121 = RESULT:1
+LOCAL:151 = RESULT:2
+LOCAL:152 = RESULT:3
+
+;表示と増加の処理
+FOR CCOUNT, 100, 200
+	CALL COMMON_PRISON_EXP, CCOUNT, LOCAL:CCOUNT
+NEXT
+
+PRINTL 
+
+;珠の取得へ
+CALL _ABLUP, 1
+;妊娠
+SIF SHIELD:1 <= 0
+	TRYCALL NINSIN_HANTEI,10,30
+

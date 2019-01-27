@@ -1,0 +1,112 @@
+
+;********************************************************************************************************************
+;CLOTH197 オペレーターベスト
+;----------------------------------------------------------
+@CLOTH_DESCRIPTION_197
+PRINTL  戦闘支援オペレーターの制服。
+PRINTL 【 補正 】知性1.3倍 非戦闘員専用
+PRINTL 【耐久度】90
+
+;----------------------------------------------------------
+;衣装の耐久度
+@CLOTH_HP_197
+LOCAL = 90
+RETURN LOCAL
+
+;----------------------------------------------------------
+;補正
+@CLOTH_CUSTOMIZE_197
+LOCAL = -1
+RETURN LOCAL
+@CLOTH_HOSEI_KOUGEKI_197
+LOCAL = 50
+RETURN LOCAL
+@CLOTH_HOSEI_CHISEI_197
+LOCAL = 130
+RETURN LOCAL
+@CLOTH_HOSEI_TAIRYOKU_197
+LOCAL = 95
+RETURN LOCAL
+@CLOTH_HOSEI_KIRYOKU_197
+LOCAL = 95
+RETURN LOCAL
+
+;********************************************************************************************************************
+;CLOTH198 バスタオル
+;----------------------------------------------------------
+@CLOTH_DESCRIPTION_198
+PRINTL  入浴時に使われるごく普通のタオルを身体に巻いただけ。当然ながら防御力は皆無。
+PRINTL 【 補正 】触手の油断度上昇2.5倍　露出度が高い（大）
+PRINTL 【耐久度】45
+
+;----------------------------------------------------------
+;衣装の耐久度
+@CLOTH_HP_198
+LOCAL = 45
+RETURN LOCAL
+
+;----------------------------------------------------------
+;補正
+@CLOTH_CUSTOMIZE_198
+LOCAL = -1
+RETURN LOCAL
+@CLOTH_DEF_198
+LOCAL = 90
+RETURN LOCAL
+@CLOTH_HOSEI_YUDAN_198
+LOCAL = 250
+RETURN LOCAL
+@CLOTH_HOSEI_SHYNESS_198
+LOCAL = 150
+RETURN LOCAL
+@CLOTH_HOSEI_TAIRYOKU_198
+LOCAL = 95
+RETURN LOCAL
+@CLOTH_HOSEI_KIRYOKU_198
+LOCAL = 95
+RETURN LOCAL
+
+;********************************************************************************************************************
+;CLOTH199 触手服
+;----------------------------------------------------------
+@CLOTH_DESCRIPTION_199
+PRINTL  触手生物の細胞を利用した生体鎧。着用者を大きくパワーアップさせるが…
+PRINTL  なお、このアイテムは通常時と変身時で分けて装備することができない。
+PRINTL 【 補正 】全能力1.25倍、性耐性を常に消費　インナー兼用
+PRINTL 【耐久度】─
+
+;----------------------------------------------------------
+;衣装の耐久度
+@CLOTH_HP_199
+LOCAL = -1
+RETURN LOCAL
+
+;----------------------------------------------------------
+;補正
+@CLOTH_CUSTOMIZE_199
+LOCAL = -1
+RETURN LOCAL
+@CLOTH_DEF_199
+LOCAL = 100
+RETURN LOCAL
+@CLOTH_HOSEI_KOUGEKI_199
+LOCAL = 125
+RETURN LOCAL
+@CLOTH_HOSEI_BOUGYO_199
+LOCAL = 125
+RETURN LOCAL
+@CLOTH_HOSEI_BINSYOU_199
+LOCAL = 125
+RETURN LOCAL
+@CLOTH_HOSEI_CHISEI_199
+LOCAL = 125
+RETURN LOCAL
+@CLOTH_HOSEI_TAIRYOKU_199
+LOCAL = 95
+RETURN LOCAL
+@CLOTH_HOSEI_KIRYOKU_199
+LOCAL = 95
+RETURN LOCAL
+@CLOTH_NO_INNER_199
+LOCAL = 1
+RETURN LOCAL

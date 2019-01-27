@@ -1,0 +1,356 @@
+@SUPART_BLOOD
+IF CONFIG_CHECK_BALANCE_F(4) > 0 && FLAG:11 > 0
+	PRINTFORMW %PRINT_TRANSCALLNAME(TARGET)%は%STR:2500%の返り血を浴びてしまった！
+	PRINTW ・・・
+	PRINTW ・・・・・・
+	IF FLAG:11 < 5
+		PRINTFORML 次の瞬間、%PRINT_TRANSCALLNAME(TARGET)%の脳髄を強烈な快感が走り抜ける！
+		PRINTW 
+		;変身時ＴＳキャラが女体化するとオトコに戻れなくなる
+		IF FLAG:11 == 2 && TALENT:オトコ <= 0 && TALENT:変身時ＴＳ > 0 && CFLAG:1 > 0
+			;まずは変身を解除する
+			CALL TRANSFORM, 0
+
+			IF CHARATALENT_F(TARGET,1,"絶壁") > 0
+				TALENT:貧乳 = 2
+				TALENT:巨乳 = 0
+			ELSEIF CHARATALENT_F(TARGET,1,"貧乳") > 0
+				TALENT:貧乳 = 1
+				TALENT:巨乳 = 0
+			ELSEIF CHARATALENT_F(TARGET,1,"奇乳") > 0
+				TALENT:貧乳 = 0
+				TALENT:巨乳 = 5
+			ELSEIF CHARATALENT_F(TARGET,1,"魔乳") > 0
+				TALENT:貧乳 = 0
+				TALENT:巨乳 = 4
+			ELSEIF CHARATALENT_F(TARGET,1,"超乳") > 0
+				TALENT:貧乳 = 0
+				TALENT:巨乳 = 3
+			ELSEIF CHARATALENT_F(TARGET,1,"爆乳") > 0
+				TALENT:貧乳 = 0
+				TALENT:巨乳 = 2
+			ELSEIF CHARATALENT_F(TARGET,1,"巨乳") > 0
+				TALENT:貧乳 = 0
+				TALENT:巨乳 = 1
+			ENDIF
+			IF CHARATALENT_F(TARGET,1,"小柄") > 0
+				TALENT:小柄 = 1
+				TALENT:長身 = 0
+			ELSEIF CHARATALENT_F(TARGET,1,"長身") > 0
+				TALENT:小柄 = 0
+				TALENT:長身 = 1
+			ENDIF
+
+			TALENT:性別変化 = 1
+			TALENT:オトコ = 0
+			SIF TALENT:変身時非処女 == 0
+				TALENT:処女 = 1
+			TALENT:変身時ＴＳ = -1
+			TALENT:変身時非処女 = 0
+			TALENT:変身時体格変動 = 0
+			TALENT:変身時胸サイズ変動 = 0
+			TALENT:外見 = TALENT:変身時外見
+			TALENT:ふたなり = TALENT:変身時ふたなり
+			IF TALENT:変身時濡れやすさ変動 > 0
+				TALENT:濡れやすい = 1
+			ELSEIF TALENT:変身時濡れやすさ変動 < 0
+				TALENT:濡れにくい = 1
+			ENDIF
+			IF TALENT:変身時Ｖ感覚変動 > 0
+				TALENT:Ｖ敏感 = 1
+			ELSEIF TALENT:変身時Ｖ感覚変動 < 0
+				TALENT:Ｖ鈍感 = 1
+			ENDIF
+
+			BASE:身長 = MAXBASE:身長
+			BASE:体重 = MAXBASE:体重
+			BASE:胸囲 = MAXBASE:胸囲
+			BASE:胴囲 = MAXBASE:胴囲
+			BASE:腰囲 = MAXBASE:腰囲
+			BASE:年齢 = MAXBASE:年齢
+			CSTR:13 = %CSTR:14%
+			CSTR:30 = %CSTR:31%
+			CSTR:32 = %CSTR:34%
+			CSTR:33 = %CSTR:35%
+			CSTR:36 = %CSTR:37%
+
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はしばらく身を震わせながら地面に横たわって何度も絶頂し、
+			PRINTFORML 戦闘後の気の緩みもあって完全に変身が解けてしまった。
+			PRINTFORML ところが、平らに戻るはずの胸は膨らんだままで、
+			PRINTFORML 丸みを帯びた肉付きや腰のラインも変化する様子がない――
+			PRINTW 
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は女体化した姿のまま[オトコ]に戻れなくなった！
+			PRINT さらに、
+		;元が女性の変身時ＴＳキャラが女体化するとオトコになれなくなる
+		ELSEIF FLAG:11 == 2 && TALENT:オトコ > 0 && TALENT:変身時ＴＳ > 0 && CFLAG:1 > 0
+			TALENT:性別変化 = 10
+			TALENT:オトコ = 0
+			TALENT:変身時ＴＳ = -1
+			SIF TALENT:処女 == -2
+				TALENT:処女 = 1
+
+			;体格を変身前に合わせる
+			IF CHARATALENT_F(TARGET,0,"小柄") > 0
+				TALENT:小柄 = 1
+				TALENT:長身 = 0
+			ELSEIF CHARATALENT_F(TARGET,0,"長身") > 0
+				TALENT:小柄 = 0
+				TALENT:長身 = 1
+			ENDIF
+			TALENT:変身時体格変動 = 0
+			TALENT:変身時胸サイズ変動 = 0
+			TALENT:変身時外見 = TALENT:外見
+			TALENT:変身時ふたなり = TALENT:ふたなり
+
+			MAXBASE:身長 = BASE:身長
+			MAXBASE:体重 = BASE:体重
+			MAXBASE:胸囲 = BASE:胸囲
+			MAXBASE:胴囲 = BASE:胴囲
+			MAXBASE:腰囲 = BASE:腰囲
+			MAXBASE:年齢 = BASE:年齢
+			CSTR:14 = %CSTR:13%
+			CSTR:31 = %CSTR:30%
+			CSTR:34 = %CSTR:32%
+			CSTR:35 = %CSTR:33%
+			CSTR:37 = %CSTR:36%
+			
+			PRINTFORML 思わず叫び声をあげてしまった%PRINT_TRANSCALLNAME(TARGET)%は、
+			PRINTFORML 自分の声が妙に可愛らしくなっていることに気が付いた。
+			PRINTFORML 見れば胸は膨らみを取り戻し、肉付きや腰のラインも変化して柔らかくなっている。
+			PRINTFORML 変身は解けていないのに、普段の自分とそっくりの状態になってしまっていて――
+			PRINTW 
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は変身しても[オトコ]になれなくなってしまった！
+			PRINT さらに、
+		;元がオトコのキャラがV触手を倒すと女体化させられる
+		ELSEIF FLAG:11 == 2 && TALENT:オトコ > 0 && CHARATALENT_F(TARGET,0,"オトコ") > 0
+			;まずは変身を解除する
+			CALL TRANSFORM, 0
+			IF TALENT:変身時ＴＳ > 0 && CHARATALENT_F(TARGET,0,"オトコ") > 0
+				TALENT:性別変化 = 1
+				TALENT:外見 = TALENT:変身時外見
+				TALENT:ふたなり = TALENT:変身時ふたなり
+				;体格を変身後に合わせる
+				IF CHARATALENT_F(TARGET,1,"小柄") > 0
+					TALENT:小柄 = 1
+					TALENT:長身 = 0
+				ELSEIF CHARATALENT_F(TARGET,1,"長身") > 0
+					TALENT:小柄 = 0
+					TALENT:長身 = 1
+				ENDIF
+				;胸サイズを変身後に合わせる
+				IF CHARATALENT_F(TARGET,1,"絶壁") > 0
+					TALENT:貧乳 = 2
+					TALENT:巨乳 = 0
+				ELSEIF CHARATALENT_F(TARGET,1,"貧乳") > 0
+					TALENT:貧乳 = 1
+					TALENT:巨乳 = 0
+				ELSEIF CHARATALENT_F(TARGET,1,"奇乳") > 0
+					TALENT:貧乳 = 0
+					TALENT:巨乳 = 5
+				ELSEIF CHARATALENT_F(TARGET,1,"魔乳") > 0
+					TALENT:貧乳 = 0
+					TALENT:巨乳 = 4
+				ELSEIF CHARATALENT_F(TARGET,1,"超乳") > 0
+					TALENT:貧乳 = 0
+					TALENT:巨乳 = 3
+				ELSEIF CHARATALENT_F(TARGET,1,"爆乳") > 0
+					TALENT:貧乳 = 0
+					TALENT:巨乳 = 2
+				ELSEIF CHARATALENT_F(TARGET,1,"巨乳") > 0
+					TALENT:貧乳 = 0
+					TALENT:巨乳 = 1
+				ENDIF
+			ELSEIF TALENT:変身時ＴＳ > 0 && CHARATALENT_F(TARGET,0,"オトコ") == 0
+				TALENT:性別変化 = 10
+				TALENT:変身時外見 = TALENT:外見
+				TALENT:変身時ふたなり = TALENT:ふたなり
+				;体格を変身前に合わせる
+				IF CHARATALENT_F(TARGET,0,"小柄") > 0
+					TALENT:小柄 = 1
+					TALENT:長身 = 0
+				ELSEIF CHARATALENT_F(TARGET,0,"長身") > 0
+					TALENT:小柄 = 0
+					TALENT:長身 = 1
+				ENDIF
+			ELSEIF TALENT:変身能力 > 0
+				TALENT:性別変化 = 11
+				TALENT:変身時外見 = TALENT:外見
+			ELSE
+				TALENT:性別変化 = 1
+				TALENT:変身時外見 = TALENT:外見
+			ENDIF
+
+			TALENT:オトコ = 0
+			SIF TALENT:変身時非処女 == 0
+				TALENT:処女 = 1
+
+			IF TALENT:変身能力 < 1
+				;20%で貧乳か巨乳のどちらかになる
+				LOCAL = RAND:10
+				IF LOCAL == 0
+					TALENT:貧乳 = 1 + RAND:2
+				ELSEIF LOCAL == 1
+					TALENT:巨乳 = 1 + RAND:3
+				ENDIF
+				;15%で安産型かむちむちかスレンダーになる
+				LOCAL = RAND:100
+				IF LOCAL < 5
+					TALENT:外見 = 1
+				ELSEIF LOCAL < 10
+					TALENT:外見 = 2
+				ELSEIF LOCAL < 15
+					TALENT:外見 = 4
+				ENDIF
+			ELSE
+				TALENT:変身時体格変動 = 0
+				TALENT:変身時胸サイズ変動 = 0
+				IF TALENT:変身時濡れやすさ変動 > 0
+					TALENT:濡れやすい = 1
+				ELSEIF TALENT:変身時濡れやすさ変動 < 0
+					TALENT:濡れにくい = 1
+				ENDIF
+				IF TALENT:変身時Ｖ感覚変動 > 0
+					TALENT:Ｖ敏感 = 1
+				ELSEIF TALENT:変身時Ｖ感覚変動 < 0
+					TALENT:Ｖ鈍感 = 1
+				ENDIF
+			ENDIF
+
+			CALL GENERATE_CHAR_SIZE, TARGET, 0
+			BASE:身長 = RESULT:2
+			BASE:体重 = RESULT:3
+			BASE:胸囲 = RESULT:4
+			BASE:胴囲 = RESULT:5
+			BASE:腰囲 = RESULT:6
+
+			;変身能力があれば変身先もＴＳする
+			IF TALENT:変身能力 > 0
+				CALL GENERATE_CHAR_SIZE, TARGET, 1
+				MAXBASE:身長 = RESULT:2
+				MAXBASE:体重 = RESULT:3
+				MAXBASE:胸囲 = RESULT:4
+				MAXBASE:胴囲 = RESULT:5
+				MAXBASE:腰囲 = RESULT:6
+			ENDIF
+
+			PRINTFORML 思わず叫び声をあげてしまった%PRINT_TRANSCALLNAME(TARGET)%は、
+			PRINTFORML 自分の声が妙に可愛らしくなっていることに気が付いた。
+			PRINTFORML 見れば胸は膨らみを増し、肉付きや腰のラインも変化して柔らかくなっている。
+			PRINTFORML 張りと瑞々しさを得た肌には健康的な色気が漂い、程よく髪も伸びたその姿は――
+			PRINTW 
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は[オトコ]を失い、完全に女性になってしまった！
+			PRINT さらに、
+		ENDIF
+		;CVAB触手を倒すと、該当箇所が敏感になる
+		LOCAL:0 = 2*FLAG:11+98
+		IF TALENT:(LOCAL:0) == 0
+			TALENT:(LOCAL:0+1) -= 10
+			TALENT:(LOCAL:0) += 10
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は[%TALENTNAME:(LOCAL:0)%]になってしまった！
+			PRINTW 
+		;既に敏感で感覚がLV5未満だった場合、珠を大量に獲得する
+		ELSEIF ABL:(FLAG:11-1) < 5
+			JUEL:(FLAG:11-1) += 25421
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の身体が熱く疼く……。
+			PRINTW 
+		;敏感かつ開発済みなら淫○付与
+		ELSEIF TALENT:(FLAG:11+152) == 0 && ABL:(FLAG:11-1) >= 5
+			TALENT:(FLAG:11+152) += 10
+				IF FLAG:11 == 1
+					CALL MESSAGE_GETTALENT_INKAKU
+				ELSEIF FLAG:11 == 2
+					CALL MESSAGE_GETTALENT_INTUBO
+				ELSEIF FLAG:11 == 3
+					CALL MESSAGE_GETTALENT_INJIRI
+				ELSE
+					CALL MESSAGE_GETTALENT_INNYUU
+				ENDIF
+		;全部満たしていたら強絶頂
+		ELSE
+			NOWEX:(FLAG:11-1) = 2
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の体を激しい快感が襲う。
+			PRINTW 
+		ENDIF
+	ELSEIF FLAG:11 == 5
+		;S触手を倒すとマゾッ気上昇
+		ABL:マゾっ気 += 3
+		SIF ABL:マゾっ気 > 5
+			ABL:マゾっ気=5
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は%ABLNAME:15%が大幅に上がった。
+		PRINTW 
+	ELSEIF FLAG:11 == 6
+		;P触手を倒すと触手中毒上昇
+		ABL:触手中毒 += 2
+		SIF ABL:触手中毒 > 5
+			ABL:触手中毒=5
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は%ABLNAME:20%が大幅に上がった。
+		PRINTW 
+	ELSEIF FLAG:11 == 7
+		;H触手を倒すと露出壁、自慰中毒上昇
+		ABL:露出癖+=3
+		ABL:自慰中毒 += 2
+		SIF ABL:露出癖 > 5
+			ABL:露出癖=5
+		SIF ABL:自慰中毒 > 5
+			ABL:自慰中毒=5
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は%ABLNAME:14%と%ABLNAME:21%が大幅に上がった。
+		PRINTW 
+	ENDIF
+
+	;絶頂の表示
+	LOCAL = 0
+	IF NOWEX:Ｃ絶頂 == 1
+		;地の文：C絶頂
+		CALL MESSAGE_SEX_ECSTASY_C
+		;地の文：洗脳/悪堕ちキャラが操作キャラのC絶頂を見た
+		SIF FLAG:110 == 1
+			CALL MESSAGE_OTHER_SEX_ECSTASY_C
+	ELSEIF NOWEX:Ｃ絶頂 == 2
+		;地の文：C強絶頂
+		CALL MESSAGE_SEX_ECSTASY_C_HI
+		;地の文：洗脳/悪堕ちキャラが操作キャラのC強絶頂を見た
+		SIF FLAG:110 == 1
+			CALL MESSAGE_OTHER_SEX_ECSTASY_C_HI
+	ENDIF
+	IF NOWEX:Ｖ絶頂 == 1
+		;地の文：V絶頂
+		CALL MESSAGE_SEX_ECSTASY_V
+		;地の文：洗脳/悪堕ちキャラが操作キャラのV絶頂を見た
+		SIF FLAG:110 == 1
+			CALL MESSAGE_OTHER_SEX_ECSTASY_V
+	ELSEIF NOWEX:Ｖ絶頂 == 2
+		;地の文：V強絶頂
+		CALL MESSAGE_SEX_ECSTASY_V_HI
+		;地の文：洗脳/悪堕ちキャラが操作キャラのV強絶頂を見た
+		SIF FLAG:110 == 1
+			CALL MESSAGE_OTHER_SEX_ECSTASY_V_HI
+	ENDIF
+	IF NOWEX:Ａ絶頂 == 1
+		;地の文：A絶頂
+		CALL MESSAGE_SEX_ECSTASY_A
+		;地の文：洗脳/悪堕ちキャラが操作キャラのA絶頂を見た
+		SIF FLAG:110 == 1
+			CALL MESSAGE_OTHER_SEX_ECSTASY_A
+	ELSEIF NOWEX:Ａ絶頂 == 2
+		;地の文：A強絶頂
+		CALL MESSAGE_SEX_ECSTASY_A_HI
+		;地の文：洗脳/悪堕ちキャラが操作キャラのA強絶頂を見た
+		SIF FLAG:110 == 1
+			CALL MESSAGE_OTHER_SEX_ECSTASY_A_HI
+	ENDIF
+	IF NOWEX:Ｂ絶頂 == 1
+		;地の文：B絶頂
+		CALL MESSAGE_SEX_ECSTASY_B
+		;地の文：洗脳/悪堕ちキャラが操作キャラのB絶頂を見た
+		SIF FLAG:110 == 1
+			CALL MESSAGE_OTHER_SEX_ECSTASY_B
+	ELSEIF NOWEX:Ｂ絶頂 == 2
+		;地の文：B強絶頂
+		CALL MESSAGE_SEX_ECSTASY_B_HI
+		;地の文：洗脳/悪堕ちキャラが操作キャラのB強絶頂を見た
+		SIF FLAG:110 == 1
+			CALL MESSAGE_OTHER_SEX_ECSTASY_B_HI
+	ENDIF
+	;実績
+	CALL GET_STATE_ABLUP,TARGET
+ENDIF

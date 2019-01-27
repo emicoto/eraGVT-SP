@@ -1,0 +1,169 @@
+;**********************************************************
+;基本ルール
+;加筆修正は、自由に行ってください
+;ただし、前の方が書いた文章は成るべく消さないでください
+
+;書き込む順番は、クドくなり過ぎないように3要素と部位で表現します
+;【実況】汁に濡れている、寄生されている、触手拘束具などを装着など
+;【形状】大きさ、深さなど、
+;【動作】開閉している、うごめいているなど、動きを表現
+;【部位呼称】淫乱や発情や性格で下品な表現を
+;
+;尻穴を中心に表現することを努める、尻肉は@SLANG_Hへ
+;プレイ内容では、挿入しないかもしれないので、
+;内部の直腸や結腸などの表現は控えましょう
+;腸液など分泌液などは、%SLANG_Juice(TARGET,"腸液")%で用意しています
+;
+;増やして欲しい隠語は、アウトプットしてリクエストなりしましょう
+;未登録の中に放り込むなり、掲示板にアップするなりすれば、
+;実装される可能性があります
+;
+;by 雑魚の人 2018/02/11
+;**********************************************************
+;Anal(アナル)の淫語
+;**********************************************************
+@SLANG_A(ARG)
+#DIMS SLANGWORD_A
+#FUNCTIONS
+
+;初期化
+SLANGWORD_A=
+
+
+;**********************************************************
+;第一形容詞：状況（汁など）
+;**********************************************************
+;戦闘状況の場合
+;*************************
+;べとべとにされた
+IF (TCVAR:12 & べとべと)
+	SLANGWORD_A+="ベトベトにされている"
+ENDIF
+;ぶっかけられた
+IF (STAIN:4 & 4)
+	SLANGWORD_A = %SLANGWORD_A%%SLANG_SEMEN(TARGET)%の滴り落ちている
+ENDIF
+
+
+
+;*************************
+;PALAM:潤滑の値に依存
+;*************************
+
+;どの様な液体が
+IF PALAM:潤滑 >= 2000 && PALAM:快Ａ> 2000
+	SLANGWORD_A = %SLANGWORD_A%%SLANG_Juice(TARGET,"直腸液")%
+	SELECTCASE RAND:3
+		CASE 2
+			SLANGWORD_A += "をダムの放流の如く出している"
+		CASE 1
+			SLANGWORD_A += "がせき止められず広がっている"
+		CASEELSE
+			SLANGWORD_A += "が止め処なく溢れている"
+	ENDSELECT
+
+
+ELSEIF PALAM:潤滑 < 2000 && PALAM:潤滑 >= 1000 && PALAM:快Ａ> 1000
+	SLANGWORD_A = %SLANGWORD_A%%SLANG_Juice(TARGET,"直腸液")%
+	SELECTCASE RAND:2
+		CASE 1
+			SLANGWORD_A += "を垂らしている"
+		CASEELSE
+			SLANGWORD_A += "が漏れている"
+	ENDSELECT
+
+
+ELSEIF PALAM:潤滑 < 1000 && PALAM:潤滑 >= 200 && PALAM:快Ａ> 200
+	SLANGWORD_A = %SLANGWORD_A%%SLANG_Juice(TARGET,"直腸液")%
+
+	SELECTCASE RAND:2
+		CASE 1
+			SLANGWORD_A += "が滲む"
+		CASEELSE
+			SLANGWORD_A += "が染みている"
+	ENDSELECT
+
+ELSE
+	SELECTCASE RAND:2
+		CASE 1
+			SLANGWORD_A += "ほとんど汁気の無い"
+		CASEELSE
+			SLANGWORD_A += "ろくに準備されてい無い"
+	ENDSELECT
+ENDIF
+
+
+
+;第二形容詞：形状表現
+
+
+;第三形容詞：動作表現
+
+
+;部位呼称
+IF TALENT:淫尻>0 || TALENT:淫乱>0
+	SELECTCASE RAND:4
+		CASE 3
+			SLANGWORD_A += "尻オナホ"
+		CASE 2
+			SLANGWORD_A += "アナル"
+		CASEELSE
+			;尻マンコ
+			SELECTCASE RAND:2
+				CASE 1
+					SLANGWORD_A += "尻"
+				CASEELSE
+					SLANGWORD_A += "ケツ"
+			ENDSELECT
+			SLANGWORD_A += "マンコ"
+	ENDSELECT
+ELSE
+	SELECTCASE RAND:5
+		CASE 4
+			SLANGWORD_A += "排泄器官"
+		CASE 3
+			SLANGWORD_A += "アナル"
+		CASE 2
+			SLANGWORD_A += "お尻"
+		CASE 1
+			SLANGWORD_A += "菊"
+			SELECTCASE RAND:3
+				CASE 2
+					SLANGWORD_A += "花"
+				CASE 1
+					SLANGWORD_A += "門"
+				CASEELSE
+					SLANGWORD_A += "穴"
+			ENDSELECT
+		CASEELSE
+			SELECTCASE RAND:3
+				CASE 2
+					SLANGWORD_A += "不浄"
+				CASE 1
+					SLANGWORD_A += "後ろ"
+				CASEELSE
+					SLANGWORD_A += "お尻"
+			ENDSELECT
+			SLANGWORD_A += "の穴"
+	ENDSELECT
+ENDIF
+
+RETURNF SLANGWORD_A
+
+
+;*************【淫語覚書（未登録）】***********************
+;アナルローズ
+;肛悦
+;
+;
+;
+;*************【淫語覚書（未登録）】***********************
+;
+;*************【淫語覚書（別に用意する予定）】***********************
+;S字結腸
+;腸粘膜
+;腸壁
+;腸道
+;*************【淫語覚書（別に用意する予定）】***********************
+
+

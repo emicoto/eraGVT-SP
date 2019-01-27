@@ -1,0 +1,271 @@
+;**********************************************************
+;キャラクターメイキング処理
+;ARG = 修練Ｐの周回ボーナス値
+;----------------------------------------------------------
+@CHARA_MAKE_MAIN, ARG = 0
+#DIM CCOUNT
+
+;設定選択
+VARSET LOCAL
+$LOOP_SETTING_START
+DRAWLINE
+PRINTL [0]共通設定
+PRINTL [1]キャラ設定
+RESULT = 0
+FOR CCOUNT, 0, CHARANUM
+	SIF CALLNAME:CCOUNT == "汎用キャラ"
+		RESULT ++
+NEXT
+PRINTFORML [99]設定完了\@ RESULT ? （未設定のキャラはおまかせ） #  \@
+
+$INPUT_LOOP_0
+INPUT
+IF RESULT == 0
+	$LOOP_SETTING_1
+	DRAWLINE
+	PRINTL 共通設定
+	PRINTL 
+	PRINTFORML [0]主題の設定・・・・\@(FLAG:5 == 1) ?あり 『%SAVESTR:10%』#なし\@
+	PRINTFORML [1]冠名の設定・・・・\@(FLAG:6 == 1) ?あり 『%SAVESTR:11%』#なし\@
+	PRINTFORML [2]かけ声の設定・・・\@(FLAG:7 == 1) ?あり 『%SAVESTR:12%』#なし\@
+	PRINTFORML [3]共通設定をグローバルとして保存
+	PRINTFORML [4]共通設定をグローバルから読み込み
+	PRINTFORML [5]共通設定を初期化
+	PRINTL [99]もどる
+	$INPUT_LOOP_1
+	INPUT
+	IF RESULT == 0
+		CALL FIRSTSETTING_TITLE
+		GOTO LOOP_SETTING_1
+	ELSEIF RESULT == 1
+		CALL FIRSTSETTING_CROWNNAME
+		GOTO LOOP_SETTING_1
+	ELSEIF RESULT == 2
+		CALL FIRSTSETTING_TRANSCALL
+		GOTO LOOP_SETTING_1
+	ELSEIF RESULT == 3
+		PRINTFORML 現在保存されているグローバル
+		PRINTFORML 　主題・・・・\@(GLOBAL:5 == 1) ?あり 『%GLOBALS:15%』#なし\@
+		PRINTFORML 　冠名・・・・\@(GLOBAL:6 == 1) ?あり 『%GLOBALS:16%』#なし\@
+		PRINTFORML 　かけ声・・・\@(GLOBAL:7 == 1) ?あり 『%GLOBALS:17%』#なし\@
+		PRINTL 
+		PRINTL 【注意】共通設定のグローバルに上書きします。
+		PRINTL         元の状態に復元はできませんが、よろしいですか？
+		PRINTL     [0]上書き実行      [99]キャンセルして戻る
+		PRINTL 
+		$INPUT_LOOP_3_1
+		INPUT
+		IF RESULT == 0
+			GLOBAL:5 = FLAG:5
+			GLOBAL:6 = FLAG:6
+			GLOBAL:7 = FLAG:7
+			GLOBALS:15 = %SAVESTR:10%
+			GLOBALS:16 = %SAVESTR:11%
+			GLOBALS:17 = %SAVESTR:12%
+			SAVEGLOBAL
+			PRINTW グローバルとして保存しました。
+			GOTO LOOP_SETTING_1
+		ELSEIF RESULT == 99
+			PRINTW 上書きをキャンセルしました。
+			GOTO LOOP_SETTING_1
+		ELSE
+			GOTO INPUT_LOOP_3_1
+		ENDIF
+	ELSEIF RESULT == 4
+		LOADGLOBAL
+		FLAG:5 = GLOBAL:5
+		FLAG:6 = GLOBAL:6
+		FLAG:7 = GLOBAL:7
+		SAVESTR:10 = %GLOBALS:15%
+		SAVESTR:11 = %GLOBALS:16%
+		SAVESTR:12 = %GLOBALS:17%
+		PRINTW グローバルから共通設定を読み込みました。
+		GOTO LOOP_SETTING_1
+	ELSEIF RESULT == 5
+		FLAG:5 = 0
+		FLAG:6 = 0
+		FLAG:7 = 0
+		SAVESTR:10 = 
+		SAVESTR:11 = 
+		SAVESTR:12 = 
+		PRINTW 共通設定を初期化しました。
+		GOTO LOOP_SETTING_1
+	ELSEIF RESULT == 99
+		GOTO LOOP_SETTING_START
+	ELSE
+		GOTO INPUT_LOOP_1
+	ENDIF
+ELSEIF RESULT == 1
+	$LOOP_SETTING_2
+	DRAWLINE
+	PRINTL キャラ設定
+	PRINTL 
+	FOR LOCAL, 0, CHARANUM
+		IF CALLNAME:LOCAL == "汎用キャラ"
+			LOCALS = 未設定　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　
+			PRINTFORM [{LOCAL}]%LOCALS, 90, LEFT%
+			PRINTPLAIN 　
+			PRINTFORM ♂[{LOCAL + 100}]
+			PRINTL 
+		ELSE
+			SIF LOCAL == MASTER
+				CONTINUE
+			LOCALS = %CALLNAME:LOCAL%
+			PRINTFORM [{LOCAL}]%LOCALS, 20, LEFT%
+			PRINTPLAIN 　
+			IF TALENT:LOCAL:オトコ > 0
+				PRINT 性別：♂ / 
+			ELSE
+				PRINT 性別：♀ / 
+			ENDIF
+			CALL SYUZOKU_CHECK, "STRING", LOCAL
+			LOCALS = 種族：%RESULTS%
+			PRINTFORM %LOCALS, 16, LEFT% / 
+			CALL SEIKAKU_CHECK, "STRING", LOCAL
+			LOCALS = 性格：%RESULTS%
+			PRINTFORM %LOCALS, 16, LEFT% / 
+			LOCALS = 
+			IF TALENT:LOCAL:変身能力 == -1
+				LOCALS += "非戦闘員"
+			ELSEIF TALENT:LOCAL:変身能力 == 0
+				LOCALS += "変身なし"
+			ELSE
+				LOCALS += "変身あり"
+			ENDIF
+			IF CFLAG:LOCAL:0 == 1
+				LOCALS += " / 幽閉"
+			ELSEIF CFLAG:LOCAL:0 == 2
+				LOCALS += " / 洗脳"
+			ELSEIF CFLAG:LOCAL:0 == 3
+				LOCALS += " / 悪堕ち"
+			ELSEIF CFLAG:LOCAL:0 == 9
+				LOCALS += " / 故人"
+			ENDIF
+			PRINTFORM %LOCALS, 20, LEFT%
+			PRINTL 
+		ENDIF
+	NEXT
+	PRINTL [99]もどる
+	$INPUT_LOOP_2
+	INPUT
+	IF RESULT > 100 && RESULT < CHARANUM + 100 && CALLNAME:(RESULT - 100) == "汎用キャラ"
+		TALENT:(RESULT - 100):オトコ = 1
+		NAME:(RESULT - 100) = 汎用キャラ(♂)
+		CALL FIRSTSETTING_CHARA_MAIN, (RESULT - 100), ARG
+		GOTO LOOP_SETTING_2
+	ELSEIF RESULT > 0 && RESULT < CHARANUM
+		CALL FIRSTSETTING_CHARA_MAIN, RESULT, ARG
+		GOTO LOOP_SETTING_2
+	ELSEIF RESULT == 99
+		GOTO LOOP_SETTING_START
+	ELSE
+		GOTO INPUT_LOOP_2
+	ENDIF
+ELSEIF RESULT == 99
+	IF CHARANUM >= 3
+		$LOOP_SETTING_99
+		PRINTL キャラクターの相関関係を設定しますか？
+		PRINTL [0]いいえ
+		PRINTL [1]はい
+		$INPUT_LOOP_99
+		INPUT
+		IF RESULT == 0
+		ELSEIF RESULT == 1
+			;キャラクターデフォルト設定
+			CALL CHARA_MAKE_DEFAULT
+			;相性データのコンバート
+			CALL CONVERT_RELATION
+			$LOOP_SETTING_99_0
+			DRAWLINE
+			PRINTL 相関関係設定
+			PRINTL 
+			FOR LOCAL, 0, CHARANUM
+				SIF LOCAL == MASTER
+					CONTINUE
+				VARSET LOCALS
+				IF CALLNAME:LOCAL == "汎用キャラ"
+					PRINTFORML [{LOCAL}]未設定
+				ELSE
+					LOCALS = [{LOCAL}]%NAME:LOCAL%
+					SIF CFLAG:LOCAL:34 > 0
+						LOCALS:1 = 実年齢:{BASE:LOCAL:実年齢}
+					PRINTFORM %LOCALS, 38, LEFT%　%LOCALS:1, 10, LEFT%　
+					IF TALENT:LOCAL:オトコ <= 0
+						PRINT ♀　
+					ELSE
+						PRINT ♂　
+					ENDIF
+					IF CFLAG:LOCAL:0 == 1
+						PRINT  / 初めから幽閉されている
+					ELSEIF CFLAG:LOCAL:0 == 2
+						PRINT  / 初めから洗脳されている
+					ELSEIF CFLAG:LOCAL:0 == 3
+						PRINT  / 初めから悪堕ちしている
+					ELSEIF CFLAG:LOCAL:0 == 9
+						PRINT  / 故人
+					ENDIF
+					PRINTL 
+				ENDIF
+			NEXT
+			PRINTL [99]決定
+			$INPUT_LOOP_99_0
+			INPUT
+			IF RESULT > 0 && RESULT <= CHARANUM
+				LOCAL:99 = RESULT
+				PRINTFORML 相手のキャラを選択してください
+				FOR LOCAL, 0, CHARANUM
+					SIF LOCAL == MASTER
+						CONTINUE
+					SIF LOCAL == LOCAL:99
+						SETCOLOR 96,96,96
+					IF CALLNAME:LOCAL == "汎用キャラ"
+						PRINTFORML [{LOCAL}]未設定
+					ELSE
+						LOCALS = [{LOCAL}]%NAME:LOCAL%
+						IF CFLAG:LOCAL:34 > 0
+							LOCALS:1 = 実年齢:{BASE:LOCAL:実年齢}
+						ELSE
+							LOCALS:1 =
+						ENDIF
+						PRINTFORM %LOCALS, 38, LEFT%　%LOCALS:1, 10, LEFT%　
+						IF TALENT:LOCAL:オトコ <= 0
+							PRINT ♀　
+						ELSE
+							PRINT ♂　
+						ENDIF
+						IF CFLAG:LOCAL:0 == 1
+							PRINT  / 初めから幽閉されている
+						ELSEIF CFLAG:LOCAL:0 == 2
+							PRINT  / 初めから洗脳されている
+						ELSEIF CFLAG:LOCAL:0 == 3
+							PRINT  / 初めから悪堕ちしている
+						ELSEIF CFLAG:LOCAL:0 == 9
+							PRINT  / 故人
+						ENDIF
+						PRINTL 
+					ENDIF
+					RESETCOLOR
+				NEXT
+				PRINTL [99]もどる
+				$INPUT_LOOP_99_1
+				INPUT
+				IF RESULT > 0 && RESULT <= CHARANUM && RESULT != LOCAL:99
+					CALL SET_RELATION, LOCAL:99, RESULT
+				ELSEIF RESULT != 99
+					GOTO INPUT_LOOP_99_1
+				ENDIF
+				GOTO LOOP_SETTING_99_0
+			ELSEIF RESULT == 99
+				;相関関係の全探索
+				CALL CHECK_ALL_RELATION
+			ELSE
+				GOTO INPUT_LOOP_99_0
+			ENDIF
+		ELSE
+			GOTO INPUT_LOOP_99
+		ENDIF
+	ENDIF
+	PRINTL キャラメイクを終了します
+ELSE
+	GOTO INPUT_LOOP_0
+ENDIF

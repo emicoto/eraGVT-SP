@@ -1,0 +1,46 @@
+;奉仕する
+@COM13
+
+;距離表示
+CALL PRINT_DISTANCE
+PRINTL 
+
+;射精部位フラグ:手を立てる
+TFLAG:4 = TFLAG:4 | 手
+;技巧が２以上なら口を立てる
+SIF ABL:技巧 >= 2
+	TFLAG:4 = TFLAG:4 | 口
+;強拘束中は射精部位フラグを折る
+SIF (TCVAR:12 & 強拘束)
+	TFLAG:4 = 0
+
+;防御フラグ：奉仕するにする
+TCVAR:2 = 体勢：奉仕する
+
+;油断度の上昇
+TFLAG:3 += 100
+
+;射精 技巧依存
+IF ABL:技巧 < 2
+	LOCAL = 70
+ELSEIF ABL:技巧 == 2
+	LOCAL = 100
+ELSEIF ABL:技巧 == 3
+	LOCAL = 140
+ELSEIF ABL:技巧 == 4
+	LOCAL = 190
+ELSEIF ABL:技巧 >= 5
+	LOCAL = 250
+ENDIF
+CALL TENTACLE_SYASEI_UP, LOCAL
+
+;地の文：奉仕する
+CALL MESSAGE_BATTLE_CHARA_HOUSI
+;地の文：洗脳/悪堕ちキャラが操作キャラの奉仕するをみた
+SIF FLAG:110 == 1
+	CALL MESSAGE_OTHER_BATTLE_CHARA_HOUSI
+
+;行動ポイントを+1
+EX:行動ポイント += 1
+
+RETURN 1

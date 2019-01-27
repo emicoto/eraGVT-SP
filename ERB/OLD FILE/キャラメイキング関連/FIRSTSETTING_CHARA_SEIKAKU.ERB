@@ -1,0 +1,438 @@
+
+;-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+;キャラの性格の設定
+@FIRSTSETTING_CHARA_SEIKAKU, ARG
+#DIM LCOUNT
+#DIM HAVE_TALENT
+#DIM SEIKAKU_NUM = 20
+#DIM SEIKAKU_START = 10
+CALL LB
+LCOUNT = LINECOUNT
+$INPUT_LOOP
+VARSET LOCAL
+;性格補正をリセット
+FOR LOCAL:3, 0, 7
+	LOCAL:1 = LOCAL:3
+	SIF LOCAL:3 > 2
+		LOCAL:1 = LOCAL:3 + 7
+	CSVBASE NO:ARG, LOCAL:1
+	BASE:ARG:(LOCAL:1) = RESULT
+	MAXBASE:ARG:(LOCAL:1) = BASE:ARG:(LOCAL:1)
+NEXT
+;性格ランダムの場合
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", ARG
+IF RESULT == 0
+	LOCAL = RAND:(SEIKAKU_NUM) + 10
+	TALENT:ARG:LOCAL = 1
+	IF TALENT:ARG:感情乏しい > 0
+		FOR LOCAL, 600, 700
+			TALENT:ARG:LOCAL = 0
+		NEXT
+	ENDIF
+ENDIF
+;精神素質をリセット
+HAVE_TALENT = 0
+FOR LOCAL, 600, 700
+	SIF TALENT:ARG:LOCAL > 0
+		HAVE_TALENT ++
+NEXT
+PRINTFORML {ARG:0}人目のキャラ 『%CALLNAME:ARG%』 の性格を設定してください
+DRAWLINE
+PRINTL 　　　　　　　　　　　　　　　体　気　性　　攻　防　敏　知　　恭　欲　屈　恥　苦　恐
+FOR LOCAL, 0, SEIKAKU_NUM
+	SIF TALENT:ARG:(LOCAL + SEIKAKU_START) > 0
+		SETCOLOR 0,255,180
+	PRINTFORM 　　[{LOCAL, 2}]%TALENTNAME:(LOCAL + SEIKAKU_START),20,LEFT%
+	RESETCOLOR
+	PRINTPLAIN 　
+	CALL SHOW_SEIKAKUHOSEI, LOCAL + SEIKAKU_START
+	PRINTPLAIN 　
+	CALL SHOW_RESISTSEX, LOCAL + SEIKAKU_START, ARG, 1
+	IF TALENT:ARG:(LOCAL + SEIKAKU_START) > 0
+		SETCOLOR 0,255,180
+		PRINT  ＜
+	ENDIF
+	RESETCOLOR
+	PRINTL 
+NEXT
+PRINTL 　　[99]何でもいい
+DRAWLINE
+PRINTFORML  精神素質({HAVE_TALENT}/4)　※素質名にマウスオーバーすると説明が表示されます
+VARSET LOCALS
+SIF TALENT:ARG:感情乏しい > 0
+	LOCALS += "<font color='#808080'>"
+LOCALS += "　　社交性　　　　　"
+IF TALENT:ARG:内向的 > 0
+	LOCALS += @"<button value='100' title='%TALENT_INFO(600)%'>[100]　　内向的　　　　</button>"
+ELSEIF TALENT:ARG:社交的 > 0
+	LOCALS += @"<button value='100' title='%TALENT_INFO(601)%'>[100]　　社交的　　　　</button>"
+ELSE
+	LOCALS += @"<button value='100'>[100]　　─　　　　　　</button>"
+ENDIF
+LOCALS += "　　協調性　　　　　"
+IF TALENT:ARG:自分勝手 > 0
+	LOCALS += @"<button value='101' title='%TALENT_INFO(602)%'>[101]　　自分勝手　　　</button>"
+ELSEIF TALENT:ARG:献身的 > 0
+	LOCALS += @"<button value='101' title='%TALENT_INFO(603)%'>[101]　　献身的　　　　</button>"
+ELSE
+	LOCALS += @"<button value='101'>[101]　　─　　　　　　</button>"
+ENDIF
+SIF TALENT:ARG:感情乏しい > 0
+	LOCALS += "</font>"
+HTML_PRINT LOCALS
+
+VARSET LOCALS
+SIF TALENT:ARG:感情乏しい > 0
+	LOCALS += "<font color='#808080'>"
+LOCALS += "　　自尊心　　　　　"
+IF TALENT:ARG:小心者 > 0
+	LOCALS += @"<button value='102' title='%TALENT_INFO(604)%'>[102]　　小心者　　　　</button>"
+ELSEIF TALENT:ARG:プライド高い > 0
+	LOCALS += @"<button value='102' title='%TALENT_INFO(605)%'>[102]　　プライド高い　</button>"
+ELSE
+	LOCALS += @"<button value='102'>[102]　　─　　　　　　</button>"
+ENDIF
+LOCALS += "　　性への関心　　　"
+IF TALENT:ARG:保守的 > 0
+	LOCALS += @"<button value='103' title='%TALENT_INFO(606)%'>[103]　　保守的　　　　</button>"
+ELSEIF TALENT:ARG:好奇心 > 0
+	LOCALS += @"<button value='103' title='%TALENT_INFO(607)%'>[103]　　好奇心　　　　</button>"
+ELSE
+	LOCALS += @"<button value='103'>[103]　　─　　　　　　</button>"
+ENDIF
+SIF TALENT:ARG:感情乏しい > 0
+	LOCALS += "</font>"
+HTML_PRINT LOCALS
+
+VARSET LOCALS
+SIF TALENT:ARG:感情乏しい > 0
+	LOCALS += "<font color='#808080'>"
+LOCALS += "　　ＳＭ　　　　　　"
+IF TALENT:ARG:サド気質 > 0
+	LOCALS += @"<button value='104' title='%TALENT_INFO(608)%'>[104]　　サド気質　　　</button>"
+ELSEIF TALENT:ARG:マゾ気質 > 0
+	LOCALS += @"<button value='104' title='%TALENT_INFO(609)%'>[104]　　マゾ気質　　　</button>"
+ELSE
+	LOCALS += @"<button value='104'>[104]　　─　　　　　　</button>"
+ENDIF
+LOCALS += "　　快楽応答　　　　"
+IF TALENT:ARG:快楽に弱い > 0
+	LOCALS += @"<button value='105' title='%TALENT_INFO(610)%'>[105]　　快楽に弱い　　</button>"
+ELSEIF TALENT:ARG:快楽の否定 > 0
+	LOCALS += @"<button value='105' title='%TALENT_INFO(611)%'>[105]　　快楽の否定　　</button>"
+ELSE
+	LOCALS += @"<button value='105'>[105]　　─　　　　　　</button>"
+ENDIF
+SIF TALENT:ARG:感情乏しい > 0
+	LOCALS += "</font>"
+HTML_PRINT LOCALS
+
+VARSET LOCALS
+SIF TALENT:ARG:感情乏しい > 0
+	LOCALS += "<font color='#808080'>"
+LOCALS += "　　闘争心　　　　　"
+IF TALENT:ARG:争いを好まない > 0
+	LOCALS += @"<button value='106' title='%TALENT_INFO(612)%'>[106]　　争いを好まない</button>"
+ELSEIF TALENT:ARG:喧嘩上等 > 0
+	LOCALS += @"<button value='106' title='%TALENT_INFO(613)%'>[106]　　喧嘩上等　　　</button>"
+ELSE
+	LOCALS += @"<button value='106'>[106]　　─　　　　　　</button>"
+ENDIF
+LOCALS += "　　羞恥心　　　　　"
+IF TALENT:ARG:恥じらい > 0
+	LOCALS += @"<button value='107' title='%TALENT_INFO(614)%'>[107]　　恥じらい　　　</button>"
+ELSEIF TALENT:ARG:度胸 > 0
+	LOCALS += @"<button value='107' title='%TALENT_INFO(615)%'>[107]　　度胸　　　　　</button>"
+ELSEIF TALENT:ARG:潔癖症 > 0
+	LOCALS += @"<button value='107' title='%TALENT_INFO(625)%'>[107]　　潔癖症　　　　</button>"
+ELSE
+	LOCALS += @"<button value='107'>[107]　　─　　　　　　</button>"
+ENDIF
+SIF TALENT:ARG:感情乏しい > 0
+	LOCALS += "</font>"
+HTML_PRINT LOCALS
+
+VARSET LOCALS
+SIF TALENT:ARG:感情乏しい > 0
+	LOCALS += "<font color='#808080'>"
+LOCALS += "　　性の対象　　　　"
+IF TALENT:ARG:人間不信 > 0
+	LOCALS += @"<button value='108' title='%TALENT_INFO(616)%'>[108]　　人間不信　　　</button>"
+ELSEIF TALENT:ARG:両刀 > 0
+	LOCALS += @"<button value='108' title='%TALENT_INFO(617)%'>[108]　　両刀　　　　　</button>"
+ELSEIF TALENT:ARG:男性苦手 > 0
+	LOCALS += @"<button value='108' title='%TALENT_INFO(618)%'>[108]　　男性苦手　　　</button>"
+ELSEIF TALENT:ARG:女性苦手 > 0
+	LOCALS += @"<button value='108' title='%TALENT_INFO(619)%'>[108]　　女性苦手　　　</button>"
+ELSE
+	LOCALS += @"<button value='108'>[108]　　─　　　　　　</button>"
+ENDIF
+LOCALS += "　　魅力　　　　　　"
+IF TALENT:ARG:母性的 > 0
+	LOCALS += @"<button value='109' title='%TALENT_INFO(620)%'>[109]　　母性的　　　　</button>"
+ELSEIF TALENT:ARG:小悪魔 > 0
+	LOCALS += @"<button value='109' title='%TALENT_INFO(621)%'>[109]　　小悪魔　　　　</button>"
+ELSEIF TALENT:ARG:目立ちたがり > 0
+	LOCALS += @"<button value='109' title='%TALENT_INFO(622)%'>[109]　　目立ちたがり　</button>"
+ELSEIF TALENT:ARG:上品 > 0
+	LOCALS += @"<button value='109' title='%TALENT_INFO(623)%'>[109]　　上品　　　　　</button>"
+ELSEIF TALENT:ARG:泣き虫 > 0
+	LOCALS += @"<button value='109' title='%TALENT_INFO(624)%'>[109]　　泣き虫　　　　</button>"
+ELSE
+	LOCALS += @"<button value='109'>[109]　　─　　　　　　</button>"
+ENDIF
+SIF TALENT:ARG:感情乏しい > 0
+	LOCALS += "</font>"
+HTML_PRINT LOCALS
+
+DRAWLINE
+SIF HAVE_TALENT > 4
+	SETCOLOR 96,96,96
+PRINTL [200]決定
+RESETCOLOR
+PRINTL [300]精神素質をリセット
+PRINTL [999]精神素質をランダムで設定
+INPUT
+SIF RESULT != 200
+	CLEARLINE LINECOUNT - LCOUNT
+IF RESULT == 200 && HAVE_TALENT <= 4
+ELSEIF RESULT == 200
+	CLEARLINE LINECOUNT - LCOUNT
+	GOTO INPUT_LOOP
+ELSEIF RESULT == 99
+	FOR LOCAL, 0, SEIKAKU_NUM
+		;性格の初期化
+		TALENT:ARG:(LOCAL + SEIKAKU_START) = 0
+	NEXT
+	LOCAL = RAND:(SEIKAKU_NUM) + 10
+	TALENT:ARG:LOCAL = 1
+	IF TALENT:ARG:感情乏しい > 0
+		FOR LOCAL, 600, 700
+			TALENT:ARG:LOCAL = 0
+		NEXT
+	ENDIF
+	GOTO INPUT_LOOP
+ElSEIF RESULT == 300
+	FOR LOCAL, 600, 700
+		TALENT:ARG:LOCAL = 0
+	NEXT
+	GOTO INPUT_LOOP
+ElSEIF RESULT == 999
+	FOR LOCAL, 600, 700
+		TALENT:ARG:LOCAL = 0
+	NEXT
+	CALL CHARA_MAKE_STATUS_TALENT_SEIKAKU, ARG, RAND:3 + 1
+	GOTO INPUT_LOOP
+ELSEIF RESULT >= 0 && RESULT <= SEIKAKU_NUM - 1
+	FOR LOCAL, 0, SEIKAKU_NUM
+		;性格の初期化
+		TALENT:ARG:(LOCAL + SEIKAKU_START) = 0
+	NEXT
+	LOCAL = RESULT + SEIKAKU_START
+	TALENT:ARG:LOCAL = 1
+	IF TALENT:ARG:感情乏しい > 0
+		FOR LOCAL, 600, 700
+			TALENT:ARG:LOCAL = 0
+		NEXT
+	ENDIF
+	GOTO INPUT_LOOP
+ELSEIF RESULT == 100 && TALENT:ARG:感情乏しい == 0
+	IF TALENT:ARG:内向的 > 0
+		TALENT:ARG:内向的 = 0
+		TALENT:ARG:社交的 = 1
+	ELSEIF TALENT:ARG:社交的 > 0
+		TALENT:ARG:内向的 = 0
+		TALENT:ARG:社交的 = 0
+	ELSE
+		TALENT:ARG:内向的 = 1
+		TALENT:ARG:社交的 = 0
+	ENDIF
+	GOTO INPUT_LOOP
+ELSEIF RESULT == 101 && TALENT:ARG:感情乏しい == 0
+	IF TALENT:ARG:自分勝手 > 0
+		TALENT:ARG:自分勝手 = 0
+		TALENT:ARG:献身的 = 1
+	ELSEIF TALENT:ARG:献身的 > 0
+		TALENT:ARG:自分勝手 = 0
+		TALENT:ARG:献身的 = 0
+	ELSE
+		TALENT:ARG:自分勝手 = 1
+		TALENT:ARG:献身的 = 0
+	ENDIF
+	GOTO INPUT_LOOP
+ELSEIF RESULT == 102 && TALENT:ARG:感情乏しい == 0
+	IF TALENT:ARG:小心者 > 0
+		TALENT:ARG:小心者 = 0
+		TALENT:ARG:プライド高い = 1
+	ELSEIF TALENT:ARG:プライド高い > 0
+		TALENT:ARG:小心者 = 0
+		TALENT:ARG:プライド高い = 0
+	ELSE
+		TALENT:ARG:小心者 = 1
+		TALENT:ARG:プライド高い = 0
+	ENDIF
+	GOTO INPUT_LOOP
+ELSEIF RESULT == 103 && TALENT:ARG:感情乏しい == 0
+	IF TALENT:ARG:保守的 > 0
+		TALENT:ARG:保守的 = 0
+		TALENT:ARG:好奇心 = 1
+	ELSEIF TALENT:ARG:好奇心 > 0
+		TALENT:ARG:保守的 = 0
+		TALENT:ARG:好奇心 = 0
+	ELSE
+		TALENT:ARG:保守的 = 1
+		TALENT:ARG:好奇心 = 0
+	ENDIF
+	GOTO INPUT_LOOP
+ELSEIF RESULT == 104 && TALENT:ARG:感情乏しい == 0
+	IF TALENT:ARG:サド気質 > 0
+		TALENT:ARG:サド気質 = 0
+		TALENT:ARG:マゾ気質 = 1
+	ELSEIF TALENT:ARG:マゾ気質 > 0
+		TALENT:ARG:サド気質 = 0
+		TALENT:ARG:マゾ気質 = 0
+	ELSE
+		TALENT:ARG:サド気質 = 1
+		TALENT:ARG:マゾ気質 = 0
+	ENDIF
+	GOTO INPUT_LOOP
+ELSEIF RESULT == 105 && TALENT:ARG:感情乏しい == 0
+	IF TALENT:ARG:快楽に弱い > 0
+		TALENT:ARG:快楽に弱い = 0
+		TALENT:ARG:快楽の否定 = 1
+	ELSEIF TALENT:ARG:快楽の否定 > 0
+		TALENT:ARG:快楽に弱い = 0
+		TALENT:ARG:快楽の否定 = 0
+	ELSE
+		TALENT:ARG:快楽に弱い = 1
+		TALENT:ARG:快楽の否定 = 0
+	ENDIF
+	GOTO INPUT_LOOP
+ELSEIF RESULT == 106 && TALENT:ARG:感情乏しい == 0
+	IF TALENT:ARG:争いを好まない > 0
+		TALENT:ARG:争いを好まない = 0
+		TALENT:ARG:喧嘩上等 = 1
+	ELSEIF TALENT:ARG:喧嘩上等 > 0
+		TALENT:ARG:争いを好まない = 0
+		TALENT:ARG:喧嘩上等 = 0
+	ELSE
+		TALENT:ARG:争いを好まない = 1
+		TALENT:ARG:喧嘩上等 = 0
+	ENDIF
+	GOTO INPUT_LOOP
+ELSEIF RESULT == 107 && TALENT:ARG:感情乏しい == 0
+	IF TALENT:ARG:恥じらい > 0
+		TALENT:ARG:恥じらい = 0
+		TALENT:ARG:度胸 = 1
+		TALENT:ARG:潔癖症 = 0
+	ELSEIF TALENT:ARG:度胸 > 0
+		TALENT:ARG:恥じらい = 0
+		TALENT:ARG:度胸 = 0
+		TALENT:ARG:潔癖症 = 1
+	ELSEIF TALENT:ARG:潔癖症 > 0
+	    TALENT:ARG:潔癖症 = 0
+		TALENT:ARG:恥じらい = 0
+		TALENT:ARG:度胸 = 0
+	ELSE
+		TALENT:ARG:恥じらい = 1
+		TALENT:ARG:度胸 = 0
+		TALENT:ARG:潔癖症 = 0
+	ENDIF
+	GOTO INPUT_LOOP
+ELSEIF RESULT == 108 && TALENT:ARG:感情乏しい == 0
+	IF TALENT:ARG:人間不信 > 0
+		TALENT:ARG:人間不信 = 0
+		TALENT:ARG:両刀 = 1
+		TALENT:ARG:男性苦手 = 0
+		TALENT:ARG:女性苦手 = 0
+	ELSEIF TALENT:ARG:両刀 > 0
+		TALENT:ARG:人間不信 = 0
+		TALENT:ARG:両刀 = 0
+		TALENT:ARG:男性苦手 = 1
+		TALENT:ARG:女性苦手 = 0
+	ELSEIF TALENT:ARG:男性苦手 > 0
+		TALENT:ARG:人間不信 = 0
+		TALENT:ARG:両刀 = 0
+		TALENT:ARG:男性苦手 = 0
+		TALENT:ARG:女性苦手 = 1
+	ELSEIF TALENT:ARG:女性苦手 > 0
+		TALENT:ARG:人間不信 = 0
+		TALENT:ARG:両刀 = 0
+		TALENT:ARG:男性苦手 = 0
+		TALENT:ARG:女性苦手 = 0
+	ELSE
+		TALENT:ARG:人間不信 = 1
+		TALENT:ARG:両刀 = 0
+		TALENT:ARG:男性苦手 = 0
+		TALENT:ARG:女性苦手 = 0
+	ENDIF
+	GOTO INPUT_LOOP
+ELSEIF RESULT == 109 && TALENT:ARG:感情乏しい == 0
+	IF TALENT:ARG:母性的 > 0
+		TALENT:ARG:母性的 = 0
+		TALENT:ARG:小悪魔 = 1
+		TALENT:ARG:目立ちたがり = 0
+		TALENT:ARG:上品 = 0
+		TALENT:ARG:泣き虫 = 0
+	ELSEIF TALENT:ARG:小悪魔 > 0
+		TALENT:ARG:母性的 = 0
+		TALENT:ARG:小悪魔 = 0
+		TALENT:ARG:目立ちたがり = 1
+		TALENT:ARG:上品 = 0
+		TALENT:ARG:泣き虫 = 0
+	ELSEIF TALENT:ARG:目立ちたがり > 0
+		TALENT:ARG:母性的 = 0
+		TALENT:ARG:小悪魔 = 0
+		TALENT:ARG:目立ちたがり = 0
+		TALENT:ARG:上品 = 1
+		TALENT:ARG:泣き虫 = 0
+	ELSEIF TALENT:ARG:上品 > 0
+		TALENT:ARG:母性的 = 0
+		TALENT:ARG:小悪魔 = 0
+		TALENT:ARG:目立ちたがり = 0
+		TALENT:ARG:上品 = 0
+		TALENT:ARG:泣き虫 = 1
+	ELSEIF TALENT:ARG:泣き虫 > 0
+		TALENT:ARG:母性的 = 0
+		TALENT:ARG:小悪魔 = 0
+		TALENT:ARG:目立ちたがり = 0
+		TALENT:ARG:上品 = 0
+		TALENT:ARG:泣き虫 = 0
+	ELSE
+		TALENT:ARG:母性的 = 1
+		TALENT:ARG:小悪魔 = 0
+		TALENT:ARG:目立ちたがり = 0
+		TALENT:ARG:上品 = 0
+		TALENT:ARG:泣き虫 = 0
+	ENDIF
+	GOTO INPUT_LOOP
+ELSE
+	GOTO INPUT_LOOP
+ENDIF
+PRINTL 
+;体力などのBASE値の計算
+CALL SEIKAKU_CHECK,"GET_TALENT_VALUE",ARG
+LOCAL = RESULT
+LOCAL:1 = 0
+LOCAL:2 = 0
+FOR LOCAL:3, 0, 7
+	LOCAL:1 = LOCAL:3
+	SIF LOCAL:3 > 2
+		LOCAL:1 = LOCAL:3 + 7
+	LOCAL:2 = BASE:ARG:(LOCAL:1)
+	;性格補正
+	BASE:ARG:(LOCAL:1) = SEIKAKU_HOSEI_F(LOCAL, LOCAL:1, LOCAL:2)
+	MAXBASE:ARG:(LOCAL:1) = BASE:ARG:(LOCAL:1)
+NEXT
+
+;性格による一人称の設定
+IF CSTR:ARG:4 == ""
+	IF TALENT:ARG:古風 && TALENT:ARG:オトコ <= 0
+		CFLAG:ARG:8 = 20
+	ELSEIF TALENT:ARG:かるい性格 && TALENT:ARG:オトコ <= 0
+		CFLAG:ARG:8 = 11
+	ENDIF
+ENDIF
+
+;部位結界の設定
+CALL BASEUP_CAL_SHIELD, ARG

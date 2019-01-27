@@ -1,0 +1,123 @@
+;尿道攻め
+
+;性コマンド分類
+@SEX_TYPE_COM1008
+RETURN 通常
+
+@SEX_SPCOM8
+;EX_COM	追加責め実行部位（ビット）
+;	1：Ｃ　2：Ｖ　4：Ａ　8：Ｂ
+;追加責め
+EX_COM = 1
+SH_COM = 0
+
+;取得パラメータ計算
+;ベース値の明示的初期化
+REPEAT 12
+	LOCAL:COUNT = 0
+REND
+
+;油断度の上昇
+TFLAG:3 += 50
+
+;射精値 50
+CALL TENTACLE_SYASEI_UP, 50
+
+;触手サイズの設定
+CALL SET_TENTACLE_SIZE, FLAG:10, FLAG:11, FLAG:110, FLAG:111, 1008
+
+;地の文：SPCOM8
+CALL MESSAGE_SEX_SPCOM8, EX_COM, SH_COM
+
+;結界による触手本数の変動
+CALL SET_TENTACLE_POOL
+;服へのダメージ
+CALL CLOTH_BATTLE_DAMAGE, 1
+
+;ベース
+EXP:放尿経験 += 1
+EXP:露出快楽経験 += 1
+
+;快C
+IF ABL:Ｃ感覚 == 0
+	LOCAL:0 = 2000
+ELSEIF ABL:Ｃ感覚 == 1
+	LOCAL:0 = 4000
+ELSEIF ABL:Ｃ感覚 == 2
+	LOCAL:0 = 8000
+ELSEIF ABL:Ｃ感覚 == 3
+	LOCAL:0 = 10000
+ELSEIF ABL:Ｃ感覚 == 4
+	LOCAL:0 = 20000
+ELSEIF ABL:Ｃ感覚 >= 5
+	LOCAL:0 = 40000
+ENDIF
+;ペニス持ちには効果大
+SIF TALENT:オトコ > 0 || TALENT:ふたなり > 0
+	LOCAL:0 += 1500
+
+;屈服
+;露出癖に応じて
+IF ABL:露出癖 < 3
+	LOCAL:8 = 2000
+ELSEIF ABL:露出癖 == 3
+	LOCAL:8 = 4000
+ELSEIF ABL:露出癖 == 4
+	LOCAL:8 = 8000
+ELSE
+	LOCAL:8 = 20000
+ENDIF
+
+;恥情
+;露出癖に応じて
+IF ABL:露出癖 < 3
+	LOCAL:9 = 2000
+ELSEIF ABL:露出癖 == 3
+	LOCAL:9 = 800
+ELSEIF ABL:露出癖 == 4
+	LOCAL:9 = 400
+ELSE
+	LOCAL:9 = 200
+ENDIF
+
+;恐怖
+;放尿経験が低いと入る
+IF EXP:放尿経験 == 0
+	LOCAL:11 = 8000
+ELSEIF EXP:放尿経験 == 1
+	LOCAL:11 = 6400
+ELSEIF EXP:放尿経験 == 2
+	LOCAL:11 = 3200
+ELSE
+	LOCAL:11 = 800
+ENDIF
+
+;行動予約なし
+TFLAG:17 = -1
+;触手の行動を記録
+TFLAG:20 = 1008
+
+;習得基本値
+LOCAL:6 += 500
+
+;欲情基本値
+LOCAL:7 += 0
+
+;屈服基本値
+LOCAL:8 += 2000
+
+;恥情基本値
+LOCAL:9 += 400
+
+;苦痛基本値
+LOCAL:10 += 500
+
+;恐怖基本値
+LOCAL:11 += 4000
+
+;体力消費基本値
+LOCAL:12 += 50
+
+;計算へ
+CALL PALAM_CAL, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, LOCAL:12
+

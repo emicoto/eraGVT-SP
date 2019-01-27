@@ -1,0 +1,302 @@
+;武器カスタマイズ機能に関する処理群
+;------------------------------------------------------------------------------------------------------------------------------
+
+;武器カスタマイズ画面
+;-------------------------------------------------
+;ARG   = キャラ番号
+;ARG:1 = キャラメイク中なら1
+@WEAPON_CUSTOMIZE, ARG, ARG:1 = 0
+#DIM CONST LENGTH = 60
+$REPRINT
+CALL LB
+VARSET LOCAL
+VARSET LOCALS
+PRINTL ---///　　　　ＷＥＡＰＯＮ　ＣＵＳＴＯＭＩＺＥ　　///----------------
+PRINTL 
+PRINTFORML %CALLNAME:ARG%　の現在の装備
+CALL SHORTLINE
+PRINTFORML ◆近距離武器
+IF CSTR:ARG:5 != ""
+	PRINTFORML ├◎武器名 『%CSTR:ARG:5%』
+ELSE
+	PRINTFORML ├◎武器名 （武器名が設定されていません）
+ENDIF
+LOCALS = │
+PRINTFORM %LOCALS, LENGTH, LEFT%
+PRINTPLAIN 　
+PRINTL ...[10]武器名　　　　設定
+PRINTFORML ├※地の文カスタマイズ機能はまだ未実装です
+LOCALS = │
+PRINTFORM %LOCALS, LENGTH, LEFT%
+PRINTPLAIN 　
+SETCOLOR 96,96,96
+PRINTPLAIN ...[11]地の文　　　　設定
+PRINTL 
+RESETCOLOR
+CALL SET_FSTYLE_INFO,ARG,1
+CALL FSTYLE_ATTACK,ARG,1,1
+PRINTFORML └◎戦闘スタイル　<<%FSTYLE_NAME_F(ARG,1)%>>%"", LENGTH - 40, LEFT%威力：【{RESULT}】
+PRINT  
+LOCALS = ---> %RESULTS:0%
+PRINTFORM %LOCALS, LENGTH - 1, LEFT%
+PRINTPLAIN 　
+PRINTL ...[12]戦闘スタイル　設定
+PRINTFORML  ---> %RESULTS:1%
+PRINTFORML  ---> %RESULTS:2%
+
+CALL SHORTLINE
+PRINTFORML ◆中距離武器
+IF CSTR:ARG:6 != ""
+	PRINTFORML ├◎武器名 『%CSTR:ARG:6%』
+ELSE
+	PRINTFORML ├◎武器名 （武器名が設定されていません）
+ENDIF
+LOCALS = │
+PRINTFORM %LOCALS, LENGTH, LEFT%
+PRINTPLAIN 　
+PRINTL ...[20]武器名　　　　設定
+PRINTFORML ├※地の文カスタマイズ機能はまだ未実装です
+LOCALS = │
+PRINTFORM %LOCALS, LENGTH, LEFT%
+PRINTPLAIN 　
+SETCOLOR 96,96,96
+PRINTPLAIN ...[21]地の文　　　　設定
+PRINTL 
+RESETCOLOR
+CALL SET_FSTYLE_INFO,ARG,2
+CALL FSTYLE_ATTACK,ARG,2,1
+PRINTFORML └◎戦闘スタイル　<<%FSTYLE_NAME_F(ARG,2)%>>%"", LENGTH - 40, LEFT%威力：【{RESULT}】
+PRINT  
+LOCALS = ---> %RESULTS:0%
+PRINTFORM %LOCALS, LENGTH - 1, LEFT%
+PRINTPLAIN 　
+PRINTL ...[22]戦闘スタイル　設定
+PRINTFORML  ---> %RESULTS:1%
+PRINTFORML  ---> %RESULTS:2%
+
+CALL SHORTLINE
+PRINTFORML ◆遠距離武器
+IF CSTR:ARG:7 != ""
+	PRINTFORML ├◎武器名 『%CSTR:ARG:7%』
+ELSE
+	PRINTFORML ├◎武器名 （武器名が設定されていません）
+ENDIF
+LOCALS = │
+PRINTFORM %LOCALS, LENGTH, LEFT%
+PRINTPLAIN 　
+PRINTL ...[30]武器名　　　　設定
+PRINTFORML ├※地の文カスタマイズ機能はまだ未実装です
+LOCALS = │
+PRINTFORM %LOCALS, LENGTH, LEFT%
+PRINTPLAIN 　
+SETCOLOR 96,96,96
+PRINTPLAIN ...[31]地の文　　　　設定
+PRINTL 
+RESETCOLOR
+CALL SET_FSTYLE_INFO,ARG,3
+CALL FSTYLE_ATTACK,ARG,3,1
+PRINTFORML └◎戦闘スタイル　<<%FSTYLE_NAME_F(ARG,3)%>>%"", LENGTH - 40, LEFT%威力：【{RESULT}】
+PRINT  
+LOCALS = ---> %RESULTS:0%
+PRINTFORM %LOCALS, LENGTH - 1, LEFT%
+PRINTPLAIN 　
+PRINTL ...[32]戦闘スタイル　設定
+PRINTFORML  ---> %RESULTS:1%
+PRINTFORML  ---> %RESULTS:2%
+DRAWLINE
+PRINTL  [999]戻る
+INPUT
+IF RESULT == 999
+	RETURN
+ELSEIF RESULT == 10 || RESULT == 20 || RESULT == 30
+	CALL SETTING_WEAPON_NAME, ARG, (RESULT / 10)
+	GOTO REPRINT
+ELSEIF RESULT == 12 || RESULT == 22 || RESULT == 32
+	CALL SETTING_FSTYLE, ARG, (RESULT / 10)
+	GOTO REPRINT
+ELSE
+	GOTO REPRINT
+ENDIF
+
+
+
+
+
+
+;武器の名前を設定
+@SETTING_WEAPON_NAME,ARG,ARG:1
+$REPRINT
+IF ARG:1 == 1
+	PRINT 近距離
+ELSEIF ARG:1 == 2
+	PRINT 中距離
+ELSEIF ARG:1 == 3
+	PRINT 遠距離
+ENDIF
+PRINTL 武器の名前を決めてください
+PRINT 現在の武器名：
+IF CSTR:ARG:(ARG:1 + 4) != ""
+	PRINTFORML 『%CSTR:ARG:(ARG:1 + 4)%』
+ELSE
+	PRINTFORML （武器名が設定されていません）
+ENDIF
+PRINTL 
+PRINTL  [0]自分で入力する
+PRINTL  [1]ランダム生成機能を使う
+SIF CSTR:ARG:(ARG:1 + 4) == ""
+	SETCOLOR 96, 96, 96
+PRINTFORML  [\@CSTR:ARG:(ARG:1 + 4) == "" ? - # 2 \@]追加文字列の設定
+RESETCOLOR
+PRINTL  [3]消去する
+SIF CSTR:ARG:5 != "" && ARG:1 != 1
+	PRINTFORML  [4]近距離と同じ銘　『%CSTR:ARG:5%』
+SIF CSTR:ARG:6 != "" && ARG:1 != 2
+	PRINTFORML  [5]中距離と同じ銘　『%CSTR:ARG:6%』
+SIF CSTR:ARG:7 != "" && ARG:1 != 3
+	PRINTFORML  [6]遠距離と同じ銘　『%CSTR:ARG:7%』
+PRINTL  [999]戻る
+$INPUT_LOOP
+INPUT
+IF RESULT == 0
+	CLEARLINE 1
+	PRINTL 
+	CALL SHORTLINE
+	IF ARG:1 == 1
+		PRINT 近距離
+	ELSEIF ARG:1 == 2
+		PRINT 中距離
+	ELSEIF ARG:1 == 3
+		PRINT 遠距離
+	ENDIF
+	PRINTL 武器に設定する名前を入力してください：
+	INPUTS
+	IF ARG:1 == 1
+		CSTR:ARG:5 = %RESULTS%
+	ELSEIF ARG:1 == 2
+		CSTR:ARG:6 = %RESULTS%
+	ELSEIF ARG:1 == 3
+		CSTR:ARG:7 = %RESULTS%
+	ENDIF
+	CDFLAG:ARG:(ARG:1):武器名元位置 = 0
+	GOTO REPRINT
+ELSEIF RESULT == 1
+	CLEARLINE 1
+	CALL GENERATE_WEAPON_STRS, 20
+	IF ARG:1 == 1 && RESULT
+		CSTR:ARG:5 = %RESULTS%
+	ELSEIF ARG:1 == 2 && RESULT
+		CSTR:ARG:6 = %RESULTS%
+	ELSEIF ARG:1 == 3 && RESULT
+		CSTR:ARG:7 = %RESULTS%
+	ENDIF
+	CDFLAG:ARG:(ARG:1):武器名元位置 = 0
+	GOTO REPRINT
+ELSEIF RESULT == 2 && CSTR:ARG:(ARG:1 + 4) != ""
+	CLEARLINE 1
+	CALL WEAPON_ADD_STRS, ARG, ARG:1
+	IF RESULT
+		CSTR:ARG:(ARG:1 + 4) = %RESULTS%
+		CDFLAG:ARG:(ARG:1):武器名元位置 = RESULT
+	ENDIF
+	GOTO REPRINT
+ELSEIF RESULT == 3
+	CLEARLINE 1
+	IF ARG:1 == 1
+		CSTR:ARG:5 = 
+	ELSEIF ARG:1 == 2
+		CSTR:ARG:6 = 
+	ELSEIF ARG:1 == 3
+		CSTR:ARG:7 = 
+	ENDIF
+	CDFLAG:ARG:(ARG:1):武器名元位置 = 0
+	PRINTL 武器名を消去しました
+	PRINTW 
+	GOTO REPRINT
+ELSEIF RESULT == 4 && CSTR:ARG:5 != "" && ARG:1 != 1
+	IF ARG:1 == 2
+		CSTR:ARG:6 = %CSTR:ARG:5%
+		CDFLAG:ARG:2:武器名元位置 = CDFLAG:ARG:1:武器名元位置
+	ELSE
+		CSTR:ARG:7 = %CSTR:ARG:5%
+		CDFLAG:ARG:3:武器名元位置 = CDFLAG:ARG:1:武器名元位置
+	ENDIF
+	RETURN
+ELSEIF RESULT == 5 && CSTR:ARG:6 != "" && ARG:1 != 2
+	IF ARG:1 == 1
+		CSTR:ARG:5 = %CSTR:ARG:6%
+		CDFLAG:ARG:1:武器名元位置 = CDFLAG:ARG:2:武器名元位置
+	ELSE
+		CSTR:ARG:7 = %CSTR:ARG:6%
+		CDFLAG:ARG:3:武器名元位置 = CDFLAG:ARG:2:武器名元位置
+	ENDIF
+	RETURN
+ELSEIF RESULT == 6 && CSTR:ARG:7 != "" && ARG:1 != 3
+	IF ARG:1 == 1
+		CSTR:ARG:5 = %CSTR:ARG:7%
+		CDFLAG:ARG:1:武器名元位置 = CDFLAG:ARG:3:武器名元位置
+	ELSE
+		CSTR:ARG:6 = %CSTR:ARG:7%
+		CDFLAG:ARG:2:武器名元位置 = CDFLAG:ARG:3:武器名元位置
+	ENDIF
+	RETURN
+ELSEIF RESULT == 999
+	RETURN
+ELSE
+	GOTO INPUT_LOOP
+ENDIF
+
+
+
+;戦闘スタイルを設定
+@SETTING_FSTYLE,ARG,ARG:1
+IF ARG:1 == 1
+	PRINT 近距離
+ELSEIF ARG:1 == 2
+	PRINT 中距離
+ELSEIF ARG:1 == 3
+	PRINT 遠距離
+ENDIF
+PRINTL 武器の戦闘スタイルを選んでください
+PRINTFORML 現在のスタイル：<<%FSTYLE_NAME_F(ARG,ARG:1)%>>
+PRINTL 
+PRINTL  [0] <<通常>>　　通常のスタイル　　　　　クセがなく扱いやすい　バースト攻撃の反動が小さい
+PRINTL 
+PRINTL  [1] <<連続>>　　敏捷の高いキャラ向け　　２回攻撃できるので命中率はダントツ
+PRINTL 
+PRINTL  [2] <<装甲>>　　防御の高いキャラ向け　　ガードが固くなるので苦手な距離のサポートに
+PRINTL 
+PRINTL  [3] <<撹乱>>　　敏捷の高いキャラ向け　　クリティカル率と威力が高いがガードは脆い
+PRINTL 
+PRINTL  [4] <<重撃>>　　防御の高いキャラ向け　　威力が高いが回避は期待できない
+PRINTL 
+PRINTL  [5] <<広範>>　　攻撃の高いキャラ向け　　直撃しなくても威力が高い
+PRINTL 
+PRINTL  [6] <<全力>>　　攻撃の高いキャラ向け　　非常に威力が高いが反動も大きい
+PRINTL 
+PRINTL  [7] <<知略>>　　知性の高いキャラ向け　　知性が高いほど直撃しやすい
+PRINTL 
+PRINTL  [8] <<設置>>　　知性の高いキャラ向け　　威力は低いが、相手に隙を作る追加効果を持つ
+PRINTL 
+PRINTL  [9] <<使役>>　　知性の高いキャラ向け　　状況に応じた多彩な攻撃方法が可能
+PRINTL 
+PRINTL  [999]戻る
+$INPUT_LOOP
+INPUT
+IF RESULT >= 0 && RESULT <= 9
+	CLEARLINE 1
+	IF ARG:1 == 1
+		CDFLAG:ARG:近距離:戦闘スタイル = RESULT
+	ELSEIF ARG:1 == 2
+		CDFLAG:ARG:中距離:戦闘スタイル = RESULT
+	ELSEIF ARG:1 == 3
+		CDFLAG:ARG:遠距離:戦闘スタイル = RESULT
+	ENDIF
+	RETURN
+ELSEIF RESULT == 999
+	RETURN
+ELSE
+	GOTO INPUT_LOOP
+ENDIF
+
+
+

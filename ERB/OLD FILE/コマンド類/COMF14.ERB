@@ -1,0 +1,28 @@
+;Ｖ挿入防御
+@COM14
+
+;刻印による行動制限判定　１で行動できない
+CALL ACT_LIMIT
+SIF RESULT == 1
+	RETURN 1
+
+;距離表示
+CALL PRINT_DISTANCE
+PRINTL 
+
+;油断度の上昇
+TFLAG:3 += 5
+
+;防御フラグ：Ｖ防御にする
+TCVAR:2 = 体勢：Ｖ防御
+
+;地の文：Ｖ挿入防御
+CALL MESSAGE_BATTLE_CHARA_ANTI_V
+;地の文：洗脳/悪堕ちキャラが操作キャラのＶ挿入防御を見た
+SIF FLAG:110 == 1
+	CALL MESSAGE_OTHER_BATTLE_CHARA_ANTI_V
+
+;行動ポイントを+1
+EX:行動ポイント += 1
+
+RETURN 1

@@ -1,0 +1,59 @@
+;**********************************************************
+;基本ルール
+;加筆修正は、自由に行ってください
+;ただし、前の方が書いた文章は出来るだけ消さないでください
+;
+;口述での「陰唇」なので、吐息や詰まった表現などはありです
+;体力や発情など、ステータスでどもったりする様にしましょう
+;この変数を呼び出すときは、吃ることも含めてお使いください
+;
+;大陰唇%S_SLANG_LabiaMajora(TARGET)%と
+;小陰唇%S_SLANG_LabiaMinora(TARGET)%で更に小分けされている
+;
+;
+;増やして欲しい隠語は、アウトプットしてリクエストなりしましょう
+;未登録の中に放り込むなり、掲示板にアップするなりすれば、
+;実装される可能性があります
+;
+;by 雑魚の人 2018/02/11
+;**********************************************************
+;Labia(陰唇)の淫語
+@S_SLANG_Labia(ARG)
+#DIM LCOUNT
+#DIMS S_SLANGWORD_Labia
+#FUNCTIONS
+
+;初期化
+S_SLANGWORD_Labia=
+
+
+;1/3で大陰唇だけ、1/3で大陰唇だけ、1/3で大陰唇・小陰唇両方を
+LCOUNT=RAND:99
+IF LCOUNT > 65
+	;女性器を隠す皮下脂肪の多い部分、外側のワレメのこと
+	S_SLANGWORD_Labia=%S_SLANGWORD_Labia%%S_SLANG_LabiaMajora(TARGET)%
+ELSEIF LCOUNT >32
+	;女性器の膣穴を隠す部分、内側のビラビラのこと
+	S_SLANGWORD_Labia=%S_SLANGWORD_Labia%%S_SLANG_LabiaMinora(TARGET)%
+ELSE
+	;女性器を隠す皮下脂肪の多い部分、外側のワレメのこと
+	S_SLANGWORD_Labia=%S_SLANGWORD_Labia%%S_SLANG_LabiaMajora(TARGET)%
+
+	SELECTCASE RAND:2
+		CASE 1
+			S_SLANGWORD_Labia+="に囲まれた"
+		CASEELSE
+			S_SLANGWORD_Labia+="の内側に"
+	ENDSELECT
+
+	;女性器の膣穴を隠す部分、内側のビラビラのこと
+	S_SLANGWORD_Labia=%S_SLANGWORD_Labia%%S_SLANG_LabiaMinora(TARGET)%
+ENDIF
+
+
+;合成して出来上がった淫語を返す
+RETURNF S_SLANGWORD_Labia
+
+
+
+

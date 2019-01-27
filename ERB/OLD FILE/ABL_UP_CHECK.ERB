@@ -1,0 +1,1098 @@
+;--------------------------------------------------
+;能力の上昇
+;本家eraとは違い、自動で能力が上昇するので BEGIN ABLUPは使っていません
+;ARG=1なら幽閉から呼ばれ、PALAMをJUELに変換する処理を行わない
+;ARG=2なら戦闘後処理から呼ばれ、JUELの変換のみ行い能力上昇の処理をスキップする
+@_ABLUP, ARG
+VARSET LOCAL
+;珠の取得　快部位の絶頂に関する処理はCOMMON_PALAM_CALで一緒に計算済み
+LOCAL:0 = 0
+LOCAL:1 = 0
+IF ARG == 0 || ARG == 2
+	SETCOLOR 96,96,96
+		SIF FLAG:999 == 1
+			PRINTFORML  * DEGUG　珠の入手 *
+	REPEAT 12
+		LOCAL:0 = COUNT
+		SIF COUNT > 3
+			LOCAL:0 += 6
+		IF PALAM:(LOCAL:0) < 100
+			LOCAL:1 = 0
+		ELSEIF PALAM:(LOCAL:0) < 300
+			LOCAL:1 = 1
+		ELSEIF PALAM:(LOCAL:0) < 600
+			LOCAL:1 = 2
+		ELSEIF PALAM:(LOCAL:0) < 1500
+			LOCAL:1 = 10
+		ELSEIF PALAM:(LOCAL:0) < 3000
+			LOCAL:1 = 20
+		ELSEIF PALAM:(LOCAL:0) < 6000
+			LOCAL:1 = 100
+		ELSEIF PALAM:(LOCAL:0) < 10000
+			LOCAL:1 = 200
+		ELSEIF PALAM:(LOCAL:0) < 30000
+			LOCAL:1 = 1000
+		ELSEIF PALAM:(LOCAL:0) < 60000
+			LOCAL:1 = 2000
+		ELSEIF PALAM:(LOCAL:0) < 150000
+			LOCAL:1 = 10000
+		ELSEIF PALAM:(LOCAL:0) < 300000
+			LOCAL:1 = 20000
+		ELSE
+			LOCAL:1 = 100000
+		ENDIF
+
+		;FEAT効果による珠の入手量増加
+		SIF TALENT:背徳の烙印 > 0
+			LOCAL:1 *= 135 / 100
+
+		JUEL:(LOCAL:0) += LOCAL:1
+
+		SIF FLAG:999 == 1
+			PRINTFORML 　　取得する%PALAMNAME:(LOCAL:0)%の珠 : {LOCAL:1}
+
+		;珠の取得量上限
+		IF JUEL:(LOCAL:0) >= 999999 && LOCAL:0 >= 感覚数
+			JUEL:(LOCAL:0) = 999999
+		ELSEIF JUEL:(LOCAL:0) >= 99999999
+			JUEL:(LOCAL:0) = 99999999
+		ENDIF
+	REND
+	RESETCOLOR
+ENDIF
+SIF FLAG:999 == 1
+	PRINTL 
+SIF ARG == 2
+	RETURN
+
+;能力の上昇
+;上昇の条件が厳しいものから優先的に珠を消費する
+;最初のうちは条件を満たさないので上がらない
+
+;触手中毒の上昇
+LOCAL:0 = 0
+CALL ABL_UP_20
+LOCAL:0 = RESULT
+
+;自慰中毒の上昇
+LOCAL:12 = 0
+CALL ABL_UP_21
+LOCAL:12 = RESULT
+
+;精液中毒の上昇
+LOCAL:1 = 0
+CALL ABL_UP_22
+LOCAL:1 = RESULT
+
+;射精中毒の上昇
+LOCAL:13 = 0
+CALL ABL_UP_24
+LOCAL:13 = RESULT
+
+;噴乳中毒の上昇
+LOCAL:14 = 0
+CALL ABL_UP_23
+LOCAL:14 = RESULT
+
+;マゾっ気の上昇
+LOCAL:2 = 0
+CALL ABL_UP_15
+LOCAL:2 = RESULT
+
+;奉仕精神の上昇
+LOCAL:3 = 0
+CALL ABL_UP_13
+LOCAL:3 = RESULT
+
+;露出癖の上昇
+LOCAL:4 = 0
+CALL ABL_UP_14
+LOCAL:4 = RESULT
+
+;従順の上昇
+LOCAL:5 = 0
+CALL ABL_UP_10
+LOCAL:5 = RESULT
+
+;欲望の上昇
+LOCAL:6 = 0
+CALL ABL_UP_11
+LOCAL:6 = RESULT
+
+;技巧の上昇
+LOCAL:7 = 0
+CALL ABL_UP_12
+LOCAL:7 = RESULT
+
+;C感覚の上昇
+LOCAL:8 = 0
+CALL ABL_UP_0
+LOCAL:8 = RESULT
+
+;V感覚の上昇
+LOCAL:9 = 0
+CALL ABL_UP_1
+LOCAL:9 = RESULT
+
+;A感覚の上昇
+LOCAL:10 = 0
+CALL ABL_UP_2
+LOCAL:10 = RESULT
+
+;B感覚の上昇
+LOCAL:11 = 0
+CALL ABL_UP_3
+LOCAL:11 = RESULT
+
+;能力上昇と表示
+;表示はABL.CSVの順なのでベタ書き
+;Ｃ感覚
+IF ABL:Ｃ感覚 < LOCAL:8
+	ABL:Ｃ感覚 = LOCAL:8
+	PRINTFORML %ABLNAME:0%が{LOCAL:8}に上がった
+ENDIF
+;Ｖ感覚
+IF ABL:Ｖ感覚 < LOCAL:9
+	ABL:Ｖ感覚 = LOCAL:9
+	PRINTFORML %ABLNAME:1%が{LOCAL:9}に上がった
+ENDIF
+;Ａ感覚
+IF ABL:Ａ感覚 < LOCAL:10
+	ABL:Ａ感覚 = LOCAL:10
+	PRINTFORML %ABLNAME:2%が{LOCAL:10}に上がった
+ENDIF
+;Ｂ感覚
+IF ABL:Ｂ感覚 < LOCAL:11
+	ABL:Ｂ感覚 = LOCAL:11
+	PRINTFORML %ABLNAME:3%が{LOCAL:11}に上がった
+ENDIF
+;従順
+IF ABL:従順 < LOCAL:5
+	ABL:従順 = LOCAL:5
+	PRINTFORML %ABLNAME:10%が{LOCAL:5}に上がった
+ENDIF
+;欲望
+IF ABL:欲望 < LOCAL:6
+	ABL:欲望 = LOCAL:6
+	PRINTFORML %ABLNAME:11%が{LOCAL:6}に上がった
+ENDIF
+;技巧
+IF ABL:技巧 < LOCAL:7
+	ABL:技巧 = LOCAL:7
+	PRINTFORML %ABLNAME:12%が{LOCAL:7}に上がった
+ENDIF
+;奉仕精神
+IF ABL:奉仕精神 < LOCAL:3
+	ABL:奉仕精神 = LOCAL:3
+	PRINTFORML %ABLNAME:13%が{LOCAL:3}に上がった
+ENDIF
+;露出癖
+IF ABL:露出癖 < LOCAL:4
+	ABL:露出癖 = LOCAL:4
+	PRINTFORML %ABLNAME:14%が{LOCAL:4}に上がった
+ENDIF
+;マゾっ気
+IF ABL:マゾっ気 < LOCAL:2
+	ABL:マゾっ気 = LOCAL:2
+	PRINTFORML %ABLNAME:15%が{LOCAL:2}に上がった
+ENDIF
+;触手中毒
+IF ABL:触手中毒 < LOCAL:0
+	ABL:触手中毒 = LOCAL:0
+	PRINTFORML %ABLNAME:20%が{LOCAL:0}に上がった
+ENDIF
+;自慰中毒
+IF ABL:自慰中毒 < LOCAL:12
+	ABL:自慰中毒 = LOCAL:12
+	PRINTFORML %ABLNAME:21%が{LOCAL:12}に上がった
+ENDIF
+;精液中毒
+IF ABL:精液中毒 < LOCAL:1
+	ABL:精液中毒 = LOCAL:1
+	PRINTFORML %ABLNAME:22%が{LOCAL:1}に上がった
+ENDIF
+;噴乳中毒
+IF ABL:噴乳中毒 < LOCAL:14
+	ABL:噴乳中毒 = LOCAL:14
+	PRINTFORML %ABLNAME:23%が{LOCAL:14}に上がった
+ENDIF
+;射精中毒
+IF ABL:射精中毒 < LOCAL:13
+	ABL:射精中毒 = LOCAL:13
+	PRINTFORML %ABLNAME:24%が{LOCAL:13}に上がった
+ENDIF
+
+;各感覚
+CALL ABL_UP_EX
+LOCAL:8 = RESULT:0
+LOCAL:9 = RESULT:1
+LOCAL:10 = RESULT:2
+LOCAL:11 = RESULT:3
+
+;C感覚
+IF ABL:Ｃ感覚 < LOCAL:8
+	ABL:Ｃ感覚 = LOCAL:8
+	PRINTFORML %ABLNAME:0%が{LOCAL:8}に上がった
+ENDIF
+;Ｖ感覚
+IF ABL:Ｖ感覚 < LOCAL:9
+	ABL:Ｖ感覚 = LOCAL:9
+	PRINTFORML %ABLNAME:1%が{LOCAL:9}に上がった
+ENDIF
+;Ａ感覚
+IF ABL:Ａ感覚 < LOCAL:10
+	ABL:Ａ感覚 = LOCAL:10
+	PRINTFORML %ABLNAME:2%が{LOCAL:10}に上がった
+ENDIF
+;Ｂ感覚
+IF ABL:Ｂ感覚 < LOCAL:11
+	ABL:Ｂ感覚 = LOCAL:11
+	PRINTFORML %ABLNAME:3%が{LOCAL:11}に上がった
+ENDIF
+
+;状態系素質（淫乱など）の取得
+;淫乱
+;触手中毒以外の中毒の合計Lv6以上、かつ欲望Lv4以上、快楽刻印が4以上、絶頂経験が100以上、異常経験1以上
+IF TALENT:淫乱 == 0 && (ABL:自慰中毒 + ABL:精液中毒 + ABL:噴乳中毒 + ABL:射精中毒) >= 10 && ABL:欲望 >= 4 && MARK:快楽刻印 >= 4 && EXP:絶頂経験 >= 200 && EXP:異常経験 >= 2
+	TALENT:淫乱 = 1
+	;地の文：淫乱取得
+	CALL MESSAGE_GETTALENT_INRAN
+ENDIF
+;触手の虜
+;条件１：従順と奉仕精神の合計Lv6以上、かつ触手中毒Lv4以上、かつ屈服刻印4以上、かつ恐怖刻印と苦痛刻印の合計が6以上
+IF TALENT:触手の虜 == 0 && (ABL:従順 + ABL:奉仕精神) >= 7 && ABL:触手中毒 >= 4 && MARK:屈服刻印 >= 4 && (MARK:恐怖刻印 + MARK:苦痛刻印 + MARK:恥辱刻印) >= 6
+	TALENT:触手の虜 = 1
+	;地の文：触手の虜取得
+	CALL MESSAGE_GETTALENT_TORIKO
+;条件２：淫乱かつ触手中毒Lv3以上、かつ幽閉経験1以上
+ELSEIF TALENT:触手の虜 == 0 && TALENT:淫乱 >= 1 && ABL:触手中毒 >= 3 && EXP:幽閉経験 >= 1
+	TALENT:触手の虜 = 1
+	;地の文：触手の虜取得
+	CALL MESSAGE_GETTALENT_TORIKO
+ENDIF
+;淫核
+;C感覚が5で、戦闘中のC絶頂回数が50回以上
+IF TALENT:淫核 == 0 && ABL:Ｃ感覚 >= 5 && EX:Ｃ絶頂 >= 50
+	TALENT:淫核 = 1
+	;地の文：淫核
+	CALL MESSAGE_GETTALENT_INKAKU
+ENDIF
+;淫壷
+;V感覚が5、V経験が200以上で、戦闘中のV絶頂回数が25回以上
+IF TALENT:淫壷 == 0 && ABL:Ｖ感覚 >= 5 && EXP:Ｖ経験 >= 500 && EX:Ｖ絶頂 >= 25
+	TALENT:淫壷 = 1
+	;地の文：淫壷
+	CALL MESSAGE_GETTALENT_INTUBO
+ENDIF
+;淫尻
+;A感覚が5、A経験が200以上で、戦闘中のA絶頂回数が25回以上
+IF TALENT:淫尻 == 0 && ABL:Ａ感覚 >= 5 && EXP:Ａ経験 >= 500 && EX:Ａ絶頂 >= 25
+	TALENT:淫尻 = 1
+	;地の文：淫尻
+	CALL MESSAGE_GETTALENT_INJIRI
+ENDIF
+;淫乳
+;B感覚が5で、戦闘中のB絶頂回数が50回以上
+IF TALENT:淫乳 == 0 && ABL:Ｂ感覚 >= 5 && EX:Ｂ絶頂 >= 50
+	TALENT:淫乳 = 1
+	;地の文：淫乳
+	CALL MESSAGE_GETTALENT_INNYUU
+ENDIF
+;清純派の消失
+;触手の虜か淫乱獲得時、または欲望Lv+中毒Lvの合計が8以上
+IF TALENT:清純派 > 0 && (TALENT:触手の虜 > 0 || TALENT:淫乱 > 0 || (ABL:欲望 + ABL:触手中毒 + ABL:自慰中毒 + ABL:精液中毒 + ABL:噴乳中毒 + ABL:射精中毒) >= 8)
+	TALENT:清純派 = -1
+	;地の文
+	CALL MESSAGE_LOSETALENT_SEIJUNHA
+ENDIF
+;女体受容（男性/女性苦手があれば反転する）
+;前提条件:性別変化ありかつ元が男性のキャラが女体化した場合
+IF TALENT:女体受容 == 0 && (TALENT:性別変化 % 10 == 1 || TALENT:変身時ＴＳ > 0)
+	;条件1:触手の虜獲得時
+	IF TALENT:触手の虜 > 0
+		TALENT:女体受容 = 1
+		SWAP TALENT:男性苦手,TALENT:女性苦手
+		;地の文:触手の虜獲得による女体受容
+		CALL MESSAGE_GETTALENT_TSJYUYOU_TORIKO
+	;条件2:淫乱か淫壷の取得時、またはＶ感覚Lv5以上かつ射精中毒Lvが精液中毒Lv+噴乳中毒Lvより低いとき
+	ELSEIF TALENT:淫乱 > 0 || TALENT:淫壷 > 0 || (ABL:Ｖ感覚 >= 5 && (ABL:精液中毒 + ABL:噴乳中毒 > ABL:射精中毒))
+		TALENT:女体受容 = 1
+		SWAP TALENT:男性苦手,TALENT:女性苦手
+		;地の文:淫乱化による女体受容
+		CALL MESSAGE_GETTALENT_TSJYUYOU_INRAN
+	;条件3:出産した、または処女を愛する人に捧げた
+	ELSEIF (EXP:出産経験 > 0 && CFLAG:230 == 愛する人) || (EXP:出産経験 > 0 && CFLAG:230 < -100 && LOVER_F(TARGET, CHARAID_F(CFLAG:230 * -1 - 100))) || CFLAG:206 == 5
+		TALENT:女体受容 = 1
+		SWAP TALENT:男性苦手,TALENT:女性苦手
+		;地の文:女の喜びによる女体受容
+		CALL MESSAGE_GETTALENT_TSJYUYOU_FEMININE
+	;条件4:魅了経験3000以上
+	ELSEIF EXP:魅了経験 >= 3000
+		TALENT:女体受容 = 1
+		SWAP TALENT:男性苦手,TALENT:女性苦手
+		;地の文:女の魅力による女体受容
+		CALL MESSAGE_GETTALENT_TSJYUYOU_CHARM
+	;条件5:両刀かつ淫乱または淫壷取得時、またはＶ感覚Lv5以上のとき
+	ELSEIF TALENT:両刀 > 0 && (TALENT:淫乱 > 0 || TALENT:淫壷 > 0 || ABL:Ｖ感覚 >= 5)
+		TALENT:女体受容 = 1
+		SWAP TALENT:男性苦手,TALENT:女性苦手
+		;地の文:両刀による女体受容
+		CALL MESSAGE_GETTALENT_TSJYUYOU_RYOUTOU
+	ENDIF
+ENDIF
+
+;実績
+CALL GET_STATE_ABLUP,TARGET
+
+
+
+;--------------------------------------------------
+;触手中毒の上昇
+;必要な珠：欲情、屈服
+;上昇条件１：屈服刻印2が前提。
+;上昇条件２：Lv4以上は異常経験が必要。
+@ABL_UP_20
+LOCAL = ABL:触手中毒
+SIF MARK:屈服刻印 < 2
+	RETURN LOCAL
+REPEAT 5
+	;LV0->1
+	IF LOCAL == 0
+		IF JUEL:欲情 >= 500 && JUEL:屈服 >= 1000 && EXP:被姦経験 >= 10
+			JUEL:欲情 -= 500
+			JUEL:屈服 -= 1000
+			LOCAL = 1
+		ENDIF
+	;LV1->2
+	ELSEIF LOCAL == 1
+		IF JUEL:欲情 >= 1000 && JUEL:屈服 >= 2500 && EXP:被姦経験 >= 20
+			JUEL:欲情 -= 1000
+			JUEL:屈服 -= 2500
+			LOCAL = 2
+		ENDIF
+	;LV2->3
+	ELSEIF LOCAL == 2
+		IF JUEL:欲情 >= 1500 && JUEL:屈服 >= 7500 && EXP:被姦経験 >= 50
+			JUEL:欲情 -= 1500
+			JUEL:屈服 -= 7500
+			LOCAL = 3
+		ENDIF
+	;LV3->4
+	ELSEIF LOCAL == 3 && EXP:異常経験
+		IF JUEL:欲情 >= 3000 && JUEL:屈服 >= 12000 && EXP:被姦経験 >= 100
+			JUEL:欲情 -= 3000
+			JUEL:屈服 -= 12000
+			LOCAL = 4
+		ENDIF
+	;LV4->5
+	ELSEIF LOCAL == 4 && EXP:異常経験
+		IF JUEL:欲情 >= 6000 && JUEL:屈服 >= 25000 && EXP:被姦経験 >= 250
+			JUEL:欲情 -= 6000
+			JUEL:屈服 -= 25000
+			LOCAL = 5
+		ENDIF
+	ENDIF
+REND
+RETURN LOCAL
+
+;--------------------------------------------------
+;自慰中毒の上昇
+;必要な珠：欲情、恥情
+;上昇条件１：恥辱刻印2が前提。
+;上昇条件２：Lv4以上は異常経験が必要。
+@ABL_UP_21
+LOCAL = ABL:自慰中毒
+SIF MARK:恥辱刻印 < 2
+	RETURN LOCAL
+REPEAT 5
+	;LV0->1
+	IF LOCAL == 0
+		IF JUEL:欲情 >= 500 && JUEL:恥情 >= 1000 && EXP:自慰経験 >= 10
+			JUEL:欲情 -= 500
+			JUEL:恥情 -= 1000
+			LOCAL = 1
+		ENDIF
+	;LV1->2
+	ELSEIF LOCAL == 1
+		IF JUEL:欲情 >= 1000 && JUEL:恥情 >= 2500 && EXP:自慰経験 >= 20
+			JUEL:欲情 -= 1000
+			JUEL:恥情 -= 2500
+			LOCAL = 2
+		ENDIF
+	;LV2->3
+	ELSEIF LOCAL == 2
+		IF JUEL:欲情 >= 1500 && JUEL:恥情 >= 7500 && EXP:自慰経験 >= 50
+			JUEL:欲情 -= 1500
+			JUEL:恥情 -= 7500
+			LOCAL = 3
+		ENDIF
+	;LV3->4
+	ELSEIF LOCAL == 3 && EXP:異常経験
+		IF JUEL:欲情 >= 3000 && JUEL:恥情 >= 10000 && EXP:自慰経験 >= 100
+			JUEL:欲情 -= 3000
+			JUEL:恥情 -= 10000
+			LOCAL = 4
+		ENDIF
+	;LV4->5
+	ELSEIF LOCAL == 4 && EXP:異常経験
+		IF JUEL:欲情 >= 6000 && JUEL:恥情 >= 25000 && EXP:自慰経験 >= 250
+			JUEL:欲情 -= 6000
+			JUEL:恥情 -= 25000
+			LOCAL = 5
+		ENDIF
+	ENDIF
+REND
+RETURN LOCAL
+
+;--------------------------------------------------
+;精液中毒の上昇
+;必要な珠：欲情、屈服
+;上昇条件１：快楽刻印2が前提。
+;上昇条件２：Lv4以上は異常経験が必要。
+@ABL_UP_22
+LOCAL = ABL:精液中毒
+SIF MARK:快楽刻印 < 2
+	RETURN LOCAL
+
+REPEAT 5
+	;LV0->1
+	IF LOCAL == 0
+		IF JUEL:欲情 >= 500 && JUEL:屈服 >= 1000 && EXP:精液経験 >= 10
+			JUEL:欲情 -= 500
+			JUEL:屈服 -= 1000
+			LOCAL = 1
+		ENDIF
+	;LV1->2
+	ELSEIF LOCAL == 1
+		IF JUEL:欲情 >= 1000 && JUEL:屈服 >= 2500 && EXP:精液経験 >= 25
+			JUEL:欲情 -= 1000
+			JUEL:屈服 -= 2500
+			LOCAL = 2
+		ENDIF
+	;LV2->3
+	ELSEIF LOCAL == 2
+		IF JUEL:欲情 >= 1500 && JUEL:屈服 >= 4000 && EXP:精液経験 >= 50
+			JUEL:欲情 -= 1500
+			JUEL:屈服 -= 4000
+			LOCAL = 3
+		ENDIF
+	;LV3->4
+	ELSEIF LOCAL == 3 && EXP:異常経験
+		IF JUEL:欲情 >= 3000 && JUEL:屈服 >= 7500 && EXP:精液経験 >= 100
+			JUEL:欲情 -= 3000
+			JUEL:屈服 -= 7500
+			LOCAL = 4
+		ENDIF
+	;LV4->5
+	ELSEIF LOCAL == 4 && EXP:異常経験
+		IF JUEL:欲情 >= 6000 && JUEL:屈服 >= 18000 && EXP:精液経験 >= 250
+			JUEL:欲情 -= 6000
+			JUEL:屈服 -= 18000
+			LOCAL = 5
+		ENDIF
+	ENDIF
+REND
+RETURN LOCAL
+
+;--------------------------------------------------
+;射精中毒の上昇
+;必要な珠：快C、欲情
+;上昇条件１：射精経験必要量　LV1=5,LV2=10,LV3=20,LV4=50,LV5=100
+;上昇条件２：Lv4以上は異常経験が必要。
+@ABL_UP_24
+LOCAL = ABL:射精中毒
+
+REPEAT 5
+	;LV0->LV1
+	IF LOCAL == 0
+		IF JUEL:快Ｃ >= 1000 && EXP:射精経験 >= 5
+			JUEL:快Ｃ -= 1000
+			LOCAL = 1
+		ENDIF
+	;LV1->LV2
+	ELSEIF LOCAL == 1
+		IF JUEL:快Ｃ >= 3000 && EXP:射精経験 >= 20
+			JUEL:快Ｃ -= 3000
+			LOCAL = 2
+		ENDIF
+	;LV2->LV3
+	ELSEIF LOCAL == 2
+		IF JUEL:快Ｃ >= 5000 && EXP:射精経験 >= 50
+			JUEL:快Ｃ -= 5000
+			LOCAL = 3
+		ENDIF
+	;LV3->LV4
+	ELSEIF LOCAL == 3 && EXP:異常経験
+		IF JUEL:快Ｃ >= 10000 && EXP:射精経験 >= 100
+			JUEL:快Ｃ -= 10000
+			LOCAL = 4
+		ENDIF
+	;LV4->LV5
+	ELSEIF LOCAL == 4 && EXP:異常経験
+		IF JUEL:快Ｃ >= 30000 && EXP:射精経験 >= 250
+			JUEL:快Ｃ -= 30000
+			LOCAL = 5
+		ENDIF
+	ENDIF
+	;射精ゲージの再計算
+	MAXBASE:射精 = CSVBASE_F(NO:TARGET, 20)
+	SIF MAXBASE:射精 < 1
+		MAXBASE:射精 = 10000
+	MAXBASE:射精 = MAX(MAXBASE:射精 * (10 - ABL:射精中毒) / 10, 1000)
+REND
+RETURN LOCAL
+
+;--------------------------------------------------
+;噴乳中毒の上昇
+;必要な珠：快B、欲情
+;上昇条件１：噴乳経験必要量　LV1=5,LV2=10,LV3=20,LV4=50,LV5=100
+;上昇条件２：Lv4以上は異常経験が必要。
+@ABL_UP_23
+LOCAL = ABL:噴乳中毒
+
+REPEAT 5
+	;LV0->LV1
+	IF LOCAL == 0
+		IF JUEL:快Ｂ >= 1000 && EXP:噴乳経験 >= 5
+			JUEL:快Ｂ -= 1000
+			LOCAL = 1
+		ENDIF
+	;LV1->LV2
+	ELSEIF LOCAL == 1
+		IF JUEL:快Ｂ >= 3000 && EXP:噴乳経験 >= 20
+			JUEL:快Ｂ -= 3000
+			LOCAL = 2
+		ENDIF
+	;LV2->LV3
+	ELSEIF LOCAL == 2
+		IF JUEL:快Ｂ >= 5000 && EXP:噴乳経験 >= 50
+			JUEL:快Ｂ -= 5000
+			LOCAL = 3
+		ENDIF
+	;LV3->LV4
+	ELSEIF LOCAL == 3 && EXP:異常経験
+		IF JUEL:快Ｂ >= 10000 && EXP:噴乳経験 >= 100
+			JUEL:快Ｂ -= 10000
+			LOCAL = 4
+		ENDIF
+	;LV4->LV5
+	ELSEIF LOCAL == 4 && EXP:異常経験
+		IF JUEL:快Ｂ >= 30000 && EXP:噴乳経験 >= 250
+			JUEL:快Ｂ -= 30000
+			LOCAL = 5
+		ENDIF
+	ENDIF
+	;噴乳ゲージの再計算
+	MAXBASE:噴乳 = CSVBASE_F(NO:TARGET, 21)
+	SIF MAXBASE:噴乳 < 1
+		MAXBASE:噴乳 = 10000
+	MAXBASE:噴乳 = MAX(MAXBASE:噴乳 * (10 - ABL:噴乳中毒) / 10, 1000)
+REND
+RETURN LOCAL
+
+
+;--------------------------------------------------
+;マゾっ気の上昇
+;必要な珠：苦痛
+@ABL_UP_15
+LOCAL = ABL:マゾっ気
+
+REPEAT 5
+	;LV0->1
+	IF LOCAL == 0
+		IF JUEL:苦痛 >= 1200
+			JUEL:苦痛 -= 1200
+			LOCAL = 1
+		ENDIF
+	;LV1->2
+	ELSEIF LOCAL == 1
+		IF EXP:苦痛快楽経験 >= 5
+			IF JUEL:苦痛 >= 2500
+				JUEL:苦痛 -= 2500
+				LOCAL = 2
+			ENDIF
+		ENDIF
+	;LV2->3
+	ELSEIF LOCAL == 2
+		IF EXP:苦痛快楽経験 >= 10
+			IF JUEL:苦痛 >= 8000
+				JUEL:苦痛 -= 8000
+				LOCAL = 3
+			ENDIF
+		ENDIF
+	;LV3->4
+	ELSEIF LOCAL == 3
+		IF EXP:苦痛快楽経験 >= 25
+			IF JUEL:苦痛 >= 16000
+				JUEL:苦痛 -= 16000
+				LOCAL = 4
+			ENDIF
+		ENDIF
+	;LV4->5
+	ELSEIF LOCAL == 4
+		IF EXP:苦痛快楽経験 >= 50
+			IF JUEL:苦痛 >= 32000
+				JUEL:苦痛 -= 32000
+				LOCAL = 5
+			ENDIF
+		ENDIF
+	ENDIF
+REND
+RETURN LOCAL
+
+;--------------------------------------------------
+;奉仕精神の上昇
+;必要な珠：恭順
+@ABL_UP_13
+LOCAL = ABL:奉仕精神
+
+REPEAT 5
+	;LV0->1
+	IF LOCAL == 0
+		IF JUEL:恭順 >= 800
+			JUEL:恭順 -= 800
+			LOCAL = 1
+		ENDIF
+	;LV1->2
+	ELSEIF LOCAL == 1
+		IF EXP:奉仕快楽経験 >= 5 || TALENT:触手の虜 > 0
+			IF JUEL:恭順 >= 2000
+				JUEL:恭順 -= 2000
+				LOCAL = 2
+			ENDIF
+		ENDIF
+	;LV2->3
+	ELSEIF LOCAL == 2
+		IF EXP:奉仕快楽経験 >= 20 || TALENT:触手の虜 > 0
+			IF JUEL:恭順 >= 6000
+				JUEL:恭順 -= 6000
+				LOCAL = 3
+			ENDIF
+		ENDIF
+	;LV3->4
+	ELSEIF LOCAL == 3
+		IF EXP:奉仕快楽経験 >= 50 || TALENT:触手の虜 > 0
+			IF JUEL:恭順 >= 12000
+				JUEL:恭順 -= 12000
+				LOCAL = 4
+			ENDIF
+		ENDIF
+	;LV4->5
+	ELSEIF LOCAL == 4
+		IF EXP:奉仕快楽経験 >= 100 || TALENT:触手の虜 > 0
+			IF JUEL:恭順 >= 20000
+				JUEL:恭順 -= 20000
+				LOCAL = 5
+			ENDIF
+		ENDIF
+	ENDIF
+REND
+RETURN LOCAL
+
+;--------------------------------------------------
+;露出癖の上昇
+;必要な珠：恥情
+@ABL_UP_14
+LOCAL = ABL:露出癖
+
+REPEAT 5
+	;LV0->1
+	IF LOCAL == 0
+		IF JUEL:恥情 >= 1000
+			JUEL:恥情 -= 1000
+			LOCAL = 1
+		ENDIF
+	;LV1->2
+	ELSEIF LOCAL == 1
+		IF EXP:露出快楽経験 >= 5
+			IF JUEL:恥情 >= 3000
+				JUEL:恥情 -= 3000
+				LOCAL = 2
+			ENDIF
+		ENDIF
+	;LV2->3
+	ELSEIF LOCAL == 2
+		IF EXP:露出快楽経験 >= 20
+			IF JUEL:恥情 >= 7000
+				JUEL:恥情 -= 7000
+				LOCAL = 3
+			ENDIF
+		ENDIF
+	;LV3->4
+	ELSEIF LOCAL == 3
+		IF EXP:露出快楽経験 >= 50
+			IF JUEL:恥情 >= 12000
+				JUEL:恥情 -= 12000
+				LOCAL = 4
+			ENDIF
+		ENDIF
+	;LV4->5
+	ELSEIF LOCAL == 4
+		IF EXP:露出快楽経験 >= 100
+			IF JUEL:恥情 >= 25000
+				JUEL:恥情 -= 25000
+				LOCAL = 5
+			ENDIF
+		ENDIF
+	ENDIF
+REND
+RETURN LOCAL
+
+;--------------------------------------------------
+;従順の上昇
+;必要な珠：屈服または恐怖
+@ABL_UP_10
+LOCAL = ABL:従順
+
+REPEAT 5
+	;LV0->1
+	IF LOCAL == 0
+		IF JUEL:屈服 >= 1000
+			JUEL:屈服 -= 1000
+			LOCAL = 1
+		ELSEIF JUEL:恐怖 >= 1000
+			JUEL:恐怖 -= 1000
+			LOCAL = 1
+		ENDIF
+	;LV1->2
+	ELSEIF LOCAL == 1
+		IF JUEL:屈服 >= 3000
+			JUEL:屈服 -= 3000
+			LOCAL = 2
+		ELSEIF JUEL:恐怖 >= 3000
+			JUEL:恐怖 -= 3000
+			LOCAL = 2
+		ENDIF
+	;LV2->3
+	ELSEIF LOCAL == 2
+		IF JUEL:屈服 >= 6000
+			JUEL:屈服 -= 6000
+			LOCAL = 3
+		ELSEIF JUEL:恐怖 >= 6000
+			JUEL:恐怖 -= 6000
+			LOCAL = 3
+		ENDIF
+	;LV3->4
+	ELSEIF LOCAL == 3
+		IF JUEL:屈服 >= 12000
+			JUEL:屈服 -= 12000
+			LOCAL = 4
+		ELSEIF JUEL:恐怖 >= 12000
+			JUEL:恐怖 -= 12000
+			LOCAL = 4
+		ENDIF
+	;LV4->5
+	ELSEIF LOCAL == 4
+		IF JUEL:屈服 >= 25000
+			JUEL:屈服 -= 25000
+			LOCAL = 5
+		ELSEIF JUEL:恐怖 >= 25000
+			JUEL:恐怖 -= 25000
+			LOCAL = 5
+		ENDIF
+	ENDIF
+REND
+
+RETURN LOCAL
+
+;--------------------------------------------------
+;欲望の上昇
+;必要な珠：欲情
+@ABL_UP_11
+LOCAL = ABL:欲望
+
+REPEAT 5
+	;LV0->1
+	IF LOCAL == 0
+		IF JUEL:欲情 >= 500
+			JUEL:欲情 -= 500
+			LOCAL = 1
+		ENDIF
+	;LV1->2
+	ELSEIF LOCAL == 1
+		IF JUEL:欲情 >= 2000
+			JUEL:欲情 -= 2000
+			LOCAL = 2
+		ENDIF
+	;LV2->3
+	ELSEIF LOCAL == 2
+		IF JUEL:欲情 >= 5000
+			JUEL:欲情 -= 5000
+			LOCAL = 3
+		ENDIF
+	;LV3->4
+	ELSEIF LOCAL == 3
+		IF JUEL:欲情 >= 10000
+			JUEL:欲情 -= 10000
+			LOCAL = 4
+		ENDIF
+	;LV4->5
+	ELSEIF LOCAL == 4
+		IF JUEL:欲情 >= 20000
+			JUEL:欲情 -= 20000
+			LOCAL = 5
+		ENDIF
+	ENDIF
+REND
+
+RETURN LOCAL
+
+;--------------------------------------------------
+;技巧の上昇
+;必要な珠：習得
+@ABL_UP_12
+LOCAL = ABL:技巧
+
+REPEAT 5
+	;LV0->1
+	IF LOCAL == 0
+		IF JUEL:習得 >= 1000
+			JUEL:習得 -= 1000
+			LOCAL = 1
+		ENDIF
+	;LV1->2
+	ELSEIF LOCAL == 1
+		IF JUEL:習得 >= 2000
+			JUEL:習得 -= 2000
+			LOCAL = 2
+		ENDIF
+	;LV2->3
+	ELSEIF LOCAL == 2
+		IF JUEL:習得 >= 4000
+			JUEL:習得 -= 4000
+			LOCAL = 3
+		ENDIF
+	;LV3->4
+	ELSEIF LOCAL == 3
+		IF JUEL:習得 >= 8000
+			JUEL:習得 -= 8000
+			LOCAL = 4
+		ENDIF
+	;LV4->5
+	ELSEIF LOCAL == 4
+		IF JUEL:習得 >= 20000
+			JUEL:習得 -= 20000
+			LOCAL = 5
+		ENDIF
+	ENDIF
+REND
+RETURN LOCAL
+
+;--------------------------------------------------
+;C感覚の上昇
+;必要な珠：快C
+@ABL_UP_0
+LOCAL = ABL:Ｃ感覚
+
+REPEAT 5
+	;Ｃ感覚がLV5以上かつ全感覚LVの合計が35以上なら終了
+	SIF ABL:Ｖ感覚 + ABL:Ａ感覚 + ABL:Ｂ感覚 + LOCAL >= 35 && ABL:Ｃ感覚 >= 5
+		BREAK
+	;LV0->1
+	IF LOCAL == 0
+		IF JUEL:快Ｃ >= 50
+			JUEL:快Ｃ -= 50
+			LOCAL = 1
+		ENDIF
+	;LV1->2
+	ELSEIF LOCAL == 1
+		IF JUEL:快Ｃ >= 500
+			JUEL:快Ｃ -= 500
+			LOCAL = 2
+		ENDIF
+	;LV2->3
+	ELSEIF LOCAL == 2
+		IF JUEL:快Ｃ >= 5000
+			JUEL:快Ｃ -= 5000
+			LOCAL = 3
+		ENDIF
+	;LV3->4
+	ELSEIF LOCAL == 3
+		IF JUEL:快Ｃ >= 10000
+			JUEL:快Ｃ -= 10000
+			LOCAL = 4
+		ENDIF
+	;LV4->5
+	ELSEIF LOCAL == 4
+		IF JUEL:快Ｃ >= 20000
+			JUEL:快Ｃ -= 20000
+			LOCAL = 5
+		ENDIF
+	ENDIF
+REND
+RETURN LOCAL
+
+;--------------------------------------------------
+;V感覚の上昇
+;必要な珠：快V
+@ABL_UP_1
+LOCAL = ABL:Ｖ感覚
+
+REPEAT 5
+	;Ｖ感覚がLV5以上かつ全感覚LVの合計が35以上なら終了
+	SIF ABL:Ｖ感覚 + ABL:Ａ感覚 + ABL:Ｂ感覚 + LOCAL >= 35 && ABL:Ｖ感覚 >= 5
+		BREAK
+	;LV0->1
+	IF LOCAL == 0
+		IF JUEL:快Ｖ >= 75
+			JUEL:快Ｖ -= 75
+			LOCAL = 1
+		ENDIF
+	;LV1->2
+	ELSEIF LOCAL == 1
+		IF JUEL:快Ｖ >= 750
+			JUEL:快Ｖ -= 750
+			LOCAL = 2
+		ENDIF
+	;LV2->3
+	ELSEIF LOCAL == 2
+		IF JUEL:快Ｖ >= 7500
+			JUEL:快Ｖ -= 7500
+			LOCAL = 3
+		ENDIF
+	;LV3->4
+	ELSEIF LOCAL == 3
+		IF JUEL:快Ｖ >= 15000
+			JUEL:快Ｖ -= 15000
+			LOCAL = 4
+		ENDIF
+	;LV4->5
+	ELSEIF LOCAL == 4
+		IF JUEL:快Ｖ >= 30000
+			JUEL:快Ｖ -= 30000
+			LOCAL = 5
+		ENDIF
+	ENDIF
+REND
+RETURN LOCAL
+
+;--------------------------------------------------
+;A感覚の上昇
+;必要な珠：快A
+@ABL_UP_2
+LOCAL = ABL:Ａ感覚
+
+REPEAT 5
+	;Ａ感覚がLV5以上かつ全感覚LVの合計が35以上なら終了
+	SIF ABL:Ｖ感覚 + ABL:Ａ感覚 + ABL:Ｂ感覚 + LOCAL >= 35 && ABL:Ａ感覚 >= 5
+		BREAK
+	;LV0->1
+	IF LOCAL == 0
+		IF JUEL:快Ａ >= 75
+			JUEL:快Ａ -= 75
+			LOCAL = 1
+		ENDIF
+	;LV1->2
+	ELSEIF LOCAL == 1
+		IF JUEL:快Ａ >= 750
+			JUEL:快Ａ -= 750
+			LOCAL = 2
+		ENDIF
+	;LV2->3
+	ELSEIF LOCAL == 2
+		IF JUEL:快Ａ >= 7500
+			JUEL:快Ａ -= 7500
+			LOCAL = 3
+		ENDIF
+	;LV3->4
+	ELSEIF LOCAL == 3
+		IF JUEL:快Ａ >= 15000
+			JUEL:快Ａ -= 15000
+			LOCAL = 4
+		ENDIF
+	;LV4->5
+	ELSEIF LOCAL == 4
+		IF JUEL:快Ａ >= 30000
+			JUEL:快Ａ -= 30000
+			LOCAL = 5
+		ENDIF
+	ENDIF
+REND
+RETURN LOCAL
+
+;--------------------------------------------------
+;B感覚の上昇
+;必要な珠：快B
+@ABL_UP_3
+LOCAL = ABL:Ｂ感覚
+
+REPEAT 5
+	;Ｂ感覚がLV5以上かつ全感覚LVの合計が35以上なら終了
+	SIF ABL:Ｖ感覚 + ABL:Ａ感覚 + ABL:Ｂ感覚 + LOCAL >= 35 && ABL:Ｂ感覚 >= 5
+		BREAK
+	;LV0->1
+	IF LOCAL == 0
+		IF JUEL:快Ｂ >= 50
+			JUEL:快Ｂ -= 50
+			LOCAL = 1
+		ENDIF
+	;LV1->2
+	ELSEIF LOCAL == 1
+		IF JUEL:快Ｂ >= 500
+			JUEL:快Ｂ -= 500
+			LOCAL = 2
+		ENDIF
+	;LV2->3
+	ELSEIF LOCAL == 2
+		IF JUEL:快Ｂ >= 5000
+			JUEL:快Ｂ -= 5000
+			LOCAL = 3
+		ENDIF
+	;LV3->4
+	ELSEIF LOCAL == 3
+		IF JUEL:快Ｂ >= 10000
+			JUEL:快Ｂ -= 10000
+			LOCAL = 4
+		ENDIF
+	;LV4->5
+	ELSEIF LOCAL == 4
+		IF JUEL:快Ｂ >= 20000
+			JUEL:快Ｂ -= 20000
+			LOCAL = 5
+		ENDIF
+	ENDIF
+REND
+RETURN LOCAL
+
+;--------------------------------------------------
+@ABL_UP_EX
+#DIM LCOUNT, 3
+#DIM CAL_VAR, 3
+#DIM LV_VAR, 感覚数
+
+;感覚LVをローカル変数
+FOR LCOUNT:0, 0, 感覚数
+	LV_VAR:(LCOUNT:0) = ABL:(LCOUNT:0)
+NEXT
+
+FOR LCOUNT:0, 0, 15
+	;全感覚LV5以上の合計が15以上なら終了
+	SIF MAX(LV_VAR:0 - 5,0) + MAX(LV_VAR:1 - 5,0) + MAX(LV_VAR:2 - 5,0) + MAX(LV_VAR:3 - 5,0) >= 15
+		BREAK
+
+	;感覚を1レベルずつ見ていく
+	FOR LCOUNT:1, 0, 感覚数
+		;感覚LVが5未満なら無視
+		IF ABL:(LCOUNT:1) >= 5
+			;レベルアップ条件の初期化
+			CAL_VAR:0 = 20000
+
+			FOR LCOUNT:2, 0, MIN(LV_VAR:(LCOUNT:1) - 5, 5)
+				CAL_VAR:0 *= 150 - LCOUNT:2 * 5
+				CAL_VAR:0 /= 100
+			NEXT
+			CAL_VAR:0 = CAL_VAR:0 / 2 * 5
+
+			;全感覚LVの合計が35以上なら終了
+			IF LV_VAR:0 + LV_VAR:1 + LV_VAR:2 + LV_VAR:3 >= 35
+				BREAK
+			;JUELが条件以上かつ感覚LVが20未満
+			ELSEIF JUEL:(LCOUNT:1) >= CAL_VAR:0 && LV_VAR:(LCOUNT:1) < 20
+				JUEL:(LCOUNT:1) -= CAL_VAR:0
+				LV_VAR:(LCOUNT:1) += 1
+			ENDIF
+		ENDIF
+	NEXT
+NEXT
+
+RETURN LV_VAR:0, LV_VAR:1, LV_VAR:2, LV_VAR:3

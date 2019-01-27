@@ -1,0 +1,1480 @@
+;---------------------------------------------------------------------
+;悪堕ちキャラの侵攻イベント
+;確率で悪堕ちキャラが街を襲う
+@AKUOTI_ATTACK
+#DIM CCOUNT
+VARSET LOCAL
+;時間帯ごとのイベント発生倍率
+IF TIME == 0
+	LOCAL = 40
+ELSE
+	LOCAL = 20
+ENDIF
+;ランダム抽選用に候補をクリア
+CALL CLEARRANDCHOOSE
+FOR CCOUNT, 0, CHARANUM
+	SIF CCOUNT == MASTER
+		CONTINUE
+	;描写が女キャラ向けなので、オトコは除外する
+	SIF CFLAG:CCOUNT:0 == 3 && TALENT:CCOUNT:オトコ <= 0 && MIN(RAND:(SQRT(FLAG:852) / 2 + 20), 100) < LOCAL
+		CALL ADDRANDCHOOSE,CCOUNT
+NEXT
+;候補がないなら抜ける
+SIF CHOICECOUNT_F() == 0
+	RETURN
+;ここまで抜けたらイベント開始
+DRAWLINE
+FLAG:111 = RANDCHOOSE_F()
+CALL AKUOTI_EVENT
+
+
+
+@AKUOTI_EVENT
+#DIM SELECT
+#DIM SELECT_N, 2
+#DIM DAMAGE
+#DIM V_SEX
+#DIM CCOUNT
+V_SEX = 0
+VARSET LOCAL
+IF TIME == 0
+	SELECT_N:0 = MIN(80 - MIN(SQRT(FLAG:852), 60), 40)
+	SELECT_N:1 = MIN(SELECT_N:0 + 50, 80)
+ELSE
+	SELECT_N:0 = MIN(80 - MIN(SQRT(FLAG:852), 60), 40) / 2
+	SELECT_N:1 = MIN(SELECT_N:0 + 30, 60)
+ENDIF
+SELECT = RAND:100
+DAMAGE = 0
+;襲撃系
+IF TIME == 0
+	LOCALS = 真昼間
+ELSE
+	LOCALS = 夜
+ENDIF
+IF SELECT < SELECT_N:0
+	DAMAGE = SQRT(FLAG:852) * 20 + FLAG:852 * 5 / 100
+	PRINTFORML 妖しい霧が立ち込め、蠢く異形のシルエットが%LOCALS%の街に不穏な影を落とす。
+	PRINTFORML %PRINT_TRANSCALLNAME(FLAG:111)%は触手の群れを率いて街を襲撃した・・・！
+	PRINTW 
+	PRINTW ・
+	PRINTW ・・
+	PRINTW ・・・
+	;幼稚園バス襲撃、昼間限定
+	IF RAND:6 == 0 && TIME == 0
+		PRINTFORML それはよく晴れた朝の出来事だった。
+		PRINTFORML 児童たちが乗った幼稚園バスを、触手生物を率いる謎の一味が強襲したのだ。
+		PRINTFORML 運転手と女性教員二名、および十数名の児童が人質となり、
+		PRINTFORML バスの中に立て篭もる犯人グループと
+		PRINTFORML 駆け付けた機動隊とが住宅街のど真ん中で睨み合う事態となった。
+		PRINTW 
+		PRINTFORML 犯人グループは「世界に触手様の支配と恐怖を広げる」という声明を発表。
+		PRINTFORML %PRINT_TRANSCALLNAME(FLAG:111)%と名乗るリーダー以外の構成員の人数は不明。
+		PRINTFORML 複数の触手生物を従えていることから差し迫った脅威であると判断され、
+		PRINTFORML 現地部隊は強行突入を決行した。
+		PRINTW 
+		IF RAND:4 == 0
+			PRINTFORML しかし突入した部隊員が見たものは、触手に性的暴行を受け気絶した女性教員と、
+			PRINTFORML 見るも無残な姿となった運転手の亡骸だけであった。
+			PRINTFORML 児童達の行方は杳として知れず、女性教員は妊娠が発覚し緊急搬送された。
+			PRINTW 
+			PRINTFORML 必死の捜査にも関わらず忽然と消えた犯人グループの手掛かりはなく、
+			PRINTFORML かくして幼稚園バスジャック誘拐失踪事件は稀に見る大失態として隠蔽されることになった。
+			PRINTFORML 現在でも秘密裏に捜査が行われているが、依然として進展は見られない・・・
+		ELSEIF RAND:2 == 0
+			PRINTFORML 突入班の英断もあり、人質の一部の保護に成功。
+			PRINTFORML しかし運転手は突入時点で既に事切れており、
+			PRINTFORML 女性教員および児童のうち女児はことごとく連れ去られていた。
+			PRINTFORML 保護された男子児童たちも筆舌に尽くしがたい経験をしたのか、
+			PRINTFORML 心的外傷の度合いが強く、心のケアが急がれる。
+			PRINTW 
+			PRINTFORML 上層部は目撃者の数が多いこともあり揉み消しを断念。
+			PRINTFORML 犯人の行方は分からず、目撃者の証言によれば「高笑いと共に飛び去った」とのこと。
+			PRINTFORML 最低限の情報操作を加えて「女子児童誘拐失踪事件」として発表した・・・
+		ELSE
+			PRINTFORML その結果、部隊人員に多大な被害を出しながらも、作戦は成功した。
+			PRINTFORML 人質の全員が生還し、女性教員は凌辱の跡が見られるものの、命に別条はなし。
+			PRINTFORML しかし異常に高度な戦闘技能を発揮する犯人グループのリーダーによって
+			PRINTFORML 突入部隊の半数が無力化、半数はその場で魅了され、自ら性交に臨んで再起不能に。
+			PRINTFORML 一部始終を目撃した児童達の心の傷は深く、一刻も早いケアが必要とされる。
+			PRINTW 
+			PRINTFORML 上層部は事件を「幼稚園バスジャック事件」としてマスコミに発表。
+			PRINTFORML 多数の部隊員が骨抜きにされるという失態にも関わらず、
+			PRINTFORML 一人の死者も出さなかった事件として世間に記憶されることになる・・・
+			;Ｖ経験
+			LOCAL:120 = 3 + RAND:5
+			;Ａ経験
+			LOCAL:121 = 3 + RAND:5
+			;フェラ経験
+			LOCAL:124 = 3 + RAND:5
+			;精液経験
+			LOCAL:123 = LOCAL:120 + LOCAL:121 + LOCAL:124 + RAND:3
+			;奉仕快楽経験
+			LOCAL:131 = 1 + RAND:3
+		ENDIF
+		PRINTW 
+	ELSEIF RAND:4 == 0
+		PRINTFORML 警報が鳴り響いた頃には時すでに遅く、
+		PRINTFORML 逃げ遅れた人々を無数の雑魚触手の群れが飲み込んでいった。
+		PRINTFORML さっそく目当てのメスを捕らえた触手たちが思い思いの場所で繁殖行動を開始し、
+		PRINTFORML そこかしこで濃厚な交尾の宴が繰り広げられていく。
+		PRINTW 
+		PRINTFORML どうやら今回の狩りの結果も上々のようだ。
+		PRINTFORML %PRINT_TRANSCALLNAME(FLAG:111)%は手近な部下を抱き寄せてキスを交わしながら、
+		PRINTFORML 街が蹂躙されていく様子を遠目に楽しんでいる・・・
+		PRINTW 
+		IF RAND:8 == 0
+			PRINTFORML キスだけでは堪らなくなった部下が%PRINT_TRANSCALLNAME(FLAG:111)%に絡みつこうとするが、
+			PRINTFORML %PRINT_TRANSCALLNAME(FLAG:111)%は嗜虐的な表情で焦らすように"御預け"を宣言した。
+			PRINTFORML いつも眺めているだけでは退屈だし、今回は自ら狩りに参加するのも悪くない。
+			PRINTFORML そう呟くと%PRINT_TRANSCALLNAME(FLAG:111)%は武器を手に取り、獲物を探して跳躍した・・・
+			PRINTW 
+			PRINTFORML %PRINT_TRANSCALLNAME(FLAG:111)%が暴れまわった結果、街には甚大な被害が出たようだ・・・
+			TIMES DAMAGE, 1.50
+		ELSE
+			PRINTFORML すると、キスだけでは堪らなくなった部下が%PRINT_TRANSCALLNAME(FLAG:111)%を押し倒した。
+			PRINTFORML 興奮しきったその様子に%PRINT_TRANSCALLNAME(FLAG:111)%が自ら脚を開いてみせると、
+			PRINTFORML 滅多に巡って来ない"特別許可"のサインに部下たちが一斉に群がってくる・・・
+			PRINTW 
+			PRINTFORML 雑魚触手である部下たちが%PRINT_TRANSCALLNAME(FLAG:111)%の身体に触れられる機会はそうそうない。
+			IF TALENT:(FLAG:111):処女 < 1 && RAND:3 != 0
+				PRINTFORML 最高級のメスに自らの劣った遺伝子を擦り込むまたとない機会に、
+				PRINTFORML 運良く膣への挿入にありついた数匹が争うように必死にピストンを繰り返す。
+				PRINTW 
+				PRINTFORML たちまち果ててビュルビュルと膣内に射精する触手たちを
+				PRINTFORML %PRINT_TRANSCALLNAME(FLAG:111)%は意地悪な笑みを浮かべて挑発している。
+				PRINTFORML 口では部下たちに発破を掛けているが、実際は満更でもなさそうだ・・・
+				;Ｖ経験
+				LOCAL:120 = 10 + RAND:5
+				;Ａ経験
+				LOCAL:120 = 2 + RAND:3
+				;絶頂経験
+				LOCAL:122 = 1 + RAND:3
+				;精液経験
+				LOCAL:123 = LOCAL:120 + LOCAL:121 + RAND:3
+				;膣内射精フラグ
+				V_SEX = LOCAL:120
+			ELSEIF TALENT:(FLAG:111):処女 > 0
+				PRINTFORML 我先にと争う部下たちが押し寄せて口やアナルはたちまち挿入された触手で一杯になり、
+				PRINTFORML 両手ばかりか胸や両足や脇の下すら触手を扱き上げる"性器"と化す。
+				PRINTW 
+				PRINTFORML しかし、%PRINT_TRANSCALLNAME(FLAG:111)%の前の穴にだけは触れてはいけない決まりのようだ。
+				PRINTFORML もし仔を孕むとしたら、それは"ご主人様"の子種によってでなければならないのだ。
+				PRINTFORML %PRINT_TRANSCALLNAME(FLAG:111)%は妖艶に頬笑みながら、
+				PRINTFORML 全身で部下たちの報われることのない精液を受け止めるのだった・・・
+				;Ａ経験
+				LOCAL:121 = 5 + RAND:5
+				;絶頂経験
+				LOCAL:122 = 1 + RAND:3
+				;フェラ経験
+				LOCAL:124 = 5 + RAND:5
+				;精液経験
+				LOCAL:123 = LOCAL:121 + LOCAL:124 + RAND:5
+				;奉仕快楽経験
+				LOCAL:131 = 1 + RAND:3
+			ELSE
+				PRINTFORML 我先にと争う部下たちが押し寄せて口やアナルはたちまち挿入された触手で一杯になり、
+				PRINTFORML 両手ばかりか胸や両足や脇の下すら触手を扱き上げる"性器"と化す。
+				PRINTW 
+				PRINTFORML 中でも%PRINT_TRANSCALLNAME(FLAG:111)%の前の穴を使えるのは前の狩りで"戦果"を残した者たちだけだ。
+				PRINTFORML こうして自らの身体で士気を高めてやるのも%PRINT_TRANSCALLNAME(FLAG:111)%の役目。
+				PRINTFORML そう思いながらも、上気した表情で部下たちの精液を手際良く絞り取っていくのだった・・・
+				;Ｖ経験
+				LOCAL:120 = 3 + RAND:5
+				;Ａ経験
+				LOCAL:121 = 3 + RAND:5
+				;絶頂経験
+				LOCAL:122 = 1 + RAND:3
+				;フェラ経験
+				LOCAL:124 = 3 + RAND:5
+				;精液経験
+				LOCAL:123 = LOCAL:120 + LOCAL:121 + LOCAL:124 + RAND:3
+				;奉仕快楽経験
+				LOCAL:131 = 1 + RAND:2
+				;膣内射精フラグ
+				V_SEX = LOCAL:120
+			ENDIF
+		ENDIF
+		PRINTW 
+	ELSEIF RAND:2 == 0
+		PRINTFORML 一人の女性が何匹もの触手生物に追い詰められている。
+		SELECT = 0
+		IF RAND:8 == 0
+			PRINTFORML 彼女にはどうすることもできなかった。
+			PRINTFORML 親しい人々が身代わりになって助けてくれたおかげで
+			PRINTFORML 辛うじて捕まらずに済んでいたが、いずれはこうなる運命だったのだ。
+			SELECT = 8
+		ELSEIF RAND:7 == 0
+			PRINTFORML 彼女にはどうすることもできなかった。
+			PRINTFORML 混乱の中で頼れる者も居らず、
+			PRINTFORML 自分の力だけでは逃げ切ることなど不可能だったのだ。
+			SELECT = 7
+		ELSEIF RAND:6 == 0
+			PRINTFORML 彼女の自業自得だった。
+			PRINTFORML 他人を見捨てて自分だけ逃げ出したあげく、
+			PRINTFORML むしろ触手の注意を引きつけてしまうという墓穴を掘ったのだ。
+			SELECT = 6
+		ELSEIF RAND:5 == 0
+			PRINTFORML 彼女は囮だった。
+			PRINTFORML 家族を逃がすために、自ら触手を引きつける役を買って出たのだ。
+			PRINTFORML 覚悟はできていたが、いざ捕まるとなると恐怖が込み上げてくる。
+			SELECT = 5
+		ELSEIF RAND:4 == 0
+			PRINTFORML 彼女は囮だった。
+			PRINTFORML 友人たちを逃がすために、自ら触手を引きつける役を買って出たのだ。
+			PRINTFORML 隙を見て自分も逃げるつもりだったが、運悪く複数の触手に囲まれてしまったのだ。
+			SELECT = 4
+		ELSEIF RAND:3 == 0
+			PRINTFORML 彼女は囮だった。
+			PRINTFORML 子供たちを逃がすために、自ら触手を引きつける役を買って出たのだ。
+			PRINTFORML これも教師としての責務だと自分に言い聞かせるが、恐怖心は抑えきれない。
+			SELECT = 3
+		ELSEIF RAND:2 == 0
+			PRINTFORML 彼女は囮だった。
+			PRINTFORML 周囲にイジメられていた彼女は、触手を引きつける役を押し付けられたのだ。
+			PRINTFORML 何で私ばっかり。恐怖心と同時に怒りが涙となって、強張った頬を伝う。
+			SELECT = 2
+		ELSE
+			PRINTFORML 彼女は囮だった。
+			PRINTFORML 無能な上司たちに、触手を引きつける役を押し付けられたのだ。
+			PRINTFORML あんな奴らなんて見捨てて逃げれば良かった。そう思ってももう遅い。
+			SELECT = 1
+		ENDIF
+		PRINTW 
+		PRINTFORML 逃げようと後ずさった背中を壁に押し返され、
+		PRINTFORML たちまち脚に触手が巻き付いて空中に持ち上げられてしまう。
+		PRINTFORML 身を守る術のない彼女がいくら暴れても触手はびくともせず、
+		PRINTFORML 衣服を引き剥がされて露出した肌に触手が絡み付いていく・・・
+		PRINTW 
+		IF RAND:2 == 0
+			PRINTFORML 突然の衝撃と、内臓を鷲掴みにされるような痛み。
+			PRINTFORML 力任せに捻じ込まれた触手であっさり処女を突き破られ、
+			PRINTFORML 間を置かずに口やアナルにも触手を叩きこまれる。
+		ELSE
+			PRINTFORML 何の前触れもなく、穴と言う穴に触手が叩きこまれる。
+			PRINTFORML まだ濡れてもいない膣を抉られる痛みと同時に尻穴を突き上げられ、
+			PRINTFORML 口元を塞ぐ触手のおぞましい臭気に気絶することもできない。
+		ENDIF
+		PRINTW 
+		PRINTFORML 手足を拘束する触手に関節を無理な方向に曲げられて全身が軋み、
+		PRINTFORML みるみる加速していくピストンに反応することも許されず、
+		PRINTFORML 女性に「限界」が近付いていく・・・
+		PRINTW 
+		IF SELECT == 8 || SELECT == 7 || SELECT == 4
+			PRINTFORML やがて抽送と同時に胎内に熱いものが迸り、
+			PRINTFORML 女性は自らが完全に触手に汚されてしまったことを思い知った。
+			PRINTFORML 射精しながらもなお動きを止めない触手の責めに、
+			PRINTFORML だんだんと快楽を感じ始めている自分を自覚しながら・・・
+			PRINTW 
+			PRINTFORML 数時間後、そこには複数の触手生物に犯されながら
+			PRINTFORML 快楽に心を奪われてよがり狂う女性の姿があった。
+			PRINTFORML その表情には"生前"の苦痛の様子はなく、
+			PRINTFORML ある意味では最も幸福な結末を迎えたのかもしれなかった・・・
+		ELSEIF SELECT == 6
+			PRINTFORML こんなはずでは無かった。
+			PRINTFORML 無価値な連中はたくさん居るのに、なんで私がこんな目に。
+			PRINTFORML そうだ、他の奴らも捕まって私と同じ目に遭えばいいんだ。
+			PRINTFORML ――そんな身勝手な考えに縋らなければ、もはや心が保たないのだった。
+			PRINTW 
+			PRINTFORML もはやどこも見つめていない女性の頭上で、
+			PRINTFORML 鎌首をもたげた一本の巨大な触手の先端がぐぱぁと開く。
+			PRINTFORML 全身に射精されてビクビク痙攣し、壊れたように「あはははは」と笑い続ける女性を
+			PRINTFORML 巨大な触手が頭からズルズルと飲み込んでいった・・・
+		ELSEIF SELECT == 5 || SELECT == 3
+			IF SELECT == 5
+				LOCALS = 家族
+			ELSE
+				LOCALS = 子供たち
+			ENDIF
+			PRINTFORML 苦痛に心を焼かれながらも女性の覚悟は揺らがない。
+			PRINTFORML 「%LOCALS%さえ助かるなら、自分はどうなっても構わない」
+			PRINTFORML そう決心した女性の意志を、
+			PRINTFORML 遠くから響いた%LOCALS%の叫び声が無情にも引き裂いた・・・
+			PRINTW 
+			PRINTFORML 自分の決心と犠牲がまったくの無意味だったことの絶望。
+			PRINTFORML 取り乱して叫び、暴れる女性の扱いが面倒になったのだろうか、
+			PRINTFORML 横から伸びた触手が女性の首に巻きついて空中に持ち上げると、
+			PRINTFORML ぶら下がったまま胎内に大量の精液が注がれていった・・・
+		ELSE
+			PRINTFORML 許さない、許さない、ゆるさない。
+			PRINTFORML 女性の心の中に渦巻くのは、自分を見捨てた者たちへの憎悪。
+			PRINTFORML あんな奴らなんて、さっさと殺されてしまえばいいんだ――
+			PRINTFORML そう思った矢先、遠くの路地から「あの連中」の叫び声が響き渡った。
+			PRINTFORML きっと逃げた先でも触手に出くわしたに違いない。
+			PRINTFORML ああ、こんな状況なのに、何だか良い気分だ――
+			PRINTW 
+			PRINTFORML もはやどこも見つめていない女性の頭上で、
+			PRINTFORML 鎌首をもたげた一本の巨大な触手の先端がぐぱぁと開く。
+			PRINTFORML 壊れたように「ざまぁみろ、ざまぁみろ」と笑い続ける女性を
+			PRINTFORML 巨大な触手が頭からズルズルと飲み込んでいった・・・
+		ENDIF
+		PRINTW 
+	ELSEIF RAND:2 == 0
+		PRINTFORML 混乱の中、両親とはぐれた少女が途方に暮れて泣きじゃくっている。
+		PRINTFORML 誰もが逃げることに精一杯で、取り残された少女を気にかける者などいない。
+		PRINTFORML すると目の前が影に遮られ、少女がくしゃくしゃに泣き崩れた顔を上げると、
+		PRINTFORML 目の前には妖しげな笑みを浮かべた%PRINT_TRANSCALLNAME(FLAG:111)%が立っていた・・・
+		PRINTW 
+		PRINTW ・
+		PRINTW ・・
+		PRINTW ・・・
+		PRINTFORML もう何時間が経過しただろうか・・・
+		PRINTFORML 全身が粘液に濡れ、四肢を拘束されて持ち上げられた少女の股間に、
+		PRINTFORML 大人のイチモツを超える太さの触手が叩きつけられている。
+		PRINTW 
+		IF RAND:2 == 0
+			PRINTFORML その様子をしばらく見ていた%PRINT_TRANSCALLNAME(FLAG:111)%だったが、
+			PRINTFORML やがて興味を失った様子で部下に「廃棄」と言い放つと、
+			PRINTFORML もはや心が壊れて反応を返さなくなった少女に背を向けて去って行った・・・
+		ELSE
+			PRINTFORML 未熟な子宮で何度も触手の精液を受け止めがらアヘ顔を晒す少女の頬を撫で、
+			PRINTFORML %PRINT_TRANSCALLNAME(FLAG:111)%は舌舐めずりをしながら「合格」と呟く。
+			PRINTFORML その表情は少女の境遇を羨むかのようにうっとりしている・・・
+		ENDIF
+		PRINTW 
+	ELSE
+		PRINTFORML たちまち阿鼻叫喚となった街の片隅で、
+		PRINTFORML まだ若い男女のカップルが九死に一生の逃避行を続けている。
+		PRINTFORML 二人の愛の絆は強く、絶対にお互いを見捨てないという決心が
+		IF RAND:3 == 0
+			PRINT お互いの眼差し
+		ELSEIF RAND:2 == 0
+			PRINT 寄せ合った肩
+		ELSE
+			PRINT 堅く握り合った手
+		ENDIF
+		PRINTFORML に現れているかのようだ。
+		PRINTW 
+		IF RAND:4 == 0
+			PRINTFORML もうすぐでビルの合間を抜けられる。
+			PRINTFORML 咄嗟に建物の影に逃げ込んだ二人の判断は間違っていなかったのだ。
+			PRINTFORML この細い路地ならば、奴らの図体では入ってこれないだろう――
+			PRINTW 
+			PRINTFORML そんな淡い期待は、%PRINT_TRANSCALLNAME(FLAG:111)%が現れた途端に打ち砕かれた。
+			PRINTFORML あえて泳がされ、狭い路地に誘い込まれていたことにも気付かず、
+			PRINTFORML 二人はどんどん追い詰められていき・・・
+		ELSEIF RAND:3 == 0
+			PRINTFORML 女の機転によって何度も危機を救われながら、
+			PRINTFORML 力を合わせて何とかここまで逃げてきた。
+			PRINTFORML これだけ離れれば、奴らも追って来れないはず――
+			PRINTW 
+			PRINTFORML そんな淡い期待は、%PRINT_TRANSCALLNAME(FLAG:111)%が現れた途端に打ち砕かれた。
+			PRINTFORML 小手先の知恵など圧倒的な能力の差の前には為す術も無く、
+			PRINTFORML やがて気が付けば周囲を無数の触手生物たちが取り囲んでいた・・・
+		ELSEIF RAND:2 == 0
+			PRINTFORML 男には多少の武術の心得があった。
+			PRINTFORML 道中で何体もの触手を薙ぎ倒し、ここまで逃げてきたのだ。
+			PRINTFORML まだ体力には余裕がある。彼女を守って、ここを突破するには十分――
+			PRINTW 
+			PRINTFORML そんな淡い期待は、%PRINT_TRANSCALLNAME(FLAG:111)%が現れた途端に打ち砕かれた。
+			PRINTFORML 女を庇って立ちはだかった男だったが、瞬時に踏み込まれて反応する間もなく、
+			PRINTFORML ボディに強烈な一撃を受けて口から血を逆流させながら、その場に崩折れた・・・
+		ELSE
+			PRINTFORML 特別な才能を持たない平凡な二人だったが、運が良かったのだろう。
+			PRINTFORML 何人もの人々が目の前で捕まっていく中、何度も間一髪で危機を逃れてきた。
+			PRINTFORML もう少しだ。もう少し進めば、きっと安全圏に出られるはず――
+			PRINTW 
+			PRINTFORML そんな淡い期待は、%PRINT_TRANSCALLNAME(FLAG:111)%が現れた途端に打ち砕かれた。
+			PRINTFORML 運に見放された二人が助かる道などあるわけもなく、
+			PRINTFORML あの時こうしていればという無意味な後悔ばかりが脳裏を渦巻く・・・
+		ENDIF
+		PRINTW 
+		PRINTFORML 無数の触手に巻きつかれ、連れ去られる女。離れる二人の指と指。
+		PRINTFORML そして、%PRINT_TRANSCALLNAME(FLAG:111)%が武器を一閃させると、
+		PRINTFORML 男の意識はそこで途絶えた・・・
+		PRINTW 
+	ENDIF
+	;現在のTARGETを避難
+	SELECT = TARGET
+	;パラメータ変化の適用
+	TARGET = FLAG:111
+	;幽閉中パラメータ変動共通処理へ
+	CALL COMMON_PRISON, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11
+	;経験数の増加
+	FOR CCOUNT, 100, 200
+		CALL COMMON_PRISON_EXP, CCOUNT, LOCAL:CCOUNT
+	NEXT
+	PRINTL 
+
+	;雑魚触手の仔を妊娠
+	SIF V_SEX
+		TRYCALL NINSIN_HANTEI, V_SEX, 20, 200
+
+	;TARGETを元に戻す
+	TARGET = SELECT
+
+	;防衛力にダメージ
+	IF DAMAGE
+		FLAG:852 -= DAMAGE
+		SIF FLAG:852 < 0
+			FLAG:852 = 0
+		PRINTFORMW 防衛力が{DAMAGE}低下した！
+	ENDIF
+;暗躍系
+ELSEIF SELECT < SELECT_N:1
+	DAMAGE = SQRT(FLAG:852) * 1 + FLAG:852 * 10 / 100
+	PRINTFORML 妖しい霧が立ち込め、蠢く異形のシルエットが%LOCALS%の街に不穏な影を落とす。
+	PRINTFORML %PRINT_TRANSCALLNAME(FLAG:111)%は人目に付かない場所で暗躍している・・・
+	PRINTW 
+	PRINTW ・
+	PRINTW ・・
+	PRINTW ・・・
+	;触手印の薬品を売りさばく
+	IF RAND:3 == 0
+		IF RAND:4 == 0
+			PRINTFORML 商店街の目立たない路地の一番奥。
+			SELECT = 4
+		ELSEIF RAND:3 == 0
+			PRINTFORML 薄汚れた川の流れる、橋げたの下。
+			SELECT = 3
+		ELSEIF RAND:2 == 0
+			PRINTFORML 人々が行き交う繁華街のビルとビルの間の死角。
+			SELECT = 2
+		ELSE
+			PRINTFORML 団地の近くにある、寂れた公園の物陰。
+			SELECT = 1
+		ENDIF
+		PRINTFORML そこではサングラスで変装した%PRINT_TRANSCALLNAME(FLAG:111)%が露店を開いていた。
+		IF RAND:9 == 0
+			PRINTFORML 店先の幟には「普通のドラッグにはもう戻れない！」「絶対安全」などと書かれており、
+		ELSEIF RAND:8 == 0
+			PRINTFORML 店先の幟には「天然素材 100％」「新製品入荷」「高品質高濃度」などと書かれており、
+		ELSEIF RAND:7 == 0
+			PRINTFORML 店先の幟には「ココでしか手に入らない！」「不純物0.01％以下」などと書かれており、
+		ELSEIF RAND:6 == 0
+			PRINTFORML 店先の幟には「Ｔポイントカード使えます」「家内円満子宝祈願」などと書かれており、
+		ELSEIF RAND:5 == 0
+			PRINTFORML 店先の幟には「夜のお供に」「気になるアノ子があんな顔で！？」などと書かれており、
+		ELSEIF RAND:4 == 0
+			PRINTFORML 店先の幟には「完全合法」「手軽に夢の世界に行ってみませんか」などと書かれており、
+		ELSEIF RAND:3 == 0
+			PRINTFORML 店先の幟には「惚れ薬リ有リマス」「夫婦仲、冷えてませんか？」などと書かれており、
+		ELSEIF RAND:2 == 0
+			PRINTFORML 店先の幟には「娘さんと仲良くなれます」「パパの元気に一発！」などと書かれており、
+		ELSE
+			PRINTFORML 店先の幟には「あなたのムスコも天狗鼻」「絶対絶倫丸、再入荷」などと書かれており、
+		ENDIF
+		PRINTFORML 薄汚れた屋台と立地の関係も手伝って、怪しい事この上ない。
+		PRINTFORML こんな状態で儲かるのだろうか？
+		PRINTW 
+		PRINTFORML 少し様子を見てみよう・・・
+		PRINTW 
+		PRINTW ・
+		PRINTW ・・
+		PRINTW ・・・
+		LOCAL = 0
+		REPEAT (RAND:5 + 5 + TIME * 3)
+			IF RAND:3 != 0
+				PRINTFORML しばらくは誰も来そうにない。
+				IF (SELECT == 3 || SELECT == 1) && TIME == 0 && RAND:3 == 0
+					PRINTFORML 近くで子供たちが遊んでいる声がする・・・
+				ELSEIF SELECT == 3 && TIME == 1 && RAND:2 == 0
+					PRINTFORML どこかで犬が吠えている・・・
+				ELSEIF SELECT == 1 && TIME == 1 && RAND:2 == 0
+					PRINTFORML 近くで猫の集会が開かれているのを眺めた・・・
+				ELSEIF SELECT == 4 && TIME == 0 && RAND:2 == 0
+					PRINTFORML 商店街からは「安っいよ安いよ」と威勢のいい声が聞こえてくる・・・
+				ELSEIF SELECT == 2 && TIME == 0 && RAND:3 == 0
+					PRINTFORML サラリーマンが携帯電話にペコペコしながら通り過ぎていった・・・
+				ELSEIF SELECT == 2 && TIME == 1 && RAND:2 == 0
+					PRINTFORML 鮮やかなネオンが夜を照らしている・・・
+				ELSE
+					PRINTFORM %PRINT_TRANSCALLNAME(FLAG:111)%は
+					IF COUNT == 3
+						PRINTFORML コンビニ弁当を食べている・・・
+					ELSE
+						IF RAND:3 == 0
+							PRINT コーヒーを
+						ELSEIF RAND:2 == 0
+							PRINT 炭酸飲料をグビッと
+						ELSE
+							PRINT 緑茶をズズッと
+						ENDIF
+						PRINTFORML 飲んで休憩している・・・
+					ENDIF
+				ENDIF
+			ELSE
+				IF RAND:20 == 0
+					PRINT 杖を突いたヨボヨボの爺様が
+				ELSEIF RAND:15 == 0
+					PRINT 純朴そうな少年が
+				ELSEIF RAND:14 == 0
+					PRINT 全身黒ずくめにサングラスの男が
+				ELSEIF RAND:13 == 0
+					PRINT 清純さを絵に描いたような女学生が
+				ELSEIF RAND:12 == 0
+					PRINT あまり強くなさそうな子触手が
+				ELSEIF RAND:11 == 0
+					PRINT 赤い鞄を背負った少女が
+				ELSEIF RAND:10 == 0
+					PRINT 肌を黒く焼いた女子高生が
+				ELSEIF RAND:9 == 0
+					PRINT 真面目そうな顔をしたサラリーマンが
+				ELSEIF RAND:8 == 0
+					PRINT ぶひぶひ言っている太った男が
+				ELSEIF RAND:7 == 0
+					PRINT 大学生くらいの青年が
+				ELSEIF RAND:6 == 0
+					PRINT 中年のサラリーマンが
+				ELSEIF RAND:5 == 0
+					PRINT 飾りをジャラジャラと付けたチャラい男が
+				ELSEIF RAND:4 == 0
+					PRINT いかにもオタクといった風情の青年が
+				ELSEIF RAND:3 == 0
+					PRINT 分厚いメガネを掛けた地味なＯＬが
+				ELSEIF RAND:2 == 0
+					PRINT 若い男女のカップルが
+				ELSE
+					PRINT 買い物帰りの主婦が
+				ENDIF
+				IF RAND:8 == 0
+					PRINT 思いつめた表情で
+				ELSEIF RAND:7 == 0
+					PRINT 真剣な顔で
+				ELSEIF RAND:6 == 0
+					PRINT 何かをブツブツと言いながら
+				ELSEIF RAND:5 == 0
+					PRINT 血走った眼をしながら
+				ELSEIF RAND:4 == 0
+					PRINT 耳まで真っ赤になりながら
+				ELSEIF RAND:3 == 0
+					PRINT 手元のスマホをチェックしながら
+				ENDIF
+				IF RAND:3 == 0
+					PRINTL 商品を吟味している。
+				ELSEIF RAND:2 == 0
+					PRINTL 脚を止めた。
+				ELSE
+					PRINTL 店先で悩んでいる。
+				ENDIF
+				IF RAND:10 == 0
+					IF RAND:2 == 0
+						PRINT しばらく悩み続けた後、
+					ELSE
+						PRINT あれこれ考えた末、
+					ENDIF
+					PRINT 何も買わずに無言で
+				ELSE
+					IF RAND:3 == 0
+						PRINT しばらく悩み続けた後、
+					ELSEIF RAND:2 == 0
+						PRINT 初めからそれが目当てだったのか、
+					ELSE
+						PRINT あれこれ考えた末、
+					ENDIF
+					IF RAND:22 == 0
+						PRINT 「絶対避妊君」を買って
+						LOCAL += 1
+					ELSEIF RAND:21 == 0
+						PRINT 「完全無修正オムニバスBD・魔法少女陵辱集」を買って
+						LOCAL += 1
+					ELSEIF RAND:20 == 0
+						PRINT 「ルクタンテ・ショーツ」を買って
+						LOCAL += 1
+					ELSEIF RAND:19 == 0
+						PRINT 「エンジェル・ダスト」を買って
+						LOCAL += 5
+					ELSEIF RAND:18 == 0
+						PRINT 「うねうね動くペニスサック」を買って
+						LOCAL += 1
+					ELSEIF RAND:17 == 0
+						PRINT 「自律蠕動式吸引キャップ（3個入り）」を買って
+						LOCAL += 1
+					ELSEIF RAND:16 == 0
+						PRINT 「まるで本物！？触手型双頭バイブ」を買って
+						LOCAL += 2
+					ELSEIF RAND:15 == 0
+						PRINT 「彩南大明神　縁結び御守」を買って
+						LOCAL += 3
+					ELSEIF RAND:14 == 0
+						PRINT 「服だけ溶ける媚薬ローション」を買って
+						LOCAL += 1
+					ELSEIF RAND:13 == 0
+						PRINT 「自立蠕動ホール『無限搾精地獄』」を買って
+						LOCAL += 2
+					ELSEIF RAND:12 == 0
+						PRINT 「割るだけ簡単、瓶詰め触手」を買って
+						LOCAL += 4
+					ELSEIF RAND:11 == 0
+						PRINT 「10-TACKLE」を買って
+						LOCAL += 2
+					ELSEIF RAND:10 == 0
+						PRINT 「T-L Potion」を買って
+						LOCAL += 2
+					ELSEIF RAND:9 == 0
+						PRINT 「股間触手化薬」を買って
+						LOCAL += 4
+					ELSEIF RAND:8 == 0
+						PRINT 「スレイヴメーカー」を買って
+						LOCAL += 1
+					ELSEIF RAND:7 == 0
+						PRINT 「ラブベラドンナ」を買って
+						LOCAL += 1
+					ELSEIF RAND:6 == 0
+						PRINT 「計画的穴空きコンドーム」を買って
+						LOCAL += 1
+					ELSEIF RAND:5 == 0
+						PRINT 「激烈排卵誘発剤」を買って
+						LOCAL += 2
+					ELSEIF RAND:4 == 0
+						PRINT 「ビンビン！MAXIMUM」を買って
+						LOCAL += 2
+					ELSEIF RAND:3 == 0
+						PRINT 「SAIMIN-T-08」を買って
+						LOCAL += 3
+					ELSEIF RAND:2 == 0
+						PRINT 「絶対絶倫丸」を買って
+						LOCAL += 3
+					ELSE
+						PRINT 「TEMPTATION XXX」を買って
+						LOCAL += 2
+					ENDIF
+				ENDIF
+				PRINTL 去って行った・・・
+			ENDIF
+			PRINTW 
+		REND
+		PRINTW ・
+		PRINTW ・・
+		PRINTW ・・・
+		PRINTFORML そうこうしているうちに、店じまいの時間になった。
+		IF LOCAL
+			PRINTFORML 合計で {LOCAL * (RAND:1000 + 2000)}＄売り上げたようだ。
+			PRINTFORML 愚かな人間どもよ、この売り上げは触手様のために有意義に使わせてもらうぞ。
+			PRINTFORML %PRINT_TRANSCALLNAME(FLAG:111)%はｸｯｸｯｸと笑いながら、せっせと露店を畳んだ・・・
+		ELSE
+			PRINTFORML 今日はまったく商品が売れなかったようだ・・・
+			PRINTFORML %PRINT_TRANSCALLNAME(FLAG:111)%はしょんぼりしながら露店を畳んだ・・・
+		ENDIF
+		PRINTW 
+	;凌辱映像を動画投稿サイトで拡散
+	ELSEIF RAND:3 == 0
+		;候補をクリア
+		CALL CLEARRANDCHOOSE
+		;候補を追加
+		FOR LOCAL,0,CHARANUM
+			SIF LOCAL == MASTER || TALENT:LOCAL:オトコ > 0 || CFLAG:LOCAL:0 == 3
+				CONTINUE
+			IF EXP:LOCAL:被姦経験
+				RESULT:1 = EXP:LOCAL:被姦経験
+				SIF RESULT:1 >= 500
+					RESULT:1 = 500
+				REPEAT RESULT:1
+					CALL ADDRANDCHOOSE,(LOCAL * 100 + 10)
+				REND
+			ENDIF
+			IF EXP:LOCAL:幽閉経験
+				RESULT:1 = EXP:LOCAL:幽閉経験
+				SIF RESULT:1 >= 100
+					RESULT:1 = 100
+				REPEAT (RESULT:1) * 5
+					CALL ADDRANDCHOOSE,(LOCAL * 100 + 11)
+				REND
+			ENDIF
+		NEXT
+		REPEAT (CHOICECOUNT_F() / 4 + 1)
+			CALL ADDRANDCHOOSE,0
+		REND
+		;RANDCHOOSE実行
+		SELECT = RANDCHOOSE_F()
+		PRINTFORML 身分を偽って借りたアパートの一室。
+		PRINTFORML 薄暗い部屋でマウスをカチカチと操作しながら、
+		PRINTFORML %PRINT_TRANSCALLNAME(FLAG:111)%は点滅するモニターと向かい合っていた。
+		PRINTW 
+		PRINT 画面には
+		IF SELECT == 0
+			IF RAND:3 == 0
+				PRINT どこにでも居そうな主婦が
+				IF RAND:3 == 0
+					PRINTL 家のリビングで襲われ
+				ELSEIF RAND:2 == 0
+					PRINTL 夫の目の前で
+				ELSE
+					PRINTL 買い物に行く途中で
+				ENDIF
+
+			ELSEIF RAND:3 == 0
+				PRINT 若い女性が
+				IF RAND:3 == 0
+					PRINTL オフィス街の真ん中で襲われ
+				ELSEIF RAND:2 == 0
+					PRINTL 同僚たちの目の前で
+				ELSE
+					PRINTL 暗い路地裏で
+				ENDIF
+			ELSEIF RAND:2 == 0
+				PRINT 年頃の少女が
+				IF RAND:3 == 0
+					PRINTL 人気のない路地で襲われ
+				ELSEIF RAND:2 == 0
+					PRINTL 級友たちの目の前で
+				ELSE
+					PRINTL 触手の巣の中で
+				ENDIF
+			ELSE
+				PRINT まだ幼い少女が
+				IF RAND:3 == 0
+					PRINTL 塾帰りの路上で襲われ
+				ELSEIF RAND:2 == 0
+					PRINTL 学校の倉庫内で
+				ELSE
+					PRINTL 自宅の玄関で
+				ENDIF
+			ENDIF
+			IF RAND:4 == 0
+				PRINT 自分が産んだ触手の幼体に犯されている様子が
+			ELSEIF RAND:3 == 0
+				PRINT 触手の幼体を出産してアクメ顔を晒す様子が
+			ELSEIF RAND:2 == 0
+				PRINT 触手に中出しされて絶頂する様子が
+			ELSE
+				PRINT 触手にレイプされて泣き叫ぶ様子が
+			ENDIF
+		ELSE
+			PRINTFORM 「触手と戦う正義の味方」%CALLNAME:(SELECT/100)%が
+			IF SELECT % 100 == 10
+				PRINTL 戦闘中に服を引き裂かれ、
+				IF RAND:2 == 0
+					PRINT 触手に嬲りものにされて犯される様子が
+				ELSE
+					PRINT 触手に抵抗しながらもレイプされる様子が
+				ENDIF
+			ELSE
+				PRINTL 触手の巣の中で拘束され、
+				IF RAND:3 == 0 && EXP:(SELECT/100):近親交配経験
+					PRINT 自分が産んだ触手の幼体に犯されている様子が
+				ELSEIF RAND:4 == 0 && EXP:(SELECT/100):出産経験
+					PRINT 触手の幼体を出産してアクメ顔を晒す様子が
+				ELSEIF RAND:2 == 0
+					PRINT 触手に凌辱されて絶頂する様子が
+				ELSE
+					PRINT 触手に繰り返し種付けされる様子が
+				ENDIF
+			ENDIF
+		ENDIF
+		PRINTFORML 映し出されており、
+		PRINTFORML %PRINT_TRANSCALLNAME(FLAG:111)%はそれらの映像を手際良く動画ファイルに纏めていく。
+		PRINTW 
+		PRINTFORML 目的はもちろん、動画投稿サイトへのアップロードだ。
+		IF TALENT:(FLAG:111):ロボっ子 > 0 && CFLAG:(FLAG:111):300 == 0 && BASE:(FLAG:111):知性 < 150
+			PRINTFORML 投稿のための、いわゆる「捨てアカウント」を作る%PRINT_TRANSCALLNAME(FLAG:111)%の手がふと止まる。
+			PRINTFORML カーソルの位置には、悪質なアクセスを防ぐチェックボックスが・・・
+			PRINTW 
+			FONTBOLD
+			PRINT 　　　□　
+			FONTITALIC
+			PRINTFORML 私はロボットではありません
+			FONTREGULAR
+			PRINTW 
+			PRINTFORML 何を言うか、%SELF_CALL()%はロボットだ――
+			PRINTFORML 自信満々にチェックを付けずに手続きを進めようとする%PRINT_TRANSCALLNAME(FLAG:111)%。
+			PRINTFORML 当然アカウントは作れず、再度試しては弾かれることを幾度も繰り返し、
+			PRINTFORML ついに%PRINT_TRANSCALLNAME(FLAG:111)%は投稿を諦めてしまった・・・
+			PRINTW 
+			;イベントフラグを記録
+			CFLAG:(FLAG:111):300 = 1
+		ELSEIF TALENT:(FLAG:111):ロボっ子 > 0 && CFLAG:(FLAG:111):300 < 3 && BASE:(FLAG:111):知性 < 150
+			PRINTFORML 投稿のための、いわゆる「捨てアカウント」を作る%PRINT_TRANSCALLNAME(FLAG:111)%の手がふと止まる。
+			PRINTFORML カーソルの位置には、悪質なアクセスを防ぐチェックボックスが・・・
+			PRINTW 
+			FONTBOLD
+			PRINT 　　　□　
+			FONTITALIC
+			PRINTFORML 私はロボットではありません
+			FONTREGULAR
+			PRINTW 
+			CLEARLINE 2
+			FONTBOLD
+			PRINT 　　　■　
+			FONTITALIC
+			PRINTFORML 私はロボットではありません
+			FONTREGULAR
+			PRINTW 
+			PRINTFORML %PRINT_TRANSCALLNAME(FLAG:111)%は苦渋の表情で悩んでいたが、
+			PRINTFORML 震えるカーソルで何とかチェックを入れた。
+			PRINTL 
+			IF RAND:2 == 0
+				IF RAND:3 == 0
+					LOCALS = 街並みが映し出された画像
+					LOCALS:1 = 自動車だけを選択してください
+					LOCALS:2 = %PRINT_TRANSCALLNAME(FLAG:111)%は看板に書かれた自動車の絵までもチェックしてしまい
+				ELSEIF RAND:2 == 0
+					LOCALS = 動物園が映し出された画像
+					LOCALS:1 = 動物だけを選択してください
+					LOCALS:2 = %PRINT_TRANSCALLNAME(FLAG:111)%は人間が映った画像までもチェックしてしまい
+				ELSE
+					LOCALS = キッチンが映し出された画像
+					LOCALS:1 = 食べ物だけを選択してください
+					LOCALS:2 = %PRINT_TRANSCALLNAME(FLAG:111)%は食べ物とそうでない物の区別が付かず
+				ENDIF
+			ELSE
+				IF RAND:3 == 0
+					LOCALS = 『I LOVE TENTACLE』と書かれた画像
+				ELSEIF RAND:2 == 0
+					LOCALS = 『QN82sVh4』と書かれた画像
+				ELSE
+					LOCALS = 『M3fA295j』と書かれた画像
+				ENDIF
+				LOCALS:1 = 表示文字列を入力してください
+				LOCALS:2 = %PRINT_TRANSCALLNAME(FLAG:111)%にはどうしても意味不明な色情報にしか見えず
+			ENDIF
+			PRINTFORML すると今度は%LOCALS%と共に、
+			PRINTFORML 「%LOCALS:1%」という指示が表示される。
+			PRINTFORML %LOCALS:2%、認証を突破することができない。
+			PRINTFORML しばらく悪戦苦闘した末に、%PRINT_TRANSCALLNAME(FLAG:111)%は投稿を諦めてしまった・・・
+			PRINTW 
+			CFLAG:(FLAG:111):300 = 2
+		ELSE
+			IF TALENT:(FLAG:111):ロボっ子 > 0 && CFLAG:(FLAG:111):300 > 0 && CFLAG:(FLAG:111):300 < 3
+				PRINTFORML 投稿のための、いわゆる「捨てアカウント」を作る%PRINT_TRANSCALLNAME(FLAG:111)%の手がふと止まる。
+				PRINTFORML カーソルの位置には、悪質なアクセスを防ぐチェックボックスが……
+				PRINTW 
+				FONTBOLD
+				PRINT 　　　□　
+				FONTITALIC
+				PRINTFORML 私はロボットではありません
+				FONTREGULAR
+				PRINTW 
+				CLEARLINE 2
+				FONTBOLD
+				PRINT 　　　■　
+				FONTITALIC
+				PRINTFORML 私はロボットではありません
+				FONTREGULAR
+				PRINTW 
+				PRINTFORML しかし、こんなものは今の%PRINT_TRANSCALLNAME(FLAG:111)%にとっては障害でも何でもない。
+				IF CFLAG:(FLAG:111):300 == 2
+					PRINTFORML 今までの苦戦が嘘のようにすらすらと画像認証を突破し、
+				ELSE
+					PRINTFORML あっさりと認証チェックを入れてアカウント作成に成功し、
+				ENDIF
+				PRINTFORML 満面のドヤ顔で投稿ボタンを押した。
+				PRINTW 
+				CFLAG:(FLAG:111):300 = 3
+			ENDIF
+			PRINTFORML 動画が公開されるや否や閲覧数はあっという間に伸びていき、
+			PRINTFORML 再生数が凄まじい速度で上昇すると同時にコメントが画面内に踊る・・・
+			PRINTW 
+			REDRAW 0
+			LOCAL = 0
+			LOCAL:1 = 500
+			LOCAL:2 = 250
+			LOCAL:3 = 100
+			FOR LOCAL,0,50
+				LOCAL:1 += RAND:100 * LOCAL
+				LOCAL:2 += RAND:50 * LOCAL
+				SIF LOCAL:2 >= LOCAL:1
+					LOCAL:2 = LOCAL:1
+				LOCAL:3 += RAND:20 * LOCAL
+				SIF LOCAL:3 >= LOCAL:1
+					LOCAL:3 = LOCAL:1
+				VARSET LOCALS
+				REPEAT (RAND:50 + 5)
+					LOCALS:1 += " "
+				REND
+				REPEAT (RAND:50 + 0)
+					LOCALS:2 += " "
+				REND
+				REPEAT (RAND:50 + 10)
+					LOCALS:3 += " "
+				REND
+				REPEAT (RAND:50 + 0)
+					LOCALS:4 += " "
+				REND
+				REPEAT (RAND:50 + 15)
+					LOCALS:5 += " "
+				REND
+				REPEAT 5
+					IF RAND:8 == 0 && SELECT == 0
+						LOCALS:COUNT += "触手様を応援しよう！"
+					ELSEIF RAND:7 == 0 && SELECT == 0
+						LOCALS:COUNT += "キタァァァ"
+					ELSEIF RAND:6 == 0 && SELECT == 0
+						LOCALS:COUNT += "ふう"
+					ELSEIF RAND:5 == 0 && SELECT == 0
+						LOCALS:COUNT += "キターーーー"
+					ELSEIF RAND:4 == 0 && SELECT == 0
+						LOCALS:COUNT += "ｋｔｋｒ"
+					ELSEIF RAND:10 == 0 && SELECT
+						LOCALS:COUNT += "応援してたのになぁ……"
+					ELSEIF RAND:9 == 0 && SELECT
+						LOCALS:COUNT += "マジかよ……"
+					ELSEIF RAND:8 == 0 && SELECT
+						LOCALS:COUNT += @"%CALLNAME:(SELECT/100)%たんﾊｧﾊｧ"
+					ELSEIF RAND:7 == 0 && SELECT
+						LOCALS:COUNT += "嘘だろ…嘘だと言ってくれ…"
+					ELSEIF RAND:6 == 0 && SELECT
+						LOCALS:COUNT += "なんかショック"
+					ELSEIF RAND:5 == 0 && SELECT
+						LOCALS:COUNT += "うわーこりゃエグいｗｗｗ"
+					ELSEIF RAND:4 == 0 && SELECT
+						LOCALS:COUNT += "魔法少女のマジ動画キターッ"
+					ELSEIF RAND:15 == 0
+						LOCALS:COUNT += "保存したはｗｗｗ"
+					ELSEIF RAND:14 == 0
+						LOCALS:COUNT += "エロすぎワロタｗｗｗ"
+					ELSEIF RAND:13 == 0
+						LOCALS:COUNT += "この女はビッチ"
+					ELSEIF RAND:12 == 0
+						LOCALS:COUNT += "おっぱい"
+					ELSEIF RAND:11 == 0
+						LOCALS:COUNT += "待ってた"
+					ELSEIF RAND:10 == 0
+						LOCALS:COUNT += "抜ける"
+					ELSEIF RAND:9 == 0
+						LOCALS:COUNT += "やべぇぇｗｗｗ"
+					ELSEIF RAND:8 == 0
+						LOCALS:COUNT += "まじかｗｗｗ"
+					ELSEIF RAND:7 == 0
+						LOCALS:COUNT += "本物？"
+					ELSEIF RAND:6 == 0
+						LOCALS:COUNT += "こんな動画に釣られ"
+					ELSEIF RAND:5 == 0
+						LOCALS:COUNT += "はいはい釣り釣り"
+					ELSEIF RAND:4 == 0
+						LOCALS:COUNT += "あああああああ"
+					ELSEIF RAND:3 == 0
+						LOCALS:COUNT += "これガチだろ"
+					ELSEIF RAND:2 == 0
+						LOCALS:COUNT += "これは消される"
+					ELSEIF RAND:1 == 0
+						LOCALS:COUNT += "運営仕事しろｗｗｗ"
+					ELSE
+						LOCALS:COUNT += "すげぇｗｗｗ"
+					ENDIF
+				REND
+				IF LOCAL < 10
+					LOCALS:6 += " -■───────────────────────────"
+				ELSEIF LOCAL < 20
+					LOCALS:6 += " ─-■──────────────────────────"
+				ELSEIF LOCAL < 30
+					LOCALS:6 += " ──-■─────────────────────────"
+				ELSEIF LOCAL < 40
+					LOCALS:6 += " ───-■────────────────────────"
+				ELSEIF LOCAL < 50
+					LOCALS:6 += " ────-■───────────────────────"
+				ELSEIF LOCAL < 60
+					LOCALS:6 += " ─────-■──────────────────────"
+				ELSEIF LOCAL < 70
+					LOCALS:6 += " ──────-■─────────────────────"
+				ELSEIF LOCAL < 80
+					LOCALS:6 += " ───────-■────────────────────"
+				ELSEIF LOCAL < 90
+					LOCALS:6 += " ────────-■───────────────────"
+				ELSE
+					LOCALS:6 += " ─────────-■──────────────────"
+				ENDIF
+				PRINTFORML 　　[再生数] : {LOCAL:1,5,LEFT}　　　[抜いた] : {LOCAL:2,5,LEFT}　　　[シェアする] : {LOCAL:3,5,LEFT}
+				PRINTFORML 　　--------------------------------------------------------------------
+				PRINTFORML 
+				PRINTFORML %LOCALS:1%
+				PRINTFORML 
+				PRINTFORML %LOCALS:2%
+				PRINTFORML 
+				PRINTFORML %LOCALS:3%
+				PRINTFORML 
+				PRINTFORML %LOCALS:4%
+				PRINTFORML 
+				PRINTFORML %LOCALS:5%
+				PRINTFORML 
+				PRINTFORML 　　--------------------------------------------------------------------
+				PRINTFORML 　　　　　%LOCALS:6%
+				PRINTFORML 　　--------------------------------------------------------------------
+				PRINTL 
+				TINPUTS 100,"BREAK",0,""
+				SIF RESULTS != "BREAK"
+					BREAK
+				SIF LOCAL < 49
+					CLEARLINE 18
+			NEXT
+			CLEARLINE 1
+			PRINTL 
+			PRINTFORML 姑息な手段だが、これも全ては触手様のため。
+			PRINTFORML この動画もすぐに消されてしまうだろうが、それは初めから問題ではない。
+			PRINTFORML 動画をひとつ流すたびに、人々の「正義の味方」への信頼は失墜していく。
+			PRINTFORML こうした手段が時間を掛けてボディブローのように効いてくることを、
+			PRINTFORML かつて人類の守護者であった%PRINT_TRANSCALLNAME(FLAG:111)%はよく弁えている・・・
+			FORCEWAIT
+			PRINTL 
+			PRINTFORML 不信は噂となり、加速度的に広がるだろう。
+			PRINTFORML そして愚かな連中は、自らの手で“希望”の芽を摘んでしまうことになるのだ。
+			PRINTFORML モニターの電源を落とすと、%PRINT_TRANSCALLNAME(FLAG:111)%は
+			PRINTFORML クックックと闇の中で酷薄な笑みを浮かべた・・・
+			PRINTW 
+			;映像流出フラグの加算処理
+			SIF (SELECT/100) > 0
+				CFLAG:(SELECT/100):284 += 10
+			;経験獲得なし
+			VARSET LOCAL
+		ENDIF
+	;触手を水源に違法放流
+	ELSEIF RAND:10 == 0
+		PRINTFORML 山奥の人気のない水源地に現れた%PRINT_TRANSCALLNAME(FLAG:111)%。
+		PRINTFORML この場所は現地の温泉旅館や街の水道に関わる重要な場所であり、
+		PRINTFORML また周囲の環境に影響を及ぼすため外来種の放流が禁止されている。
+		PRINTFORML そんなことを意に介する風もなく、
+		PRINTFORML あろうことか%PRINT_TRANSCALLNAME(FLAG:111)%は触手生物を水源に放流し始めた。
+		PRINTW 
+		PRINTFORML 幸いにも異常に気付いたダムの当直が警察と消防に即座に通報。
+		PRINTFORML 気付かれた%PRINT_TRANSCALLNAME(FLAG:111)%はそそくさと去って行ったが、
+		IF RAND:2 == 0
+			PRINTFORML すでに放流されていた触手生物の粘液が水質を汚染し、
+			PRINTFORML 水道局が断水にまで踏み切る事態となった。
+			SELECT = 2
+		ELSE
+			PRINTFORML すでに放流されていた触手生物の粘液が源泉を汚染し、
+			PRINTFORML 多数の温泉旅館が営業停止に陥る事態となった。
+			SELECT = 1
+		ENDIF
+		PRINTW 
+		PRINTFORML 水源では原生の魚類が食い荒らされる被害が出たものの、
+		PRINTFORML 放流された触手生物が弱小個体だったこともあり、
+		PRINTFORML 駆け付けた自衛隊により対象は即座に駆除された。
+		PRINTW 
+		IF SELECT == 2
+			PRINTFORML しかし、一部では汚染された水を飲んでしまった者もいるらしく、
+			PRINTFORML 全身の痺れ、発熱、動悸、異常性欲などの症状が確認されている。
+			PRINTFORML 政府は「飲んでしまっても直ちに害にはならない」と発表したが、
+			PRINTFORML 記者会見でマスコミが「お前が飲んで見せろ」と大臣に発言するなど事態は紛糾。
+		ELSE
+			PRINTFORML しかし、汚染された温泉に浸かった女性から生理不順の症例報告が出ており、
+			PRINTFORML 真偽は不明だが触手を妊娠してしまったという噂まで流れている。
+			PRINTFORML 美人の湯と評判だった温泉が二度と利用できなくなることを心配する声と、
+			PRINTFORML 「この非常時に温泉に行く方が悪い」との大臣の発言が更なる波紋を呼んでいる。
+		ENDIF
+		PRINTFORML この事件について収拾が着くのはまだまだ先のことのようだ・・・
+		PRINTW 
+		TIMES DAMAGE, 1.50
+	;触手ペットショップ営業
+	ELSEIF RAND:2 == 0
+		PRINTFORML その日、少女は学校帰りに寄り道をしてみることにした。
+		PRINTFORML 行き先は、いま学校中の女子の間で話題になっているペットショップ。
+		PRINTFORML 何でも単なるペットショップではないらしく、
+		PRINTFORML 夢のような時間が過ごせる場所らしい。
+		PRINTW 
+		IF RAND:7 == 0
+			PRINTFORML 見栄っ張りで友達グループ内での地位を何より気にする彼女は、
+			PRINTFORML ついつい自分も店に行ったことがあるかのように振る舞ってしまった。
+			PRINTFORML というわけで、友人たちにバレる前に既成事実を作っておく必要があるのだった。
+			PRINTFORML これで明日から話題に着いていける、と安心しつつ、入口の扉に手を掛ける。
+		ELSEIF RAND:6 == 0
+			PRINTFORML しっかり者の委員長タイプの彼女は、
+			PRINTFORML 最近学校内の風紀を乱している店の正体を突き止めるため、
+			PRINTFORML 客を装って偵察するつもりで店までやって来ていた。
+			PRINTFORML もし何か怪しいことをしていたら通報してやる、と思いつつ、扉に手を掛ける。
+		ELSEIF RAND:5 == 0
+			PRINTFORML 地味めな彼女は周囲の女子と比べてあまりモテず、
+			PRINTFORML せめて流行りの店に行って気分だけでもリア充したいと思い、
+			PRINTFORML 少ないお小遣いを持参して件の店までやって来ていた。
+			PRINTFORML 今回こそ貧乏くじを引きませんように、と祈りつつ、扉に手を掛ける。
+		ELSEIF RAND:4 == 0
+			PRINTFORML 本当は親友の子と二人で来るはずだったのに、
+			PRINTFORML 急に彼氏とのデートが入ったとかで予定が変わってしまった。というわけで、
+			PRINTFORML せめてもの腹いせとして、一人だけ抜け駆けして自慢してやろうと決めたのだった。
+			PRINTFORML いいもん。こっちはこっちで楽しんじゃうもん、と思いつつ、扉に手を掛ける。
+		ELSEIF RAND:3 == 0
+			PRINTFORML ことさら流行に弱い彼女がこの手の話を聞き逃すはずもなく、
+			PRINTFORML 自分のガールズネットワークもまだまだと反省しつつ、
+			PRINTFORML さっそくウキウキとした気分で件の店を訪れたのであった。
+			PRINTFORML 結構オシャレな外装だなぁ、と見まわしつつ、入口の扉に手を掛ける。
+		ELSEIF RAND:2 == 0
+			PRINTFORML 普段はこの手の話に興味など持たないクールな彼女だったが、
+			PRINTFORML 周囲の友人たちの幸せそうな顔を見ていると何となく気になってしまい、
+			PRINTFORML ついつい出来心で件の店にまで来てしまったのだった。
+			PRINTFORML 見るだけなら大丈夫だよね、と思いつつ、入口の扉に手を掛ける。
+		ELSE
+			PRINTFORML 押しに弱い彼女は、友人たちの勧めを断りきれず、
+			PRINTFORML あれよあれよと言いくるめられるうちに店に行ってみることになってしまった。
+			PRINTFORML 本当はペットショップなんかに興味はないのだけれど、仕方ない。
+			PRINTFORML 周りに取り残されるよりは気が楽だと思い、渋々と店の扉に手を掛ける。
+		ENDIF
+		PRINTW 
+		PRINTFORML 思ったより店内は混んでおらず、温かい雰囲気の受付はなかなか好印象。
+		PRINTFORML すぐに奥からフレンドリーな店員さんが出迎えてくれるのもポイントが高い。
+		PRINTFORML 唯一の女性店員さんは感じのいい人で、しかもなんと店長さんらしい。
+		PRINTFORML 思ったよりも若い人だったのでびっくりしているうちに、
+		PRINTFORML 初めての来店ということで特別にＶＩＰルームに案内してくれるという話になった。
+		PRINTW 
+		PRINTFORML すぐにペットたちを連れてくるので、案内された部屋でリラックスしてください、
+		PRINTFORML と言い残して店長さんは去って行ってしまう。
+		PRINTFORML 何だか良い匂いのアロマが焚かれており、内装スピーカーからは静かなＢＧＭが流れている。
+		PRINTFORML どこか安心して落ち着ける心地良い雰囲気のせいもあってか、
+		PRINTFORML 待っているうちにウトウトとしてしまった少女はそのまま眠りに落ちてしまった・・・
+		PRINTW 
+		PRINTW ・
+		PRINTW ・・
+		PRINTW ・・・
+		PRINTFORMW くちゅくちゅとまさぐられる感触に、少女は薄っすらと目を覚ます。
+		PRINTFORMW 何か温かいものが少女の全身を包み込んでおり、ぬくぬくと気持ちが良い。
+		PRINTFORMW 口元にも何やら甘い汁が垂れてきており、無意識に少女は液体を口に含んでいる。
+		PRINTFORMW なんだか一人エッチをしているときのような快感だけれど、数倍は気持ちいい・・・
+		PRINTFORML すると突然強く突き上げられて、鮮烈な感覚がまどろみを完全に吹き飛ばした。
+		PRINTW 
+		PRINTFORM 少女は無数の触手が蠢く部屋に横たわり、
+		IF RAND:4 == 0
+			PRINT 正常位で開脚しながら
+		ELSEIF RAND:3 == 0
+			PRINT 尻を突き出して後ろから
+		ELSEIF RAND:2 == 0
+			PRINT まんぐり返しの体勢で
+		ELSE
+			PRINT 大きく脚を広げて横から
+		ENDIF
+		PRINTFORML 触手に挿入されていた。
+		PRINTFORML 全身に圧し掛かられる適度な重量感はまったく不快ではなく、
+		PRINTFORML 水音を立てて激しく抽送する触手の必死さには愛らしさすら感じられる。
+		IF RAND:4 == 0
+			PRINTFORML 今まで自分で弄ったことすらない尻穴を抉られているのに、苦痛はない。
+		ELSEIF RAND:3 != 0
+			PRINTFORML まだ処女だったにも関わらず、破瓜の痛みは感じられない。
+		ELSEIF RAND:2 == 0
+			PRINTFORML 彼氏に処女を捧げたばかりで慣れていないというのに、ろくに痛みも感じない。
+		ELSE
+			PRINTFORML 少女の女性器に収まるには大きすぎるくらいの触手だが、痛みは感じない。
+		ENDIF
+		PRINTW 
+		PRINTFORML それどころか突かれるたびに天にも昇るような幸福感が押し寄せ、
+		PRINTFORML ふとももや乳房といわず、至る所が性感帯になったように蕩けて広がる。
+		PRINTFORML 今まで出したことのない本気の喘ぎ声を自分自身で聞きながら、
+		PRINTFORML 少女の中の淫らな花弁は密かに、鮮やかに、そして確実に花開いたのだった。
+		PRINTW 
+		PRINTFORML お買い上げはどうなさいますか、という店長さんの声がする。
+		PRINTFORML こんな・・・こんな感覚を知ってしまったら、もう元には戻れない。
+		PRINTFORML 差し出された触手に自分から吸いつきながら、少女は舌足らずに砕けた声で
+		IF RAND:3 == 0
+			PRINTFORML 「か、買いましゅ、いっぱいペット飼いましゅうぅぅ」と叫び、
+		ELSEIF RAND:2 == 0
+			PRINTFORML 「もっと、もっとしゅごいの、くだしゃいぃぃいぃっ」と叫び、
+		ELSE
+			PRINTFORML 「この子、好きでしゅぅ、大好きでしゅぅぅううぅぅ」と叫び、
+		ENDIF
+		PRINTFORML そのまま絶頂して果てた・・・
+		PRINTW 
+		PRINTW ・
+		PRINTW ・・
+		PRINTW ・・・
+		PRINTFORML 大き目の箱を持った少女が、ふらふらと危ない足取りで帰っていく。
+		IF RAND:4 == 0
+			PRINT ムチムチと発育の良い
+		ELSEIF RAND:3 == 0
+			PRINT スカートに覗く健康的な
+		ELSEIF RAND:2 == 0
+			PRINT ニーソックスに包まれた
+		ELSE
+			PRINT まだまだ肉付きが少なく幼い
+		ENDIF
+		PRINTFORML 内股からは明らかな愛液と精液の混合物が垂れ落ちており、
+		PRINTFORML 淫らな雫がアスファルトに点々とした染みを残していく。
+		IF RAND:6 == 0
+			PRINTFORML 服の上からでは分からないが、彼女は既に触手の仔を身籠っているのだった。
+		ELSEIF RAND:5 == 0
+			PRINTFORML そしてその薬指には、自らのペットの苗床妻となった証である指輪が光っている。
+		ELSEIF RAND:4 == 0
+			PRINTFORML スカートの中では、バイブ型の触手が尚も少女を責め続けているのだった。
+		ELSEIF RAND:3 == 0
+			PRINTFORML あの様子であれば、リピーターとなって更なる客を呼んでくれるだろう。
+		ELSEIF RAND:2 == 0
+			PRINTFORML 安産型の彼女ならば、良い母体になってくれるに違いない。
+		ELSE
+			PRINTFORML 今日だけでも少女は{RAND:5 + 3}匹の触手を産んで、すっかり出産アクメの虜になっていた。
+		ENDIF
+		PRINTW 
+		PRINTFORML またのご来店をお待ちしております、
+		PRINTFORML そう言って少女を見送った%PRINT_TRANSCALLNAME(FLAG:111)%は、ニヤリと笑った・・・
+		PRINTW 
+	;男を攫って快楽攻め
+	ELSE
+		IF RAND:3 == 0
+			LOCALS = 妻
+			LOCALS:1 = 愛
+			LOCALS:2 = 夫
+			LOCALS:3 = 男
+		ELSEIF RAND:2 == 0
+			LOCALS = 恋人の女性
+			LOCALS:1 = 愛
+			LOCALS:2 = 彼
+			LOCALS:3 = 青年
+		ELSE
+			LOCALS = 幼馴染の少女
+			LOCALS:1 = 秘めた思い
+			LOCALS:2 = 彼
+			LOCALS:3 = 少年
+		ENDIF
+		PRINTFORML %LOCALS:3%が気が付くと、目の前には半裸の状態で気絶した%LOCALS%が触手に拘束されていた。
+		PRINTFORML %LOCALS:3%もまた触手に捕らわれており、%LOCALS%を助けようと暴れてもびくともしない。
+		PRINTW 
+		IF RAND:3 == 0
+			PRINTFORM すると「この女を助けたいか」と問う声がして、
+		ELSEIF RAND:2 == 0
+			PRINTFORM すると「助かりたいか」と言う声がして、
+		ELSE
+			PRINTFORM すると「特別に見逃してやろう」と笑う声がして、
+		ENDIF
+		PRINTFORML 目の前に怪しい少女が現れた。
+		PRINTFORML %PRINT_TRANSCALLNAME(FLAG:111)%と名乗るその少女は嗤いながら、
+		PRINTFORML ただし条件がある、と宣告した――
+		PRINTW 
+		PRINTW ・
+		PRINTW ・・
+		PRINTW ・・・
+		IF TALENT:(FLAG:111):処女 < 1 && RAND:3 == 0
+			PRINTFORML %PRINT_TRANSCALLNAME(FLAG:111)%が%LOCALS:3%のペニスに指を絡めて扱き上げている。
+			PRINTFORML もし彼女とセックスをして射精せずに絶頂させられれば、
+			PRINTFORML %LOCALS:3%と%LOCALS%を解放してくれるというのだ。
+			PRINTFORML ただし%LOCALS:3%が負ければ、%LOCALS%は――
+			PRINTW 
+			PRINTFORML %PRINT_TRANSCALLNAME(FLAG:111)%が%LOCALS:3%に跨って勃起しきったペニスに自らの秘裂をあてがう。
+			PRINTFORML その表情はどこまでも美しく蠱惑的で、触手を操る邪悪な存在だと分かってはいても
+			PRINTFORML これほど魅力的な相手とのセックスに興奮を感じずにはいられない。
+			PRINTFORML いけない、これは悪魔との取引きだ。気を強く持たなくては、と自分に言い聞かせるが――
+			PRINTW 
+			PRINTFORML そんな%LOCALS:3%の内心を見透かしたかのように%PRINT_TRANSCALLNAME(FLAG:111)%は意味深げに微笑むと、
+			PRINTFORML すでに亀頭まで挿入しかけていたペニスに体重を乗せて、一気に腰を沈めてきた。
+			PRINTFORML その圧倒的な快楽に%LOCALS:3%は地面に爪を立てて悶絶するが、
+			PRINTFORML 続けて%PRINT_TRANSCALLNAME(FLAG:111)%が膣圧で締めつけながら何度も腰を叩きつけると、
+			PRINTFORML いよいよ%LOCALS:3%は両目を剥いて歯を食いしばり、天国と地獄の両方に脳髄を焼かれた。
+			PRINTW 
+			PRINTFORML もう限界だ――そう思った%LOCALS:3%は、ようやく身体の異常に気が付いた。
+			PRINTFORML %PRINT_TRANSCALLNAME(FLAG:111)%の絶妙な締め付け具合で根元を抑えられ、
+			PRINTFORML 射精したくてもできない状態にされているのだ。
+			PRINTFORML 責め苦と呼ぶにも生ぬるい焦らしプレイについに%LOCALS:3%は射精させてくれと泣き叫ぶが、
+			PRINTFORML 嗜虐的な表情で腰を振り続ける%PRINT_TRANSCALLNAME(FLAG:111)%がそれを許さない。
+			PRINTW 
+			PRINTFORML %LOCALS:3%が白目を剥き、口から泡を吹き始めたところで、
+			PRINTFORML トドメとばかりに一際深いストロークを受けた%LOCALS:3%はようやく達することを許され、
+			PRINTFORML 獣のような呻き声を発しながら、あり得ないくらいの勢いで膣内に精液を迸らせた。
+			PRINTW 
+			PRINTFORML 激しく仰け反り、%PRINT_TRANSCALLNAME(FLAG:111)%の腰を掴んで腰を突き上げる%LOCALS:3%。
+			PRINTFORML さながら生命力をまるごと注ぎ込むかのように射精し続け、
+			PRINTFORML まるで痙攣する動きに呼応するかのように%LOCALS:3%の身体もだんだんと形を失って崩れていく――
+			PRINTFORML 射精を終える頃には、%LOCALS:3%の全身は触手生物そのものと化していた。
+			PRINTW 
+			PRINTFORML さてと・・・せめてもの慈悲だ。
+			PRINTFORML この女の調教は、お前自身に任せてやるぞ・・・
+			PRINTFORML 残酷な笑みを浮かべる%PRINT_TRANSCALLNAME(FLAG:111)%の言葉を受けて、
+			PRINTFORML 新しく誕生した触手は奇怪な金切り声で応えるのだった・・・
+			;Ｖ経験
+			LOCAL:120 = 2 + RAND:3
+			;精液経験
+			LOCAL:123 = LOCAL:120 * 2 + RAND:3
+			;膣内射精フラグ
+			V_SEX = LOCAL:123
+		ELSEIF TALENT:(FLAG:111):処女 < 1 && RAND:2 == 0
+			PRINTFORML %PRINT_TRANSCALLNAME(FLAG:111)%が%LOCALS:3%のペニスに指を絡めて扱き上げている。
+			PRINTFORML もし彼女とセックスをして射精せずに絶頂させられれば、
+			PRINTFORML %LOCALS:3%と%LOCALS%を解放してくれるというのだ。
+			PRINTFORML ただし%LOCALS:3%が負ければ、%LOCALS%は――
+			PRINTW 
+			PRINTFORML %PRINT_TRANSCALLNAME(FLAG:111)%に誘われるままに%LOCALS:3%が正常位で覆いかぶさる。
+			PRINTFORML 悪戯っぽい上目遣いでこちらを見上げる少女はよく見れば魅力的で、
+			PRINTFORML その甘えるような仕草から支配的な興奮を感じずにはいられない。
+			PRINTFORML 勃起しきったペニスがワレメをなぞる、その動きだけでも射精してしまいそうだ――
+			PRINTW 
+			PRINTFORML ――違う、これは%LOCALS%を助けるためだ。
+			PRINTFORML %LOCALS:3%が迷いを振り払うように肉棒を挿入し、腰を沈めていくと、
+			PRINTFORML %PRINT_TRANSCALLNAME(FLAG:111)%が熱い吐息を漏らして両脚を%LOCALS:3%の腰に絡める。
+			PRINTFORML なんとかピストンを開始するが何たることか、腰を動かすたびに膣肉が陰茎に絡まり付き、
+			PRINTFORML ひと突きごとに極楽のような幸福感が%LOCALS:3%の全身を包んでいくではないか。
+			PRINTW 
+			PRINTFORML 強烈な快感に腰が砕けそうになりながら抽送を繰り返す%LOCALS:3%の首に腕を回し、
+			PRINTFORML %PRINT_TRANSCALLNAME(FLAG:111)%が潤んだ瞳で口づけを求めてくる。
+			PRINTFORML その表情にたまらない愛しさを感じ始めていることに危機感を覚えながらも、
+			PRINTFORML %LOCALS:3%は耐えきれずに%PRINT_TRANSCALLNAME(FLAG:111)%と舌を絡め合ってしまう。
+			PRINTW 
+			PRINTFORML 気を付けろ、気持ちいい、彼女を助けねば、罠だ、愛しい、自分のものにしたい――
+			PRINTFORML 様々な想いは目の前の少女の瞳を見つめているうちにドロドロに融けて混ざり合い、
+			PRINTFORML もはや%LOCALS:3%は%PRINT_TRANSCALLNAME(FLAG:111)%を絶頂させるというルールも忘れて、
+			PRINTFORML ひたすら猿のように腰を振って快楽を貪っている。
+			PRINTW 
+			PRINTFORML 二人の蜜月はいよいよクライマックスに差し掛かっていた。
+			PRINTFORML 切なげな声を上げていた%PRINT_TRANSCALLNAME(FLAG:111)%が切羽詰まった声を出し、
+			PRINTFORML ぎゅっと%LOCALS:3%を強く抱きしめる。その反応を合図に%LOCALS:3%がスパートを掛け、
+			PRINTFORML ピストンのボルテージが最高潮に達したところで、二人同時に絶頂した。
+			PRINTW 
+			PRINTFORML 通常ではありえない量の精液を注ぎ込みながら、%LOCALS:3%は心の底から、
+			PRINTFORML やった、この女を自分のモノにした――そう実感して恍惚としている。
+			PRINTFORML そう勝ち誇る%LOCALS:3%は、気付いていなかった。
+			PRINTFORML 自分が既に、人間の姿をしていないということに・・・
+			PRINTW 
+			PRINTW ・
+			PRINTW ・・
+			PRINTW ・・・
+			PRINTFORML 人通りのない路地裏で、先ほどの%LOCALS%が触手に犯されている。
+			PRINTFORML 貞操を汚され恐怖と苦痛を与えられてなお気丈な姿勢を崩さず、
+			PRINTFORML 無理やり絶頂させられながらも愛しい%LOCALS:2%の名を呼び続ける彼女は
+			PRINTFORML 目の前の触手生物こそが%LOCALS:3%のなれの果てであることを知らない・・・
+			;Ｖ経験
+			LOCAL:120 = 1 + RAND:3
+			;絶頂経験
+			LOCAL:122 = 1
+			;精液経験
+			LOCAL:123 = LOCAL:120 + RAND:3
+			;膣内射精フラグ
+			V_SEX = LOCAL:123
+		ELSE
+			PRINTFORML %PRINT_TRANSCALLNAME(FLAG:111)%が%LOCALS:3%のペニスに舌を這わせている。
+			PRINTFORML このまま射精せずに堪え切れれば、%LOCALS:3%と%LOCALS%を解放してくれるというのだ。
+			PRINTFORML ただし%LOCALS:3%が負ければ、%LOCALS%は――
+			PRINTW 
+			PRINTFORML 舌を這わせていた%PRINT_TRANSCALLNAME(FLAG:111)%がペニスを口内に咥え込むと、
+			PRINTFORML 予想以上の衝撃が%LOCALS:3%を襲った。%LOCALS:3%が切羽詰まった声を上げる様子を楽しみながら、
+			PRINTFORML %PRINT_TRANSCALLNAME(FLAG:111)%はゆっくりとフェラチオのペースを上げていく。
+			PRINTW 
+			PRINTFORML ねっとりとカリ裏に絡み付く舌使いに%LOCALS:3%が射精寸前まで達すると、
+			PRINTFORML %PRINT_TRANSCALLNAME(FLAG:111)%はじゅぽっと竿から口を離して手淫で焦らしていく。
+			PRINTFORML 気持ちいいだろう、我慢しなくてもいいんだぞ、と挑発するやいなや、
+			PRINTFORML 亀頭から根元までを一気に喉奥に飲み込み、音を立てて吸い上げた！
+			PRINTW 
+			PRINTFORML ・・・今のは危なかった。
+			PRINTFORML 射精を許されない快楽は拷問でしかなく、%LOCALS:3%の意識を焼き焦がしていく。
+			PRINTFORML 目の前の少女の技巧と魅力に脳髄をクラクラさせながらも、
+			PRINTFORML %LOCALS:3%は%LOCALS%への%LOCALS:1%を思い出し、強烈な射精感に耐え続けている・・・
+			PRINTW 
+			PRINTFORML だが――実際には、%LOCALS:3%はフェラを開始された時点で射精させられていた。
+			PRINTFORML 脳を触手に改造された%LOCALS:3%は、射精に耐えているつもりになっているだけなのだ。
+			PRINTFORML 意識を取り戻した%LOCALS%が見たのは、口淫の快楽に益体も無く喘ぐ%LOCALS:2%の姿。
+			PRINTFORML そのことを彼女が悲しむことはない。既に触手に何度も犯されて心が壊れた彼女は、
+			PRINTFORML 目の前の%LOCALS:3%が誰なのかすら認識できていないのだから・・・
+			;フェラ経験
+			LOCAL:124 = 4 + RAND:5
+			;精液経験
+			LOCAL:123 = LOCAL:124 + RAND:3
+			;奉仕快楽経験
+			LOCAL:131 = 1 + RAND:2
+		ENDIF
+		PRINTW 
+	ENDIF
+	;現在のTARGETを避難
+	SELECT = TARGET
+	;パラメータ変化の適用
+	TARGET = FLAG:111
+	;幽閉中パラメータ変動共通処理へ
+	CALL COMMON_PRISON, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11
+	;経験数の増加
+	FOR CCOUNT, 100, 200
+		CALL COMMON_PRISON_EXP, CCOUNT, LOCAL:CCOUNT
+	NEXT
+	PRINTL 
+
+	;妊娠、触手に変化したので相手は雑魚触手扱い
+	SIF V_SEX
+		TRYCALL NINSIN_HANTEI, V_SEX, 20, 200
+
+	;TARGETを元に戻す
+	TARGET = SELECT
+
+	;防衛力にダメージ
+	IF DAMAGE
+		FLAG:852 -= DAMAGE
+		SIF FLAG:852 < 0
+			FLAG:852 = 0
+		PRINTFORMW 防衛力が{DAMAGE}低下した！
+	ENDIF
+;被調教系
+ELSEIF FLAG:0 != 0
+	;現在のTARGETを避難
+	SELECT_N:0 = TARGET
+	;現在のゲームモードを避難
+	SELECT_N:1 = FLAG:0
+	;ボス触手に調教される
+	TARGET = FLAG:111
+	FLAG:0 = 0
+
+	FONTBOLD
+	PRINTFORML 陥落奉仕：%PRINT_CALLNAME(TARGET,1)%
+	FONTREGULAR
+	PRINTL 
+
+	;幽閉に関する変数の初期化
+	IF CFLAG:20 < 2
+		FLAG:110 = 0
+		FLAG:111 = 0
+	ELSEIF CFLAG:20 == 2
+		FLAG:110 = 1
+		FLAG:111 = CFLAG:21
+	ENDIF
+
+	;地の分:幽閉後の被姦開始文
+	CALL MESSAGE_PRISON_PRISENTENCE
+
+	;結界判定を更新
+	FOR LOCAL,0,感覚数
+		IF BASE:(LOCAL + 30) > 0
+			SHIELD:LOCAL = 1
+		ELSE
+			SHIELD:LOCAL = 0
+		ENDIF
+	NEXT
+
+	;幽閉コマンドの選択
+	;子触手を出産している場合
+	IF CFLAG:220 > 0 && RAND:100 < 30
+		;子触手に犯される
+		CALL PRISON_COMABLE, 7
+	ELSE
+		;専用ルーチン（幽閉）による処理
+		CALL TENTACLE_ACCESS_PRISON, TARGET, "PRISON_ROUTINE"
+		LOCAL = RESULT
+
+		;汎用ルーチン（幽閉）による処理
+		IF LOCAL == 0
+			;汎用行動の種類　幽閉処理関連のフォルダ内のPRISON_COMX,ERBの数を記述
+			LOCAL:1 = RAND:100
+
+			IF LOCAL:1 < 12
+				;C中心攻め
+				CALL PRISON_COMABLE, 0
+			ELSEIF LOCAL:1 < 24
+				;V中心攻め
+				CALL PRISON_COMABLE, 1
+			ELSEIF LOCAL:1 < 36
+				;A中心攻め
+				CALL PRISON_COMABLE, 2
+			ELSEIF LOCAL:1 < 48
+				;B中心攻め
+				CALL PRISON_COMABLE, 3
+			ELSEIF LOCAL:1 < 60
+				;Sな攻め
+				CALL PRISON_COMABLE, 4
+			ELSEIF LOCAL:1 < 72
+				;強制奉仕
+				CALL PRISON_COMABLE, 5
+			ELSEIF LOCAL:1 < 84
+				;羞恥な攻め
+				CALL PRISON_COMABLE, 6
+			ELSEIF LOCAL:1 < 89
+				;苗床化
+				CALL PRISON_COMABLE, 104
+			ELSEIF LOCAL:1 < 94
+				;注射
+				CALL PRISON_COMABLE, 300
+			ELSE
+				;寄生
+				CALL PRISON_COMABLE, 301
+			ENDIF
+		ENDIF
+	ENDIF
+
+	;被姦経験を加算
+	EXP:被姦経験 += 1
+	CFLAG:31 += 1
+	;汚染度の自動上昇
+	CFLAG:30 += 3 + RAND:4
+
+	;搾精強化機能
+	IF CONFIG_CHECK_BALANCE_F(3) > 0 && LOCAL:2 > 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は触手の精液からエネルギーを吸収した！
+		CALL GET_SYUREN, RAND:5 + RAND:5 + 6
+		PRINTL 
+	ENDIF
+
+	;TARGETを元に戻す
+	TARGET = SELECT_N:0
+	;ゲームモードを元に戻す
+	FLAG:0 = SELECT_N:1
+ENDIF
+
+
+
+
+

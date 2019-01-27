@@ -1,0 +1,53 @@
+;U‚è‰ð‚­
+@COM8
+
+;ˆó‚É‚æ‚és“®§ŒÀ”»’è@‚P‚Ås“®‚Å‚«‚È‚¢
+CALL ACT_LIMIT
+SIF RESULT == 1
+	RETURN 1
+
+;‹——£•\Ž¦
+CALL PRINT_DISTANCE
+PRINTL 
+
+;’n‚Ì•¶FU‚è‰ð‚­
+CALL MESSAGE_BATTLE_CHARA_HURIHODOKU
+
+
+;U‚è‰ð‚­¬Œ÷”»’è
+CALL ACT_HANTEI_CHARA_TO_TENTACLE, "HURIHODOKU"
+
+IF RESULT == 1
+	TCVAR:0 = 2
+	TFLAG:4 = 0
+	TFLAG:16 = -1
+	TFLAG:17 = -1
+	
+	;’n‚Ì•¶FU‚è‰ð‚­¬Œ÷
+	CALL MESSAGE_BATTLE_CHARA_HURIHODOKU_SUCCESS
+	;’n‚Ì•¶Fô”]/ˆ«‘Â‚¿ƒLƒƒƒ‰‚ª‘€ìƒLƒƒƒ‰‚ÉU‚è‰ð‚©‚ê‚Ä‚µ‚Ü‚Á‚½
+	SIF FLAG:110 == 1
+		CALL MESSAGE_OTHER_BATTLE_CHARA_HURIHODOKU_SUCCESS
+
+	;GŽè‚Ì‘Ì¨‚ª•ö‚ê‚é
+	TFLAG:1 = 1
+	;Ž©“®‚Åí“¬ƒƒjƒ…[‚ð‘I‘ð‚·‚é
+	TCVAR:8 = 1
+	
+ELSE
+	;’n‚Ì•¶FU‚è‰ð‚­Ž¸”s
+	CALL MESSAGE_BATTLE_CHARA_HURIHODOKU_FALSE
+	;’n‚Ì•¶Fô”]/ˆ«‘Â‚¿ƒLƒƒƒ‰‚ª‘€ìƒLƒƒƒ‰‚ÌU‚è‰ð‚­‚ð–h‚¢‚¾
+	SIF FLAG:110 == 1
+		CALL MESSAGE_OTHER_BATTLE_CHARA_HURIHODOKU_FALSE
+
+ENDIF
+
+;s“®ƒ|ƒCƒ“ƒg‚ð+1
+EX:s“®ƒ|ƒCƒ“ƒg += 1
+
+;FEATŒø‰Ê‚É‚æ‚é”½“®‚Ì‘‰Á
+SIF TALENT:„˜r > 0
+	TFLAG:99 += 1
+
+RETURN 1

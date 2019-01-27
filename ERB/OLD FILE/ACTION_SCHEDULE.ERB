@@ -1,0 +1,423 @@
+
+;**********************************************************
+@SCHEDULE
+;SC_MODE	鍛錬か特別活動
+;		0：鍛錬　1：特別活動　2：情報収集
+;SC_FLAG	スケジュール使用の可否　MODEごとに設定
+;SC_LIMIT	スケジュールの設定総数　MODEごとに設定
+;SC_ACTION	次の行動時に何番目を実行するか
+;SC_ITEM	実際の設定値　MODEごと0-8…でいいはずがなぜかループで範囲外までいっちゃうのでちょっと多めに
+;NOW_INPUT	どこに入力するか
+;ITEM_NUM	設定できる項目の数　0-98　99は削除
+;IT_FLAG	その項目が使用可能かどうか　0-99
+;SC_STR		項目表示用文字列　0-99
+;**********************************************************
+#DIM LCOUNT, 2
+#DIM CCOUNT
+#DIM SC_MODE
+#DIM SC_FLAG, 10
+#DIM SC_LIMIT, 10
+#DIM SC_ACTION, 10
+#DIM SC_ITEM, 10, 12
+#DIM NOW_INPUT
+#DIM ITEM_NUM
+#DIM IT_FLAG, 100
+#DIM LOST
+#DIMS SC_STR, 100
+;行方不明の仲間が居るかどうかサーチ
+LOST = 0
+FOR CCOUNT, 0, CHARANUM
+	SIF CCOUNT == MASTER
+		CONTINUE
+	SIF CFLAG:CCOUNT:0 == 1 || CFLAG:CCOUNT:0 == 2 || CFLAG:CCOUNT:0 == 3
+		LOST += 1
+NEXT
+
+REDRAW 0
+DRAWLINE
+
+;CFLAGからローカル変数へ
+FOR LCOUNT, 0, 3
+	NOW_INPUT = CFLAG:(LCOUNT + 110)
+	IF NOW_INPUT < 0
+		SC_FLAG:LCOUNT = 0
+		NOW_INPUT = ABS(NOW_INPUT)
+	ELSE
+		SC_FLAG:LCOUNT = 1
+	ENDIF
+	SC_LIMIT:LCOUNT = 0
+	FOR LCOUNT:1, 0, 9
+		SIF NOW_INPUT % 100 > 0
+			SC_LIMIT:LCOUNT = LCOUNT:1
+		SC_ITEM:LCOUNT:(LCOUNT:1) = NOW_INPUT % 100
+		NOW_INPUT /= 100
+	NEXT
+	SIF SC_ITEM:LCOUNT:0 != 0
+		SC_LIMIT:LCOUNT += 1
+	SC_ACTION:LCOUNT = NOW_INPUT
+NEXT
+
+SC_MODE = 0
+SIF CFLAG:100 == 104
+	SC_MODE = 1
+SIF CFLAG:100 == 107
+	SC_MODE = 2
+
+NOW_INPUT = (SC_LIMIT:SC_MODE + 11) * 10
+
+$CHANGE_MODE
+FOR LCOUNT, 0, 100
+	IT_FLAG:LCOUNT = 0
+	SC_STR:LCOUNT = 
+NEXT
+
+;スケジュール文字列等設定
+;鍛錬
+IF SC_MODE == 0
+	ITEM_NUM = 11
+
+	IT_FLAG:0 = 1
+	SC_STR:0 = 走り込み
+
+	IT_FLAG:1 = 1
+	SC_STR:1 = 精神鍛錬
+
+	IT_FLAG:2 = 1
+	SC_STR:2 = 瞑想
+
+	IT_FLAG:3 = 1
+	SC_STR:3 = 筋トレ 
+
+	IT_FLAG:4 = 1
+	SC_STR:4 = 自衛訓練
+
+	IT_FLAG:5 = 1
+	SC_STR:5 = ダッシュ
+
+	SIF TALENT:変身能力 != -1
+		IT_FLAG:6 = 1
+	SC_STR:6 = 近距離戦闘訓練
+
+	SIF TALENT:変身能力 != -1
+		IT_FLAG:7 = 1
+	SC_STR:7 = 中距離戦闘訓練
+
+	SIF TALENT:変身能力 != -1
+		IT_FLAG:8 = 1
+	SC_STR:8 = 遠距離戦闘訓練
+
+	IT_FLAG:9 = 1
+	SC_STR:9 = 戦術研究
+
+	SIF TALENT:変身能力 == -1
+		IT_FLAG:10 = 1
+	SC_STR:10 = 戦闘基礎訓練
+ENDIF
+
+;特別活動
+IF SC_MODE == 1
+	ITEM_NUM = 9
+
+	IT_FLAG:0 = 1
+	SC_STR:0 = アルバイト
+
+	IT_FLAG:1 = 1
+	IF (EXP:出産経験 > 0 || TALENT:妊娠 == 1 || TALENT:妊娠 == 3)
+		SC_STR:1 = 研究所で検査協力
+	ELSE
+		SC_STR:1 = 研究所助手
+	ENDIF
+
+	IT_FLAG:2 = 1
+	SC_STR:2 = 雑魚触手退治
+
+	;欲望で援助交際解放
+	SIF ABL:欲望 > 0 && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0)
+		IT_FLAG:3 = 1
+	SC_STR:3 = 援助交際
+
+	;欲望と露出癖、または枕営業回数でAV出演解放
+	SIF (ABL:欲望 + ABL:露出癖 >= 5 || CFLAG:283 >= 10) && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0)
+		IT_FLAG:4 = 1
+	SC_STR:4 = AV出演
+
+	;欲望とマゾっ気で公衆便所解放
+	SIF ABL:欲望 + ABL:マゾっ気 >= 5 && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0)
+		IT_FLAG:5 = 1
+	SC_STR:5 = 公衆便所
+
+	IT_FLAG:6 = 1
+	SC_STR:6 = アイドル活動
+
+	;デビュー後なら枕営業解放
+	SIF EXP:魅了経験 > 99 && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0)
+		IT_FLAG:7 = 1
+	SC_STR:7 = 枕営業
+
+	;デビュー後かつ週末ならライブ公演解放
+	SIF EXP:魅了経験 > 99
+		IT_FLAG:8 = 1
+	SC_STR:8 = ライブ公演
+ENDIF
+
+;情報収集
+IF SC_MODE == 2
+	ITEM_NUM = 4
+
+	IT_FLAG:0 = 1
+	SC_STR:0 = 噂話の聞き込み
+
+	IT_FLAG:1 = 1
+	SC_STR:1 = 事件の捜査
+
+	;情報屋とのコネを見る
+	SIF CFLAG:122 > 0
+		IT_FLAG:2 = 1
+	SC_STR:2 = 情報を買う
+
+	;仲間の捜索
+	SIF LOST > 0
+		IT_FLAG:3 = 1
+	SC_STR:3 = 仲間の捜索
+ENDIF
+
+;現在のモード表示
+PRINTFORM  %CALLNAME% 
+IF SC_MODE == 0
+	PRINTL の鍛錬スケジュール設定
+ELSEIF SC_MODE == 1
+	PRINTL の特別活動スケジュール設定
+ELSEIF SC_MODE == 2
+	PRINTL の情報収集スケジュール設定
+ENDIF
+DRAWLINE
+
+$INPUT_LOOP
+
+;各変数正規化
+SIF SC_LIMIT:SC_MODE < 1
+	SC_LIMIT:SC_MODE = 0
+SIF SC_LIMIT:SC_MODE > 10
+	SC_LIMIT:SC_MODE = 10
+SIF NOW_INPUT < 110
+	NOW_INPUT = 110
+SIF NOW_INPUT > 190
+	NOW_INPUT = 190
+SIF SC_ACTION:SC_MODE > SC_LIMIT:SC_MODE
+	SC_ACTION:SC_MODE = SC_LIMIT:SC_MODE
+SIF SC_ITEM:SC_MODE:(SC_ACTION:SC_MODE) == 0
+	SC_ACTION:SC_MODE -= 1
+SIF SC_ACTION:SC_MODE < 0
+	SC_ACTION:SC_MODE = 0
+
+SETCOLOR 0, 0, 0
+SIF NOW_INPUT == 110
+	SETCOLOR 255, 255, 0
+PRINTFORM 　　　　　%UNICODE(0x250F)%%UNICODE(0x2501) * 12%%UNICODE(0x2513)%
+RESETCOLOR
+PRINTPLAIN 　　　　　　　　　　　
+
+SIF SC_MODE == 0
+	SETCOLOR 255, 255, 0
+PRINTFORML \@SC_MODE == 0 ? %UNICODE(0x25BA)% # %UNICODE(0x00A0)% \@ [200] 鍛錬
+RESETCOLOR
+
+FOR LCOUNT, 0, 9
+
+	SIF LCOUNT > SC_LIMIT:SC_MODE
+		SETCOLOR 96, 96, 96
+	PRINTFORM 　[\@LCOUNT > SC_LIMIT:SC_MODE ? --- # {(LCOUNT + 11) * 10} \@] 
+	SETCOLOR 255, 255, 0
+	PRINTFORM 　\@NOW_INPUT == (LCOUNT + 11) * 10 ? %UNICODE(0x2503)% # 　 \@
+	RESETCOLOR
+
+	SIF LCOUNT > SC_LIMIT:SC_MODE
+		SETCOLOR 96, 96, 96
+	PRINTFORM \@SC_ITEM:SC_MODE:LCOUNT > 0 ? %SC_STR:(SC_ITEM:SC_MODE:LCOUNT - 1), 24, LEFT% # 　―――　　　　　　　　 \@
+	RESETCOLOR
+
+	SETCOLOR 255, 255, 0
+	PRINTFORM \@NOW_INPUT == (LCOUNT + 11) * 10 ? %UNICODE(0x2503)% # 　 \@\@SC_ACTION:SC_MODE == LCOUNT ? %UNICODE(0x25C4)% # %UNICODE(0x00A0)% \@
+	RESETCOLOR
+
+	IF LCOUNT == 0
+		PRINTPLAIN 　　　　　　　　　　 
+		SIF SC_MODE == 1
+			SETCOLOR 255, 255, 0
+		PRINTFORM \@SC_MODE == 1 ? %UNICODE(0x25BA)% # %UNICODE(0x00A0)% \@ [201] 特別活動
+		RESETCOLOR
+	ENDIF
+
+	PRINTPLAIN 　
+	SIF LCOUNT == 3
+		PRINTFORM 　　　　　　　　　　 %BASENAME:1, 6, LEFT%：{MAXBASE:気力, 6}
+
+	SIF LCOUNT == 5
+		PRINTFORM 　　　　　　　　　　 %BASENAME:11, 6, LEFT%：{MAXBASE:防御, 6}
+
+	SIF LCOUNT == 6
+		PRINTFORM 　　　　　　　　　　 %BASENAME:13, 6, LEFT%：{MAXBASE:知性, 6}
+
+	SIF LCOUNT == 8
+		PRINTPLAIN 　  実行できない場合は休憩になります
+	PRINTL 
+
+	SETCOLOR 0, 0, 0
+	SIF NOW_INPUT == (LCOUNT + 11) * 10 || NOW_INPUT == (LCOUNT + 12) * 10
+		SETCOLOR 255, 255, 0
+	PRINTFORM 　　　　　\@NOW_INPUT == (LCOUNT + 11) * 10 ? %UNICODE(0x2517)%%UNICODE(0x2501) * 12%%UNICODE(0x251B)% # %UNICODE(0x250F)%%UNICODE(0x2501) * 12%%UNICODE(0x2513)% \@
+	RESETCOLOR
+
+	IF LCOUNT == 0
+		PRINTPLAIN 　　　　　　　　　　 
+		SIF SC_MODE == 2
+			SETCOLOR 255, 255, 0
+		PRINTFORM \@SC_MODE == 2 ? %UNICODE(0x25BA)% # %UNICODE(0x00A0)% \@  [202] 情報収集
+		RESETCOLOR
+	ENDIF
+
+	SIF LCOUNT == 2
+		PRINTFORM 　　　　　　　　　　　　%BASENAME:0, 6, LEFT%：{MAXBASE:体力, 6}
+
+	SIF LCOUNT == 3
+		PRINTFORM 　　　　　　　　　　　　%BASENAME:2, 6, LEFT%：{MAXBASE:性耐性, 6}
+
+	SIF LCOUNT == 4
+		PRINTFORM 　　　　　　　　　　　　%BASENAME:10, 6, LEFT%：{MAXBASE:攻撃, 6}
+
+	SIF LCOUNT == 5
+		PRINTFORM 　　　　　　　　　　　　%BASENAME:12, 6, LEFT%：{MAXBASE:敏捷, 6}
+
+	SIF LCOUNT == 6
+		PRINTFORM 　　　　　　　　近LV：{ABL:近距離} 　中LV：{ABL:中距離} 　遠LV：{ABL:遠距離}
+
+	SIF LCOUNT == 7
+		PRINTPLAIN 　　※ 行動時、上から順に繰り返し実行されます
+
+;モード変更ボタン表示
+;	IF LCOUNT == 0
+;		PRINTPLAIN 　　　　　　　　　　  
+;		SIF SC_MODE == 1
+;			SETCOLOR 255, 255, 0
+;		PRINTFORM \@SC_MODE == 2 ? %UNICODE(0x25BA)% # %UNICODE(0x00A0)% \@ [202] 
+;		RESETCOLOR
+;	ENDIF
+
+	PRINTL 
+NEXT
+DRAWLINE
+
+FOR LCOUNT, 0, ITEM_NUM
+	SIF IT_FLAG:LCOUNT == 0
+		SETCOLOR 96, 96, 96
+	PRINTFORM [\@IT_FLAG:LCOUNT ? {LCOUNT + 1, 2} # ― \@]\@IT_FLAG:LCOUNT ? %SC_STR:LCOUNT, 20, LEFT% # 　――　　　　　　　 \@
+	RESETCOLOR
+	PRINTPLAIN  
+	IF LCOUNT % 3 == 2 && LCOUNT > 0
+		PRINTL 
+	ENDIF
+NEXT
+SIF ITEM_NUM % 3 != 0
+	PRINTL 
+
+PRINTL [99]項目削除　　　　　　
+
+DRAWLINE
+PRINT [999] 決定　[998] キャンセル
+PRINTPLAIN  　　　　　　 　　　　
+PRINTFORML [997] スケジュール機能 - \@SC_FLAG:SC_MODE ? ON # OFF \@
+
+INPUT
+
+;モード変更
+IF RESULT >= 200 && RESULT < 203
+	SC_MODE = RESULT - 200
+	NOW_INPUT = (SC_LIMIT:SC_MODE + 11) * 10
+	CLEARLINE 26 + (ITEM_NUM / 3) + SQRT(ITEM_NUM % 3)
+	GOTO CHANGE_MODE
+;項目削除
+ELSEIF RESULT == 99
+	;未設定項目を削除してもSC_LIMITは減らない
+	SIF SC_ITEM:SC_MODE:(NOW_INPUT / 10 - 11) != 0
+		SC_LIMIT:SC_MODE -= 1
+	FOR LCOUNT, 0, 21 - NOW_INPUT / 10
+		IF LCOUNT > 8
+			SC_ITEM:SC_MODE:(NOW_INPUT / 10 - 11 + LCOUNT) = 0
+		ELSE
+			SC_ITEM:SC_MODE:(NOW_INPUT / 10 - 11 + LCOUNT) = SC_ITEM:SC_MODE:(NOW_INPUT / 10 - 10 + LCOUNT)
+		ENDIF
+	NEXT
+;項目入力
+ELSEIF RESULT > 0 && RESULT < ITEM_NUM + 1 && IT_FLAG:(RESULT - 1) > 0
+	;未設定項目に入力した場合のみSC_LIMITが増える
+	SIF SC_ITEM:SC_MODE:(NOW_INPUT / 10 - 11) == 0
+		SC_LIMIT:SC_MODE += 1
+	SC_ITEM:SC_MODE:(NOW_INPUT / 10 - 11) = RESULT
+	NOW_INPUT += 10
+;入力箇所変更
+ELSEIF RESULT > 100 && RESULT < 200 && RESULT % 10 == 0
+	NOW_INPUT = RESULT
+;スケジュール使用のONOFF
+ELSEIF RESULT == 997
+	INVERTBIT SC_FLAG:SC_MODE, 0
+;キャンセル　設定を保存せずに終了
+ELSEIF RESULT == 998
+	RETURN 0
+;決定　設定を保存して終了
+ELSEIF RESULT == 999
+	FOR LCOUNT, 0, 3
+		CFLAG:(LCOUNT + 110) = 0
+		FOR LCOUNT:1, 0, 9
+			CFLAG:(LCOUNT + 110) *= 100
+			CFLAG:(LCOUNT + 110) += SC_ITEM:LCOUNT:(8 - LCOUNT:1)
+		NEXT
+		SC_ACTION:LCOUNT *= 1000000000000000000
+		CFLAG:(LCOUNT + 110) += SC_ACTION:LCOUNT
+		SIF SC_FLAG:LCOUNT == 0
+			CFLAG:(LCOUNT + 110) *= -1
+	NEXT
+	RETURN 0
+ELSE
+ENDIF
+
+CLEARLINE 24 + (ITEM_NUM / 3) + SQRT(ITEM_NUM % 3)
+
+GOTO INPUT_LOOP
+
+
+;**********************************************************
+@RES_SCHEDULE, ARG
+;**********************************************************
+;ARG		使用するCFLAG
+;SC_RES		最終的にRETURNする値
+;SC_VAR:0	実行番号
+;SC_VAR:1	スケジュールの総設定数
+
+#DIM SC_RES
+#DIM SC_VAR, 2
+
+SC_VAR = CFLAG:ARG / 1000000000000000000
+SC_VAR:1 = CFLAG:ARG % 1000000000000000000
+
+STRLENFORM {SC_VAR:1}
+SC_VAR:1 = RESULT
+
+SIF SC_VAR:1 % 2 == 1
+	SC_VAR:1 += 1
+SC_VAR:1 /= 2
+
+SC_RES = (CFLAG:ARG / POWER(100, SC_VAR)) % 100 - 1
+
+CFLAG:ARG = CFLAG:ARG % 1000000000000000000
+SC_VAR += 1
+
+SIF SC_VAR > 8
+	SC_VAR = 0
+
+SIF SC_VAR > SC_VAR:1 - 1
+	SC_VAR = 0
+
+SC_VAR *= 1000000000000000000
+CFLAG:ARG += SC_VAR
+
+RETURN SC_RES

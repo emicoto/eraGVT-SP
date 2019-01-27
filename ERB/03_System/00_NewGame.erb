@@ -1,0 +1,70 @@
+﻿
+; Starts new game
+;-------------------
+@EVENTFIRST
+#DIM LCOUNT_MASTER_LOOP
+#DIM LCOUNT_MODE_SELECT
+#DIM LCOUNT_CHARAMAKE
+#DIM CCOUNT
+#DIMS SELECTS
+
+
+REDRAW 0 ;
+CLEARLINE LINECOUNT ;Clear page
+FIRSTLINE = LINECOUNT
+$MASTER_LOOP
+
+;ゲームモード再選択に備えてボスフラグをリセット
+FLAG:100 = 0
+FLAG:101 = 0
+
+CALL MODE_SELECT
+
+
+;選択したモードに応じて初期設定を行う
+SELECTCASE FLAG:0
+    CASE 1              ;ノーマル
+    FLAG:2 = 12
+
+    CASE 2              ;ソロ
+    FLAG:2 = 15
+    FLAG:31 = 1
+
+    CASE 3  ;ストーリーモードは専用処理へ丸投げ
+     ; JUMP STORYMODE_FIRST
+
+    CASE 4              ;ハード
+    FLAG:2 = 12
+
+    CASE 10             ;エンドレス
+    FLAG:2 = 10
+
+    CASEELSE
+;REVERSEモードは専用の処理へと丸投げする
+;SIF FLAG:0 == 11
+;	JUMP REVERSE_FIRST
+ENDSELECT
+
+;鍛錬設備レベル
+    FLAG:50 = 1
+    FLAG:51 = 1
+
+;ボス触手、ラスボス触手の総数
+CALL GET_BOSS_ERB_NUM
+FLAG:3 = RESULT
+;Ｋ触手のみカウント
+FLAG:4 = 1
+
+;ボス触手、ラスボス触手のフラグ設定
+FOR COUNT,0,FLAG:3
+	SETBIT FLAG:100, COUNT
+NEXT
+;Ｋ触手のみ設定
+SETBIT FLAG:101, 0
+
+;制限日数の設定
+;(ボス触手の総数*１体当たりの制限日数)＋(ラスボス触手の総数*10)で算出
+SIF FLAG:0 != 10
+	FLAG:1 = (FLAG:3 * FLAG:2) + (FLAG:4 * 10)
+
+

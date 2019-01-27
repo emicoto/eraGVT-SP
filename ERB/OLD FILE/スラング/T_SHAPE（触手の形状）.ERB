@@ -1,0 +1,219 @@
+;**********************************************************
+;基本ルール
+;加筆修正は、自由に行ってください
+;ただし、前の方が書いた文章は出来る限り消さないでください
+;
+;書き込む順番は、クドくなり過ぎないように3要素と部位で表現します
+;ARGS:0;色
+;ARGS:1;形状
+;
+;最後は「～～の触手」、「～～の様なモノ」みたいに名詞で止めます
+;挿入などの動作は地の文に任せて、
+;ここではどんな触手が良いか書くにとどめましょう
+;
+;
+;未登録の中に放り込むなり、掲示板にアップするなりすれば、
+;実装される可能性があります
+;
+;by 雑魚の人 2018/02/11
+;**********************************************************
+
+
+
+
+
+;**********************************************************
+;触手の初期化
+@T_SHAPE(ARGS:0,ARGS:1)
+#DIMS TWORD
+#FUNCTIONS
+
+
+;ARGS:0の色指定チェック
+STRLENFORM %ARGS:0%
+SIF RESULT:0 == -1
+	ARGS:0=%T_STATUS_BCOLOR(TARGET)%
+
+;**********************************************************
+;触手の色の設定
+SELECTCASE ARGS:0
+	CASE "透明"
+		TWORD=透き通った
+	CASE "赤"
+		TWORD=真っ赤な
+	CASE "桜","桜色"
+		TWORD=淡い桜色の
+	CASE "桃","桃色"
+		TWORD=艶やかな桃色の
+	CASE "ピンク","ピンク色"
+		TWORD=艶やかなピンク色の
+	CASE "サーモンピンク"
+		TWORD=鮮やかなサーモンピンクの
+	CASEELSE
+	TWORD=%ARGS:0%
+ENDSELECT
+
+
+
+;**********************************************************
+;触手の形状と動き
+SELECTCASE ARGS:1
+	;**************【】***************
+	CASE "ブラシ"
+		TWORD+="ブラシ状のうごめく触手"
+	CASE "繊毛"
+		TWORD+="繊毛のうごめく触手"
+	CASE "筆"
+		TWORD+="体液を塗りつける筆状の触手"
+
+
+	;**************【】***************
+	CASE "内視鏡"
+		TWORD+="内視鏡の様に奥まで透して見える触手"
+	CASE "カテーテル"
+		TWORD+="カテーテルのような触手"
+	CASE "注射器"
+		TWORD+="注射器の様な触手"
+	CASE "搾乳器" , "搾乳機"
+		TWORD+="カップ状の触手"
+	CASE "イチジク浣腸"
+		TWORD+="先がすぼまっているイチジクのような触手"
+
+
+	;**************【】***************
+	CASE "針"
+		TWORD+="針が先端に付いた触手"
+	CASE "トゲトゲ"
+		TWORD+="トゲトゲした凹凸のある触手"
+
+
+	;**************【】***************
+	CASE "吸盤"
+		TWORD+="吸い付く吸盤触手"
+	CASE "猫舌","ネコ舌"
+		TWORD+="ザラザラとした舌のような触手"
+	CASE "舌"
+		TWORD+="舌のような平たく濡れた触手"
+
+
+	;**************【】***************
+	CASE "イボイボ"
+		TWORD+="凸凹なイボがたくさんついた触手"
+	CASE "巨根"
+		TWORD+="血管が脈打つ太い触手"
+
+
+	;**************【】***************
+	CASE "ツタ", "蔦"
+		TWORD+="ツタの様な触手"
+	CASE "ヒモ", "ロープ", "紐"
+		TWORD+="細い触手がロープ状に捩じ束ねられた触手"
+	CASE "極細", "糸"
+		TWORD+="糸状の極細の触手"
+
+
+	;**************【】***************
+	CASEELSE
+		TWORD+="触手"
+
+
+ENDSELECT
+
+
+
+;**************【終了】***************
+
+RETURNF TWORD
+
+
+
+
+;**********************************************************
+;触手の体力で４段階、射精値で４段階の変色するシステム＊暫定
+;Tentacle's STATUS make BodyCOLOR
+;**********************************************************
+@T_STATUS_BCOLOR(ARG)
+#DIMS T_COLOR_SET
+#FUNCTIONS
+
+IF (FLAG:13 > FLAG:12 *3/4)
+	IF (FLAG:15 > FLAG:14 *3/4)
+		T_COLOR_SET=桃色
+	ELSEIF (FLAG:15 > FLAG:14 *2/4)
+		T_COLOR_SET=ピンク
+	ELSEIF (FLAG:15 > FLAG:14 *1/4)
+		T_COLOR_SET=桜色
+	ELSE
+		T_COLOR_SET=サーモンピンク
+	ENDIF
+ELSEIF (FLAG:13 > FLAG:12 *2/4)
+	IF (FLAG:15 > FLAG:14 *3/4)
+		T_COLOR_SET=ピンク
+	ELSEIF (FLAG:15 > FLAG:14 *2/4)
+		T_COLOR_SET=ピンク
+	ELSEIF (FLAG:15 > FLAG:14 *1/4)
+		T_COLOR_SET=ピンク
+	ELSE
+		T_COLOR_SET=ピンク
+	ENDIF
+ELSEIF (FLAG:13 > FLAG:12 *1/4)
+	IF (FLAG:15 > FLAG:14 *3/4)
+		T_COLOR_SET=赤褐色
+	ELSEIF (FLAG:15 > FLAG:14 *2/4)
+		T_COLOR_SET=赤褐色
+	ELSEIF (FLAG:15 > FLAG:14 *1/4)
+			T_COLOR_SET=赤褐色
+	ELSE
+		T_COLOR_SET=赤褐色
+	ENDIF
+ELSEIF (FLAG:13 > FLAG:12 /10) && (FLAG:13 > 500) 
+	IF (FLAG:15 > FLAG:14 *3/4)
+		T_COLOR_SET=赤黒
+	ELSEIF (FLAG:15 > FLAG:14 *2/4)
+		T_COLOR_SET=赤紫
+	ELSEIF (FLAG:15 > FLAG:14 *1/4)
+		T_COLOR_SET=赤紫
+	ELSE
+		T_COLOR_SET=赤紫
+	ENDIF
+ELSE
+	IF (FLAG:15 > FLAG:14 *3/4)
+		T_COLOR_SET=赤紫
+	ELSEIF (FLAG:15 > FLAG:14 *2/4)
+		T_COLOR_SET=赤紫
+	ELSEIF (FLAG:15 > FLAG:14 *1/4)
+		T_COLOR_SET=赤紫
+	ELSE
+		T_COLOR_SET=赤紫
+	ENDIF
+ENDIF
+
+
+RETURNF T_COLOR_SET
+
+
+
+;**********************************************************
+;T_SHAPE(ARGS:0,ARGS:1)の文字を着色してPRINTFORMする
+;**********************************************************
+@COLOR_T_SHAPE(ARGS:0,ARGS:1)
+#DIMS COLORPRINT_CSET
+#DIMS COLORPRINT_TEXT
+
+
+;初期化
+COLORPRINT_CSET=%ARGS:0%
+
+STRLENFORM %COLORPRINT_CSET%
+
+IF RESULT:0 > 0
+	COLORPRINT_TEXT=%T_SHAPE(COLORPRINT_CSET,ARGS:1)%
+ELSE
+	COLORPRINT_CSET=%T_STATUS_BCOLOR(TARGET)%
+	COLORPRINT_TEXT=%T_SHAPE(COLORPRINT_CSET,ARGS:1)%
+ENDIF
+
+;PRINTFORM形式で呼び出し
+CALL PRINT_RGBTEXT(COLORPRINT_CSET,COLORPRINT_TEXT)
+
+

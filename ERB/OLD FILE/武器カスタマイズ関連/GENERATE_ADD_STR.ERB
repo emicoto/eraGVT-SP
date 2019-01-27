@@ -1,0 +1,365 @@
+;Ú“ªŒêEÚ”öŒê—p•¶Žš’Ç‰Á•û–@
+;
+;‚±‚Ì‰ºi75s–ÚˆÈ~j‚É‚ ‚é‚»‚ê‚¼‚ê‚ÌƒJƒeƒSƒŠ‚Ì•¶ŽšŒQ‚ÉA/i”¼ŠpƒXƒ‰ƒbƒVƒ…j‚Å‹æØ‚Á‚Ä
+;D‚Ý‚Ì•¶Žš‚ð‹L“ü‚µ‚Ä‚­‚¾‚³‚¢
+;ÅŒã‚Ì•¶Žš‚ÌŒã‚É/‚ð•t‚¯‚é‚ÆA‹ó‚Ì•¶Žš‚ð•Ô‚µ‚Ä‚µ‚Ü‚¤ê‡‚ª‚ ‚é‚Ì‚ÅA’ˆÓ‚µ‚Ä‚­‚¾‚³‚¢
+
+@GENERATE_ADD_STR, WEAPON_ST, ADD_POS, WEAPON_AT, WEAPON_CL, ATTACK_AT, SELF_CL
+
+#DIM CONST ˜A‘± = 1
+#DIM CONST ‘•b = 2
+#DIM CONST ˜— = 3
+#DIM CONST dŒ‚ = 4
+#DIM CONST L”Í = 5
+#DIM CONST ‘S—Í = 6
+#DIM CONST ’m—ª = 7
+#DIM CONST Ý’u = 8
+#DIM CONST Žg–ð = 9
+#DIM CONST í“¬ƒXƒ^ƒCƒ‹ = 10
+
+#DIM CONST ‰Î = 11
+#DIM CONST •X = 12
+#DIM CONST —‹ = 13
+#DIM CONST … = 14
+#DIM CONST •— = 15
+#DIM CONST ’n = 16
+#DIM CONST “Å = 17
+#DIM CONST Œõ = 18
+#DIM CONST ˆÅ = 19
+#DIM CONST ‘®« = 20
+
+#DIM CONST Ža = 21
+#DIM CONST ‘Å = 22
+#DIM CONST “Ë = 23
+#DIM CONST ŽË = 24
+#DIM CONST p = 25
+#DIM CONST Ža‘Å = 26
+#DIM CONST ‘Å“Ë = 27
+#DIM CONST “ËŽa = 28
+#DIM CONST UŒ‚‘®« = 29
+
+#DIM CONST •Ší‚È‚µ = 30
+#DIM CONST Œ• = 31
+#DIM CONST “ = 32
+#DIM CONST ‘„ = 33
+#DIM CONST •€ = 34
+#DIM CONST ’Æ = 35
+#DIM CONST Œ = 36
+#DIM CONST ’Ü = 37
+#DIM CONST žž = 38
+#DIM CONST ñ = 39
+#DIM CONST Š™ = 40
+#DIM CONST •Ú = 41
+#DIM CONST |Ž… = 42
+#DIM CONST ½‹˜ = 43
+#DIM CONST Y‘„ = 44
+#DIM CONST ‹| = 45
+#DIM CONST e = 46
+#DIM CONST –C = 47
+#DIM CONST •„ = 48
+#DIM CONST Žì = 49
+#DIM CONST •ŠíŽí = 50
+#DIM CONST ‘S”Ê = 51
+
+#DIM AD_VAR, 55
+#DIMS AD_STR, 55
+#DIMS AD_CHR, 55, 100
+
+;’Ç‰Á•¶Žš”
+#DIM ADD_LEN
+;‘®«•¶Žš—v‘f”
+#DIM AT_NO, 2
+;•¶Žš—v‘f”
+#DIM CHAR_NO, 2
+
+#DIM NOW_NO, 2
+;í“¬ƒXƒ^ƒCƒ‹
+#DIM WEAPON_ST
+;‘®«
+#DIM WEAPON_AT
+;•ŠíŽí@
+#DIM WEAPON_CL
+;UŒ‚‘®«@1:Ža@2:‘Å@4:“Ë@8:ŽË@16:p
+#DIM ATTACK_AT
+
+#DIM ADD_POS
+
+#DIM LFLAG
+#DIM LCOUNT, 2
+
+#DIMS ADD_CHAR, 3
+#DIMS SELF_CL
+
+;====================================================================================
+;		 /////     ’Ç‰Á•¶ŽšÝ’è•”     /////
+;====================================================================================
+
+;í“¬ƒXƒ^ƒCƒ‹
+AD_STR:˜A‘± = r/u/v/‘M/‘o/‘¬/—ƒ/˜A
+AD_STR:‘•b = ŠE/Šk/Œì/b/d/|/Ô/Žç/‚/‘•/“Z/”õ/•Ç
+AD_STR:˜— = ‰B/‰e/Ž¾/u/v/‘M/’y/’µ/“Ù/”E/•‘/éj
+AD_STR:dŒ‚ = „/Œ/d/‘å/‰ó/ˆ³/–\/Ó
+AD_STR:L”Í = ˆ³/Šg/‹¿/ŽU/o/”j/”š/–Å/Ÿr/ày/èQ
+AD_STR:‘S—Í = ‹É/Œœ/–/°/Ó/b/s/‘/“/•±/—Õ/—ó/ŸÓ
+AD_STR:’m—ª = Šï/Œd/Œ«/ô/p/å/’q/“±/“Ç/–d/—/—ª/˜f
+AD_STR:Ý’u = ½/ŽT/w/˜/Ã/‘€/‘Ø/’u/”›/•‚/ã©
+AD_STR:Žg–ð = b/—ƒ/ŽÖ/˜T/’¹/ŒQ/‘€/–ð/•„/Ž®/Žg
+
+;‘®«
+AD_STR:‰Î = ‰Î/‰Š/‰‹/Šq/Žé/Ô/”ê
+AD_STR:•X = •X/“€/—â/—ë/‹â/Â/‘“/”’
+AD_STR:—‹ = —‹/‰©/‹à/ŒÕ/Œõ/g/Œ/Ž‡/‘M/“d/”’/—Ù
+AD_STR:… = ‰J/‰_/‰Í/ŠC/•/Ž´/´/“H/”g/–¶/—¬/˜Q/Ÿ·/è¹/èÅ/•/Â/‘“
+AD_STR:•— = •—/—’/‰/Â/•É/—Î
+AD_STR:’n = ’n/U/“y/‰©/‰/•É/—Î
+AD_STR:“Å = “Å/Ž€/ŽÖ/áƒ/åÁ/Ž‡
+AD_STR:Œõ = Œõ/¯/³/¹/“V/—z/—ƒ
+AD_STR:ˆÅ = ˆÅ/‰A/‰…/Ž×/[/–‚/–»
+
+;UŒ‚‘®«
+AD_STR:Ža = Ža/Ø/â/‘M
+AD_STR:‘Å = ‘Å/Ó/Õ/”j
+AD_STR:“Ë = “Ë/‰s/ŠÑ/Žh/ú/’Ê
+AD_STR:ŽË = ŽË/u/‘_/’e
+AD_STR:p = p/‹F/Œì/Žô/’Á/”›/••/•ò/–@/–‚/—ì
+AD_STR:Ža‘Å = Š„/’f
+AD_STR:‘Å“Ë = ŠÑ/Ó/Õ/ú/”j
+AD_STR:“ËŽa = “ã
+
+;•ŠíŽí
+;•ŠíŽíŽw’è‚È‚µ
+AD_STR:•Ší‚È‚µ = Ší/‹ï/‘•
+AD_STR:Œ• = Œ•/n
+AD_STR:“ = “/n/‘¾“
+AD_STR:‘„ = ‘„/†/–g
+AD_STR:•€ = •€
+AD_STR:’Æ = ’Æ
+AD_STR:Œ = Œ
+AD_STR:’Ü = ’Ü
+AD_STR:žž = žž/–_
+AD_STR:ñ = ñ
+AD_STR:Š™ = Š™
+AD_STR:•Ú = •Ú
+AD_STR:|Ž… = |Ž…/Œ¼/|ü/Ž…/“SŽ…/“Sü/ã©
+AD_STR:½‹˜ = ½‹˜/‹@Œ•/‹˜
+AD_STR:Y‘„ = Y‘„/‹@/Y/‹@Y/‹@‘„/Y‘Å
+AD_STR:‹| = ‹|
+AD_STR:e = e
+AD_STR:–C = –C
+AD_STR:•„ = •„/ŽD
+AD_STR:Žì = Žì/‹Ê/•ó‹Ê/•óŽì
+
+;‚»‚Ì‘¼’Ç‰Á—p•¶Žš
+AD_STR:‘S”Ê = ‰e/‰¤/‰å/‹¥/‹Æ/‹â/Œ‚/ŒŒ/Œì/c/°/Ž€/ò/S/^/’Á/“V/”e/”›/”é/••/•ó/–P/–¼/–½/—d/— /—´/—ì/_
+
+;====================================================================================
+;		 /////     @@ˆÈã@@     /////
+;====================================================================================
+
+FOR LCOUNT, 0, 55
+	SPLIT AD_STR:LCOUNT, "/", AD_CHR:0:0
+	AD_VAR:LCOUNT = RESULT
+	REPEAT 100
+		SIF AD_CHR:0:COUNT == ""
+			BREAK
+		AD_CHR:LCOUNT:COUNT = %AD_CHR:0:COUNT%
+		AD_CHR:0:COUNT = 
+	REND
+NEXT
+
+VARSET CHAR_NO
+VARSET AT_NO
+
+;•ŠíŽí:20
+CHAR_NO:1 = 1
+AT_NO:1 = 1
+
+FOR LCOUNT, 0, 55
+	IF LCOUNT >= ‰Î && LCOUNT < ‘®«
+		AT_NO:1 += AD_VAR:LCOUNT
+	ELSE
+		CHAR_NO:1 += AD_VAR:LCOUNT
+	ENDIF
+NEXT
+
+ADD_LEN = RAND:4
+
+SIF WEAPON_CL && ADD_POS != 2
+	ADD_LEN += 1
+
+ADD_LEN = LIMIT(ADD_LEN, 2, 3)
+
+VARSET ADD_CHAR
+VARSET LFLAG
+VARSET NOW_NO
+
+SIF ADD_LEN > 1
+	NOW_NO:0 = RAND:2
+
+DO
+	CHAR_NO:0 = CHAR_NO:1
+	AT_NO:0 = AT_NO:1
+
+;‘®«ŠÖ˜A
+;------------------------------------------
+	FOR LCOUNT:1, ‰Î, ‘®«
+		SIF WEAPON_AT != LCOUNT:1 - 10
+			CONTINUE
+		FOR LCOUNT, 0, AD_VAR:(LCOUNT:1)
+			AT_NO:0 -= 1
+			IF WEAPON_AT == LCOUNT:1 - 10 && GETBIT(LFLAG, 1) == 0 && RAND:AT_NO == 0
+				ADD_CHAR:(NOW_NO:0) = %AD_CHR:(LCOUNT:1):LCOUNT%
+				SETBIT LFLAG, 0
+				SETBIT LFLAG, 1
+				GOTO END_ADD_CHAR
+			ENDIF
+		NEXT
+	NEXT
+
+;‘S”Ê•¶Žš
+;RAND‚ð…‘‚µ‚µ‚Äo‚éŠm—¦‚ð­‚µ’á‰º
+;------------------------------------------
+	FOR LCOUNT, 0, AD_VAR:‘S”Ê
+		CHAR_NO:0 -= 1
+		IF RAND:(CHAR_NO + 16) == 0
+			ADD_CHAR:(NOW_NO:0) = %AD_CHR:‘S”Ê:LCOUNT%
+			SETBIT LFLAG, 0
+			GOTO END_ADD_CHAR
+		ENDIF
+	NEXT
+
+;í“¬ƒXƒ^ƒCƒ‹ŠÖ˜A
+;------------------------------------------
+	FOR LCOUNT:1, ˜A‘±, í“¬ƒXƒ^ƒCƒ‹
+		FOR LCOUNT, 0, AD_VAR:(LCOUNT:1)
+			CHAR_NO:0 -= 1
+			IF WEAPON_ST == LCOUNT:1 && GETBIT(LFLAG, 2) == 0 && RAND:CHAR_NO == 0
+				ADD_CHAR:(NOW_NO:0) = %AD_CHR:(LCOUNT:1):LCOUNT%
+				SETBIT LFLAG, 0
+				SETBIT LFLAG, 2
+				GOTO END_ADD_CHAR
+			ENDIF
+		NEXT
+	NEXT
+
+;UŒ‚‘®«ŠÖ˜A
+;Ža + ‘Å
+;------------------------------------------
+	FOR LCOUNT, 0, AD_VAR:Ža‘Å
+		CHAR_NO:0 -= 1
+		IF ATTACK_AT & 1 && ATTACK_AT & 2 && GETBIT(LFLAG, 3) == 0 && RAND:CHAR_NO == 0
+			ADD_CHAR:(NOW_NO:0) = %AD_CHR:Ža‘Å:LCOUNT%
+			SETBIT LFLAG, 0
+			SETBIT LFLAG, 3
+			GOTO END_ADD_CHAR
+		ENDIF
+	NEXT
+
+;‘Å + “Ë
+;------------------------------------------
+	FOR LCOUNT, 0, AD_VAR:‘Å“Ë
+		CHAR_NO:0 -= 1
+		IF ATTACK_AT & 2 && ATTACK_AT & 4 && GETBIT(LFLAG, 3) == 0 && RAND:CHAR_NO == 0
+			ADD_CHAR:(NOW_NO:0) = %AD_CHR:‘Å“Ë:LCOUNT%
+			SETBIT LFLAG, 0
+			SETBIT LFLAG, 3
+			GOTO END_ADD_CHAR
+		ENDIF
+	NEXT
+
+;Ža + “Ë
+;------------------------------------------
+	FOR LCOUNT, 0, AD_VAR:“ËŽa
+		CHAR_NO:0 -= 1
+		IF ATTACK_AT & 4 && ATTACK_AT & 1 && GETBIT(LFLAG, 3) == 0 && RAND:CHAR_NO == 0
+			ADD_CHAR:(NOW_NO:0) = %AD_CHR:“ËŽa:LCOUNT%
+			SETBIT LFLAG, 0
+			SETBIT LFLAG, 3
+			GOTO END_ADD_CHAR
+		ENDIF
+	NEXT
+
+;------------------------------------------
+	FOR LCOUNT:1, Ža, UŒ‚‘®«
+		FOR LCOUNT, 0, AD_VAR:(LCOUNT:1)
+			CHAR_NO:0 -= 1
+			IF GETBIT(ATTACK_AT, LCOUNT:1 - 21) && GETBIT(LFLAG, 3) == 0 && RAND:CHAR_NO == 0
+				ADD_CHAR:(NOW_NO:0) = %AD_CHR:(LCOUNT:1):LCOUNT%
+				SETBIT LFLAG, 0
+				SETBIT LFLAG, 3
+				GOTO END_ADD_CHAR
+			ENDIF
+		NEXT
+	NEXT
+
+;------------------------------------------
+;	IF CHAR_NO:1 == 0
+;		CHAR_NO:0 += 1
+;	ELSE
+;		CHAR_NO:0 -= 1
+;		IF ATTACK_AT & 8 && RAND:CHAR_NO == 0
+;			ADD_CHAR:(NOW_NO:0) = SŠá
+;			SETBIT LFLAG, 0
+;			GOTO END_ADD_CHAR
+;		ENDIF
+;	ENDIF
+
+;•ŠíŽíŠÖ˜A
+;------------------------------------------
+	FOR LCOUNT:1, 30, 50
+		FOR LCOUNT, 0, AD_VAR:(LCOUNT:1)
+			CHAR_NO:0 -= 1
+			IF WEAPON_CL == LCOUNT:1 - 30 && NOW_NO:0 == ADD_LEN - 1 && RAND:CHAR_NO == 0
+				ADD_CHAR:(NOW_NO:0) = %AD_CHR:(LCOUNT:1):LCOUNT%
+				SETBIT LFLAG, 0
+				SETBIT LFLAG, 4
+				GOTO END_ADD_CHAR
+			ENDIF
+		NEXT
+	NEXT
+
+;Ž©—R“ü—Í
+;------------------------------------------
+	CHAR_NO:0 -= 1
+	IF WEAPON_CL == 20 && NOW_NO:0 == ADD_LEN - 1 && RAND:CHAR_NO == 0
+		ADD_CHAR:(NOW_NO:0) = %SELF_CL%
+		SETBIT LFLAG, 0
+		SETBIT LFLAG, 4
+		GOTO END_ADD_CHAR
+	ENDIF
+	$END_ADD_CHAR
+
+;—v‘f”Œˆ’è
+;‚Ç‚ê‚©‚Ì—v‘f‚Éƒqƒbƒg‚µ‚½
+	IF LFLAG & 1
+		CLEARBIT LFLAG, 0
+;•¶Žš‚ª”í‚Á‚½
+		SIF (ADD_CHAR:0 != "" && ADD_CHAR:0 == ADD_CHAR:1) || (ADD_CHAR:1 != "" && ADD_CHAR:1 == ADD_CHAR:2) || (ADD_CHAR:2 != "" && ADD_CHAR:2 == ADD_CHAR:0)
+			CONTINUE
+
+		IF NOW_NO:0 == ADD_LEN - 1
+;ÅŒã‚ª•ŠíŽí‚Å‚È‚¢
+			SIF GETBIT(LFLAG, 4) == 0 && ((ADD_LEN == 3 && RAND:8) || (ADD_LEN == 2 && RAND:6))
+				CONTINUE
+			SIF ADD_POS == 2 && GETBIT(LFLAG, 4) == 0 && RAND:8
+				CONTINUE
+;4•¶ŽšˆÈã
+			STRLENSU ADD_CHAR:(NOW_NO:0)
+			SIF RESULT > 1 && ADD_LEN > 2 && RAND:3
+				CONTINUE
+;
+			SIF ADD_LEN == 2 && RESULT > 1 && RAND:3 == 0
+				ADD_CHAR:0 = 
+
+		ENDIF
+		IF NOW_NO:1 == 0
+			INVERTBIT NOW_NO:0, 0
+		ELSE
+			NOW_NO:0 = 2
+		ENDIF
+		NOW_NO:1 += 1
+		CLEARBIT LFLAG, 0
+	ENDIF
+
+LOOP NOW_NO:1 < ADD_LEN
+RESULTS = %ADD_CHAR:0%%ADD_CHAR:1%%ADD_CHAR:2%

@@ -1,0 +1,315 @@
+@PASTIME_運動する, ARG
+#DIM EROEVENT
+#DIMS 目的地
+
+EROEVENT = 0
+
+PRINTL 運動する
+PRINTL 
+IF TALENT:オトコ <= 0 && TALENT:変身時ＴＳ > 0 && CFLAG:1 > 0
+	IF TALENT:淫乱 > 0
+		PRINTFORML 女性の姿に変身した%PRINT_TRANSCALLNAME(TARGET)%は、身綺麗にして街に繰り出していた。
+		PRINTW 
+		PRINTFORML 露出の多い服装に下着が見えそうなマイクロミニスカート。
+		PRINTFORML とどめに派手な色のサイハイソックスを身に付けた姿はいかにも腰の軽そうなギャル風だ。
+	ELSEIF TALENT:女体受容 > 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は女性化した状態で体を動かしに外出することにした。
+		PRINTW 
+		PRINTFORML 以前に感じていた違和感を今は全く感じなくなり
+		PRINTFORML すっかり変身中のカラダに慣れた事を実感する。
+	ELSE
+		PRINTFORML 少しでも変身中のカラダに慣れておこうと考え、
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は女性化した状態で体を動かしに外出することにした。
+		PRINTW 
+		PRINTFORML ネットや雑誌を参考に服装はしっかり整えたつもりだが
+		PRINTFORML 不慣れな為か変な目で見られていないかと気になってしまう。
+	ENDIF
+ELSEIF TALENT:淫乱 > 0
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は、身綺麗にして街に繰り出していた。
+	PRINTW 
+	PRINTFORML 露出の多い服装に下着が見えそうな%SPLIT_SEX(TARGET,"マイクロミニスカート／ミニホットパンツ")%。。
+	PRINTFORML とどめに派手な色のサイハイソックスを身に付けた姿はいかにも腰の軽そうなギャル風だ。
+ELSE
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は、体を動かしに外出することにした。
+ENDIF
+PRINTW 
+PRINTL 
+PRINTFORML 身体を動かそうと思った%PRINT_TRANSCALLNAME(TARGET)%の行き先は・・・
+PRINTL 
+PRINTFORML [0]運動公園
+PRINTFORML [1]フィットネスクラブ
+PRINTFORML [2]マッサージサロン
+PRINTFORML [3]プール
+PRINTL 
+DRAWLINE
+$INPUT_LOOP
+INPUT
+PRINTL 
+DRAWLINE
+
+IF RESULT == 0
+	PRINTL 運動公園
+ELSEIF RESULT == 1
+	PRINTL フィットネスクラブ
+ELSEIF RESULT == 2
+	PRINTL マッサージサロン
+ELSEIF RESULT == 3
+	PRINTL プール
+ELSE
+	PRINTL 正しい値を入力してください
+	GOTO INPUT_LOOP
+ENDIF
+LOCAL = RESULT
+PRINTL 
+
+PRINTW 
+PRINTW ・・
+PRINTW ・・・・
+PRINTW ・・・・・・
+PRINTL 
+IF LOCAL ==  0
+	目的地 = 運動公園
+	CALL MESSAGE_PASTIME_SportsPark
+ELSEIF LOCAL == 1
+	目的地 = フィットネスクラブ
+	CALL MESSAGE_PASTIME_FitnessClub
+	EROEVENT = RESULT
+ELSEIF LOCAL == 2
+	目的地 = マッサージサロン
+	CALL MESSAGE_PASTIME_MassageSalon
+ELSEIF LOCAL == 3
+	目的地 = プール
+	CALL MESSAGE_PASTIME_Pool
+ENDIF
+
+;エロイベが発生済みの時はナンパ無し
+CALL PASTIME_NANPA
+IF RESULT > 0 && EROEVENT < 1
+	CALL MESSAGE_PASTIME_NANPA,ARG
+ELSE
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は、%目的地%で身体を動かしてきた様だ。
+ENDIF
+
+
+;----------------------------------------------------------------------------------------------------------------------------
+;運動公園の内容
+@MESSAGE_PASTIME_SportsPark
+#DIM EROEVENT = 0
+#DIM CCOUNT
+
+IF TALENT:変身時ＴＳ > 0 && CFLAG:1 > 0
+	CCOUNT = CFLAG:331
+ELSE
+	CCOUNT = CFLAG:330
+ENDIF
+
+PRINTFORM 運動公園に訪れた%PRINT_TRANSCALLNAME(TARGET)%は
+PRINTFORML 身動きしやすい格好に着替えランニングを始めた。
+PRINTL 
+IF RAND:3 == 0 && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0) && TALENT:巨乳 > 0
+	PRINTFORML すれ違う男共の視線が%PRINT_TRANSCALLNAME(TARGET)%の服の上からでもわかる
+	IF TALENT:巨乳 > 2
+		PRINT ダイナミックな大きさの
+	ELSE
+		PRINT 豊満な
+	ENDIF
+	PRINTFORML バストにささっている。
+	PRINTL 
+ENDIF
+PRINTFORML 走り終えた%PRINT_TRANSCALLNAME(TARGET)%はいい汗をかけたようで
+PRINTFORML 心地良い疲労感を感じながら休憩している・・・
+PRINTW 
+
+;運動公園に来た回数を増加
+IF TALENT:変身時ＴＳ > 0 && CFLAG:1 > 0
+	CFLAG:331 += 1
+ELSE
+	CFLAG:330 += 1
+ENDIF
+RETURN EROEVENT
+
+
+;----------------------------------------------------------------------------------------------------------------------------
+;フィットネスクラブの内容
+@MESSAGE_PASTIME_FitnessClub
+#DIM EROEVENT = 0
+#DIM CCOUNT
+
+IF TALENT:変身時ＴＳ > 0 && CFLAG:1 > 0
+	CCOUNT = CFLAG:335
+ELSE
+	CCOUNT = CFLAG:334
+ENDIF
+
+IF CCOUNT == 0
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は身体を作ろうと会員制のフィットネスクラブを訪れた。
+	IF FLAG:50 >= 5
+		PRINTFORML 組織施設の設備はこれ以上無い程に素晴らしい為、単純な興味本位だ。
+	ELSEIF FLAG:50 > 3
+		PRINTFORML 組織施設の設備は十分だが、外部の施設はどの程度か興味を持った為だ。
+	ELSE
+		PRINTFORML 組織施設の設備に物足りなさを感じた為、外部の施設を利用しようと考えた為だ。
+	ENDIF
+	PRINTL 
+	PRINTFORML 受付で担当のインストラクターを紹介すると言われ、暫く待っていると
+	PRINTFORML 如何にも体育会系と言った風貌の人物から声が掛けられた。
+	PRINTFORML どうやらこの人物が担当らしく、軽く自己紹介と挨拶を済ませる。
+	PRINTFORML 早速トレーニングを初めて貰えるらしく、着替えるように促されると
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は更衣室へと入って行った。
+	PRINTL 
+	PRINTFORML 動きやすい格好に着替え、インストラクターと合流すると早速指導が始まった。
+	PRINTFORML まずは能力のチェックから、と言うことらしく%PRINT_TRANSCALLNAME(TARGET)%は指示される運動をこなしていく。
+	IF TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0
+		PRINTFORML …少々、スキンシップと言うかボディタッチが多い気がするが
+		PRINTFORML フィットネスクラブではこんなものかもしれないと考え、一先ず気にしないことにした。
+	ENDIF
+	PRINTFORML 一通りの運動が終わると、これを元に次回からのメニューを考えていこうと肩に手を置かれながら言われ
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%も指導への礼を返すと、今日の指導は終了となった・・・
+	EROEVENT = 1
+ELSE
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は身体を作ろうと会員制のフィットネスクラブを訪れた。
+	PRINTL 
+	PRINTFORML 受付を済ませ着替えを終えると丁度インストラクターが来たようだ。
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はインストラクターの指導の元、トレーニングを行っている。
+	IF TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0
+		IF RAND:3 == 0 && CCOUNT >= 5
+			PRINTFORML …やはりボディタッチが多く、しかもその手つきはどことなくイヤらしく撫で回すような手つきだ。
+			PRINTFORML 触られる場所も肩や腰のみならず、お尻や胸にまで手を出してきている。
+		ELSEIF RAND:3 == 0
+			PRINTFORML …やはりボディタッチが多い様な気がする。
+		ENDIF
+	ENDIF
+	PRINTL 
+	PRINTFORML 次々とメニューをこなしていくと、今日のメニューは終了したらしく終わりを告げられた。
+	PRINTFORML インストラクターに挨拶を済ませた%PRINT_TRANSCALLNAME(TARGET)%はシャワーを浴び服を着替えると
+	PRINTFORML 心地良い疲労感を感じながらクラブを後にした・・・
+ENDIF
+PRINTW 
+
+;フィットネスクラブに来た回数を増加
+IF TALENT:変身時ＴＳ > 0 && CFLAG:1 > 0
+	CFLAG:335 += 1
+ELSE
+	CFLAG:334 += 1
+ENDIF
+RETURN EROEVENT
+
+
+;----------------------------------------------------------------------------------------------------------------------------
+;マッサージサロンの内容
+@MESSAGE_PASTIME_MassageSalon
+#DIM EROEVENT = 0
+#DIM CCOUNT
+
+IF TALENT:変身時ＴＳ > 0 && CFLAG:1 > 0
+	CCOUNT = CFLAG:339
+ELSE
+	CCOUNT = CFLAG:338
+ENDIF
+IF CCOUNT == 0
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は疲労回復に効果的と話題のマッサージサロンを訪れた。
+	IF FLAG:51 >= 5
+		PRINTFORML 組織施設の設備はこれ以上無い程に素晴らしい為、単純な興味本位だ。
+	ELSEIF FLAG:51 > 3
+		PRINTFORML 組織施設の設備は十分だが、外部の施設はどの程度か興味を持った為だ。
+	ELSE
+		PRINTFORML 組織施設の設備に物足りなさを感じた為、外部の施設を利用しようと考えた為だ。
+	ENDIF
+	PRINTFORML 。
+	PRINTL 
+	
+ELSE
+	PRINTFORML マッサージサロンに訪れた%PRINT_TRANSCALLNAME(TARGET)%は、
+	PRINTFORML 。
+	PRINTL 
+	PRINTFORML 運動し終えた%PRINT_TRANSCALLNAME(TARGET)%はいい汗をかけたようで
+	PRINTFORML 心地良い疲労感を感じながら休憩している・・・
+ENDIF
+PRINTW 
+
+;マッサージサロンに来た回数を増加
+IF TALENT:変身時ＴＳ > 0 && CFLAG:1 > 0
+	CFLAG:339 += 1
+ELSE
+	CFLAG:338 += 1
+ENDIF
+RETURN EROEVENT
+
+
+;----------------------------------------------------------------------------------------------------------------------------
+;プールの内容
+@MESSAGE_PASTIME_Pool
+#DIM EROEVENT = 0
+#DIM CCOUNT
+
+IF TALENT:変身時ＴＳ > 0 && CFLAG:1 > 0
+	CCOUNT = CFLAG:343
+ELSE
+	CCOUNT = CFLAG:342
+ENDIF
+
+PRINTFORM プールに訪れた%PRINT_TRANSCALLNAME(TARGET)%は
+PRINTFORML 水着に着替えると水泳を始めた。
+PRINTL 
+IF RAND:3 == 0 && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0) && TALENT:巨乳 > 0
+	PRINTFORML すれ違う男共の視線が%PRINT_TRANSCALLNAME(TARGET)%の無防備に晒された
+	IF TALENT:巨乳 > 2
+		PRINT ダイナミックな大きさの
+	ELSE
+		PRINT 豊満な
+	ENDIF
+	PRINTFORML バストにささっている。
+	PRINTL 
+ELSEIF RAND:3 == 0 && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0)
+	SIF CFLAG:1 == 0
+		LOCAL = TALENT:外見
+	SIF CFLAG:1 >= 1
+		LOCAL = TALENT:変身時外見
+	PRINTFORML すれ違う男共の視線が%PRINT_TRANSCALLNAME(TARGET)%の無防備に晒された
+	IF LOCAL == 2
+		PRINT むちむちとした
+	ELSEIF LOCAL == 1
+		PRINT 豊満な
+	ELSEIF LOCAL == 0
+		PRINT 整った
+	ELSE
+		PRINT 小振りな
+	ENDIF
+	PRINTFORML ヒップにささっている。
+	PRINTL 
+ELSEIF RAND:3 == 0 && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0) && TALENT:巨乳 > 0
+	SIF CFLAG:1 == 0
+		LOCAL = TALENT:外見
+	SIF CFLAG:1 >= 1
+		LOCAL = TALENT:変身時外見
+	PRINTFORML すれ違う男共の視線が%PRINT_TRANSCALLNAME(TARGET)%の無防備に晒された
+	IF TALENT:巨乳 > 2
+		PRINT ダイナミックな大きさの
+	ELSE
+		PRINT 豊満な
+	ENDIF
+	PRINT バストと
+	IF LOCAL == 2
+		PRINT むちむちとした
+	ELSEIF LOCAL == 1
+		PRINT 豊満な
+	ELSEIF LOCAL == 0
+		PRINT 整った
+	ELSE
+		PRINT 小振りな
+	ENDIF
+	PRINTFORML ヒップにささっている。
+	PRINTL 
+ENDIF
+PRINTFORML 泳ぎ終えた%PRINT_TRANSCALLNAME(TARGET)%はいい汗をかけたようで
+PRINTFORML 心地良い疲労感を感じながら休憩している・・・
+PRINTW 
+
+;プールに来た回数を増加
+IF TALENT:変身時ＴＳ > 0 && CFLAG:1 > 0
+	CFLAG:343 += 1
+ELSE
+	CFLAG:342 += 1
+ENDIF
+RETURN EROEVENT
+

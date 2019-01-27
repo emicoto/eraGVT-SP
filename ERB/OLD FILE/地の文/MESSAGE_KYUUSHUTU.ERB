@@ -1,0 +1,39 @@
+;------------------------
+;救出コマンド実行時
+;------------------------
+@MESSAGE_BATTLE_CHARA_KYUUSHUTU
+PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は %STR:2500%に囚われた仲間を救出しようとあがいた！
+
+;------------------------
+;救出コマンド成功時
+;------------------------
+@MESSAGE_BATTLE_CHARA_KYUUSHUTU_SUCCESS
+PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は %STR:2500%に取り込まれた仲間の救出に成功した！
+
+;------------------------
+;救出コマンド失敗時
+;------------------------
+@MESSAGE_BATTLE_CHARA_KYUUSHUTU_FALSE
+PRINTFORML %STR:2500%に取り込まれた仲間を探しても隠されているのかどこにも見つからない……
+
+;------------------------
+;救出コマンド時間切れ
+;------------------------
+@MESSAGE_KYUUSHUTU_TIMEUP
+
+CALL PRISON_CHARA
+PRINTFORML 必死の救出にもかかわらず%PRINT_CALLNAME(RESULT)%は触手に再び取り込まれた……
+
+;------------------------
+;救出コマンド最終成功(撤退に成功)
+;------------------------
+@MESSAGE_KYUUSHUTU_SUCCESS
+CALL PRISON_CHARA
+PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は%PRINT_CALLNAME(RESULT)%を触手から大きく離れた地点まで運んだ！
+
+;------------------------
+;救出コマンド助けられた側の口上
+;------------------------
+@MESSAGE_ESCAPE_RESCUED
+CALL PRISON_CHARA
+PRINTFORML %PRINT_CALLNAME(RESULT)%は息も絶え絶えながらなんとか反応している……

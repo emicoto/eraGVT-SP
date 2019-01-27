@@ -1,0 +1,600 @@
+;--------------------------------------------------
+;触手の射精に関する処理
+;技巧の値で触手の射精ゲージ増加量を求める
+@TENTACLE_SYASEI_UP, ARG
+;技巧を見る
+IF ABL:技巧 == 0
+	TIMES ARG, 1.00
+ELSEIF ABL:技巧 == 1
+	TIMES ARG, 1.10
+ELSEIF ABL:技巧 == 2
+	TIMES ARG, 1.20
+ELSEIF ABL:技巧 == 3
+	TIMES ARG, 1.25
+ELSEIF ABL:技巧 == 4
+	TIMES ARG, 1.30
+ELSEIF ABL:技巧 == 5
+	TIMES ARG, 1.35
+ENDIF
+;Ｖ感覚を見る
+IF (INSERT & 膣)
+	IF ABL:Ｖ感覚 == 0
+		TIMES ARG, 1.00
+	ELSEIF ABL:Ｖ感覚 == 1
+		TIMES ARG, 1.05
+	ELSEIF ABL:Ｖ感覚 == 2
+		TIMES ARG, 1.15
+	ELSEIF ABL:Ｖ感覚 == 3
+		TIMES ARG, 1.25
+	ELSEIF ABL:Ｖ感覚 == 4
+		TIMES ARG, 1.40
+	ELSEIF ABL:Ｖ感覚 == 5
+		TIMES ARG, 1.80
+	ENDIF
+ENDIF
+;Ａ感覚を見る
+IF (INSERT & アナル)
+	IF ABL:Ａ感覚 == 0
+		TIMES ARG, 1.00
+	ELSEIF ABL:Ａ感覚 == 1
+		TIMES ARG, 1.05
+	ELSEIF ABL:Ａ感覚 == 2
+		TIMES ARG, 1.15
+	ELSEIF ABL:Ａ感覚 == 3
+		TIMES ARG, 1.25
+	ELSEIF ABL:Ａ感覚 == 4
+		TIMES ARG, 1.40
+	ELSEIF ABL:Ａ感覚 == 5
+		TIMES ARG, 1.80
+	ENDIF
+ENDIF
+;巨乳
+IF (TFLAG:4 & 胸)
+	IF TALENT:巨乳 == 5
+		TIMES ARG, 1.40
+	ELSEIF TALENT:巨乳 == 4
+		TIMES ARG, 1.35
+	ELSEIF TALENT:巨乳 == 3
+		TIMES ARG, 1.30
+	ELSEIF TALENT:巨乳 == 2
+		TIMES ARG, 1.25
+	ELSEIF TALENT:巨乳 == 1
+		TIMES ARG, 1.20
+	ENDIF
+ENDIF
+
+;ランダム性付与
+LOCAL:1 = RAND:100
+IF LOCAL:1 < 20
+	TIMES ARG, 0.90
+ELSEIF LOCAL:1 < 40
+	TIMES ARG, 0.95
+ELSEIF LOCAL:1 < 60
+ELSEIF LOCAL:1 < 80
+	TIMES ARG, 1.05
+ELSE
+	TIMES ARG, 1.10
+ENDIF
+;なすがまま
+SIF TCVAR:2 == 体勢：なすがまま
+	TIMES ARG, 0.50
+;奉仕する
+SIF TCVAR:2 == 体勢：奉仕する
+	TIMES ARG, 1.20
+FLAG:15 += ARG
+
+;射精チェック
+;----------------------------------------------------------
+@TENTACLE_SYASEI_CHECK
+;敵がペニスを持たない場合
+IF FLAG:110 == 0 && FLAG:11 == 901 && FLAG:15 >= FLAG:14
+	FONTBOLD
+	PRINTL 敵絶頂
+	FONTREGULAR
+	CALL TENTACLE_ACCESS, "NAME"
+	PRINTFORML は耐え切れずに絶頂に達した！
+	PRINTL 
+
+	;油断度の上昇
+	TFLAG:3 += 100
+	;搾精強化機能
+	IF CONFIG_CHECK_BALANCE_F(3) > 0 && LOCAL:2 > 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は触手の精液からエネルギーを吸収した！
+		CALL GET_SYUREN, (RAND:10 + RAND:(LOCAL:2 * 3) + (LOCAL:2 * 3) + 2) / 5
+		PRINTL 
+	ENDIF
+	;搾精ダメージの処理
+	CALL TENTACLE_SAKUSEI,FLAG:15, 0, 0, 0, 0
+	;射精ゲージ低下
+	FLAG:15 = FLAG:15 - FLAG:14
+
+	;強拘束を解く
+	SIF (TCVAR:12 & 強拘束) > 0
+		TCVAR:12 -= 強拘束
+
+	RETURN 0, 0, 0, 0
+ELSEIF FLAG:110 == 1 && (TALENT:(FLAG:111):オトコ <= 0 && TALENT:(FLAG:111):ふたなり < 1 && TALENT:(FLAG:111):寄生 == 0) && FLAG:15 >= FLAG:14
+	FONTBOLD
+	PRINTL 敵絶頂
+	FONTREGULAR
+	PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%
+	PRINTFORML は耐え切れずに絶頂に達した！
+	PRINTL 
+
+	;油断度の上昇
+	TFLAG:3 += 100
+	;搾精強化機能
+	IF CONFIG_CHECK_BALANCE_F(3) > 0 && LOCAL:2 > 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は触手の精液からエネルギーを吸収した！
+		CALL GET_SYUREN, (RAND:10 + RAND:(LOCAL:2 * 3) + (LOCAL:2 * 3) + 2) / 5
+		PRINTL 
+	ENDIF
+	;搾精ダメージの処理
+	CALL TENTACLE_SAKUSEI,FLAG:15, 0, 0, 0, 0
+	;射精ゲージ低下
+	FLAG:15 = FLAG:15 - FLAG:14
+
+	;強拘束を解く
+	SIF (TCVAR:12 & 強拘束) > 0
+		TCVAR:12 -= 強拘束
+
+	RETURN 0, 0, 0, 0
+;射精箇所が指定されていない場合
+ELSEIF (TFLAG:4 == 0 || (TFLAG:4 & 暴発)) && FLAG:15 >= FLAG:14
+	IF (FLAG:15 >= FLAG:14 * 2 && TFLAG:20 != 15 && TFLAG:20 != 17 && TFLAG:20 != 19) || (TFLAG:4 & 暴発)
+		;大量射精
+
+		;油断度の上昇
+		TFLAG:3 += 200
+
+		;射精場所チェック
+		CALL TENTACLE_SYASEI_POINT, 2
+		;搾精ダメージの処理
+		CALL TENTACLE_SAKUSEI,FLAG:15 * 4, RESULT:0, RESULT:1, RESULT:2, RESULT:3
+		;射精ゲージ低下
+		FLAG:15 = 0
+
+		;強拘束を解く
+		SIF (TCVAR:12 & 強拘束) > 0
+			TCVAR:12 -= 強拘束
+
+		RETURN RESULT:0, RESULT:1, RESULT:2, RESULT:3
+	ELSE
+		;地の文：射精我慢
+		CALL MESSAGE_SEX_TENTACLE_SYASEI_GAMAN
+		;射精値 50
+		CALL TENTACLE_SYASEI_UP, 50
+			RETURN 0, 0, 0, 0
+	ENDIF
+ELSEIF FLAG:15 >= FLAG:14 * 2
+	;大量射精
+
+	;油断度の上昇
+	TFLAG:3 += 200
+
+	;射精場所チェック
+	CALL TENTACLE_SYASEI_POINT, 2
+	;搾精ダメージの処理
+	CALL TENTACLE_SAKUSEI,FLAG:15 * 2, RESULT:0, RESULT:1, RESULT:2, RESULT:3
+	;射精ゲージ低下
+	FLAG:15 = 0
+
+	;強拘束を解く
+	SIF (TCVAR:12 & 強拘束) > 0
+		TCVAR:12 -= 強拘束
+
+	RETURN RESULT:0, RESULT:1, RESULT:2, RESULT:3
+ELSEIF FLAG:15 >= FLAG:14
+	;通常射精
+
+	;油断度の上昇
+	TFLAG:3 += 100
+
+	;射精場所チェック
+	CALL TENTACLE_SYASEI_POINT, 1
+	;搾精ダメージの処理
+	CALL TENTACLE_SAKUSEI,FLAG:15, RESULT:0, RESULT:1, RESULT:2, RESULT:3
+	;射精ゲージ低下
+	FLAG:15 = FLAG:15 - FLAG:14
+
+	;強拘束を解く
+	SIF (TCVAR:12 & 強拘束) > 0
+		TCVAR:12 -= 強拘束
+
+	RETURN RESULT:0, RESULT:1, RESULT:2, RESULT:3
+ELSE
+	TFLAG:5 = 0
+	RETURN 0, 0, 0, 0
+ENDIF
+
+;--------------------------------------------------
+;射精場所チェック ARGは1=通常射精,2=大量射精
+@TENTACLE_SYASEI_POINT, ARG
+VARSET LOCAL
+PRINTL 
+IF TFLAG:4 == 0 || (TFLAG:4 & 暴発)
+	;汚れ
+	STAIN:1 |= 4
+	;射精個所を記録
+	TFLAG:5 |= 暴発
+
+	;地の文：触手射精暴発
+	CALL MESSAGE_SEX_TENTACLE_SYASEI_EXPLODE
+	EXP:精液経験 += ARG
+
+	LOCAL:2 += ARG
+ENDIF
+
+IF TFLAG:18 != ワレメ && FLAG:110 == 1 && (TALENT:(FLAG:111):オトコ > 0 || TALENT:(FLAG:111):ふたなり > 0) && (TALENT:(FLAG:111):寄生 == 0 || FILTER_CHECK_F(13) > 0)
+	LOCAL:3 = 0
+ELSE
+	LOCAL:3 = 1
+ENDIF
+IF (TFLAG:4 & ワレメ) && LOCAL:3
+	;汚れ
+	STAIN:3 |= 4
+	;射精個所を記録
+	TFLAG:5 |= ワレメ
+	
+	IF ARG == 1
+		;地の文：触手ワレメ射精
+		CALL MESSAGE_SEX_TENTACLE_SYASEI_WAREME
+
+		;地の文：洗脳/悪堕ちキャラが操作キャラの膣内に射精した
+		SIF FLAG:110 == 1
+			CALL MESSAGE_OTHER_SEX_TENTACLE_SYASEI_VAGINA
+
+		;潤滑の加算
+		LOCAL:0 += 1000
+		;屈服の加算
+		LOCAL:1 += 500
+		;恭順の加算
+		LOCAL:4 += 100 * ABL:従順
+		;欲情の加算
+		LOCAL:5 += 100 * ABL:欲望
+
+		EXP:精液経験 += ARG
+		LOCAL:2 += ARG
+	ELSEIF ARG == 2
+		;地の文：触手ワレメ大量射精
+		CALL MESSAGE_SEX_TENTACLE_SYASEI_WAREME_HI
+
+		;地の文：洗脳/悪堕ちキャラが操作キャラの膣内に大量射精した
+		SIF FLAG:110 == 1
+			CALL MESSAGE_OTHER_SEX_TENTACLE_SYASEI_VAGINA_HI
+
+		;潤滑の加算
+		LOCAL:0 += 2000
+		;屈服の加算
+		LOCAL:1 += 1000
+		;恭順の加算
+		LOCAL:4 += 200 * ABL:従順
+		;欲情の加算
+		LOCAL:5 += 200 * ABL:欲望
+
+		EXP:精液経験 += ARG
+		LOCAL:2 += ARG
+	ENDIF
+ENDIF
+
+IF TFLAG:18 != 膣 && FLAG:110 == 1 && (TALENT:(FLAG:111):オトコ > 0 || TALENT:(FLAG:111):ふたなり > 0) && (TALENT:(FLAG:111):寄生 == 0 || FILTER_CHECK_F(13) > 0)
+	LOCAL:3 = 0
+ELSE
+	LOCAL:3 = 1
+ENDIF
+IF (TFLAG:4 & 膣) && LOCAL:3
+	;汚れ
+	STAIN:3 |= 4
+	;射精個所を記録
+	TFLAG:5 |= 膣
+	;膣内射精量を記録
+	TFLAG:7 += ARG
+
+	IF ARG == 1
+		;地の文：触手膣内射精
+		CALL MESSAGE_SEX_TENTACLE_SYASEI_VAGINA
+
+		;妊娠確率 出産後の中だし回数と今までの出産経験に応じ可能性が増える
+		CALL NINSIN_HANTEI,ARG,3
+		;地の文：洗脳/悪堕ちキャラが操作キャラの膣内に射精した
+		SIF FLAG:110 == 1
+			CALL MESSAGE_OTHER_SEX_TENTACLE_SYASEI_VAGINA
+
+		;潤滑の加算
+		LOCAL:0 += 2000
+		;屈服の加算
+		LOCAL:1 += 1500
+		;恭順の加算
+		LOCAL:4 += 200 * ABL:従順
+		;欲情の加算
+		LOCAL:5 += 200 * ABL:欲望 + 2000
+
+		EXP:精液経験 += ARG
+		LOCAL:2 += ARG
+	ELSEIF ARG == 2
+		;地の文：触手膣内大量射精
+		CALL MESSAGE_SEX_TENTACLE_SYASEI_VAGINA_HI
+		;妊娠確率 通常射精の5倍
+		CALL NINSIN_HANTEI,ARG,15
+		;地の文：洗脳/悪堕ちキャラが操作キャラの膣内に大量射精した
+		SIF FLAG:110 == 1
+			CALL MESSAGE_OTHER_SEX_TENTACLE_SYASEI_VAGINA_HI
+
+		;潤滑の加算
+		LOCAL:0 += 4000
+		;屈服の加算
+		LOCAL:1 += 3000
+		;恭順の加算
+		LOCAL:4 += 400 * ABL:従順
+		;欲情の加算
+		LOCAL:5 += 400 * ABL:欲望 + 2000
+
+		EXP:精液経験 += ARG
+		LOCAL:2 += ARG
+	ENDIF
+
+	;正常妊娠の場合、射精されると妊娠期間が確率で短縮される
+	IF TALENT:妊娠 == 4 || TALENT:妊娠 == 5
+		SIF TALENT:妊娠 == 5
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の胎内に宿った新しい命が精液に汚されていく・・・
+		IF RAND:2 == 0 && CFLAG:222 < 50 && CFLAG:222 != 5 && CFLAG:222 != 8 && CFLAG:222 != 11
+			CFLAG:222 += 1
+		ENDIF
+	ENDIF
+ENDIF
+
+IF TFLAG:18 != アナル && FLAG:110 == 1 && (TALENT:(FLAG:111):オトコ > 0 || TALENT:(FLAG:111):ふたなり > 0) && (TALENT:(FLAG:111):寄生 == 0 || FILTER_CHECK_F(13) > 0)
+	LOCAL:3 = 0
+ELSE
+	LOCAL:3 = 1
+ENDIF
+IF (TFLAG:4 & アナル) && LOCAL:3
+	;汚れ
+	STAIN:4 |= 4
+	;射精個所を記録
+	TFLAG:5 |= アナル
+	;アナル射精量を記録
+	TFLAG:8 += ARG
+
+	IF ARG == 1
+		;地の文：触手アナル射精
+		CALL MESSAGE_SEX_TENTACLE_SYASEI_ANAL
+		;地の文：洗脳/悪堕ちキャラが操作キャラのアナルに射精した
+		SIF FLAG:110 == 1
+			CALL MESSAGE_OTHER_SEX_TENTACLE_SYASEI_ANAL
+
+		;潤滑の加算
+		LOCAL:0 += 2000
+		;屈服の加算
+		LOCAL:1 += 1000
+		;恭順の加算
+		LOCAL:4 += 100 * ABL:従順
+		;欲情の加算
+		LOCAL:5 += 100 * ABL:欲望 + 2000
+
+		EXP:精液経験 += ARG
+		LOCAL:2 += ARG
+	ELSEIF ARG == 2
+		;地の文：触手アナル大量射精
+		CALL MESSAGE_SEX_TENTACLE_SYASEI_ANAL_HI
+		;地の文：洗脳/悪堕ちキャラが操作キャラのアナルに大量射精した
+		SIF FLAG:110 == 1
+			CALL MESSAGE_OTHER_SEX_TENTACLE_SYASEI_ANAL_HI
+
+		;潤滑の加算
+		LOCAL:0 += 4000
+		;屈服の加算
+		LOCAL:1 += 2000
+		;恭順の加算
+		LOCAL:4 += 200 * ABL:従順
+		;欲情の加算
+		LOCAL:5 += 200 * ABL:欲望 + 2000
+
+		EXP:精液経験 += ARG
+		LOCAL:2 += ARG
+	ENDIF
+ENDIF
+
+IF TFLAG:18 != 手 && FLAG:110 == 1 && (TALENT:(FLAG:111):オトコ > 0 || TALENT:(FLAG:111):ふたなり > 0) && (TALENT:(FLAG:111):寄生 == 0 || FILTER_CHECK_F(13) > 0)
+	LOCAL:3 = 0
+ELSE
+	LOCAL:3 = 1
+ENDIF
+IF (TFLAG:4 & 手) && LOCAL:3
+	;汚れ
+	STAIN:1 |= 4
+	;射精個所を記録
+	TFLAG:5 |= 手
+
+	IF ARG == 1
+		;地の文：触手手に射精
+		CALL MESSAGE_SEX_TENTACLE_SYASEI_HAND
+		;地の文：洗脳/悪堕ちキャラが操作キャラの手に射精した
+		SIF FLAG:110 == 1
+			CALL MESSAGE_OTHER_SEX_TENTACLE_SYASEI_HAND
+
+		;潤滑の加算
+		LOCAL:0 += 0
+		;屈服の加算
+		LOCAL:1 += 250
+		;恭順の加算
+		LOCAL:4 += 10 * ABL:従順
+		;欲情の加算
+		LOCAL:5 += 10 * ABL:欲望
+
+		EXP:精液経験 += ARG
+		LOCAL:2 += ARG
+	ELSEIF ARG == 2
+		;地の文：触手手に大量射精
+		CALL MESSAGE_SEX_TENTACLE_SYASEI_HAND_HI
+		;地の文：洗脳/悪堕ちキャラが操作キャラの手に大量射精した
+		SIF FLAG:110 == 1
+			CALL MESSAGE_OTHER_SEX_TENTACLE_SYASEI_HAND_HI
+
+		;潤滑の加算
+		LOCAL:0 += 0
+		;屈服の加算
+		LOCAL:1 += 500
+		;恭順の加算
+		LOCAL:4 += 20 * ABL:従順
+		;欲情の加算
+		LOCAL:5 += 20 * ABL:欲望
+
+		EXP:精液経験 += ARG
+		LOCAL:2 += ARG
+	ENDIF
+ENDIF
+
+IF TFLAG:18 != 口 && FLAG:110 == 1 && (TALENT:(FLAG:111):オトコ > 0 || TALENT:(FLAG:111):ふたなり > 0) && (TALENT:(FLAG:111):寄生 == 0 || FILTER_CHECK_F(13) > 0)
+	LOCAL:3 = 0
+ELSE
+	LOCAL:3 = 1
+ENDIF
+IF (TFLAG:4 & 口) && LOCAL:3
+	;汚れ
+	STAIN:0 |= 4
+	;射精個所を記録
+	TFLAG:5 |= 口
+
+	IF ARG == 1
+		;地の文：触手口内に射精
+		CALL MESSAGE_SEX_TENTACLE_SYASEI_MOUTH
+		;地の文：洗脳/悪堕ちキャラが操作キャラの口内に射精した
+		SIF FLAG:110 == 1
+			CALL MESSAGE_OTHER_SEX_TENTACLE_SYASEI_MOUTH
+
+		;潤滑の加算
+		LOCAL:0 += 0
+		;屈服の加算
+		LOCAL:1 += 1000
+		;恭順の加算
+		LOCAL:4 += 100 * ABL:従順
+		;欲情の加算
+		LOCAL:5 += 100 * ABL:欲望 + 2000
+
+		EXP:精液経験 += ARG
+		LOCAL:2 += ARG
+	ELSEIF ARG == 2
+		;地の文：触手口内に大量射精
+		CALL MESSAGE_SEX_TENTACLE_SYASEI_MOUTH_HI
+		;地の文：洗脳/悪堕ちキャラが操作キャラの口内に大量射精した
+		SIF FLAG:110 == 1
+			CALL MESSAGE_OTHER_SEX_TENTACLE_SYASEI_MOUTH_HI
+
+		;潤滑の加算
+		LOCAL:0 += 0
+		;屈服の加算
+		LOCAL:1 += 2000
+		;恭順の加算
+		LOCAL:4 += 200 * ABL:従順
+		;欲情の加算
+		LOCAL:5 += 200 * ABL:欲望 + 2000
+
+		EXP:精液経験 += ARG
+		LOCAL:2 += ARG
+	ENDIF
+	;精液を飲ませられると排卵にさせられる場合がある
+	SIF TFLAG:20 != 16
+		CALL STATE_CHANGE_HAIRAN, ARG
+	;低確率で発情
+	CALL STATE_CHANGE_HATUJOU, 5
+ENDIF
+
+IF TFLAG:18 != 胸 && FLAG:110 == 1 && (TALENT:(FLAG:111):オトコ > 0 || TALENT:(FLAG:111):ふたなり > 0) && (TALENT:(FLAG:111):寄生 == 0 || FILTER_CHECK_F(13) > 0)
+	LOCAL:3 = 0
+ELSE
+	LOCAL:3 = 1
+ENDIF
+IF (TFLAG:4 & 胸) && LOCAL:3
+	;汚れ
+	STAIN:2 |= 4
+	;射精個所を記録
+	TFLAG:5 |= 胸
+
+	IF ARG == 1
+		;地の文：触手胸に射精
+		CALL MESSAGE_SEX_TENTACLE_SYASEI_BUST
+		;地の文：洗脳/悪堕ちキャラが操作キャラの胸に射精した
+		SIF FLAG:110 == 1
+			CALL MESSAGE_OTHER_SEX_TENTACLE_SYASEI_BUST
+
+		;潤滑の加算
+		LOCAL:0 += 0
+		;屈服の加算
+		LOCAL:1 += 500
+		;恭順の加算
+		LOCAL:4 += 10 * ABL:従順
+		;欲情の加算
+		LOCAL:5 += 10 * ABL:欲望
+
+		EXP:精液経験 += ARG
+		LOCAL:2 += ARG
+	ELSEIF ARG == 2
+		;地の文：触手胸に大量射精
+		CALL MESSAGE_SEX_TENTACLE_SYASEI_BUST_HI
+		;地の文：洗脳/悪堕ちキャラが操作キャラの胸に大量射精した
+		SIF FLAG:110 == 1
+			CALL MESSAGE_OTHER_SEX_TENTACLE_SYASEI_BUST_HI
+
+		;潤滑の加算
+		LOCAL:0 += 0
+		;屈服の加算
+		LOCAL:1 += 1000
+		;恭順の加算
+		LOCAL:4 += 20 * ABL:従順
+		;欲情の加算
+		LOCAL:5 += 20 * ABL:欲望
+
+		EXP:精液経験 += ARG
+		LOCAL:2 += ARG
+	ENDIF
+ENDIF
+
+;搾精強化機能
+IF CONFIG_CHECK_BALANCE_F(3) > 0 && LOCAL:2 > 0
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は触手の精液からエネルギーを吸収した！
+	CALL GET_SYUREN, (RAND:10 + RAND:(LOCAL:2 * 3) + (LOCAL:2 * 3) + 2) / 2
+	PRINTL 
+ENDIF
+
+RETURN LOCAL:0, LOCAL:1, LOCAL:4, LOCAL:5
+
+;--------------------------------------------------------------------------------------
+;搾精ダメージの処理
+@TENTACLE_SAKUSEI,ARG, ARG:1, ARG:2, ARG:3, ARG:4
+;既にキャラが倒れている場合はダメージを与えられない
+SIF BASE:体力 == 0 && BASE:気力 == 0 && BASE:性耐性 == 0
+	RETURN ARG:1, ARG:2, ARG:3, ARG:4
+ARG = (ARG - FLAG:14 / 2) / 10 + 500 + ABL:技巧 * 150
+SIF ARG < 500
+	ARG = 500
+;FEAT効果で搾精ダメージ上昇
+SIF TALENT:背徳の烙印 > 0
+	ARG *= 135 / 100
+;搾精攻撃に耐性がある場合の処理
+CALL TENTACLE_ACCESS, "SAKUSEI"
+ARG = ARG * RESULT / 100
+FLAG:13 -= ARG
+SIF FLAG:13 < 0
+	FLAG:13 = 0
+;射精でダメージ地の文
+IF (FLAG:110 == 0)
+	CALL TENTACLE_ACCESS, "NAME"
+ELSEIF (FLAG:110 == 1)
+	PRINTFORM %PRINT_TRANSCALLNAME(FLAG:111)%
+ENDIF
+;相手にペニスが無い場合
+IF (FLAG:110 == 1 && (TALENT:(FLAG:111):オトコ <= 0 && TALENT:(FLAG:111):ふたなり < 1 && TALENT:(FLAG:111):寄生 == 0)) || (FLAG:110 == 0 && FLAG:11 == 901)
+	PRINTFORMW は絶頂によって体力を{ARG}消耗した！！
+ELSE
+	PRINTFORMW は射精によって体力を{ARG}消耗した！！
+ENDIF
+PRINTL 
+;実績
+IF FLAG:13 <= 0 && GLOBAL:167 == 0
+	PRINTL 【実績：奇跡の逆転勝利】を達成しました！
+	PRINTW 
+	GLOBAL:167 = 1
+	SAVEGLOBAL
+ENDIF
+RETURN ARG:1, ARG:2, ARG:3, ARG:4

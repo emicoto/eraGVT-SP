@@ -1,0 +1,71 @@
+;フェラ攻撃
+@COM101
+
+;距離表示
+CALL PRINT_DISTANCE
+PRINTL 
+
+;射精部位フラグ:口を立てる
+TFLAG:4 = TFLAG:4 | 口
+;強拘束中は射精部位フラグを折る
+SIF (TCVAR:12 & 強拘束)
+	TFLAG:4 = 0
+
+;防御フラグ：奉仕するにする
+TCVAR:2 = 体勢：奉仕する
+
+;油断度の上昇
+TFLAG:3 += 25 + 5 * ABL:技巧 * ABL:技巧
+
+;地の文：フェラ攻撃
+CALL MESSAGE_BATTLE_CHARA_SEX_ATTACK101
+;地の文：洗脳/悪堕ちキャラが操作キャラのフェラ攻撃を見た
+SIF FLAG:110 == 1
+	CALL MESSAGE_OTHER_BATTLE_CHARA_SEX_ATTACK101
+
+;射精ゲージを記録
+LOCAL:1 = FLAG:15
+
+;射精　基本値は小さい
+LOCAL = 50 + ABL:技巧 * MIN((MAXBASE:性耐性 - 50) / 5 + 10, 50)
+;フェラ経験依存
+IF EXP:フェラ経験 <= 5
+	LOCAL += EXP:フェラ経験 * 10
+ELSEIF EXP:フェラ経験 <= 10
+	LOCAL += 50 + (EXP:フェラ経験 - 5) * 5
+ELSEIF EXP:フェラ経験 <= 20
+	LOCAL += 75 + (EXP:フェラ経験 - 10) * 2
+ELSEIF EXP:フェラ経験 <= 25
+	LOCAL += 95 + (EXP:フェラ経験 - 20)
+ELSE
+	LOCAL += 100
+ENDIF
+CALL TENTACLE_SYASEI_UP, LOCAL
+PRINTL
+
+IF (FLAG:110 == 0)
+	CALL TENTACLE_ACCESS, "NAME"
+ELSEIF (FLAG:110 == 1)
+	PRINTFORM %PRINT_TRANSCALLNAME(FLAG:111)%
+ENDIF
+PRINT に
+FONTBOLD
+PRINTFORM {FLAG:15 - LOCAL:1}の快楽
+FONTREGULAR
+PRINTL を与えた！
+PRINTW 
+
+;触手の射精チェック
+CALL TENTACLE_SYASEI_CHECK
+PRINTL 
+
+;習得の獲得
+COMMON_PALAM:6 += 800 + 40 * (ABL:従順 + ABL:奉仕精神 * 2)
+
+;フェラ経験が増加
+EXP:フェラ経験 += 1
+
+;行動ポイントを+1
+EX:行動ポイント += 1
+
+RETURN 1

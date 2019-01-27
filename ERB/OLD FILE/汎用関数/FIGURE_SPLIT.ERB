@@ -1,0 +1,12 @@
+;**********************************************************
+;•Ï”ARG‚ÌARG:1”Ô–Ú‚ÌŒ…‚Ì’l‚ð•Ô‚·Ž®’†ŠÖ”
+;‚Æ‚è‚ ‚¦‚¸18Œ…‚Ü‚ÅŽæ“¾‰Â”\
+@FIGURE_SPLIT(ARG,ARG:1)
+#FUNCTION
+IF ARG:1 >= 2
+	FOR LOCAL, 0,(ARG:1 - 1)
+		ARG = ARG / 10
+	NEXT
+ENDIF
+LOCAL = ARG % 10
+RETURNF LOCAL

@@ -1,0 +1,3833 @@
+;2018/01/21  4:10:26.51
+
+;=========================================================================================================================================================
+;【注意書き】
+;テンポの遅くなるAA付きです。
+;貧乳や巨乳など、素質による分岐などを入れて、なるべく流用できるように素体で作る予定です。
+;喘ぎ声や地の文以外は、このダミー子にセリフを入れる予定はありません
+;
+;=========================================================================================================================================================
+;eraGVT口上テンプレver0.360
+;各関数のKOJO_0_の0をcsvのキャラ番号に置換して使用します
+;汎用キャラ（キャラ番号0のキャラ）の口上を作成する場合は末尾に性格番号を付けてください
+;
+;例：汎用キャラ(キャラ番号0)で元気っ子(性格番号13)の口上を作成する場合
+;    KOJO_0_HITOKUTI_SHOP_13
+;
+;例：キャラ番号1のキャラで口上を作成する場合
+;    KOJO_1_HITOKUTI_SHOP
+;
+;--------------------------------------------------
+;キャラクターの性成長で分岐させる際のガイダンス
+;分岐フラグの詳細については、資料フォルダの「地の文と口上：分岐条件」をご覧ください。
+;
+;　IF (MESSAGE_BRANCH_F(TARGET) & 堕落)			自分から触手に犯されたいと感じている、ほぼ陥落している状態です。
+;　IF (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)		快楽に身体が屈して理性が働かなくなっている状態です。
+;　IF (MESSAGE_BRANCH_F(TARGET) & 性抵抗)		快楽に流されないよう必死に抗っている状態です。
+;　IF (MESSAGE_BRANCH_F(TARGET) & 絶望)			心が折れて戦意を失っている状態です。
+;　IF (MESSAGE_BRANCH_F(TARGET) & 苦戦)			余裕が無くなってきている状態です。
+;
+;　BASE:Ｃ結界耐久力	結界の耐久力が残っていると、該当する部位に触手は触れません。
+;　BASE:Ｖ結界耐久力	触れられていないため快楽も感じませんが、目の前に触手があるので嫌悪感や恐怖は感じます。
+;　BASE:Ａ結界耐久力	
+;　BASE:Ｂ結界耐久力	
+;
+;　TCVAR:2 == 体勢：奉仕する		奉仕フラグが立っている状態です。望むと望まざるとに関わらず、積極的に奉仕している状態です。
+;　TCVAR:2 == 体勢：Ｖ防御		Ｖ挿入防御フラグが立っている状態です。Ｖに挿入できませんが、触れられているので快楽は感じます。
+;
+;　IF CHECK_PREGNANT_F(TARGET) > 0	妊娠しているかどうかを判定します。正の値であれば妊娠中です。
+;
+;  絶頂状態の参照	NOWEXでそれぞれの「このターンに絶頂した回数」を参照することができます。
+;			0=Ｃ絶頂、1=Ｖ絶頂、2=Ａ絶頂、3=Ｂ絶頂です。例えばＶ絶頂した回数を参照したければ、NOWEX:1を参照してください。
+;
+;　挿入状態の参照	TFLAG:4に触手の射精個所≒現在挿入している個所が記録されています。
+;			なので、SIF (TFLAG:4 & 膣)などのように表記することで挿入中かどうかを判定することができます。
+;			ただしDIMで定義している定数の関係上、GETBITを使いたい場合には GETBIT (TFLAG:4, 膣-1)と表記する必要があります。
+;
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+;================================================================================
+;================================================================================
+; 【"休憩"】
+;--------------------------------------------------
+@KOJO_1702_REST
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_REST
+
+@KOJO_1712_REST
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_REST
+
+
+ 
+@KOJO_フェイト_REST
+SELECTCASE RAND:1
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_REST
+ENDSELECT
+
+
+
+;================================================================================
+;【アルバイト『ファミレス』（通常）】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_FAMILY_normal
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_FAMILY_normal
+
+
+
+@KOJO_1712_SEISAN_FAMILY_normal
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_FAMILY_normal
+
+
+ 
+@KOJO_フェイト_SEISAN_FAMILY_normal
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_FAMILY_normal
+ENDSELECT
+
+
+
+;================================================================================
+;【アルバイト『ファミレス』（痴漢）】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_FAMILY_chikan
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_FAMILY_chikan
+
+
+
+@KOJO_1712_SEISAN_FAMILY_chikan
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_FAMILY_chikan
+
+
+
+@KOJO_フェイト_SEISAN_FAMILY_chikan
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_FAMILY_chikan
+ENDSELECT
+
+
+
+;================================================================================
+;【アルバイト『食堂』】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_SYOKUDOU
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_SYOKUDOU
+
+
+
+@KOJO_1712_SEISAN_SYOKUDOU
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_SYOKUDOU
+
+
+
+@KOJO_フェイト_SEISAN_SYOKUDOU
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_SYOKUDOU
+ENDSELECT
+
+
+
+;================================================================================
+;【アルバイト『食堂』（痴漢）】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_SYOKUDOU_chikan
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_SYOKUDOU_chikan
+
+
+
+@KOJO_1712_SEISAN_SYOKUDOU_chikan
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_SYOKUDOU_chikan
+
+
+
+@KOJO_フェイト_SEISAN_SYOKUDOU_chikan
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_SYOKUDOU_chikan
+ENDSELECT
+
+
+
+;================================================================================
+;【アルバイト『食堂』（薬）】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_SYOKUDOU_drug
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:2
+	CASE 1
+		PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　 　 　 ＿＿_
+		PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　 r＝ァ"￣￣ }}
+		PRINTL 　　　　　　　　　　　　　　　　　＿＿　　　　　　　　　　　 {{ 〃 }} 　　 〃
+		PRINTL 　　　　　　　　　　　　 　 　 ∠二二ヽ＼　 　　 ─…─　Ⅵ／⌒丶〃
+		PRINTL 　　　　　 　 　 　 　 　 　 〃￣￣＼ ,，　´　　　　　　　　´￣＼　　 ＼
+		PRINTL 　　　　　 　 　 　 　 　 　 {{　　　　／　　　　　　　　　　 　 　 　 ＼
+		PRINTL 　　　　　　　　　　　　　／´￣￣￣　　　　　　　　 　 ＼ ＼ ＼　　ヽ　　 ﾏニニニヽ
+		PRINTL 　 　 　 　 　 　 　 　 ／⌒厂　「⌒ 　 　 　 :| | :ハ＼　 :| :l :|　 ', 　　 '，　 ',　　　　　＼
+		PRINTL 　　　　　　　　　＿＿＿ /　 .:::|　|　 {　 |{ 　| | {　 ',,介仆┼ト .ハ　　　，　 ﾏﾆﾆ＝─
+		PRINTL 　　　　　 　 ／⌒￣}厂/イ　.:::|　| |::..ヽ八 _｣｣乂　 Ⅵ{八ハ∧| :|　　　:|　　　，
+		PRINTL 　　　 　 　 　 　 　 /厂⌒|　.::::|　| | 　/／ﾚハﾄ＼　　 ,ｨ爪行ミ 从　　 |　　　　，
+		PRINTL .　　　　　　　 　 　 {{　　　|　.::::|　| |　　|{　ｘ≠ミ 　 u. 　{ :::::し 　|　　　:|　　 　 　，
+		PRINTL 　　　　　　　　　　　＼　 ﾉハ .:|　Ⅵ　 八{ ::::::::し　 　 ......と二つ〃　　 |　 　 　 　 ，
+		PRINTL 　　 　 　 　 　 　 　 　 ／／ }八　 ＼. ＼と二 つ:::::::: ､ ::::} {:::ii/ｲ　 　 ハ//　　　　 ，
+		PRINTL 　　　　　　　　　 　 　 ／ 　 　 .::＼　 ＼. ＼}{ !{　 　 ,　‐､.{ } ll/ |　　./　 ∨/　　　 　 ，
+		PRINTL 　　　 　 　 　 　 　 ／　 　 .::／　　 ',　　 ヽ::.丶} u 　'(　 ﾉ ,／　 !　 /　 　 ∨/　　　　　＼
+		PRINTL .　　　　 　 　 　 ／　 　 .::／ 　　 ／ ,　　　　 | 　 丁　 ー　 |　/　 /　　　　 ＼
+		PRINTL 　　　　　　　 ／　 　 .::／ 　　 ／　　 ; 　 .::|　|　／　u.　　　 Ｖ 　/　　　　　　　ヽ
+		PRINTL 　 　 　 　 ／　　　　　　　　／　　,.　-|　　.:|　|´ _　　 　 　 .::/　/-　.
+		PRINTL 　　　　 , '　　　　　　　 　 ,' 　 　 '　　 |　　.:|　| 　 ＼　u.,／/　/　　　 ｀ヽ.　　　　　',　　　　　　}
+		PRINTL . 　 　 /　　　　　.::/　　 　 　 　 l　u.　|　　.:|　|　　　 　 　 /　/　 　 u. 　 　 　 　 　 |
+		PRINTL 　 　 /　　　　　.::/　 ,/ 　 　 　 .|　　 /　 .::ﾉ　l　　u.　　 ./　/　　　　　　　|　　　　　|　　　　　,′
+		PRINTL .　　,　　 　 　 .::/　 ,/　 　 　 　 ｌ　 ./　 ／　 ﾉ　　　　　,'　/　　　　　Y　　l　　　　　　　　 　 /
+		PRINTL 　　　　　　　　　　 /　　　 　 　 .ｌ　/ ／　　 /　　　　　 { /　　　　　　 } 　 |　　 　 /
+		PRINTL 　　|　　　　 　 　 /　　　　　　　 |/´ /　　 /:;c;:　　　　　　　　　 :;c;:　 ｉ 　 ｌ　　　/　　　 ／
+		PRINTL 　　|　　　 　 　 ./　　 　 　 　 　 l　 :{　　./　　　　　　 　 　 　 　 　 　 i　　l　　 /
+		PRINTL 　　|　　　 　 　/　　　　　　　 　 |　　∨八　　　　u.　 　 　 　 　 　 　 ｉ　　l 　 ,′　／
+	CASE 0
+		PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　 　 　 ＿＿_
+		PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　 r＝ァ"￣￣ }}
+		PRINTL 　　　　　　　　　　　　　　　　　＿＿　　　　　　　　　　　 {{ 〃 }} 　　 〃
+		PRINTL 　　　　　　　　　　　　 　 　 ∠二二ヽ＼　 　　 ─…─　Ⅵ／⌒丶〃
+		PRINTL 　　　　　 　 　 　 　 　 　 〃￣￣＼ ,，　´　　　　　　　　´￣＼　　 ＼
+		PRINTL 　　　　　 　 　 　 　 　 　 {{　　　　／　　　　　　　　　　 　 　 　 ＼
+		PRINTL 　　　　　　　　　　　　　／´￣￣￣　　　　　　　　 　 ＼ ＼ ＼　　ヽ　　 ﾏニニニヽ
+		PRINTL 　 　 　 　 　 　 　 　 ／⌒厂　「⌒ 　 　 　 :| | :ハ＼　 :| :l :|　 ', 　　 '，　 ',　　　　　＼
+		PRINTL 　　　　　　　　　＿＿＿ /　 .:::|　|　 {　 |{ 　| | {　 ',,介仆┼ト .ハ　　　，　 ﾏﾆﾆ＝─
+		PRINTL 　　　　　 　 ／⌒￣}厂/イ　.:::|　| |::..ヽ八 _｣｣乂　 Ⅵ{八ハ∧| :|　　　:|　　　，
+		PRINTL 　　　 　 　 　 　 　 /厂⌒|　.::::|　| | 　/／ﾚハﾄ＼　　 ,ｨ爪行ミ 从　　 |　　　　，
+		PRINTL .　　　　　　　 　 　 {{　　　|　.::::|　| |　　|{　ｘ≠ミ 　 u. 　{ :::::し 　|　　　:|　　 　 　，
+		PRINTL 　　　　　　　　　　　＼　 ﾉハ .:|　Ⅵ　 八{ ::::::::し　 　 ......と二つ〃　　 |　 　 　 　 ，
+		PRINTL 　　 　 　 　 　 　 　 　 ／／ }八　 ＼. ＼.とつ///　 i　　　　i }.,'───‐.r┬─､..　，
+		PRINTL 　　　　　　　　　 　 　 ／ 　 　 .::＼　 ＼.　､i (　　, -‐_'ﾆヽ　.j/　　.,r､　　 | .|　 ハ.　　，
+		PRINTL 　　　 　 　 　 　 　 ／　 　 .::／　　 ', 　 　 |;ヽヽ　',:) (.:.:.:.:.',／ﾟo 　 ',. ', 　 | .|　　　',　　 ＼
+		PRINTL .　　　　 　 　 　 ／　 　 .::／ 　　 ／ ,...　　／ 　｀::‐i i.:.:.:,::'ﾞ　　　／ ',. ',　 | .|___　　l
+		PRINTL 　　　　　　　 ／　 　 .::／ 　　 ／　　 ;..ﾞ／(¨ヽ　　　J￣　　　／ 　　',. ',ノ　{　「¨i, l
+		PRINTL 　 　 　 　 ／　　　　　　　　／　　,..　(¨＼　ヽ　ヽ＿o＿　　　　　u.　 ',　＿,{__,l　|.'.!
+		PRINTL 　　　　 , '　　　　　　　 　 ,'　　　　 ./　＼ ＼ ヽ　ヽ　　　　　　　　　　 ソ　　　ヲ┘},　　　　　　}
+		PRINTL . 　 　 /　　　　　.::/　　 　 　 　 　 .|　　　＼ ＼)　　ヽ　.u　　　　　　 <　　く￣ /　.}
+		PRINTL 　 　 /　　　　　.::/　 ,/　　　　　　　',　　　< ヽ　, -'"￣`i　　　　　　　 ヽ　　　　　.〈.|　　　　　,′
+		PRINTL .　　,　　 　 　 .::/　 ,/.　　　　　　 　 ヽ　<"＼ ソ　 ム　 }　　　　　　　　 ｀ -､　　　　　　　　 /
+		PRINTL 　　　　　　　　　　 /　　　　　　　　　　 ヽ.＼__(__／,'"　.ﾉ､　　　　　　　　　　　 　 /
+		PRINTL 　　|　　　　 　 　 /　　 　 　 　 　 　 　 　 ＼丶､＿　　　　ヽ.　　　　　　 　 　 　 /　　　 ／
+ENDSELECT
+SETFONT
+
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_SYOKUDOU_drug
+
+@KOJO_1712_SEISAN_SYOKUDOU_drug
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:5
+	CASE 4
+		PRINTL 　　　　　　　　　　　　　　　　　　　＿＿
+		PRINTL 　　　　　　　　　　　　　　　 ＞ ´　＞''"´
+		PRINTL 　　　　　　　　　 　 ＿＿／　　／　＿__
+		PRINTL 　　　　　　　＞　´　 　 /　　´￣￣　　　 ｀ ＜
+		PRINTL 　　　　　 ／　　　　　　　　　ー--　､　　　　　 ｀ ＜
+		PRINTL 　　　　／　　　　　　　　　　　　　　　 ｀ﾞ'' ..､　　 _＿ ＞
+		PRINTL 　　　　　　　　　　　　　　　　　　,　　 ｀ﾞ'' ..､　 ,ｨ:.:.:.:.:.｀ヽ
+		PRINTL 　　　　　　　 /　　　　i　　　　　 i｀ ＜　　　.ヽ.i:.:.:.:.:.:.:.:..:ﾄ
+		PRINTL 　　　　　　　, 　{　　　 ',　　 i　　 ', 　ｰヽ-　　 }:.:.:.:.:.:.:.:.八',
+		PRINTL 　　　　　　　{　 ∨.　　 ',　　 ',.　　',　u 　＼!__乂:.:.:.:..:ｲ 　∧
+		PRINTL 　　　　　　　i!　　∨　　 ヽ　 /ヽ　 ヽ　　 .ｨ泛ｱ ∨¨´　 　 ∧
+		PRINTL 　　　　　　　ﾊ　　　',　',　 .∨　､ `＜ ＼.　ヾﾂ _　V　　　　 .∧
+		PRINTL 　　　　　　 ,　 ',　 　 ',　',　/､＼{　,,,.. ｀'' ＼　 　｀ _V 　 　 　 ∧
+		PRINTL 　　　　　 ./　　.',　　　',　X､ ＼,ｨf沁´　 　 　 　 ,´ _V　　　 　 ∧
+		PRINTL 　　　　　　 　 　 ',　　　ヽ.　＼,ｆんzｿ　　　 　 　 i'´',:.i　　　 } !.　 ',
+		PRINTL 　　　　　 i　　　 ∧　　 　 ＼ ﾑ￣´　　　　 　 　 ',:.:.:}　　　ﾉ }　　i
+		PRINTL 　　　　　　　　 ./　rヽ　　　　＼≧=-　　 　 　 　 ヽ:.|､ィwxfWｚｘ }ﾉ,
+		PRINTL 　　　　ヽ　　　　　.{　r＼　　.､　＼　　J　　　　　　.｀ｱ从從爻杙爻ﾒ
+		PRINTL 　　　　=-≧ｘ ,i. -―- ..､＼　 　　 ＼＿_＿,,..　＜ 从乂森爻幺從爻
+		PRINTL 　　　　//＞ ´　　　　　 ｀ヽ＞ ､　　　',　/｀ヽ.,z≦爻從从炎从乂戈ﾒ≧zx..､
+		PRINTL 　　　　／　　　　　　　　 　 ∨　＞--―‐ｧ´: : : : : : : : : : : : : : : : : : : : : : : : : :＞ ..､
+		PRINTL 　　　　　　　　　　　　　　　　}／ ,..--―ァ : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : ＞ ..､
+	CASE 3
+		PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　 　 　 　 　 　 　 　 　 　 ,.-''′
+		PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　 　 　 　 　 　 　 　 ,. -‐''´
+		PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　 　 　 ＿＿_,,..-'´
+		PRINTL 　/　　　　　　　 　|　　　 　 　 　 |　　　　　 ./　　　/　　　 ＼　 ＼　　　　　　　　　　　　 　 ／⌒ヽ　 ＼
+		PRINTL ./　　　　　　　　　|　　　　　　　 .|　 .,'　　　./　 |　/､　 ヽ　ヽ ヽ　 ヽ.　　　　　　 　 　 _, -'":::::::::'::,::::!
+		PRINTL /　　　 　 　 　 　 | 　 　 　 　 　 |　 ｉ　　　 ｉ　 ∧ ｉ　',　　',　 ＼ヽ　　ヽ.　　　 　 　 ／:::::::::::::::::::::::::',::!　!
+		PRINTL 　　　　　　　/　　|　　　　　　　 .|　 .{--一/ ヽｉ､ｉ {　 .',　　}､　 }ヽｉ　　 .ｉ..　　　　　/:::::::::::::::::::::::::::::::::',!　}　　　　　　　　　,. -
+		PRINTL 　　　　　　 /　　 |　　　　　　　　|　 ｉ　 |　ｉ .,斗≦丶　ﾄ 　 .}ヽ. ', |　|　 .}　　　 　 !::::::::::::::::::::::::::::::::::::/ /　　　　　,.　-‐'´
+		PRINTL 　 　 　 　 / 　 　.|　　　 　 　 　 |　 .{ 　| 〃 ./::,らヽ　! !　 .ｉ　ｉ　ｉ　 .|　 |.　　　 　 !:::::::::::::::::::::::::::::::::/　　　＿,.-'´
+		PRINTL 　　　　　/　　 r‐‐!　　　　　　　 |　 .',　!㍉　.{ :斗　　',　ｉ　! |　} |　 .}　 |　　　 　 { ヽ::::::::::::::::::::::::::/_＿_／
+		PRINTL 　　　　 /　　/ ／ |　　　　|　　　|ヽ　ヽ | ｀　う::::|　　 ヽ |/　}ｉ　ﾘ　 .!',　|.　　　　 ‘ ,}ﾞ｀ー――‐'´
+		PRINTL .　　　 /　　 {　　　 !　　 　 .!　　 | ヽ　ヽ　 とヽｚ|　　　　ヽ、| }　　 .ｉ　} |.　　　 　 〃
+		PRINTL 　　　/　　　 ヽ　　 |　　 　　|　　 |　＼ ヽ＼　｀ ‐ 　　　 　 　 >　　,'　 ﾘ. 　 　 　 ﾉ
+		PRINTL .　　/　　　　　＼ヽ-|　 　 　 |　　|ヽ ヽヾ､ 　　　　　　　　　／}　. /　　　　 　 ／
+		PRINTL 　 /　　　　　　　　＼|　　　　 ! 　 | ヽヽ　　　　　　　　___ /　 .ｉ ./　　　　 ,.／
+		PRINTL 　　　　　　　　　　　 |∨　　　∧　 !　ヽヽ　　　　　　<　,'　　 .|./ . _,... -''´
+		PRINTL 　　　　　　　　　　　 | ∨　　　 ∧ .|　　 ＼　　　　ι ,.｀¨ﾞﾞﾞﾞﾞﾞﾞﾞﾞ´
+		PRINTL 　　　　　　　　　　　 |　∨　　　 .∧ |　　　　 　 　 　 ｉ
+		PRINTL 　　　　　　　　　　　 |.　∨ 　　　 .∧|　 　 　　Ｊ　 　 !
+		PRINTL 　　　　　　　　　　　 !　　∨　　 　 ∧| 　 ＿＿＿　-′
+		PRINTL 　　　　　　　　　 　 ,'　　　∨　　　　.∧
+		PRINTL 　　　　　　　　　　 /　　 　 ∨　　　　 ∧
+	CASE 2
+		PRINTL 　/　　　　　　　 　|　　　 　 　 　 |　　　　　 ./　　　/　　　 ＼　 ＼
+		PRINTL ./　　　　　　　　　|　　　　　　　 .|　 .,'　　　./　 |　/､　 ヽ　ヽ ヽ　 ヽ
+		PRINTL /　　　 　 　 　 　 | 　 　 　 　 　 |　 ｉ　　　 ｉ　 ∧ ｉ　',　　',　 ＼ヽ　　ヽ
+		PRINTL 　　　　　　　/　　|　　　　　　　 .|　 .{--一/ ヽｉ､ｉ {　 .',　　}､　 }ヽｉ　　 .ｉ
+		PRINTL 　　　　　　 /　　 |　　　　　　　　|　 ｉ　 |　ｉ .,斗≦丶　ﾄ 　 .}ヽ. ', |　|　 .}
+		PRINTL 　 　 　 　 / 　 　.|　　　 　 　 　 |　 .{ 　| 〃 ./::,らヽ　! !　 .ｉ　ｉ　ｉ　 .|　 |
+		PRINTL 　　　　　/　　 r‐‐!　　　　　　　 |　 .',　!㍉　.{ :斗　　',　ｉ　! |　} |　 .}　 |
+		PRINTL 　　　　 /　　/ ／ |　　　　|　　　|ヽ　ヽ | ｀　う::::|　　 ヽ |/　}ｉ　ﾘ　 .!',　|
+		PRINTL .　　　 /　　 {　　　 !　　 　 .!　　 | ヽ　ヽ.　 とヽｚ|　　 　 ヽ、| }　　 .ｉ　} |
+		PRINTL 　　　/　　　 ヽ　　 |　　 　　|　　 |　＼ ヽ＼　｀ ‐　　 　 　 　 >　　,'　 ﾘ
+		PRINTL .　　/　　　　　＼ヽ-|　 　 　 |　　|ヽ ヽヾ､ 　　　　　　　　　／}　. /
+		PRINTL 　 /　　　　　　　　＼|　　　　 ! 　 | ヽヽ　　　　　　　　___ /　 .ｉ ./
+		PRINTL 　　　　　　　　　　　 |∨　　　∧　 !　ヽヽ　　　　 　 ,　- ` r---､, 　：：
+		PRINTL 　　　　　　　　　　　 | ∨　　　 ∧ .|　　 ＼ 　 　 ／（ . 　　　　　｀'ｰ ､,_：：
+		PRINTL 　　　　　　　　　　　 |　∨　　　 .∧ |　 　 　 　 /.⌒)ヽ　　　　　　　　ﾞヽ　　　 ,. -－-､
+		PRINTL 　　　　　　　　　　　 |.　∨ 　　　 .∧|. 　 　 　 i'|　　し　　　　　　　 _, -'､_, - '´　 　 　 !
+		PRINTL 　　　　　　　　　　　 !　　∨　　 　 ∧|.　　 ,. 　i'|､-､, ,＿＿_,. -－' ´ ,. ‐'´　　　　..:::::／
+		PRINTL 　　　　　　　　　 　 ,'　　　∨　　　　.∧　／⌒i'|　＼__ヽ､　　'ニ,. ‐'´　　　　　.:::::／ｰ ､　：：
+		PRINTL 　　　　　　　　　　 /　　 　 ∨　　　　 ∧　　 　ij　　　＼ヽ､　／　　　　　.....::::::／　　 　 i　：：
+		PRINTL 　　 　 　 　 　 　 /　　　　　 ∨　　　　 ∧　　 　;j　 　;j/`ｙ''´　　　　　..::::::::: '´　　　 .:／⌒ヽ
+	CASE 1
+		PRINTL 　　　　　　　　　/￣￣ ＼ 　　　　　　　　　　　　　 ―　、　 　 ヽ、
+		PRINTL 　　　　　　　　/　　　　　　/￣　　　　　　　　　　　　　　　｀ヽ、　 ヽ
+		PRINTL . 　 　 　 　 イ　　　　 　 ./　　　／　　　　　　　　　　 ＼　　 　.ヽ　 ヽ
+		PRINTL 　　　　 ／　 /　　/　　 /　　 /　　　　　　　/　　　　　　ヽ、　　 ｉ　　 ｉ
+		PRINTL ―＝´―＜/　　/　 　 ,'　　 ,'　　 /　　 　 / ∨ .ｌ　　　 　 ヽ　　 |　　 |
+		PRINTL 　 　 　 　 / 　 /　　　 ｉ　　　|　　 |　　,' 　,' 　 i　|､ 　 | l　　ｉ　　 |.　　.|
+		PRINTL .　　　　　,'　 〃　　 　 |　 　 |　　,'| ／.　./　　 | | | .＼ |、　.|　　 |　　 |
+		PRINTL .　　　 　 i　 / |　　|!　 |　 　 |. ｣,.イ.|∧　|　　　| |ﾚ.ヽ: ﾊ≧ｘ|　 　 ! 　 .|
+		PRINTL .　　　 　 | ./ . |　　.|　 |　　 イ:.|　 |.|　.ヽ|　　　.ﾘ　　 ｿ　',: | |.ヽ　 | 　 .|
+		PRINTL .　　　 　 | |　.∧　 .|　 | 　 .斗z≦示示=ｘ.　　 　 ｘ=示示≧トｘ_　.|　　|
+		PRINTL 　　 　 　 N 　 .∧ . |　.|}　 ヾ､戈斗＝¨ﾞ　　　　　　ﾞ¨ｰ=之ﾝl .〃　|ﾊ　|
+		PRINTL .　　　　 　 　 　 ∧l/ﾊ. | 　 .ﾄ､ ／／／／　 ｌ　 ／／／／ .l　 　 .|_｣　|
+		PRINTL .　　　　　 　 　 　 |　 ﾑ:| . 　 iﾍ　　　　　　　　　　　　 　 　 .|　　　.|__　.|
+		PRINTL 　　 　 　 　 　 　 ／　　|　 　 l ヽ　　　　　　　　　　　　　　 .|　 　 .| 　｀ヽ
+		PRINTL 　　　　　　　 　 /　　 　.|　 　 | . ＼ 　 ７´`ー '´￣ヽ´　　/|　　　 | 　 　 .',
+		PRINTL 　 　 　 　 　 　 {　 　 　 |　　　|　 .＞､...ﾄ､:.:.:.:.:.:.:.:,ノ! 　 ＜ | 　 　 .|　　　　}
+		PRINTL .　　　 　 　 　 入　　　　|　　, '　　　 　 l:.. ｀￣´　 .:j　　　　 ヽ　　 | 　 　 .'
+		PRINTL 　　　　　　　　　　　　 　 |　/.　 　 　 　 lゝ...,_ __,. ,ノ',. 　 　 　 Y　 |. 　 .,ｲ
+		PRINTL 　　　　 　 　 　 　 ＼ 　　Y　　　　　　　|:　　　 　 .:.:'　 　 　 　 ﾞ〈.|　 ／
+		PRINTL 　　　　 　 　 　 　 　 ヽ　 l.　　　　 　 　 !:..　　　　 } !|　　　 　 　 '　ｨ
+		PRINTL 　　　　　　　　　 　 ／ ＼|　　　　 　 　 j1::..i　　 !ﾉﾉ !.　　　　 　 ﾚ'　',｀
+		PRINTL 　　　　　　　　　　/ /　　 |.　 　 　 　 ,ｨ小从从ﾊﾉ,.小、　　　 　 |　 　　 ',
+		PRINTL 　　　 　 　 　 　 /　{....　,.　-‐`'"´￣　　ΞΞΞΞ　｀`　〈....　　八　　}　 ',
+		PRINTL 　　　　　　　　 ,.　-‐　´　　　 　 　 　 　 = ﾆ　ﾆ =　 　 　 ｀`　 ., 　 　 | 　 }
+		PRINTL 　　　　　　　／　　　　　　　　　　　　　　　 -　-　　　 　 　 　 　 ｀ヽ.　|　　|
+	CASE 0
+		PRINTL 　　　　　　　　　/￣￣ ＼ 　　　　　　　　　　　　　 ―　、　 　 ヽ、
+		PRINTL 　　　　　　　　/　　　　　　/￣　　　　　　　　　　　　　　　｀ヽ、　 ヽ
+		PRINTL . 　 　 　 　 イ　　　　 　 ./　　　／　　　　　　　　　　 ＼　　 　.ヽ　 ヽ
+		PRINTL 　　　　 ／　 /　　/　　 /　　 /　　　　　　　/　　　　　　ヽ、　　 ｉ　　 ｉ
+		PRINTL ―＝´―＜/　　/　 　 ,'　　 ,'　　 /　　 　 / ∨ .ｌ　　　 　 ヽ　　 |　　 |
+		PRINTL 　 　 　 　 / 　 /　　　 ｉ　　　|　　 |　　,' 　,' 　 i　|､ 　 | l　　ｉ　　 |.　　.|
+		PRINTL .　　　　　,'　 〃　　 　 |　 　 |　　,'| ／.　./　　 | | | .＼ |、　.|　　 |　　 |
+		PRINTL .　　　 　 i　 / |　　|!　 |　 　 |. ｣,.イ.|∧　|　　　| |ﾚ.ヽ: ﾊ≧ｘ|　 　 ! 　 .|
+		PRINTL .　　　 　 | ./ . |　　.|　 |　　 イ:.|　 |.|　.ヽ|　　　.ﾘ　　 ｿ　',: | |.ヽ　 | 　 .|
+		PRINTL .　　　 　 | |　.∧　 .|　 | 　 .斗z≦示示=ｘ.　　 　 ｘ=示示≧トｘ_　.|　　|
+		PRINTL 　　 　 　 N 　 .∧ . |　.|}　 ヾ､戈斗＝¨ﾞ　　　　　　ﾞ¨ｰ=之ﾝl .〃　|ﾊ　|
+		PRINTL .　　　　 　 　 　 ∧l/ﾊ. | 　 .ﾄ､ ／／／／　 ｌ　 ／／／／ .l　 　 .|_｣　|
+		PRINTL .　　　　　 　 　 　 |　 ﾑ:| . 　 iﾍ　　　　　　, ―‐､　 　 　 　 .|　　　.|__　.|
+		PRINTL 　　 　 　 　 　 　 ／　　|　 　 l ヽ　　　　 /‐--‐ﾍ　　　　　 .|　 　 .| 　｀ヽ
+		PRINTL 　　　　　　　 　 /　　 　.|　 　 | . ＼　 　 '　　　　 '　　　　 /|　　　 | 　 　 .',
+		PRINTL 　 　 　 　 　 　 {　 　 　 |　　　|　 .＞､　 {し'> ｀つ}　 　 ＜ | 　 　 .|　　　　}
+		PRINTL .　　　 　 　 　 入　　　　|　　, '　　　　.＞ゝ（　（　/＜　　　　ヽ　　 | 　 　 .'
+		PRINTL 　　　　　　　　　　　　 　 |　/　 　 　 　 　 ＞）/＜　 　 　 　 　 Y　 |. 　 .,ｲ
+		PRINTL 　　　　 　 　 　 　 ＼ 　　Y　　　　　 　 　 　 U　　　　　　　　　ﾞ〈.|　 ／
+		PRINTL 　　　　 　 　 　 　 　 ヽ　 l　　　　　　　　　　　　 　 　 　 　 　 　 '　ｨ
+		PRINTL 　　　　　　　　　 　 ／ ＼|　　　 　 　 　 　 　 {　　　　　　　　　　ﾚ'　',｀
+		PRINTL 　　　　　　　　　　/ /　　 | 　 　 　 　 　 　 　 }　　　　　　　　 　 |　 　　 ',
+		PRINTL 　　　　　.　　　　/　{　　.八　　　　　 　 　 　 八　　　　　　　 　 八　　}　 ',
+		PRINTL 　　　　　　　　　　　|　　 　 ＼　　 　 　 　 ／　.ゝ　　　　 　 ／　　　　| 　 }
+		PRINTL 　　　　　　　 　 |　 .|　　 　 　 ＼ｰ　-‐ ≦　　　　≧ ‐-‐'／　　　　　 |　　|
+		PRINTL 　　　　　　　　　!　 ,　　　　 　 　 .ヽ 　 .∧　　　./　　 .／　　　　　　　.!
+		PRINTL 　　　　　.　 　 ハ　j 　 　 　 　 　 　＼　 ∧　　ﾉ　 　 /　 　　　　　 　 ﾍ　/
+		PRINTL 　　　　　　　　　 Y　　　　　　　 ／　/ 　 .ハ. / 　 　 .ﾊ ＼
+		PRINTL 　　　　　　　　 　 ヽ　 　 　 　 / 　 /　　　　 }{　　　　 ﾊ　　'　　　　　　 /
+		PRINTL 　　　　　　　　　　　｀ｰ===-‐'　　 {　 　 　 ./ﾊ　　　 　 }.　　 ｀ｰ===‐ ´
+		PRINTL 　　　　　　　　　　　　　　　　　　　 ＼ i i i,.j　Y./ / /／
+		PRINTL 　　　　　　　　　　　　　　　　　　　　　　￣　　　￣
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_SYOKUDOU_drug
+
+@KOJO_フェイト_SEISAN_SYOKUDOU_drug
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_SYOKUDOU_drug
+ENDSELECT
+
+
+
+;================================================================================
+;【アルバイト『新聞配達』】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_SHINBUN
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_SHINBUN
+
+
+
+@KOJO_1712_SEISAN_SHINBUN
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_SHINBUN
+
+
+
+@KOJO_フェイト_SEISAN_SHINBUN
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_SHINBUN
+ENDSELECT
+
+
+
+;================================================================================
+;【アルバイト『新聞配達』（アクメ自転車）】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_SHINBUN_acmecycle
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_SHINBUN_acmecycle
+
+
+
+@KOJO_1712_SEISAN_SHINBUN_acmecycle
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_SHINBUN_acmecycle
+
+
+
+@KOJO_フェイト_SEISAN_SHINBUN_acmecycle
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_SHINBUN_acmecycle
+ENDSELECT
+
+
+
+;================================================================================
+;【アルバイト『新聞配達』（トップニュース）】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_SHINBUN_topnews
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_SHINBUN_topnews
+
+
+
+@KOJO_1712_SEISAN_SHINBUN_topnews
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_SHINBUN_topnews
+
+
+
+@KOJO_フェイト_SEISAN_SHINBUN_topnews
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_SHINBUN_topnews
+ENDSELECT
+
+
+
+;================================================================================
+;【アルバイト『新聞配達』（出歯亀）】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_SHINBUN_debagame
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_SHINBUN_debagame
+
+
+
+@KOJO_1712_SEISAN_SHINBUN_debagame
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_SHINBUN_debagame
+
+
+
+@KOJO_フェイト_SEISAN_SHINBUN_debagame
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_SHINBUN_debagame
+ENDSELECT
+
+
+
+;================================================================================
+;【アルバイト『ヒーローショー』（通常）】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_HERO_normal
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_HERO_normal
+
+
+
+@KOJO_1712_SEISAN_HERO_normal
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_HERO_normal
+
+
+
+@KOJO_フェイト_SEISAN_HERO_normal
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_HERO_normal
+ENDSELECT
+
+
+
+;================================================================================
+;【アルバイト『ヒーローショー』（転んだ）】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_HERO_korobi
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_HERO_korobi
+
+
+
+@KOJO_1712_SEISAN_HERO_korobi
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_HERO_korobi
+
+
+
+@KOJO_フェイト_SEISAN_HERO_korobi
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_HERO_korobi
+ENDSELECT
+
+
+
+;================================================================================
+;【アルバイト『ヒーローショー』（スカート捲り）】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_HERO_skirtmekuri
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_HERO_skirtmekuri
+
+
+
+@KOJO_1712_SEISAN_HERO_skirtmekuri
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_HERO_skirtmekuri
+
+
+
+@KOJO_フェイト_SEISAN_HERO_skirtmekuri
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_HERO_skirtmekuri
+ENDSELECT
+
+
+
+;================================================================================
+;【アルバイト『ヒーローショー』（痴漢）】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_HERO_chikan
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_HERO_chikan
+
+
+
+@KOJO_1712_SEISAN_HERO_chikan
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_HERO_chikan
+
+
+
+@KOJO_フェイト_SEISAN_HERO_chikan
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_HERO_chikan
+ENDSELECT
+
+
+
+;================================================================================
+;【アルバイト『ヒーローショー』（触手拘束具）】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_HERO_syokusyu
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_HERO_syokusyu
+
+
+
+@KOJO_1712_SEISAN_HERO_syokusyu
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_HERO_syokusyu
+
+
+
+@KOJO_フェイト_SEISAN_HERO_syokusyu
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_HERO_syokusyu
+ENDSELECT
+
+
+
+;================================================================================
+;【アルバイト『ヒーローショー』（陵辱ショー）】
+;--------------------------------------------------
+@KOJO_1702_HERO_ryoujoku
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_HERO_ryoujoku
+
+
+
+@KOJO_1712_HERO_ryoujoku
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_HERO_ryoujoku
+
+
+
+@KOJO_フェイト_HERO_ryoujoku
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_HERO_ryoujoku
+ENDSELECT
+
+
+
+;================================================================================
+; 【"SEISANの研究所助手"】
+;================================================================================
+;【研究所助手（通常）】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_KENKYU_normal
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_KENKYU_normal
+
+
+
+@KOJO_1712_SEISAN_KENKYU_normal
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_KENKYU_normal
+
+
+
+@KOJO_フェイト_SEISAN_KENKYU_normal
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_KENKYU_normal
+ENDSELECT
+
+
+
+;================================================================================
+;【研究所助手（妊娠）】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_KENKYU_ninshin
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_KENKYU_ninshin
+
+
+
+@KOJO_1712_SEISAN_KENKYU_ninshin
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_KENKYU_ninshin
+
+
+
+@KOJO_フェイト_SEISAN_KENKYU_ninshin
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_KENKYU_ninshin
+ENDSELECT
+
+
+
+;================================================================================
+;【研究所助手（妊娠経験あり）】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_KENKYU_after
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_KENKYU_after
+
+
+
+@KOJO_1712_SEISAN_KENKYU_after
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_KENKYU_after
+
+
+
+@KOJO_フェイト_SEISAN_KENKYU_after
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_KENKYU_after
+ENDSELECT
+
+
+
+;================================================================================
+;【研究所助手（搾乳）】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_KENKYU_sakunyu
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_KENKYU_sakunyu
+
+
+
+@KOJO_1712_SEISAN_KENKYU_sakunyu
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_KENKYU_sakunyu
+
+
+
+@KOJO_フェイト_SEISAN_KENKYU_sakunyu
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_KENKYU_sakunyu
+ENDSELECT
+
+
+
+;================================================================================
+;【研究所助手（ふたなり）】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_KENKYU_hutanari
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_KENKYU_hutanari
+
+
+
+@KOJO_1712_SEISAN_KENKYU_hutanari
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_KENKYU_hutanari
+
+
+
+@KOJO_フェイト_SEISAN_KENKYU_hutanari
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_KENKYU_hutanari
+ENDSELECT
+
+
+
+;================================================================================
+; 【"SEISANの雑魚触手退治"】
+;================================================================================
+;【雑魚触手退治雑魚触手退治（通常）】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_BATTLE_normal
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_BATTLE_normal
+
+
+
+@KOJO_1712_SEISAN_BATTLE_normal
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_BATTLE_normal
+
+
+
+@KOJO_フェイト_SEISAN_BATTLE_normal
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_BATTLE_normal
+ENDSELECT
+
+
+
+;================================================================================
+;【雑魚触手退治雑魚触手退治（敗北：苦痛）】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_BATTLE_haibokuA
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_BATTLE_haibokuA
+
+
+
+@KOJO_1712_SEISAN_BATTLE_haibokuA
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_BATTLE_haibokuA
+
+
+
+@KOJO_フェイト_SEISAN_BATTLE_haibokuA
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_BATTLE_haibokuA
+ENDSELECT
+
+
+
+;================================================================================
+;【雑魚触手退治雑魚触手退治（敗北：陵辱）】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_BATTLE_haibokuB
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_BATTLE_haibokuB
+
+
+
+@KOJO_1712_SEISAN_BATTLE_haibokuB
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_BATTLE_haibokuB
+
+
+
+@KOJO_フェイト_SEISAN_BATTLE_haibokuB
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_BATTLE_haibokuB
+ENDSELECT
+
+
+
+;================================================================================
+;【雑魚触手退治雑魚触手退治（触手の虜）】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_BATTLE_toriko
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_BATTLE_toriko
+
+
+
+@KOJO_1712_SEISAN_BATTLE_toriko
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_BATTLE_toriko
+
+
+
+@KOJO_フェイト_SEISAN_BATTLE_toriko
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_BATTLE_toriko
+ENDSELECT
+
+
+
+;================================================================================
+;【援助交際_（調教：快楽）】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_SYOUHU_nomalA
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_SYOUHU_nomalA
+
+
+
+@KOJO_1712_SEISAN_SYOUHU_nomalA
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_SYOUHU_nomalA
+
+
+
+@KOJO_フェイト_SEISAN_SYOUHU_nomalA
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_SYOUHU_nomalA
+ENDSELECT
+
+
+
+;================================================================================
+;【援助交際_（調教：フェラ）】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_SYOUHU_nomalB
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_SYOUHU_nomalB
+
+
+
+@KOJO_1712_SEISAN_SYOUHU_nomalB
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_SYOUHU_nomalB
+
+
+
+@KOJO_フェイト_SEISAN_SYOUHU_nomalB
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_SYOUHU_nomalB
+ENDSELECT
+
+
+
+;================================================================================
+;【援助交際_（調教：キス）】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_SYOUHU_nomalC
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_SYOUHU_nomalC
+
+
+
+@KOJO_1712_SEISAN_SYOUHU_nomalC
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_SYOUHU_nomalC
+
+
+
+@KOJO_フェイト_SEISAN_SYOUHU_nomalC
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_SYOUHU_nomalC
+ENDSELECT
+
+
+
+;================================================================================
+;【援助交際_（変態：浣腸）】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_SYOUHU_hentaiA
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_SYOUHU_hentaiA
+
+
+
+@KOJO_1712_SEISAN_SYOUHU_hentaiA
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_SYOUHU_hentaiA
+
+
+
+@KOJO_フェイト_SEISAN_SYOUHU_hentaiA
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_SYOUHU_hentaiA
+ENDSELECT
+
+
+
+;================================================================================
+;【援助交際_（変態：メスブタ）】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_SYOUHU_hentaiB
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_SYOUHU_hentaiB
+
+
+
+@KOJO_1712_SEISAN_SYOUHU_hentaiB
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_SYOUHU_hentaiB
+
+
+
+@KOJO_フェイト_SEISAN_SYOUHU_hentaiB
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_SYOUHU_hentaiB
+ENDSELECT
+
+
+
+;================================================================================
+;【援助交際_（変態：メスイヌ）】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_SYOUHU_hentaiC
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_SYOUHU_hentaiC
+
+
+
+@KOJO_1712_SEISAN_SYOUHU_hentaiC
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_SYOUHU_hentaiC
+
+
+
+@KOJO_フェイト_SEISAN_SYOUHU_hentaiC
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_SYOUHU_hentaiC
+ENDSELECT
+
+
+
+;================================================================================
+;【援助交際_（変態：女王様）】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_SYOUHU_hentaiD
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_SYOUHU_hentaiD
+
+
+
+@KOJO_1712_SEISAN_SYOUHU_hentaiD
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_SYOUHU_hentaiD
+
+
+
+@KOJO_フェイト_SEISAN_SYOUHU_hentaiD
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_SYOUHU_hentaiD
+ENDSELECT
+
+
+
+;================================================================================
+;【援助交際_（レズ）】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_SYOUHU_les
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_SYOUHU_les
+
+
+
+@KOJO_1712_SEISAN_SYOUHU_les
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_SYOUHU_les
+
+
+
+@KOJO_フェイト_SEISAN_SYOUHU_les
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_SYOUHU_les
+ENDSELECT
+
+
+
+;================================================================================
+; 【"AV出演_BIGIN"】
+@KOJO_1702_SEISAN_AV
+
+
+;;"AV出演_コスプレ魔法少女  マジカル☆○○"
+IF CFLAG:282 == 1
+	SETFONT "ＭＳ Ｐゴシック"
+	SELECTCASE RAND:3
+		CASE 2
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　＿＿
+			PRINTL 　　　　　　　　＿　　＿＿　　　_　´　￣￣　　｀　 　　＜　　　　　　　　 ｀ヽ
+			PRINTL 　　　　　　　__＞　´　　　　　ア　　　　　　　　　￣￣ヽ　＼/≧=-　_　　　　　 ',
+			PRINTL 　　　　　 　 ⌒/　／　　＞ ´　　　 「　　　　　　　　　　V　 ∨/////,≧､　　　 i
+			PRINTL 　　　　　　　　/_/　　 .i´　　　　　　ﾊ　　　　　　　　　　 V　 ∨////////＼ 　.i
+			PRINTL 　　　　　　 ／//　　/ |　　　　i　　.i^ V　　　i　　　 i　　　i　　}/＼////////＼{
+			PRINTL 　　　　　／///　　.i　 i 　 .i　｜　i !　 ',　.i　 |　 i　 }　　　|　 ///////////////ヽ
+			PRINTL __　-=≦//,／ ＿./| ./|　　|　 |　 | |　 .i　ﾊ　|　 |　/!　 　 ! /＼///////////////,
+			PRINTL ////////≦//// .ﾚ　|　　|　∧ 从! 　|/　}从ハ!/ |　 　 ,/i///≧=--　⌒ヽ////∧
+			PRINTL ￣￣￣　 ./￣ ﾌ|　　/　.　ﾏf弐之ミ､　　　　ｨf弐茫ｱ　 /.ｲV///////∧　　｀￣￣　､
+			PRINTL 　　　　　 /　　//|　∧　|　 ﾍヾ　vソ　　　　　　vソ '　／{　　∨///////,　　　　　　　 ＼
+			PRINTL 　　　　／　　///| /!∧ |､＼ﾍ :::.::.　 　　,　　 .:.:::.:/ィ　　!　　　＼//////}＼
+			PRINTL 　　 ／　　　////ﾚ/!　ヽ!ﾊ 　 ',　　　　　　　　　　　|　　i! 　 　 　 ＼///,{. 　＼
+			PRINTL 　／　　 　./////／|　 　 ∧　 ', ゝ.　　´ 　 ｀　 ／ !　　i!　　　　　　 ＼/」　 　 ＼
+			PRINTL ´ 　　　　 ////／　,　　　　∧　 !　　＞ 　__　イ.!　.|　　i!　　　　　　　　　　　　　　＼
+			PRINTL 　　 　 　 {//／　 /　　　　／ﾍ　}　＿ /=に}== 乂_|　　|-- ､
+			PRINTL 　　　　　　 　 ／/　　　／　　´}/ __／::::::::::::::::::::::::ﾍ! 　 |　　 V
+			PRINTL 　　　　　　 ／ ./　　／　 / 　 ／二二に__]二二二.|　　!　　　V
+			PRINTL 　　　 　 ／ .／　　/　　 .′ /:::::::::::::::::::;::::::::::::::::::::::::;　　|
+			PRINTL 　　 .＞　 ／　　　　　　　　,::::::::::::::::::::::::::::::::::::::::::::::/ 　 .{　　 　 !
+			PRINTL ＞ ´　　/　　　　　{　 　 i　{::::::::::::::::::::ｨ::､:::::::::::::_／　　　',ィ―r┴ｘ
+			PRINTL 　　　　　　/　　i　 i　　.r'ー}｀:::::::::::::::::::::::ゝ::::::::乂_/　　　 ',　 {{　 }}
+			PRINTL 　　　　i　/＼　 |　 i　　|{}__i!ｨ≦二｛＿｝二ﾆ≧ｘ:::::∧ 　 ﾊi―ー.イ
+			PRINTL 　　　　|/　　 ＼{＼{＿ﾉ　 /'´:::::::::::::::::::::::::::::::::::::::｀ヾ::＼{. ',　　　　V
+			PRINTL 　　　　　　　　　 〃　>::ヽ/::::::::::::::::::::::::::::::::::::::::::::::::::::∨　　',　 　 　∨
+			PRINTL 　　　　　　　　　 i!_／:::::::{:::::::::::::::::::i:::::::::::::::::::::::::::::::::_::∨　　',　　 __　V
+			PRINTL 　　　　　　 　 　.i:::::::::::::::::',::::::::::::::::::}:::::::::::::::::::::::::::/´::｀ヽー‐┴==ミ､　 ヽ
+			PRINTL 　　　　　　　　 /::::::::::::::i:::::',:::::::::::::::,::::::::::::::::::::::::_/::´::::::{　 　＼::::::::::::',　　V
+			PRINTL 　　　 　 　 　 /:::::i::::::::::{::し::::::::::::::::::::::::::::::::::::::/::::／:::::::＼.　 /::::::::::::::}　　}
+			PRINTL 　　　　　　　 ゝ::{:::ﾄ:ヽ::ヽ::::::::::::::::::::::::::::::::::::::::ゝ::´:／:::::::::::ヽ/:::::::::::::::/　ノ
+			PRINTL 　　　　　　 　 ／ヽ} ヽ:ソ::::::::::::::::::::::::::::::::::::::（:_:／::／:::::＞ ⌒'''＜／￣
+			PRINTL 　　　　　　　　　　　　 i:::::::::::::::::::::::::::::::::::::::::::::::} て::::／　　　　 V
+			PRINTL 　　　　　 　 　 　 　 　 ',::::::::::::::::::::::::::::::::::::::::::::;　　　　　　　　　 ∨
+			PRINTL 　　　　　/　　　　　　　 ',:::::::::::::::::::::::::::::::::::::::::;　　　　　　　　　　 ∨
+			PRINTL 　 　 　 .′　　 　 　 ＼　,::::::::::::::::::::::::::::::::::::::;　　　 -　　　　 　 　 ∨
+			PRINTL 　　　　　　　　　　　 　 ＼:::::::::::::::::::::::::::::::::::/　　´
+			PRINTL 　　　　i　　　　　　　　　　 ',:::::::::::::::::::::::::::::/´　　　　　　　　　　　　　，
+			PRINTL 　　　　|　　　　 　 　 　 　 　 ､:::::::::::::::::::::/　　　　　　　　　　 　 　 　 ',
+			PRINTL 　　　　|　　　　　　　　　 　 　 ＼:::::::::::::::;　　　　　　　　　　　　　　 　 '
+			PRINTL 　　　　|　　　　　　　　　　　　　　',:ｰ::ｰ/　　　　　　　　　　　　　　　　 i
+			PRINTL 　　　　|　　　　　　　　　　　　　　 ',个y　　　　　　　　　　　 　 　 　 　 |
+			PRINTL 　　　　|　　　　　　　　　　　　　 　 ',　′　　　　　　 　 　 　 　 　 　 　 |
+	CASE 1
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　_
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　ヽ､　　　　　ヽ｀ヽ
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　 ヽ｀.''' " ´ﾊ}　 )
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　 　＿_　,. ＜´　- ｀ ´ー-　、
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　 ヽ／ .／　 , /　ィ, .,　　　｀ヽ、
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　 /／./ｲ ／7ラﾑ１/!.,. ､　　　≧ｭ
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　, /ｲ/ //./y'rtｭﾚ' .ﾚ Nヽl　　ﾚ　　ﾘ, ｨ- ､
+			PRINTL 　　　　　　　　　　　　　　　　　　　　 　 　　 　 　 　,ｨ≦//l_.从/ ﾞ.匕ｼ　　ｨｻ=ﾐ,l｀ヽ/　　/,､　 　 ヽ
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　　　 　 ／￣´　　ｫYj ﾟ　'　　　 k'ﾟｙｼﾊ /　　////ヽ　　l
+			PRINTL 　　　　　　　　　　　　　　　　　　　　 　 　 　　　／ 　 ｲー≦ｼr'ty　t､ 　　　｀ﾞ"ﾟﾞ/　　//l////l　./
+			PRINTL 　　　　　　　　　　　　　　　　　　　　 　 　　,　'´　 　ｲ_'≧〆y ｀ ｀ヾ!　　　　 　ｨ,'　　,//,'|､///| /
+			PRINTL 　　　　　　　　　　　　　　　　　　　　 .　 -' ‐≦､､´////｀,Y　　　 ／ー‐　, イ／　 ｲ///,! ヽ//!'
+			PRINTL 　　　　　　　　　　　　　　　　　 ,..ィ///////////｀,ヽ'､//ﾘ　　イｨ"´￣｀ヽ_ィ　 ／ l///,j　 ｨ∨
+			PRINTL 　　　　　　　　　　　　　　　 ,／//,〆/////////////ﾊ∨　　|/1 ｨ '"' ´　　 ｀ヽ　.j//,ｲ／
+			PRINTL 　　　　　　　　 , ＞　' ´　／///"//////////ﾊ∨/////　　 !/,レ!'　　,　 　 　.}ｨ.ﾘｨ'"´
+			PRINTL 　　　　　 ,.　'´　　　　 ／/////////////////ﾊ}/////　　　!///〉ｨ '　　　 　ｲ
+			PRINTL 　　　,__'´　　　　　　./.,/////////////_/////,ﾘ.////l　　　 |ｨ"´　　　　 ／
+			PRINTL 　／三三ミ.､　　　　l〃//.=-‐ ''"´　　　　 　 !/,ｨ'"""ｨl　　　 '　　　 　,　'´
+			PRINTL ｨ´////ヽ ヽﾊ　　, ≦_´　　　　　　　　　　　　!/　／　 .l　　　　,. 　' ´
+			PRINTL ///////ﾊ ,lｨ＜=≦- ､/,ヽ、　　　　　　　　 /.／　 ,.　'ゝ-. ' ´
+			PRINTL //////,ｨ'////////ヽ　 ヽ,ﾊ　　　 　 　 　 /'　　／
+			PRINTL ///／////////////,ﾊ　 ',/ﾊ　　　　　　ｲ'　／
+			PRINTL .／////////////////ｌ　 .!//,　　　 ／ / ,ｲ
+			PRINTL /////////////////./　 ｲ//　,.　'´　　l /
+			PRINTL ///////////////// ／/.ｲ''"　　　　　 !'
+			PRINTL /////////////,. 　'　´
+	CASE 0
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　　　　 ＿＿
+			PRINTL 　　　　　　　　　　　　　　　　　　 ＿　　　 ＞ ´　　　　　｀ー-　､
+			PRINTL 　　　　　　　　　　　　　 　 　 ／　　　ヽ／　　　　　　　　　　　　 ヽ
+			PRINTL 　　　　　 　 　 　 　 　 　 　 /　 ,,,..ィ//　,:　　　 /　　　　　　　　　　ヽ
+			PRINTL 　　　　　　　　　　　　　　　/ ／////,i　 i　 　 /　　　　　　 　 　 　 　 ',
+			PRINTL 　　　　　　　　　　　　　　 /////////|　.|　　 |　 /i　 ./　　.ｲ　　　　　 ',__
+			PRINTL 　　　　　　 　 　 　 　 　 〃///＞///!　.|　i.　! /、| ./!　　/ |　 ,　|　　　', ヽ
+			PRINTL 　　　　　　　　　　　　　 /,.イ´　 ///,ﾊ,.-!　|　|/. ｀|/-|-' /　.! /　 !　! 　 ﾄ　＼
+			PRINTL 　　　　　 　 　 　 　 　 / i　|　　 i// |/{　|　i　ﾏr弌ﾐ､ ! /　､.j/!/!/ / ﾄ.　|/ヽ 　,
+			PRINTL 　　　　　　　　　　 　 /　 |　r-- レ　|/ヽ |__　 | 込ｿ　 i′ ,ｨｭ､ / ./　!. ', !//ﾊ　',
+			PRINTL 　　 　 　 　 　 　 　 /　　.!__{ｨ≦ ヾ''´￣　　｀ヽ /i/i　　 ,　ﾑｿ '　/　 /,! }',///}　i
+			PRINTL 　　　　　　　　　＞　´￣　　　ヾi; 　',　　　　　　}､ 　_ _　　 ' '/イ /!///|　∨/i!　!
+			PRINTL 　　　　　　　 /´　　 ＼　　　 　 }}　 }　　　　　　ハ　　 ..　 イ　 |/　|///!　 ∨i
+			PRINTL 　　　　　　　 ',　　　　　ヽ ＿__ノ__ノ‐ｧ'' ´　 　 ﾊ　',￣　　　|　{　　 !///　　 ヾ.　!
+			PRINTL 　　　　　　　　ヽ　　　 　 ＼　/::::::::::::{　 　 　 /!::',　',　　 　 |　|　　 |//　　　　　 |
+			PRINTL 　　　　　　　　　 ＼　　　　 ヽ''::::::::::::::',　　　　ﾉ::::∨ ',.　　　|　!　　 ﾚ'|　　i
+			PRINTL 　　　　　　 　 / 　　＼　　　　 ヽ;;;;;;;;::::ヽ._,,.イ:::::;::::∨ }　　　!　! 　 　 |　　|　　　,
+			PRINTL 　　　 　 　 　, 　 　 　 　 ､　 ／:::::::::＼ニﾆミ､::::!::::/ﾊi!　 　 j/!|　　　 !　　! 　 　i
+			PRINTL 　 　 　 　 　 i　 　 　 　 　∨::::::,.==ﾐ::::}::::::::::｀ヾ:ﾚ'　{　　　 　 ,ﾘ　　　 |　　|　　　|
+			PRINTL 　 　 　 　 　 |　　　　　　　 | ゞ::_:::::::::V::::::::::::::::::八ﾄ､ゝ　　 　 　 　 　 |　　|　　　!
+			PRINTL 　 　 　 　 　 |　　　 　 　 ,.:r''::::{___＼:::Vヽ:::::::::/ 　 　 　 　 　 　 　 　 .!　　!
+			PRINTL 　 　 　 　 　 | 　 　 ＿_ノ（V__;:::::::::::::;:::!＼＼/　　　　　　　　　　　　　|　 　 　　,
+			PRINTL 　　　　　 /⌒ー＜ __,.r''::::У ゝ'::::ノ-/ｰ-ミ { 　 　 　 　 　 　 　 　 　 |　　　　 ,
+			PRINTL 　　　　　 } 　 ＞ ´　　 ';:::j ＞- ''ゝ- '　　　 ヾ ､　　　　　　　　　　　　|　　 /!/
+			PRINTL 　　　　　/ ／　　　　　 У　　　　　　　　　　　', ＼　　　　　　　 　 　 |　 /　{!
+			PRINTL 　　　`ｰ' /　　 　 　 　.,′　　　　　　　　　　　 ∨　）　　　　　　 　 　 |　,
+			PRINTL 　　　　 .,′　　　　 　 i　　　　　　　　　 　 　 　 ∨,{　　　　　 　 　 　 | /
+			PRINTL 　　　　 .i　　　　　　　 !　　　　　　　　 　 　 　 　 }/∧ー-､　　　　　　i/
+			PRINTL 　　　 　 ,　　　　　　　 ',　 　 　 　 　 　 　 　 　 ノ//∧　　} 　　　　　/
+			PRINTL 　　　　　',　　　　　　　 ﾄ.､　　　　　　　　　 　 〈,////∧ （
+			PRINTL 　 　 　 .ハ　　　　　　 入::＞ ､__　　 　 　イ　　∨///,∧　）
+			PRINTL 　　　 ノ.　 ヽ_　　　　´　　　　 }:.ヽ｀　　　　　　　!/////∧'
+			PRINTL 　　 ヽ　_ﾉ {//ヽ　　 　 　 　 　 ',:.:.＼　　　　 　 ﾉ//////ﾊ
+			PRINTL 　　　 ∨}　∨//＼　　 ,,.. -＝-ﾐ}:.:.} ヾｰ--= 彡///////ハ
+			PRINTL 　　　　　',　 ∨///ﾑｰ''///////∨　　 ＼////////////∧
+			PRINTL 　　　　　乂__r､/////////////,∧　　　　＼,//////////∧
+			PRINTL 　 　 　 　 　 　 ＼////////////∧　　　　　ヽ//////////ﾊ
+	ENDSELECT
+	SETFONT
+
+
+;;"AV出演_凌辱ヒロイン プリティー☆○○ セカンドシーズン"
+ELSEIF CFLAG:282 == 2 
+	SETFONT "ＭＳ Ｐゴシック"
+	SELECTCASE RAND:2
+		CASE 1
+			PRINTL 　　　　　　　　_＿　ヽ､_ｰ ､　　　　　／>外､
+			PRINTL 　　　　　　　,ｲ斗'ﾀ＞ﾞ __ー-―‐-＜∠斗升|≧ｭ.､
+			PRINTL 　　　　　　,ｲ斗'У.: : ｢　　　　　　　　￣i歹斗´⌒ー-
+			PRINTL 　　　　　　　,ｲ斗´. : :!　　i / ﾊ　 　 　 ,.ﾄ升|≧ｭ.､
+			PRINTL 　　　　　　,ｲ斗'´ /j!: : i i!/i,/　i从.!i: : :Yｰ ﾞ´Y≧ｭ.､
+			PRINTL 　　　　　,ｲ斗'ﾍi,ｲ i! : .ﾘﾉ才　 :Ｎﾊﾘ : : l.;,j　　ｊ
+			PRINTL 　　　　　　　　ﾉi i,ｲヽゝ!忙ﾁ 　忙ｹﾉ;ﾉノ/＿ /
+			PRINTL 　　　　　　　,'. ﾊ. ヽ!ﾞ ﾉﾍ　 　.:　　,: ﾊ マ´　/.:.ヽ
+			PRINTL 　　　　　　　／三彡へ:::.ヽ､ ´｀,.ｲ.:,:∧丶_,/､:.:.:.:.:.､
+			PRINTL 　　　　 ,　'´γ⌒:, 　 lゞヽﾊ｀:.:,ｆ／ﾘ:　ー=ミ､｀i:.:.:.:;
+			PRINTL 　　　　´ '　.; ´ ,ノヽ　j /.:ゞ⊂⊃/´ ,ｲ:.:　/i　ヾヽ._., -ｲｒ
+			PRINTL 　　 ,′ ,! i/ ,.ｲ:/.:.:Иｰ=＝＝=A､. i 　,..::..:ﾄ､　ー-≦,.ﾉ
+			PRINTL 　　ｊ　/i: !ﾞ ,ｲ´.:.:.:.:.:|::.:..:..::.::.::.::.:...::..ﾃ:ｖ:..:..:..!:..ゝ､ i:..:..:.i
+			PRINTL 　　,ﾞ　 :　//.:.:.:.:.:.:.:j::..::..:,.::::::::::.....ノ:У:..:..:..ヽ､__ヽ､;i!::i!
+			PRINTL 　　}　 ﾙ.:/.:.:.:.:.:.:.:.:f´:,￣:￣:.｀:-:.:､fﾍ､:..:..:..:..:..:..:..ヽ､:/
+			PRINTL 　　′f.:./.:.:.:.:.:.:.:.:.:ﾊ:.::::::.:.､.:.:.:.:.:..:.ﾒ､/ﾒ､_:..:...:..:..:..:..:..ヽ､_＿__
+			PRINTL 　　 У.:′.:.:.:.:.:.:.:_/|,.:.:.:.:..:.;.:.:.:..:../.: >／＿＞¨ て:..:..:..:..:..:..:..:...､
+			PRINTL 　／.:.:.:i.::.:.:.:.:´⌒＞ﾄ､:...:...:...:,.:..:/.: /ミ､_＝─　 　｀ｰ ､:..:..:..:..:./:..､
+			PRINTL 　:.:.:.:.:,ﾉ.:.:.:.:/ ﾉ´__:,.>､｀ゞ､::.,:,ﾍﾞ: /Tー--､_＿__,／⌒ !:..:..:..:..:i::.::.:l
+			PRINTL 　}:.::./ヾ,:_:/ / __　.: /-＞:.<_,／⌒ヽ_: . 　` ､γ⌒ヽ:..:..:γ⌒i::.::/
+			PRINTL 　{:./ 　　　　ヾ.: :／j´jﾞi::::::ハ:::｀iー=ミヽ:. . 　ヽ　 　｀ｰ´　 　f::./
+			PRINTL 　V　 　 　 　 ,＞／/´ ヾ::i::.{::::/::::::j .::Vヽ:　: .　　　　　　　　i:/
+			PRINTL 　　　　　　<,ｲ.:/´ .: .:　: Y /:;ノ｀:r<_. 　ヽ::>　　 ｀.　　　　　　!
+			PRINTL 　　　　　 ∠__/　/ . .　 .:i.//　　′ ｀. 　 V.: 　　　,
+			PRINTL 　　　　　　　　　.′ . 　 :j′ 　'　 　　､ 　　 . ｒー-{
+			PRINTL 　 　 　 　 　 　 ,ｲ　　　 .::　／　　　 　 ､　 　ﾉ.::::::ﾊ
+			PRINTL 　　　　　　　　/.:L　 　 .:／　　　　　　　｀. rｆﾞ.::::::::::::
+		CASE 0
+			PRINTL 　　　　　 ／　　　　　　　　/////_／__　　　　　　　　　　 ､
+			PRINTL 　　　　／　　　 ＞　´ ￣￣／´//////＞　　　　　　　　　＼
+			PRINTL 　　　　　　　　´　　　　　　⌒ ＜--=≦　＜　　　　　　　　　　＼
+			PRINTL 　　/　　／　　　´￣￣ ｀ヽ　　　 ｀ ＜_　　　 ､
+			PRINTL --＜⌒ヽ　　　　　　､　 　 ＼　＼　ヽ⌒　　　 ＼　　　　 　 　 　 ∨
+			PRINTL 　　　ヽ　　　ト､　 ＼__＼_＼　V!　V　　＼　　　　　　　　　　　　　 ∨
+			PRINTL 　　　 ﾊ　',　 ',　＼　 ', _ｨf弐 ｱi´　 Vー―`　　　　　V　　　　　　　　＼
+			PRINTL 　 　 　 }　 ',　＼　 ＼!　 ,ゞ''´ .ﾚi 　 ∨　 　　ヽ　　　 V　　　　　　__　　ヽ
+			PRINTL 　 ー―ｧ-ｧ-＜__ア　　　　/:/:/:,iハ　!　　　　　||ヽ　　　　　　　／　 ￣, ー-- ＜
+			PRINTL ＿　 ／,ｲ .ﾚ/　≧ｘ" 　` 　　 _　u. }　i　　　　　}}　}　　 }__＞　 ⌒＼ / 　 　 　 　 >.-.._　　　　　　　　 ＞ - ―-＜
+			PRINTL 　　 ｀''＜i!　{　　　　 ＼　 r　／ 　∧ 乂＿＞ 二＞ -―　__- 　__　　＼　　　　／　 ／￣｀ ＜　　 ／:::::::::::::::::::::::::::｀ヽ
+			PRINTL 　　　　　 ｀''＜　　　 　 iヽゝ′　 / __＼＿_..ィ＿__,,,...＞.:´::::::::｀::.＜￣￣||￣￣￣￣　　 ､　　 ｀／::::::::::::::::::::::::::::i:,:::::::::V
+			PRINTL 　　　　　　　　 ｀''＜　　} ﾊ＿　.ｨ／::＞-― -＜´::::::::::::::::::::::::::::::::::::｀Y　 }|＞- ━━--　　__ ／::::::::::::::::::::::::::::::::::/:::::::::::::
+			PRINTL ≧ .　　　　　　　　　　＜ .ﾘ＞〈:::ｨ／:::::::::::::::::::::::｀ヽ::::::::::::::::::::::::::::::::::::从´ 　　　　　　　　　 /::::::::::::::::::::::::::::::::::::::;:::::::::::::::::
+			PRINTL ／　＞。.　　　　　　　　 ｀￣ヽ ＼::::::::::::::::::::::::::::::::::::Y::＞≦三三ニｲﾐ､　　　　　　　　　 ／´￣￣　 ､:::::::::::::::::::|:::::::::::::::::
+			PRINTL 　／　　　≧。　　　　　　、　 ハ　',::::::::::::::::::::::::::::ィ≦＞.:´::::::::::::::::::::::::::＼　　　　 　 　 /　　　　 　 　 　 ､:::::::::::!:::::::::::::::::
+			PRINTL 　{　　　　〃 　≧ ､　　 　 ＼{:.:{}　}ゝ:::::::::::::::／:／:::::::::::::::::::::::::::::::::::::,::::::::::｀ｰr ァ=-　´　　　　　　　 　 　 ＼::::::',::::::::::::::::
+			PRINTL __乂＿__ {{＿　　　 ＞.　　　 |:.:|ﾚi |＼:::::::::::/:.:/:::::::::::::::::::::::::::::::::::::::´::::::,..ィ.f´f´　　　　　　　 　 　 　 　 　 　 ヽ:::',:::::::::::::::
+			PRINTL 　＼＼ ／／　 　 　 　 ＼　 |:.:| .j/　　',:::::/:.:/::::::::::::::::::::::::::::::::::::::,ｘ≦:.／,　 {i　　　　　　　　　　　　　　　　　　 '.!',:::::::::::::
+			PRINTL 　　 }　}　{　　　 　 　 　 　 ≧:.:{　　｀ヽ. ',::i:.:.i:::::::::::::::::::::::::::::::::::／:.:.:.／　/　 .|::,　　　　　　　　　　　　 　 　 　 　 }ｨ',:::::::::::
+			PRINTL 　 ./／､　＼　　　　　　　　　｀¨≧=-　 _}::{:.:.|:::::::::::::::::::::::::::::::/:.:.:.:./ ＼/　　 |::::',　　　　　　　　　　　 　 　 　 　 ,　 ',::::::::::
+			PRINTL 　 （　　　ー― ⌒＼　　　　　　 　 　 　 ≧!ｘ::::::::::::::::::::::::::::::/:.:.:.:./　 〃　 　.!:::::::.､　　　　　　　　　　　　　　　 .′　 ,::::::::
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　　｀''ー -､::::::::::::,:.:.:.:.:ﾊ　/i　　 　 !::::::::::ヽ　　　　　　　　　　　 　 　 i　　　 ',:::::
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　　 　 　 　 　 　 ≧､:::{:.:.:.:.{　/　　　　　|:::::::::::::::＼　　　　　　　　 　 　 　 !　　 　 ,:::
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　＼:.:.::.|/　 i!　　 　 !::::::::::::::::::::＼　　　　　　　　　　　,　　　　 ',::
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　 ｀ヽ/　　i!　　 　 |:::::::::::::::::::::::::｀::..､　　　　　　　　/ 　 　 　 }::
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　 　 　 　 　 　 　 　 　 　 /　 　 |　 　 　.!::::::::::::::::::::::::::::::::::::::....＿＿ ....ィ′　　　 /::::
+			PRINTL 　　　　　　　　　　　　　　　　　　　 　 　 　 　 　 　 　 　 　 ／/　　　 |　　　　.!:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::;　　　　　{::::::
+	ENDSELECT
+	SETFONT
+
+
+
+;;"AV出演_サディスティック魔法少女 すぷらったー☆○○"
+ELSEIF CFLAG:282 == 3 
+	SETFONT "ＭＳ Ｐゴシック"
+	SELECTCASE RAND:1
+		CASE 0
+			PRINTL 　　　　　　　　　　 ＼￣ヽ
+			PRINTL 　　 　 　 　 　 　 ＿_ ＼
+			PRINTL 　　　　　-=≦ ＿＿　＼＼ }　＞---------＜ 　 ,　----　、
+			PRINTL 　　　　　　　　　　/￣｜￣｀　　　　　 　　　　 ´￣￣ }　　 　 ＼
+			PRINTL 　　　　　 　 　 ／　 　 |／ /　　 　 　 　 　 　 　 　 ＼ ＼　　　　＼
+			PRINTL .　　　　　　 ／　　　　/ 　 | 　 　 .l　/∨ﾍ ヽ　　　　　ヽ　ヽ　 　 　 ＼
+			PRINTL .　　　 　 ／　 ／ 　　|　　 |!　| 　 | .|　 　 i　| 　 ｜､　　ｉ　 ト､ 　 　 　 ヽ
+			PRINTL 　　　＜ ＿／　　 　 .|　　 |!　| 斗|-|　 　 l-ﾍ-　､!l | 　 |　 |//＼
+			PRINTL 　　　　　 /l　/　　|　 |　　 |X lﾍ |ﾍ |　 　 l/ 从　八ﾄ､　|　 |////＼　　　i
+			PRINTL .　　　　 //l　i　　 |　 |　　 l.f笊示ヽゝ 　 ﾉ　f笊示ヽ|　/　///////,＼　 |
+			PRINTL 　　　　///| ∧　 .l　.从　 圦 ヒｚソ　　　 　 .ヒzソノ' ./｜'∨///////,＼|
+			PRINTL .　　　////ｌ/ ∧　|ﾍ　 i＼ ﾍ.:.:.:.:.:.:.:.:.:.:.′.:.:.:.:.:.:.:.ノイ　 |ﾍ/＼.///////∧
+			PRINTL .. 　 //////ィ/∧.l,∧ .|　 　ー 　 　 　 o　 　 　 　./ 　 |　＼//,ー‐､///∧
+			PRINTL .　 //＞ ´　///∧/,∧|　　 .l:.　　　　　　 　 　 　 /　　∧　　＼////|＼//}
+			PRINTL 　　　 /　　 i////／ / |　　 .|ゝ　　　　　　　　　 /　　/ .∧　 　 ＼/｜　＼}
+			PRINTL .　　　ｉ　　　|/.／　 /　.| 　　.|　　.|≧o｡　　｡o≦|!　　ｉ　　 i　　　　 ＼! 　 |
+			PRINTL .　　 ｜　　 l/　　 /　 /　　 /ー-----､　 ,..､＿_|!　　|＿ ｜　　　　　　　｜
+			PRINTL .　　 ｜　　 　 　./ ／i　,　---　　 　 　 　 　 　 ､!＿_|　　 ｀ヽ　　　 　 　 .|
+			PRINTL .　　　|　　　　　/./ 　.!fツ::::.　　　　　　　　　　　　　 .:::｀rｯ　　　　　　　　｜
+			PRINTL .　　　|　　　　./ .i　　/ゝ　 '　　　　　　　　　　　　　　ゝ　 'ヽ　 i　 　 　 　 |
+			PRINTL .　　　|　　　　i　 l　 .i　　　　　　　　　　　　 　 　 　 　 　 　 i　 l　 　 　 　 |
+			PRINTL .　　　|　　　　l　 |　 .l　　　　　　　　　 　 　 　 　 　 　 　 　 l　 l　 　 　 　 |
+			PRINTL .　　　|　　　　|　 〉　ﾍ　　　　　　　　　　　　　　　　　　 　 　　/　　　　 　 |
+			PRINTL .　　　|　　　　|　.i　　 |　　　　　　　　　　　　　　　　　　イ　 .∧　　　　 　 |
+			PRINTL .　　　|　　　　l　 l　　 |　　　　　　　　　　　　　　　　　　 l　　i　l　　　　 　 |
+			PRINTL .　　　|　　　　l　 |　　 V　　　　　　　　　　　 　 　 　 　 /　　ｌ　|　 　 　 　 |
+			PRINTL .　　　|　　　　|　 |　　/　　　　　　　　　　　　　　　　 ／　　/　.|　 　 　 　 |
+			PRINTL .　　　|　　　　|　/　 /　　　　　　　　　　　　　　　　　ｉ　　 /　　|　 　 　 　 |
+			PRINTL .　　　|　　　　|./　 /　　　　　　　　 　 }　　　　　　　 ヽ 　 ヽ　 |　 　 　 　 |
+			PRINTL .　　　|　　　　|　 ./　　　　　　　　 　 /!　　 　 　 　 　 ‘，　 i　.|　 　 　 　 |
+			PRINTL .　　　|　　　　|　/　　　　　　　　　　 V　　　　　　 　 　 ‘， .l　.|　 　 　 　 |
+			PRINTL .　　　|　　 　 ／　　　　　　　　　　　　　 　 　 　 　 　 　 ‘，l　.|　 　 　 　 |
+			PRINTL .　　　l　　 ／　　　　　　　　　　　　　　　　　 　 　 　 　 　 i l　.|　 　 　 　 |
+			PRINTL ..　　＞　´　　　　　　　　　　　　　 　 　 　 　 　 　 　 　 　 ｀　 ､　　　　　｜
+			PRINTL .´　　　　　　　　　　　　　　　　　　　　　　　　　 　 　 　 　 　 　 　 ＜　　｜
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　　　 　 　 　 　 　 　 　 　 　 ＜
+			PRINTL 　　　　　　　　　　:.　　　　　　　　　　　　　　　　　　 /　　　　　　　　　　　　｀
+			PRINTL 　　　　　　　　　　 :.　　　　　　　　　　　 　 　 　 　 /
+			PRINTL 　　　 　 　 　 　 　 ＼　　　　 　 　 　 　 　 　 　 ／
+			PRINTL 　　　　　　　　　 　 　 ＼　　 　 　 r､ 　 　 　 ／
+			PRINTL 　　　　　　　　　　　　　　ヽ　　　 /r,ﾍ 　 　 /
+			PRINTL 　　　　　　　　　　　　 　 　 ゝ-.:.':.:.:.:.:.:ゝ　ノ　 _､
+			PRINTL 　　　　　　　　　　-=≦ ￣ {.:.:.:.:.:.:.:.:.:.:.:.:.:}'´　 　 ＼
+			PRINTL 　　　　　-=≦　　　　 　 　 {.:.:.:.:.:.:.:.:.:.:.:.:.:}　　 　　　≧=-
+	ENDSELECT
+	SETFONT
+
+
+;;"AV出演_ふたなりな妹とえっちしてみませんか？"
+ELSEIF CFLAG:282 == 4 
+	SETFONT "ＭＳ Ｐゴシック"
+	SELECTCASE RAND:5
+		CASE 4
+		CASE 3
+		CASE 2
+		CASE 1
+		CASE 0
+	ENDSELECT
+	SETFONT
+
+
+;;"AV出演_私の子●はお父さんとの子"
+ELSEIF CFLAG:282 == 5 
+	SETFONT "ＭＳ Ｐゴシック"
+	SELECTCASE RAND:2
+		CASE 1
+
+		CASE 0
+	ENDSELECT
+	SETFONT
+
+
+;;"AV出演_ネコ耳○○のニャンニャンしちゃうぞ"
+ELSEIF CFLAG:282 == 6 
+ 	SETFONT "ＭＳ Ｐゴシック"
+	SELECTCASE RAND:1
+		CASE 0
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　 　 　 　 　 　 　 　 _,､__
+			PRINTL 　　　　 _ｯ‐ﾐ=‐-　.,　　　　　　　　　　　　　　　　　 　 ,.　-‐　´　≦´
+			PRINTL 　　　 　 ^V⌒ヽ、　｀　　 、 　 　 .　-‐…‐-ｯﾂﾍjレ'´　　 ,ｨ ´　/´
+			PRINTL .　　　　 　 Ｖ　　ミ>､　　　　｀　´　　 　 　 　 ,ィ⌒ヽ__,ィ⌒ミ　厶=＝＝=‐-　.._,
+			PRINTL 　　　　　 　 V⌒y 　 ＼_　　　　 　 　 　 　 ´　　　　Ｖ⌒´ミ 〈__:.:.:.:.:.:. :. : : . ／
+			PRINTL 　　　　　　　_Ｖ＾　　　/⌒¨´　,'　　　　　　 　 　 ヽ　　v'´　ヾ'´￣:.:.:. : : . ／
+			PRINTL 　　　　　 ィ⌒:.)ｯ 　 /　 ｉ　　 '　ｉ　ｉｉ　 ト､　　　 ｉ　ﾊ　 〈　 　 }Lﾆ=＝-‐'´
+			PRINTL 　　≪⌒.:.:.:.:.:.:ｲイ',/ ｉｉ │　 ｉ ｉ |　ｉ|ｉ | |　ｉ　|　 j|ｉ　ｉ|　　v(　 厂ヽｉ: ＼}
+			PRINTL 　　　 `ｰ=ﾆ二ﾌ ,ｨｉ|　ｉi　|:　斗t七j「l | |　|　ｊ⌒ﾌjﾍj|　　 iﾍ((i:i:ｉ::. :. : : .＼
+			PRINTL 　 　 　 　 　 /イi:ｉ:il　ｉｉ　|:. 　jィfて圷ト{　}イ了て圷ﾐ>、 レへi:i:i:. :. :. :. : .＼
+			PRINTL . 　 　 　 　 /.:.:ｉ:ｉ:ｉ:ij: ii　 |:　:小 {h　j＾}　　 　 {ｈ　ｊ＾}ﾙ´　トvｉ　＼:.:. :. :. :. . . .ヽ　　|　-‐‐-,
+			PRINTL 　 　 　 　 /.:.:.ムイ:. ii　 jｉ　 八 V)rク　 　 　 Ｖ)rク' |i　 iレｨi　　 ｀¨¨¨i¨¨¨¨¨¨`　|
+			PRINTL 　　　　　厶イ|i　i|ｉ　jﾚ＾Y＾i^ﾄ､ﾊ ＾¨´　 　 ' 　 ｀¨＾　从 ｉ￤ ⅱ　　　　￤　　　　　 し'`ー‐'
+			PRINTL 　　　　　　　|ⅱ jレ'´-､ヽ } } }つﾍ、 　 { ⌒ }　 　.ｲi 　ⅳ　 |i　　　　　|
+			PRINTL .　　　　　　 八iｉri　　‘ｰ-'ﾆイ 　　|l＞　　ｰ '　＜| ⅱ　 i| 　 |ｉ　　　 　 |　　　　　 　┼‐`┐
+			PRINTL . 　 　 　 ／ 　 )ミt､__匕ﾑ _」i　　 |∟⊥_｀¨´_＿jトﾐi 　 i| 　 |ｉ　　　 　 |　　　　　　　| 　 ´
+			PRINTL 　　　　 (　 　〈ﾆニニﾆﾆ７　]ｉ 　　|ｉ　r「///////〉　ｉ　　ﾄ､__jｉ_　　　　│
+			PRINTL 　　 　 　 　 　 》ｰ=ﾆﾆﾆ7 　ⅱ 　 |ｉ　|//」⊥L」/ﾚ　| 　 ﾚ /／ﾍ　　＿j＿__　　 　 　 ((
+			PRINTL 　　　　　　　 〈､　　　￣| 　 ⅱ　　|ｉ　Ｖ´ -‐‐-ﾐ/　│　 ﾚ'/　　 ﾚ'´l　　　　 ｀i　　　　 ))
+			PRINTL 　　　　　　　　| )　　　 │ 　j　　　|i 　 v'　 　 /　　│　 ﾚﾞ 　 f´{ l {j　|　|　l │　　 　((
+			PRINTL 　　　　　　　　|　　　 　_| 　 ｉk 　　|i　　 ',　　/ 　 　 |　　|　 　 |ﾆ>､ ｰ'ー'ｰ'ｰ'
+			PRINTL 　　　　　　　　|　　　　　〉 ｉ ﾙﾍ、ﾐﾄ､_＿_》__《_ 　 　 |　　|　 　 ﾄ=ニｰ'ﾆﾆﾆ「
+			PRINTL 　　　　　　　　|　　　　 　 jﾚ〉ﾞ　)　「　　イ凵トミ>､　ﾙヘj　　 〈｀¨¨¨¨¨¨¨´}
+			PRINTL 　　 　 　 　 　 ＼　　　,ｨ'´/　　　),ｊ　// | |＾|l　 ＼`トハｲ !　　|ヽ､　　　　│
+			PRINTL 　　　　　 　 　 　 ｀丁´ | 《ト､ 　 　 //__」 |ｌｌ|ｌ　_＿〉〉'//ｊ│　│　　　　　´|
+			PRINTL 　　　　　　　　　　　i 　 |　寸ミト､_ ｀ー匕ィｉ||`ー匕_｀¨´__|　　{　 　 　 　 ⅰ
+			PRINTL 　　　　　　　　　　　i 　 i 　 i｀くﾆニﾆ７　　|ⅱ 「二二二二》，　｀　　　　　/
+			PRINTL 　　　　　　　　　　　i 　 ｉ 　 | 　 〉 ￣　　　|ⅱ 「￣￣￣|￣ ヘ 　 　 　 ／
+			PRINTL 　　　　　　　　　　　| 　 i 　 |　,《　　‐-　　Ｌ」_」　-‐　　ﾑ　　　i｀¨¨¨¨i|
+			PRINTL 　　　　　　　　　　　| 　 i 　 | 〈　ヽ　　　　 ￣　　　　　/く　　 │　　　i|
+			PRINTL 　　　　　　　　　　　| 　 i 　 | /´　 ＼　　　 　 　 　 ／ ﾉ∧　 │　　　i|
+			PRINTL 　　　　　　　　　　　| 　 i　　/　　　　 ｀　　　　　　´　 ´/ 　＼│　　　i|
+			PRINTL 　　　　　　　　　　　| 　 ｉ　 '　　　　　 　 　 　 　 　 　 ,'　 　 　ヽ 　 　 i|
+	ENDSELECT
+	SETFONT
+;;"AV出演_淫語 卑猥語 BEST SELECTION 7"
+ELSEIF CFLAG:282 == 7 
+	SETFONT "ＭＳ Ｐゴシック"
+	SELECTCASE RAND:2
+		CASE 1
+
+		CASE 0
+	ENDSELECT
+	SETFONT
+;;"AV出演_萌え萌えコスプレ7"
+ELSEIF CFLAG:282 == 8 
+	SETFONT "ＭＳ Ｐゴシック"
+	SELECTCASE RAND:5
+		CASE 4
+			PRINTL 　　　ー―――――
+			PRINTL 　 　 　 ＼　　　　　　　 　 ＼　　　　　　　　　　　　　　　　　　　　__
+			PRINTL 　　　　 　 ＼　　　　　　　　　＼　　　　　　　　　　　　　　 　 ／　　 ＼
+			PRINTL 　　　　　 　 　 ー――　　 　 　 ＼　　　　　　　　 　 　 　 ／　　　　　 ＼
+			PRINTL 　　　　　 　 　 　 　 　 　 ＼　　　　＼　　　　__＿___　　／ 　 　 　 {:　　　＼
+			PRINTL 　　　　　　　　　　　 　 　 　 >､　　 　 У´_____＿＿__／　　 　 　 ノ! 　 　 　 ＼
+			PRINTL 　 　 　 　 　 　 　 　 　 　 _｛ 　 >　 イ´¨¨¨¨¨¨¨¨`ヾ　　　　 , へ´ 乂 　　　　　＼
+			PRINTL 　　　　 　 　 　 　 　 　 　 ⌒ヾ{ノ’　　　　　　　　　　｀`　　く　｀ヽ＼⌒｀`　　.,__＿)
+			PRINTL 　　　　　　　 　 ／´　　　　　 /　 /　　　　i 　 　 　 　 __　　`ヽ ,´′ ＼　　ヽ
+			PRINTL 　 　 　 　 　 ／　　　　　 　 ψ　, 　 　 　 i|　i,　　　ヽ　`Y　　 ｝ﾚ/}、　 ＼　 :.
+			PRINTL 　　 __＿ 　 　_＿,.ィ 　／´　i|　 i|　　　　i i|　iﾄ､　　　｝　i|　　 {' ′}:..ヽ　　＼ }
+			PRINTL .　　　　⌒ヽ　__＿　イ/　 / i|　 i|　 　 i| i i|　i|　＼　 ｝　i|　　 { 　 八　　　　 　,
+			PRINTL 　　　　　　 　 ⌒ン　/　 /イi|　 i|　 　 i| i i|　iト ヽ`㍉｀`｛_　　{　 ハ:.＼　　　　′
+			PRINTL 　　　　　　　　Ｙ　　/　 / 　 i|　 }｛云=ミ｛八从 _ ィ云=ミ|「 　 { ∧　｝:.　＼　　｛
+			PRINTL 　　 　 　 　 　 {　　′　　 　 }　从⌒v℃　　 　 ´ ん℃Л}　　小{ ヽ　　　} ＼ ｛
+			PRINTL 　　　　　　　　i| 　,ｲ　 　 ′ } 　 iﾄ　乂ﾝ　　　　　乂_ン ｲ　　,'/ { 　 ｝　 ﾉ　 | ヾ
+			PRINTL .　　　　　　　 　 /´}　　 i{ 　 }　 `ト ヽ　 　 ,　　　　 　 厶　　 '′{　　｝ ｲ　　i|
+			PRINTL 　　　　　　　　 /　 }　　 i| 　 } 　人　　 　 　 　 　 　 　 / 　 /　　　　/　　　 i|
+			PRINTL 　　　　　　　　 　 八　　　　,i|　　 }　>､　　､　,　　　　　　　/　　ハ　　　　　 {
+			PRINTL .　　　　　 　 　 　 　 ヽ ハ　ﾘ　　/ 　 　 　 　_ 　 イ 　 　 /　 　 　 ,　　　, ′
+			PRINTL 　　　　　　　　 　 　 　 ｝八ｲ_　 /う斗- ﾉ 　 　 　 { / 　 /　　　 　 }　　　ｲ　{
+			PRINTL 　　　　　　　　　　　　 ｛′´ 　 ハ　　　′　　　　 ’　　/ｰ-　　　　}　　　　　{
+			PRINTL 　　　　 　 　 　 　 　 　 /　i{　/　 :. `　､　　 　 　 { 　 　 　 　 　 ヽ,}　 　 ﾉ　 {
+			PRINTL 　　　　　　　　　　　　 / 　 ｝ｲ　　 　 　 ﾞ'　　 ,.　 イ　　{　　　　　　′　 　 　 }、
+			PRINTL 　　　　 　 　 　 　 　 / 　 ノ ヘ　　　　　　　 　 　 }　　 {　.,:　　　　ⅰ　　　　 }ヽ
+			PRINTL 　　　　　　　　　　　/　　/i:i:i:i:i:ｉ:＼　　:.　 　 __＿_}　　 {　{:.　　　　 ﾄ 　 　 　 }　`、
+			PRINTL 　　　　 　 　 　 　 /　　,:i:i:i:i:i:i:i:i:i:i:i:.ｭ_ :. ',.:i:i:i:i:i:i:i:i:, 　 从 i:.　　　　从　 　 　 } 　 `、
+		CASE 3
+			PRINTL 　　　　　 　 　 　 　 　 　 　 |＼ 　 　 　 　 　 　 fミヽoo
+			PRINTL 　　　　　 　 　 　 　 　 　 ＿!_　|　　＿＿　　　／ ￣〃､三)
+			PRINTL 　　 　 　 　 　 　 　 　 , ´=‐- `_､´　　　　` ､/, -､' ./　/
+			PRINTL 　 　 　 　 　 　 　 　 /　_/.:.:／,.:.:.:.:.:.,､.:.:` ､ ヽ￣　/　/
+			PRINTL 　 　 　 　 　 　 　 　 ￣/,. / / .斗‐/ i./ﾚ‐|-､|､ー 　/‐`
+			PRINTL 　　 　 　 　 　 　 　 _／/　|/|'/,k示　 　示ﾄ,_/ |.,′/
+			PRINTL 　 　 　 　 　 　 　 　 　 ||/!' .ﾚ 弋.ﾉ　　弋.ﾉi | .,′/
+			PRINTL 　　　　 　 　 　 　 　 　 |` `　||. !　　__　 　.ﾉ ./　/.|
+			PRINTL 　　　　 　 　 　 　 　 　 |　 　.||个 .　__ ._イ|../ヽ/ .i|
+			PRINTL 　　　　 　 　 　 　 　 　 |　　 .||／ {′ /^ヽ/　/　 i|
+			PRINTL 　　　　 　 　 　 　 　 　 | 　 ／{ 　 ＼/　_./　/　　i|
+			PRINTL 　 　 　 　 　 　 　 　 　 |　 /｀ヽ＼　/　〃'ヽハ 　 |
+			PRINTL 　　　　　　　　　　　 　 |　/　　　ヽ/　 ｛__ /ヽ__〉　|
+			PRINTL 　　　　　　　　　　　 　 | .{_,x-x-z_ﾄ,＞'ｰ〈.!　jX{_ .|
+			PRINTL 　　　　　　　　　　　 　 | .rjﾇ'´￣ ［_＿___ﾉ|　厂`! |
+			PRINTL 　　　　　　　　　　　 　 | .{　　　　 ∨　/___|Ｖ 　│|
+			PRINTL 　　　　　　　　 　 　 　 |. _}　　 　 /ヽ/::i:::::l/　　 l |
+			PRINTL 　　 　 　 　 　 　 　 　 | ヾｌ　　　/　/:::::ｉ:::::{　　　l |
+			PRINTL 　　　　　　　　　 　 　 川 ∧＿/　/::::i:::;::::l:＼__,∧
+			PRINTL 　　　　　　 　 　 　 　 　 /::::l∨　/:ｉ::::l::::::::l:::::::::l:::::i
+			PRINTL 　　　　　　　　　　　　　/::::::j/　/::::l:::::!:::::::l:::::::::l:::::l
+			PRINTL 　　　　　　　　　　　　　｀ヽ:/　/i ::::!::::l::::::::!:::::::::l::: |
+			PRINTL 　　　　　　　　　　　 　 　 /　/:::! :::l:::::!:::::::l::::::::├┘
+			PRINTL 　　　　　　　　　　　　　_/ミ;/:::::l::::::!::::l::::i :|::::::::::|!
+			PRINTL 　　　　　　　　　　　　/￣爪:::::::| ::::!::::l::::l:::|::::::::::|l
+			PRINTL 　　　　　　　　　　 ／　 / ﾊl:::::::!:::::l :::ｌ ::l:::|:::::::::::l:!
+			PRINTL 　　　　 　 　 　 ／　　 / /　!::::::!:::::l :::| ::l:::|::::::::::::l::!
+			PRINTL 　　　　　　　／　 　 ／ /　/ :::::|::::::l :::|::::l:::ｌ::::::::::::|::l
+			PRINTL 　　 　 　 ／　 　 ／　 /　/ :::::::l::::l::| :::|::::l:::l :::::::::::|::ヽ
+			PRINTL 　 　 　 く／ 　 　 　 ノ ／l ::::::::|::l:l::|:::l:l :::|:::|::::::::::_j／
+			PRINTL 　　　　　 ヾ'／　 ／／ ｀└rｰ七L!｣_:j｣-､!:ﾙ'´￣
+			PRINTL 　　　　　　　ヾ〃／　　　 〈‐光‐〉　　〈‐光‐〉
+			PRINTL 　　　　　　　　　　　　　　　`ー‐'　　　 `ー‐'
+		CASE 2
+			PRINTL 　　　＿_　　　　　 　 　 　　 　 　　 　 　,ｨ _＿＿_,.r‐ｧ
+			PRINTL 　　　ヽ、￣¨¨ヽ、　　 ,.. 　- …―- ､_/／,. -一'¨／
+			PRINTL 　　　　 ＼　　 　｀ヌ´　　　　　　　　　　 ´￣｀ーく
+			PRINTL 　　　　 /´＼　 ｖ′　／　　　 　 　 　 　 　-―-､ ＼＿_
+			PRINTL 　　　. /　　,..＞ﾊ　 /　　/　　　　　　　　 ｀ヽ　、 ＼ー'´
+			PRINTL 　　　/　 　i 　ｲ　ヾ|　　,' / // ,　 ﾊ　　 　ヽ.|　ヽ　 ヽ
+			PRINTL 　　　　　　|　　! 　 | 　 l ,' //_/　/　!　,'　!　ﾘ　　ト、 !
+			PRINTL 　　　　　 / 　∧　 |　 'T「「∧ﾊTト //ﾑL}|　|　　ｌ ',ﾚ′
+			PRINTL .　 　 　 /　／　 Y´!　 ｨfひ弓ﾄ 　//ｆ元ﾄﾘ,.ｲ ! | ﾄ､＼
+			PRINTL ＼　 　/ , '　　　∧ !　 ﾄヒz::ｿ　　　 ﾋzｿ彳/ｲ ,'人}
+			PRINTL 　 <＼ｎ′ 　　/　｀|　 | :.:.:.:.　 　 ,　:.:.: ,' / /イ
+			PRINTL 　　/.）＼_,　　/　　 i　ハ　　　ｒ_ｧ　 　,ｲ∧　　|
+			PRINTL 　　Ｖ二ｽ.Y´|,'　　　 |,'　 } 丶、 _,.　＜ 　 　 　 |
+			PRINTL 　　 {. r_〉｀!　}>' / /／ ゝ ､,,_o]lム` ｰ⊥、　　｜
+			PRINTL 　 　 ＼　 　 ｆ　|,. '´／　　　　 　 o＼　　 ＼　 ',
+			PRINTL 　 　 　 `!　　{／⌒ヽ 　　　　 　 　 　 ＼_ 　 ヽ
+			PRINTL 　　　 　 | 　 .|　/ |　 ',　　　　　　　 '､　　ヾ 　,〉、
+			PRINTL 　　　 　 |　　.|　 　 　 l　　　　　　　　ヽ　　 ヾ__,人
+			PRINTL 　　　 　 |　　 |ミヽ　　j/_　　　　　　 　 }　　　}、　 ヽ
+			PRINTL 　　　 　 !　　 .!　ヾ_,ノ ヽ ﾐ　　　,　i 　 ﾉ　ﾊ ｲ　y'⌒ ｝
+			PRINTL 　　　 　.|　　　|　/＼ 　/ 　 　 /　ｊ　'　 /　 |l. /　　./
+			PRINTL 　　　 　 ｔ　　 ﾉノ　　ヽ.　 　 　'　　 　 　 　o|l,' 　 , '
+			PRINTL 　　　 　　` ‐´'　　　　 } 　 　 ／ 　 　 　 　 |l　／
+		CASE 1
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　　,、-‐- ､
+			PRINTL 　　　　　,．-…ｰ- 、　　　　　,､ -‐・・‐-　ミ'　　　 　 ヽ
+			PRINTL 　　　　"´￣´"～､　V ,､丶`　　　　　⌒ヽ　　 ヽ...,, _　ヽ
+			PRINTL 　　　　　　　　　　＞ Y　　　　　　　 ＼ 　｀､　　 ｀、　`ヽ､
+			PRINTL 　　　　　　　　f´　,.　r　　　　　　　、丶ヽ 　`､　　ﾊ　　　 ＼
+			PRINTL 　　　　　　　　j／　　　　　〈(　{ヽ　丶、 　 　 V／/｝　　　　 ＼
+			PRINTL 　　　　　　　 /　 /　ｌ　｛　｛ ＼　ヽ　''j ⌒ ｌ　　V彡ﾉl ＼　 　 　 ＼
+			PRINTL 　　　　　　ノ/　　l　 ｌ　 ＼ィ⌒＼　　ｨ笊芯㍉　}ミﾉj　　＼''‐-　＿＼
+			PRINTL .　 　 　 ／ ﾉ ! 　 ｌ　 ｌ　　 ,.ｨf'沁　 　 弋ぃﾂjｌ 　|　 /･、 　 ヽ
+			PRINTL 　　 ＜__,／,从　 从 从　 "弋rﾂ　　　　 "´ﾉ|　｜ｲﾊ　＼　　｝‐-､
+			PRINTL 　　　　-彡"　＼ 　 ＼ ＼ 乂　丶　＿ 　 　 }　 |v⌒､　　＼　　　 ＼
+			PRINTL 　 　 　 　 　 　 f ＼{＼＼ﾍ圦.　 　ヽ_ ﾉ 　 ,.j　 从　　ﾞ､　　 `''弋‐- ＼
+			PRINTL 　　　　　　　 　 l　|　 　 }　 　l ≧o｡.,　　,イノ ＞冖ﾐ、　＼　　　　＼
+			PRINTL 　　　　　　　 　 |ｰ{　 r y　/..,｝　 j～､｝-イ /　　　　 ＼‐-=､　　　　 ＼
+			PRINTL 　　　　　　　　 r～㍉ /／　 /　/　 ノ沙'　′　　　　 (ﾟヽ　 ﾉ)　　　　　 丶、
+			PRINTL 　　　　　　　 ノ::::rへﾉl　　／　/ ／:::::/　∥　　　　　　´"_〈〈 Y 、　　　　 　丶、
+			PRINTL 　　　　　　　_{:::::ヘﾉ::::l ／ 　 / /=／/　 l　　　　　　 _,.=''¨=” |　丶、　　　　　　´"''ー-
+			PRINTL 　　　　　／弋:::::::::::::ノ/　　 / /／　 |　　l｛　　　 _,.='¨ 　　　 ﾉ 　 　 丶、　　　　　　　　　　丶、
+			PRINTL 　 　 　 ん:::::::{　￣　 j八　/''○ﾍ_／|　　l弋,､＝''¨　　　　　　}ヽ 　 　 　 丶、
+			PRINTL .　　　　{ﾏﾊ::(○)==＝彡l ｛イ_/＼〉　|｜ l　　`'～､＿　　　　〈:::::'.、　　　 　 丶、
+			PRINTL 　 　 　 l:::~''=={====＝ィ从 l|　 〉::l　 |｜｛　　　　　〉、ゞ、　　 ＼:::＼ﾏh{￣''～v-､～、
+			PRINTL 　 　 　 ﾏ:::::::::/ r―''イ::＼//|_,Λ::| 八 乂乂_,.ｨ:::::::／ 　 ＼　　　＼:::::寸h、::::::乂 〉、 ＼
+			PRINTL 　　　　　 寸/ //⌒"　＼::/ }:::!　}:Lo,ィ＼{:::::::;:丶´ 　 　 　 ＼ﾉ　 　＼:::VΛ:::::::::::::::::ヽ　 丶、
+			PRINTL 　　　　　　　VV　　　　　ﾉ　 }::| └―=＝彡''´ｨﾄ　　＼　　　　 ゝ､　　 　 ｝ﾆ}:::::::::::::::::::::ﾞ:，
+			PRINTL 　　　　　　　|　 ﾞ､　　,.ィ 〈ﾆ j::|　　　__,,.､-=ニニ〉　 ハ＼　　　 　 ＼　,ｨニﾆ乂:/''～＝ﾆ}
+			PRINTL 　　 　 　 　 l　 　 ¨¨　{　 / /:::..、　{ニニ=-'''"　＞､　｝　 ﾞ､　　　　　<ニニﾆｱ:::ヾ:::::::::;;;;｣
+			PRINTL .　　　　　　 |　　l　　l |　〈 //＼::＼ ¨¨´　_､‐''゛:､‐''=-､　　 ､　　　　　 寸ァ’::::::::::/￣ ＼〉
+			PRINTL .　　　 　 　 |　　l　　l |　＼/　　＼:::::::::''",､‐::゛:::::::.　　 ヽ､　｝　　　　　　　`' ､_:／､::::ﾍ-k 〉
+			PRINTL .　　 　 　 　|　　l　　l { 　 .|　　　　 }ァ'"　　 ::::::::::::::.　　　ヾﾍ、　　　　　　　　　 ／⌒～う
+			PRINTL 　　　　　 　 |　　l　　い､,ﾉ|　　 　ノl　　　 ／::::::::::::::::.　　　　　`～､、　　　　 ／　　∥{ﾞ 、
+			PRINTL 　　　 　 　 从　 乂　＼/　　_､‐゛　l　　／　　V:::::::::::::.　　 l　　　　　~"'' ‐-＝ﾆニ /l |　 ＼
+			PRINTL 　　　　　　 　 ＼　 ＼ / }　　　　　 }／　 　 　 V::::::::::::::.　 }　　　 　 　 　 　 　 　 /　l !　 　 ＼
+			PRINTL 　　　　　　　　　 ＼　/ .Λ　　　 ／　　 　 　 　 V:::::::::::::::.､　　　　　　　　　　　／　 从　　 /:/ ＼
+			PRINTL 　　　　　　　　　　 ／ .:/　＼,.／ 　|:.　　 　 　 　 V::::::::::::::j::.、　　　　　　　　　　　　　　Λ/:/
+			PRINTL 　　　　　　　　　／　 :/　　 　 　 　 |:.　 　 　 　 　 V:::::::::::;':::::＼　 　 　 　 　 　 　 　 ／::::V
+			PRINTL 　　　　　　　　／ 　 .:ｌ　　　　　　　 |:::.　　　　　　　 ＼:::/::::::::::::::＼　　 　 　 　 　 ／::／⌒＼
+			PRINTL 　　　　　　　／　　.:::l　　　　　　　　|:::::.、　　　　　　　 〉:::::::::::::::::::::|　　　　　　 ／::／
+			PRINTL 　　　　　　/　　 ::::::::l　　 　 　 　 　 l::::::::､
+		CASE 0
+			PRINTL 　　 ／ヽ | （__（_／　　　＿＿＿　　　＿＿_ノヽイ
+			PRINTL 　 ｲ　＼ﾝ´　　　　,　'´r─‐､　　＞イ |　（ （__＞'
+			PRINTL 　|__ニ/　＿_　／　　　　　　＼/|　 ｀ン⌒く
+			PRINTL 　|＿ﾉ|-'´__ ｀´ r'´｀ヽ､｀ヽ　､ﾍ ＼.7´　　　ﾍ
+			PRINTL 　ﾍｼ´彡-　｀　　/,ヽ　 ヽ　＼ ﾍ　 ヽ　　　　 .i
+			PRINTL 　/ /／ ./　 i　| | ヽヽx≠t'_j＿_i　 .r､　/　　.|
+			PRINTL 　ソ i　 / /　|　| i　j　i　〃ﾍくｿｲj　 6.）/|　　 |
+			PRINTL 　　 |　 | .|　 .i ﾍ ﾍ＿_　　　 '´　ﾘ　 ｲ/　i　　 |
+			PRINTL 　　 ヽ i .ﾊ　　　ヽヽヾ;;ｿヽ　 ,　 |　　ｿ--､　　.|
+			PRINTL ＿ミ､ | j　ヽﾍ　　ヽｿ_jヽ､_ '´　 j ./,ｲ　　 ∨　!
+			PRINTL 　　＼.ｿ=彡＼ヽ＝ｲ/　|.　二 ﾌ| ./j　　　　|　 ﾄ､
+			PRINTL .　／　　 ／　　｀ﾌ//ノ　/´／:::| .| |ヽ　　　|.　 i　─ﾍ
+			PRINTL 　j　　　/　 (_,イ/＞-ｭﾆ´--ｧ:::| .| |　|　　　|.　 ﾍ ─､|
+			PRINTL ノ　　 /　　 ./彡i::::ヽ_/,--'´::/:| ||:ヽi |　　 .|　　 ﾍ　　|_,
+			PRINTL 　　 /　　　/彡'ﾍ::::::::人::::::::::::::| ﾄj::::::ﾊ　　 j　　　 ＼
+			PRINTL 　彡　　, /´　　 ノi´::::::::｀/:::::::::ﾘ:::::/　ﾍ　　｀ヽ　　　 ヽ
+			PRINTL ´　　　/ .| ,--､/　|:::::::::::::|:::::::::::::::/　　.ﾄ､.　　　∨　　 .j
+			PRINTL 　　　/ |　|　　.ヽ､.i:::::::::::::|::::::::::::/　　 丿 ヽr　　 ∨　.ﾉ
+			PRINTL ､　　ヽ､__ｨ ､ i　| j.j:::::::::::::|::::::::::::∨ ／　　　i　　　.j　.j
+			PRINTL . ヽ､＿_i.　｀＾´＾´.ﾘ::::::::::::j::::::::::::_ﾉｬ‐ﾍ_,─' ﾉ ! Y ﾄ'､ ＼
+			PRINTL ＼　　　　　　　　 ト----─'´　　　　ヽ_／　｀＾─' |
+			PRINTL 　 ﾍ　　　　　 /　 i　　　　　　　r=ﾆ'´ .∨　　　 ｿ .j　　j
+			PRINTL 　　 ﾍ　　　 /　　 .ﾊ　　　 ./　 .|　 ＼　 ∨　　　 /　 ノ
+			PRINTL 　　　 ﾍ　 r'⌒ヽ､ ﾍ ＼　/　　 ヽ　　ハ /　　　./ r'´
+			PRINTL 　　　　 ﾍ　＼__　 /.jヽ /　　　　 .ν'　./＼＿_/　|
+			PRINTL ､　　　　　＼＿_）/ i　/｀ヽ､＿_／　　/　　 ⊂＿.j
+			PRINTL 　｀ヽ､　　　　　　　.i /　　　　　　　 ./＿_ノ￣￣´
+			PRINTL 　　　　ヽ　　　　　.| j　　　　　　　 /
+			PRINTL 　　　　　ゝ､　　　 | i　　　 　　　./
+			PRINTL 　　　　　　　 ￣￣ﾘ　　　 　　 /
+			PRINTL 　　　　　　　　　　 |　　　　　./
+			PRINTL 　　　　　　　　　　 |　　　　 /ヽ､__
+			PRINTL 　　　　　　　　　　 {　　　　ゝ-､　　｀ヽ
+			PRINTL 　　　　　　　　　　　ヽ､　ヽ　　 ｀ヽ　　ヽ
+			PRINTL 　　　　　　　　　　　　　＼　　　　　ヽ　　ヽ
+			PRINTL 　　　　　　　　　　　　　　 ＼　　　　　ヽ　　＼
+			PRINTL 　　　　　　　　　　　　　　　　｀ヽ　　　　ヽ､　　｀ヽ/⌒ヽ
+			PRINTL 　　　　　　　　　　　　　　　　　　｀ヽ　　　ヽ｀ヽ
+	ENDSELECT
+	SETFONT
+
+
+
+
+;;"AV出演_かわゆ過ぎる○○と僕のパコパコ同棲性活"
+ELSEIF CFLAG:282 == 9 
+	SETFONT "ＭＳ Ｐゴシック"
+	SELECTCASE RAND:3
+		CASE 2
+			PRINTL 　　　　　　　　　　　　　　　　　　　-----
+			PRINTL 　　　　　　　　　　　　　　 ,　 ´　　　　　　　　｀　､,. --- ､
+			PRINTL 　　　　　　　　　　　　　／　　 ,　　　　　　　　　　　 　 　 ＼
+			PRINTL 　　　　　　　　　　　　 ,'　　 ／ 　 　 　 　 　 　 　 ＼ ｀ヽ_　 ＼
+			PRINTL 　　　　　　　　　　 　 /　　/　/ / / 　 ,| | 　　 V　':. | _　 ＼⌒＼
+			PRINTL 　　　　　　　　　　　 .'　　/　/_/_/__ ／|ﾊ | l| l| '. | | }　＼ 　＼
+			PRINTL 　　　　　　　　　　　 |　 /　/|/|/ | /｀　　}/-|-|､| | |/　　 ヽー―‐
+			PRINTL 　　　　　　　　　　　 |　,{ ｲ|ｨ笊乎ﾐ　　　 ｨ==､} ﾊ　ハ{ l　|､'.
+			PRINTL 　　　　　　　　　　　 | ( | 从 Vzり　 　 　 _)刈 〉, /|　 |､　|　}
+			PRINTL 　　　　　　　　　　　 |　/　{　 :.:.:.　　　 　｀ ｰ'　//八　{ } /
+			PRINTL 　　　　　　　　　　　 | ,　 圦 　 　 ､　´　 :.:.:.:. ﾑｲ　| ＼ '
+			PRINTL 　　　　　　　　＿＿／　/ l个　　　　 ´　 　ィ V　 〈
+			PRINTL 　　　　 ,　 ´　＿＿__,.イ ///}　 ｀ ｰ r=≦　|　乂　 ＼＿＿__
+			PRINTL 　　　 /　／´　　　/ __/⌒　/　 :､ 　 |⌒＼　　} ｀　､　＜￣￣｀ヽ
+			PRINTL 　　　｛ 从　　　 ／=={　　 / --､　　r--＼　｀ヽ-､ 　 ＼ ｀ヽ
+			PRINTL 　　　 ＼ 　 　 /=ヽ= | 　 ∧　　　 　 　 ／∨　}==＼ 　 ＼　}
+			PRINTL 　　　　　　 　 ,====V| 　 {==≧==-=≦===∨ |===ハ　　 ｝/
+			PRINTL 　　　　 　 　 /=====l|:/　|==r､==V=======∨=====}　　/
+			PRINTL 　　　　　　 ,:'======l｛　とニﾆｰ≧ｨア-＜===V====∧
+			PRINTL 　　　　 　 /=======ハとr==-　　　 ＜⌒つ==}===/=∧
+			PRINTL 　　　　　　＜{￣￣＼_}＞r≧-　　　 　 ｀く===八⌒＼__,〉
+			PRINTL 　　　　　　/ ,|　　 ,　 ´　 　 ,　-≧==-､　　｀ヽ､　　　|／
+			PRINTL 　　　　　 ,: 　|　／　 　 　／==/======＼　 　 ｀ヽ　|
+			PRINTL 　　　 　 ,:　　|　　　　　イ===ｲ=========＼　 　 　 |
+			PRINTL 　　　　 ,: 　 人＿__／================== ､　　　|
+			PRINTL 　　 　 /　 /　　/　　〉====＜==============r--く
+			PRINTL 　　 　 {　 ,: 　 /　｢==／⌒＼==＞=-､=======｛_　　＼
+			PRINTL 　　　　| /　　｛　/==/}　　　　｀ 　 Tヽ＿_, -----rヽ　　 ｀ヽ
+			PRINTL 　 　　／　　　 V--'=/　　------r-r---------〈=ﾊ　　　　＼
+			PRINTL 　　 /　　　　　 乂__/／::-r-----r-r---------∧,ﾉ　　　　　 ＼
+			PRINTL 　　,　　　　　　　　 {/:::::::ノ::::::::::::::{::::{:::::::::::::::::::乂_:∧　　　　　　　}
+			PRINTL 　 /　　　　　 　 　 /:::::::::::::::::::::::::::|::::|:::::::::::::::::::::: -=∧　　　　　　 ＼
+			PRINTL 　 |　　　　　 　 　 ,::::::::::::::::::::::::::::::|::::|:::::::::::::::::::::::::::/::∧　 　 　 　 　 }
+			PRINTL 　 |　　 　 　 　 　 {:::::::::::::::::::::::::＿V::}::::,.:::::::::::::::::::::::/::::}　　　　 　 ／
+			PRINTL 　 |　　　　　　 　 ｛:::::::::::::::::::::::::::::::｀r-〈::::::::::::::::::::::::::::::::|　　　　　/
+			PRINTL 　 |＿　　　　　　　|::::::::::::::::::::::::::::::::::V｛::::::::::::::::::::::::::::: ∧＿_/⌒
+			PRINTL 　　　 ＼＿,--､＿j::::::::::::::::::::::::::::::::::::} |::::::::::::::::::::::::::::/:::::}
+			PRINTL 　　　　 V |　　　 /|＿／￣￣￣￣｀V:／￣￣￣￣￣l>'
+			PRINTL 　　　　　V'.　　 /　<∧　　　 　 　 　 |{_|　　　　　　 　 |
+			PRINTL 　｢￣　＼＼　 ,　　/￣'.　 　 　 　 　 |　:
+			PRINTL 　|: : : : : : ＞r-- く　　　'.　　　　　 　 　 :.　　　　　 　 l
+			PRINTL 　乂: : : : : :ノ-､: ノ⌒＼　.　　　　　　 |　 :.　　　 　 　 |
+			PRINTL 　／}＿,..イ　　|V: : : : : :｝ '.　　　　 　 　 　 　 　 　 　 l
+			PRINTL .´: : / 　 /　　 |: V: : : :/ 　 '.　　 　 　 l　　 ,
+			PRINTL : :／ 　 ,: 　 　 |: : ＼: ｛　　　 ,
+			PRINTL :/{/　　 　　　八: : : : : : 〉　　 }　　　 　 l　　l　　　 　 l
+			PRINTL 　 {　　 /⌒＼　＞--､: |　 　 ,:　　　 　 }　　.　　　 　 '.
+			PRINTL 　 从　｛ 　 　 ｀ー　　 V　　 /　　 　 　 l　 八　　　 　 '.
+			PRINTL 　　　＼｣　　　　 　 　 　 　 ,　　:.　　,　/　　　'. ､　　'　 '.
+			PRINTL 　　　　　　　　　　 　 　 　 /　　　　　ノ　 　 　 '. 　 　 　 '.
+			PRINTL 　　　　　 　 　 　 　 　 　 ,　　　　　 /　　　　 　 ,　　　　　'.
+		CASE 1
+			PRINTL 　　　　　　　　 　 　 　 ー､-　_
+			PRINTL 　　　　　　　　　　 　 　 　 ＼　￣ヽ,
+			PRINTL 　　　　　　　　　　　　r――-＼　　}-　――-　＿　　　,r-―-､
+			PRINTL .　　 　 　 　 　 　 　 /　　　　　　　　　　　　　　　　ヽ∠／￣￣￣￣｀ー---y
+			PRINTL 　　　　　　　-=＝ﾆ/　　　,r　　　　 /　　　　　 ヽ　　{::::::::::::::::＜´ヽ￣￣￣´
+			PRINTL 　 　 　 　 　 　 ＿/　　 ./. 　 　 /　{　　i　　　　　',　 ヽ:::::::::::::::::::＼ヽ
+			PRINTL 　　　　　　　／＿_,イ　.{.　　　　{　 |.　　l　 ,　　　　}　 ｀iT＼￣￣ .｀ .',
+			PRINTL 　　　　　　 ´￣ ／/ ./.l .i　　 /l.　.|.　　.|ヽ ',.　　　.|　　 ', 　 ',　　　　 .ヽ
+			PRINTL 　　 　 　 　 　 ´⌒{　i　| .',　./ﾘi,､ .|ヽ　.|｀ー-　＿.|', 　　}　.∧　　　　　 ',
+			PRINTL 　　　　　　　　　　 | /l　', .ヽ|＿　 ｀　Vﾘ　　|从,fヽ} |.　　 ',/　.l　　　　　 .',
+			PRINTL 　　　　　　　　　　 ﾘ　', r.＼}｀Tﾆ=､ 　 　､＿＿_　 / |　　　.l　　',　　 　 　 l
+			PRINTL 　　　　　　　　　　　 　>l ＼', .｀''''-′　　 ﾋ=ﾆ,ｼ ./　.|　　　.|　　 l 　 　 　 .l
+			PRINTL 　　　　　　　　　　　　/　l　 .|　xxx 　 ,　　 ￣´ .'-‐f.|　　　 l.　　 l　　　 　 |
+			PRINTL 　　　　　　　　 　 　 /.　 |　 .ヽ、 　　__　　　u　 .,r='´}　　　 l　　 l　　　　 .|
+			PRINTL 　 　 　 　 　 　 　 /　　 |　　　|｀　、 _　 ,　 ＜´|／⌒ヽ　　 l　.　|　　　 　.|
+			PRINTL 　　　　　　　　　　/　　 .ﾉ　 　.,}＿　__,}　　　 ∠　{- ､,r ヾ_　l　　,|　　　　 .|
+			PRINTL 　　　　　　　　　./　　 /　 ／´　　｀´ノ　　,／-　　)　 .',-‐ .} .|　　| 　 　 　 |
+			PRINTL 　　　　　 　 　 ./　　 /　 .ﾄ　　　 ／　,r-/ゝ-=＜´　　 }　_/　|　　| 　 　 　 |
+			PRINTL 　　　　　　　　/　　 /　 /ﾞヽ　.／　　　 />=i_ノ　　　　 .}-Y　 |.　　| 　 　 　 |
+			PRINTL 　　　　　　　./　　 /　　{　 ヽ/　　 ,　 /_　i/　　　　　　.|　)　 | 　　| 　 　 　 |
+			PRINTL 　　　 　 　 ./ 　　/　　 .l_r､./､ .　/∠´v-'}＿＿＿　　.,'_/　./　　 .| .　　　　|
+			PRINTL 　　　　　　/　　　{ ､ /,/_／ ¨ir＜ｼ´¨⌒Y|　ll￣￣llヽ/Y ／　　　 |　 　 　 .|
+			PRINTL 　　　　　 /　　　 ,ﾘヽ/／　　 /　　　　　 }_|　ll　　 .ll / /)´　 　 　 .|　　　　 |
+			PRINTL 　　　　 ./　　　　　 //　　　 .′　　　　 .ヾ|-┴==.┴l./´　 　 　 　 |　　　　.|
+			PRINTL 　　　　/　　　　　 /..{　　. . : : : . . . . . . : : |　　　　 　'.l　　　　__ノ⌒ヽ　 　 .|
+			PRINTL 　　　./　　　　　 /　 '.,: : : : : : : : : : : : : : :.|　　　 　 ,' l　,r-≦-‐一＜′　　|
+			PRINTL 　　 /　　　　　 /　　　＼: :＿; : : ＿＿, -.}　　　　,ｲ. ﾄ,/／　　　　　 }　　　.|
+			PRINTL 　 ./　　　　　 /　　　　　｀ T ',　　　　'´　 l　　　　ﾄ､ }/,＿_　　　　　 }　　　.|
+			PRINTL 　/　　　　　 /　　　　　 　 .|　ヽ　　　　　 l　　　　|　ゝ､>=-'　　　　　ﾄ､＿_ |　 _
+			PRINTL ..,'　　　　　 /　　　 　 　 　 |　　',　　　 　 |　 .　　l　ｲ/　＼-y　　　,/　　　/⌒{
+			PRINTL .{　　　　　 ,'　　　　　　　　 |　　 >　　　　.| .　 　 l　 / j　　Y⌒ヽ　l　　　r' .､_/
+			PRINTL .l　　　　　/　　　　　　　　　l　　l. 　 　 　 l .　　　l　　/　　　　,　 |-y _r'　 ､/｀
+			PRINTL .|　　　　 .{　　　　　　　　　 .l　　l　　　　　l 　 　 .l.　 ,/　　　/｀ｰ< ＼　＿ノ
+			PRINTL .|　　　　 .|　　　　　　　　 rYl　　l　　　　　l　　　 l　　/　　 /　　,J　　＼
+			PRINTL .|　　　　 .|　　　　　　　 ./ .ﾌ',　 .ヽ　　　　l　　　.l　 /　　　　　 .j　　　　 ',
+			PRINTL .|　　　　 .|　　　　　　　.f　　 .',　　 }　　　 .l.　　 ,l　　　　　　__ノ　　　　　.}
+			PRINTL .l　　　　　l　　　　　　　,ｺ　　 .i　　 ',　　　.l 　 　l　　　　　f´　　　　　 　 .l
+			PRINTL .',　　　　　',　　　　　　 {　　　 .',　　 ｀',.　 .l.　　 l　　　　　,l　　　 　 　 　 .l
+			PRINTL 　ヽ　　　　.＼　　　　　 ',　　　∧　　　ヽ .l.　　 l　　　＿シ　　　　　　 　 l
+			PRINTL 　　＼　　　　 ＼　　　　 ゝ_,　　 ヽ　　l_ｊ} l　　〈　f⌒´　　　　　　　　　 .,'
+			PRINTL 　　　 ＼　　　　 ヽ　　　　 /⌒ｰ-､｀^^　 .l　　 l/l´　　 　 　 　 　 　 　 /
+			PRINTL 　　　　　`ー-　＿,ヽ　　 ./　　　　 ｀￣　 l　　 i_,l　　　　　　　　　　　./
+		CASE 0
+			PRINTL 　　　　　　　　　　　　　　 ,　　 ----　 、
+			PRINTL 　　　　　　　　　　 　 ,　 ´　 　 　 ￣＼ ＼
+			PRINTL 　　　　　　　 , ---v´　 　 　 　 ⌒＼　ヽ　ヽ
+			PRINTL 　 　 　 　 ／ ,.-,　 　　　　 ､　　ヽ }∧ 　 V　'.
+			PRINTL 　　　　　/ｨ／ 〈　/ / / /{＼＼イ}l |l∧　 |
+			PRINTL 　　　　　　'　/　V　|　|l |∧　V },ィ≠ミ} 　|ﾊ　i
+			PRINTL 　　　　　/　,| l| l|　 {イ⌒从　}/　Vz }/,　 | ﾉ　'.
+			PRINTL 　　　 ／ イ | l|八　∨ｲ笊ﾐ｀　　　ゞ´{ｲ 　|'　　 '.
+			PRINTL 　　　　　　　|　V |＼{从 Vz〉　　　 ' '　|　 |∨ 　 .
+			PRINTL 　　　　　　　∨|＼V ＼ﾑ ' '　｀ v:: ﾌ　,|　 |　V 　 ､
+			PRINTL 　　　　　　 　 ＼　＼}∧込、 　　 　 ｨ/　/⌒ ヽ　 ＼
+			PRINTL 　　　　　　　　　　 　 　 | 　 }|l ￣´〉 /　/　　　 ∨ 　 ＼
+			PRINTL 　　　　　　　　　　 　 　 |　 八V,／rく　 { 　 　 　 }　　　 ヽ
+			PRINTL 　　　　　　　　　　 　 　 |　/　´/⌒ヽ 〉 | '.　　 　 ,　　　　 '.
+			PRINTL 　　　　　　　　　　 　 　/ /,　 〈　　　V从､}　　　 , ､＼ 　　 '.
+			PRINTL 　　　　　　　　　　　　 ,: / | }／｀ヽ 　 ∨}/　　　∧ :.　 ､　　 '.
+			PRINTL 　　　　　　　 　 　 　 /ｲ　/´: : : :∧ 　 ∨　　　/　'. :.　 ∨ 　 }
+			PRINTL 　　　　　　　 　 　 　 {/　,: : : : : /:∧　　 ヽ 　 ,:|　 |　　　∨　 :
+			PRINTL 　　　　　　 　 　 　 　 　 { : : : : : :/:∧　 　 　 /:|　 |　|　　 } |　|
+			PRINTL 　　　　　　　 　 　 　 　 ∧ : : : : : / : ＼　　,. : 八l |　|　　 | |　|
+			PRINTL 　　　　　　　　　　　 　 ,　 ,: : :/ : : : : : |:｀: く : { |l |l|　|　　 | |　|
+			PRINTL 　　　　　　　　 　 　 ／ 　 }: :,: : : : : : : |: : : : : _ヽ |l|　|　　 | |　|
+			PRINTL 　　　　 　 　 　 　 ,:´　 　 ,|: :,: : : : : : : :＼: :/: : :∨|　| 　 / j　,
+			PRINTL 　　　　　　 　 　 ,: 　 　 ／|: , : : : : : : : : : }: : : : : :＼ ,　 / /
+			PRINTL 　　　　　　　　 ,　　　／　 ∨: : : : : :/: : : :|: : : : : : : :ヽ ,: /　/
+			PRINTL 　　　　 　 　 　 　 ／　　　/: : V: : /: : : : :|: : : : : : : : : :∨ ,
+			PRINTL 　　　　 ＿／　 ／　　 　 , : : : :V:/: : : : : :|／: : : : : : : : :}/
+			PRINTL 　 ,.-　´　 　 ／ 　 　 　 /: : : : : :': : : : :／|: : : : : : : : : : :|
+			PRINTL 　 しとィ7ﾌｰ´　　　　 　 { : : : : : : : : : : : : |: : : : : : : : :／|
+			PRINTL 　　ゝ' '´　　　　 　 　 　 | : : : : : : : : : : : : |: : : : : : ／　 ,
+			PRINTL 　　　 　 　 　 　 　 　 　 |＿＿＿＿＿＿_|＿___／　　 /
+			PRINTL 　　　　　　　　　　　 　 　　{ 　 　 　 　 |　| 　　　　 　 /
+	ENDSELECT
+	SETFONT
+
+
+;;"AV出演_無理矢理犯されるアナル 4時間"
+ELSEIF CFLAG:282 == 10 
+	SETFONT "ＭＳ Ｐゴシック"
+	SELECTCASE RAND:2
+		CASE 1
+
+		CASE 0
+	ENDSELECT
+	SETFONT
+
+
+;;"AV出演_おしおきされてイキまくるドジっ娘メイド"
+ELSEIF CFLAG:282 == 11 
+	SETFONT "ＭＳ Ｐゴシック"
+	SELECTCASE RAND:1
+		CASE 0
+			PRINTL 　　　　　　　　　　　　　__ ___　　　　　　/　／―-　､＿_
+			PRINTL 　　　　　　　　　　　＿!:::´::::/｀ヽ''´ ￣　　-‐ ､　―-＜
+			PRINTL 　　　　　　　　　,ィ´＿j:i:;ｲ´ ,　　　　　　　　 　 ヽ　　､ ｀ヽ
+			PRINTL 　　　　　　　　/ <´::::::::/　 /　,　,　/　ハ　i　　ヽ.!　　､＼ハ
+			PRINTL 　　　　　　　　　　〉／:i　:i '.: _:!:｣!-|ﾄN　 !}ｲ:-､! ハ:.､　ヽ ヽl
+			PRINTL 　　　　　　　　　∠､:::::|　ｌ:i:!: f,ィ:Tﾊ 　 　 fT:ﾄﾙ':i l:､:ヽ　}､! 　 .人
+			PRINTL 　　　　　　　　/ 　 :｢｀i　:ﾊ:ﾄ.､! 辷リ　　,　辷ﾘi} ﾉﾉ: ,! ﾊ: !　　 ｀Y´
+			PRINTL 　　　　　　　 / 　∧　:! :i:{｣:.ヽ.　　　　　　　　彳 ﾄ､ !ｲ ﾚ'　　_ｉ_
+			PRINTL 　 　 　 　 　/　／ ,'　｜:!　ﾊ:. ヽ　　　´｀　　,.ｲ　l　i｀ !　|　　 !
+			PRINTL 　　　　　　　ﾚ′ / 　.:! .:　__ﾊ:.　',　 ＿_..イ: i:. 　l　|　ｌ　l　　　　　　　　　　 /.}
+			PRINTL 　　　　　　 　　 /　　　＞ くｒ―-､＼ｒ‐へ,.イ::::::ｉｰｒ---――---- :ｒ‐‐ -‐'´ く
+			PRINTL 　　　　　　　　厶| !　/　　/:::::::::::::::::::::::::::::Ｖ__:::::::::|　＿＿　　　　　|　_|　__ヽ__｀ｰ､
+			PRINTL 　　　ｆて￣＼ ｒ‐从/|__._/:::::::::::::::::::::::::::::::/::/￣￣´　　　　￣￣　|￣!´　　　ｒ' ー'
+			PRINTL 　　　|　ヽ: : : ＼ |: : /: ∧::::::::::::::::::::::::::::::|c::|＿,＿＿＿＿＿＿__.｣　 ﾄ ､ 　　 ヽ
+			PRINTL ＼__./　　 ＼: : : ﾍ:厶/:::::::＼::::::::::::::::::::ノー'　 　V:!:　l　!　　　　　|ｃ_｣　　 ｀ ｰ､}
+			PRINTL ＿／　　ｒ‐､　` ー|／:::::::::::::::::＞､＿／　　　　　 l:|:　 ! |
+			PRINTL .く: : : : : : : : :＿ ／＼::::::::::::::::::::::/// 　 　　　　　　　　N　　　　　_ｉ_
+			PRINTL _ ＞――――く　＼ ＼:::::::::::／／　　　　　　　　　　　 |!. 　 　 　 !
+			PRINTL ::::::::::::::::::::::::／　＼_　ヽ ＼:::::川　　　　　　　　　　　　　.l!　　＊
+			PRINTL :::::::::::::::::::::/　　　| 介 ､　 _}ｰ‐┘　　　　　　　　　　*
+			PRINTL :::::::::::::::::::/　　　 |　　 | `く
+	ENDSELECT
+	SETFONT
+
+ENDIF
+
+
+;================================================================================
+; 【"AV出演_BIGIN"】
+@KOJO_1712_SEISAN_AV
+SETFONT "ＭＳ Ｐゴシック"
+;;"AV出演_コスプレ魔法少女  マジカル☆○○"
+IF CFLAG:282 == 1
+	SETFONT "ＭＳ Ｐゴシック"
+	SELECTCASE RAND:2
+		CASE 1
+
+		CASE 0
+	ENDSELECT
+	SETFONT
+;;"AV出演_凌辱ヒロイン プリティー☆○○ セカンドシーズン"
+ELSEIF CFLAG:282 == 2 
+	SETFONT "ＭＳ Ｐゴシック"
+	SELECTCASE RAND:2
+		CASE 1
+
+		CASE 0
+	ENDSELECT
+	SETFONT
+
+
+
+;;"AV出演_サディスティック魔法少女 すぷらったー☆○○"
+ELSEIF CFLAG:282 == 3 
+	SETFONT "ＭＳ Ｐゴシック"
+	SELECTCASE RAND:2
+		CASE 1
+			PRINTL 　　　　　　　　　　　　　　　　　　 　 　 　 　 　 　 　 　 　 = --=
+			PRINTL 　　　　　　　　　　　　　　　 　 　 　 　 　 　 　 　 　 ´　　　　　　　　　　｀　.､/／- ､
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　　／　 　 　.／　　　　　　　　　　　　 　 ＼
+			PRINTL 　　　　　　　　　　　　　　　　　　 　 　 　 　 /　 /´　　/　　　　　　　　　　　　　　　　　＼
+			PRINTL 　　　　　　　　　　　　　　　　 　 　 　 　 　 ,′ ,′　 /　　　　　　　/}ｲi　　　　＼＼　　　｀-=　＿＿
+			PRINTL 　　　　　　　　　　 　 　 　 　 　 　 　 　 　 ′ ,′　 ,′　 /./　 /Y　 从　　　 　 }　.≧=------=≦
+			PRINTL 　　　　　　　　　　　　　　　　　 　 　 　 　 |　 i|　　 .{ /　/{/　 /　l{　ﾊ　.}　　　　ヽ　 　＼
+			PRINTL 　　　　　　　　　 　 | i　　　　　 　 　 　 　 |　 l|　　 .ﾚ{ / / {　ﾊ　.l| .{ l　ﾊ　 .| 　　‘， 　.ハ
+			PRINTL 　　　　　　　 　 　 ,,| | -―― --､..　　　　|　八　　 l.ｨ芹芯ﾐ.{八 ﾊ. ヽ/　}＼}　　　 }　ﾄ､　}
+			PRINTL 　　　　　　　　 r.:´: : | :,..--..､: : : :',　　　　| {⌒{　　.{{{::r:::刈 　 　 　 .ｲ芹ﾐ､八 从 ﾘ　.!. ヾ{
+			PRINTL 　　　　　　　　 ',: : : : : {:.:.:.:.:.:）: : : :',..　　　|人　!　 .从ゞ:_ツ 　 　 　 ﾊ/:::ﾘ 》/ /} ./}　ﾘ
+			PRINTL 　　　　　　i　.　 ',: : : : : 〕,.--ヽ : : :.:', 　 　 i. ‘人　 .∧／／／／ 　ゞ= '　 / / j/　| /
+			PRINTL 　　　　　　|　i 　 ',: : : .〃:i:i:i:i:i:ヽ: : : :, 　i ｜.....　∨　∧　　　　　′／／./イ　l| 　/{
+			PRINTL 　　　　　　|　|. 　 ',: : :.}:i:i:i:i:i:i:i:i:i:） : : :.　|　|. 　 　 ∨　∧　 ｀　- 　 　 イ-.| |　 ト､　|
+			PRINTL 　　　　　　|　!.　　 ',: : :ﾏミ=-=彡’: : :.,　!..ﾞ＿ ＞ ' ∨　 ’＞ ._ . ｒ＜ 　 　 | | 　|　 Y|
+			PRINTL 　　　　　ヽ　　　',　}_:_:_:}_　　-=-　',: : !__　　　 　 　 ∨ ハ　 　 / 　 　 　 .| | 　| 　.|l|
+			PRINTL 　　　　　ﾆ＼　　∨　__　　＼ 　-- ',: :{　ﾉ　　　　　　 Y　 ‘，　　　　　 　 八　人　.!l!
+			PRINTL 　　　　　ニﾆ＼　 }, '--ミー-'-､.　　',: ヾ.　　　　 　 　 |i 　 l}　 　 　 　 　 　 ＼　ヽ.|l!
+			PRINTL 　　　　　ニニニヽ.ゝ ------ く.　　 i: : :＼.　　　　 　 |l 　 ﾘ　 　 　 　 　 /　　 Y } !.|
+			PRINTL 　　　　　ニニニニ{　　　 ＿,, イ　　 |: : : : ',..　　　　　从 ./ 　 　 　 　 　 { 　 　 |/ |八
+			PRINTL 　　　　　ニニﾆニﾆＹ´￣ ＿ ﾉ从人 {: : : : :{==ミ､　　　　　　　,,..zz≦ニニニニニニニ
+			PRINTL 　　　　　ニニニニﾆ｀丁爻爻從爻爻乂: : ﾉ///,ﾊ　　　 ,.ィf≦ニニニニニニニニニﾆ
+			PRINTL 　　　　　ニニニニニ从乂爻爻爻爻爻乂从////},.ィ≦ニニニニニニニニニニﾆニﾆ
+			PRINTL 　　　　　ー―=≦彡ニニニニニニニニニニニニニニニニニニニニニニニニニニニ
+			PRINTL 　　　　　ニニニニニニニニニニニニニニニニニニニニニニニニニニニニニニニニ
+		CASE 0
+			PRINTL 　　　　　　　　　　　　　　　　　　　 　 　 ＿__ .　､
+			PRINTL 　　　　　　　　　 　 　 　 　 　 　 　 　 ´　　　　　 ＼=
+			PRINTL 　　　　　　　 　 　 　 　 　 　 ／　　　　　　　＼　 　 ＼　＼
+			PRINTL 　　　　　　　　 i 　 　 　 __／　　 {　　 }　　　 }. ヽ　　　∨　 ヽ
+			PRINTL 　　　　　　　　 {ｰ==≦´ｲ}　 从.八　　|､　 　 |　.ﾊ.　　　∨　 ‘，
+			PRINTL 　　　　 　 　 　 ゝ-=／ {./　 {ヾ{ヽ ヽ　!｀ヽ￣| ./}/}、　　.|　　 ﾊ
+			PRINTL 　　　　　 　 　 　 ／　/Y　 .八､{　}ヾ{､| 　ｨ伝示刃ﾊ　　 .!-.､　 |
+			PRINTL 　　　　 　 　 　 〃/ / ,′ 　 { ヽ} ﾘ 　 　 　 しﾘ㌢.}/!　　.|　 }　 !
+			PRINTL 　　　　 　 　 　 {　{ i{ i{　　{ 八∨ゝｨz､　 　´／／/　! 　 .|　ﾉ　 |
+			PRINTL 　　　　 　 　 　 　 | l|八 　 ＼. ＼{ﾊし〉 ,　　　　　 　八　 !ｲ　　 |
+			PRINTL 　　　　　　　 　 　 ヾﾊ　{　 　 ≧=ヽ ´　　　　　　　.// 　 .|　　　.}
+			PRINTL 　　　　　　　　　 　 　 V.ゝ　＼ ＼}∧　　 -　'　　 .{ｲ|　　 |　 ー--
+			PRINTL 　　　　　　　　　　　 　 ヾ{≧z-＼{＼}.>　.　　　 　 |{.　 　 {　　　　　　ヽ
+			PRINTL 　　　　　　　　 　 　 　 ＿＿　　　|　 |　　 } ≧r=.´八　　∧　　　　　　 .V
+			PRINTL 　　　　　　　　　 ,..z≦ニニニ≧､_ __　 ―.!　/､._./／｀ヽ　ﾊ　　 ､　　　　∨
+			PRINTL 　　　　　　　 ,.ィfニニニニニﾊ、 ー- ミ ､ﾉ./　　　　　 　 ｀ヾ＼　ヽ 　 　 .∨
+			PRINTL ≧＝=== ≦ニニﾆノニニニニ弋二二　　＼.У　　　　　　　 ヾ!　 ',　　　　',
+			PRINTL ニニニニニニニニニニニニ: :. -ｧ ､:.:丶　　＼　　　　　　　　　　　 ',　　 　 ',
+			PRINTL ニニニニニニニニニニニﾆ: :ｧ- し'､: :..ﾊ、　　 ー―--　 __　　　　　',　　　　 ,
+			PRINTL ニニニニニニニニニニニﾆ:. {=ミ:.:.ﾉ　}: :.:ヽ　　　　　　　　　 ￣￣￣ ｀ﾞ'' .､　 ∨
+			PRINTL ニニニニニニニニニニニニ:. ≧≦ :.: :ニニ}≧＝=--　..,,　　　　　　　　　 ＼　∨
+			PRINTL ニニニニニニニニニニニニ≧: . . ..:彡ﾆニﾘ　　 ヽ　　　　　＞ ..,,　　　　　　　　 ∨
+			PRINTL ニニニニニニニニ｀ヽニニニニニニニﾆﾆ/､　　 　 ＞ .. ＿　　 .イ≧。　　＿＿ ノ
+			PRINTL ニニニニニニﾆ＞=ｲ:',ニニニニニニニニﾊ　≧=-彡　　 　 　 　 　 　 　 　 ﾏ
+			PRINTL ニ＞''"´ 二 ア- ､／: ::,ニニニニニニニ/ニ,　　 .ヽ　　 　 　 　 　 　 　 　 　 乂
+			PRINTL ´　　_,.ｨ ´＞ ´ノヽ ヽ: :.,ニニニニニニニニﾆ.　　　 ',　　　　　　　　　　　　　　 　` ＜
+			PRINTL 　　 ＞ ´　 Ｙ:.:.:.:.:.:}　',: :ニニニニニニニニニ,　　　..}.　　　 ',　　　　　　　　 　 　 　 　 、
+			PRINTL 　　/⌒ ､　 {v,:.:.::ノ´ト'ﾊニニニニニニニニニ',　 　 .!　　　　}　　　　　　　　　　　　　 　 ヽ
+			PRINTL 　 八__ __ ヽ/ヽr ､イﾆﾆﾊニニニニニニニニニ,.　　 ,　　　　　　　　　　　/　　　　　　　　　＼
+			PRINTL 　　 しｲ-､ .}　 ﾊ__ノニﾆﾆ,ニニニニニニニニﾆi!　...ﾉ　　　　　　 　 　　 / 　　　　　　　　　　　ヽ
+			PRINTL 　　　　ゝ'¨´ゝ-'　.iニニニ',ニニニニニニニﾆﾆ:|／ 　 　 　 ｀ヽ　 　 ＞ ´ 　 　　　　　　 　 　 　 ',
+			PRINTL 　　　　　　　　 　 i!ニニﾆﾆ,ニニニニニニニﾆﾆi!　　　　　　　　＞ ´　　　　　　　　　　　 　 　 　 i
+			PRINTL 　　　　　 　 　 　 |ニニニニ.ニニニニニニニニ|　　　　　＞ ´　　　　　　　　　　　　　　　　　 　 ,　　＿
+			PRINTL 　　　　　　　　　 .|ニニニニﾊニニニニニニニﾆ!　　　／　　　　　　　　　　　　　　　　　　　　　 ﾉﾚ ´　　 ｀ヽ	
+	ENDSELECT
+	SETFONT
+
+
+;;"AV出演_ふたなりな妹とえっちしてみませんか？"
+ELSEIF CFLAG:282 == 4 
+	SETFONT "ＭＳ Ｐゴシック"
+	SELECTCASE RAND:5
+		CASE 4
+		CASE 3
+		CASE 2
+		CASE 1
+		CASE 0
+	ENDSELECT
+	SETFONT
+;;"AV出演_私の子●はお父さんとの子"
+ELSEIF CFLAG:282 == 5 
+	SETFONT "ＭＳ Ｐゴシック"
+	SELECTCASE RAND:2
+		CASE 1
+
+		CASE 0
+	ENDSELECT
+	SETFONT
+
+
+;;"AV出演_ネコ耳○○のニャンニャンしちゃうぞ"
+ELSEIF CFLAG:282 == 6
+ 	SETFONT "ＭＳ Ｐゴシック"
+	SELECTCASE RAND:2
+		CASE 1
+
+		CASE 0
+	ENDSELECT
+	SETFONT
+
+;;"AV出演_淫語 卑猥語 BEST SELECTION 7"
+ELSEIF CFLAG:282 == 7 
+	SETFONT "ＭＳ Ｐゴシック"
+	SELECTCASE RAND:2
+		CASE 1
+
+		CASE 0
+	ENDSELECT
+	SETFONT
+;;"AV出演_萌え萌えコスプレ7"
+ELSEIF CFLAG:282 == 8 
+	SETFONT "ＭＳ Ｐゴシック"
+	SELECTCASE RAND:13
+		CASE 12
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　　 　 　 γア¨￣
+			PRINTL 　　　　　　　　　　　　　　　　　 　 -――‐-　､{ ﾑｨ‐､
+			PRINTL 　　　　　　 　 　 　 　 γ ￣У /　ﾑ-――-ヽヽ　＼ヽ、 ＿,.
+			PRINTL 　　　　　　　　　　　　/ ,-‐ｧ　./　/´￣￣￣ ｀ﾊﾍ　､ ヽ寸　´
+			PRINTL .　　　　　 　 　 　 　 ﾑｲ//'´ﾆ|　 l i | |.　ハ. }　|.', iﾊﾍヽﾍ＼
+			PRINTL .　　　　 　 　 　 , ィ´//／{ﾐ､｀|　 lﾊ.| |ｉ .|　| ﾊλ| }. | } ﾄ､}__｀℡x､
+			PRINTL 　　　 　 　 ,ィチ///／/ λ､__l　士志iヽ|　ﾘx志z/|ﾊﾉj∧ｉ ,､￣￣
+			PRINTL 　　　　 ー一　¨￣///ィ´i ﾄ{"|　 代ツ` ｀　辷ﾘｲ iﾘﾊV/ Y.r/>ｭ ､
+			PRINTL .　　 　 　 　 ,ィチ/ ／ .l　| l.ヽ|　 ﾊ""　　　, "" l .|　ﾊ　｀ヾ{ ,' ｲﾉ.ﾄ
+			PRINTL 　　 　 　 ／//,ィﾁ 　 .ﾉ　lﾉ　 | '､　ﾄ　　 -‐　／| .|　ヾ､　 ｀x_`ﾟ ノ:∧　__
+			PRINTL 　　　　　￣￣　/　　/　 /　 .λ ﾊ 个　　 ィ　 λﾊ　 ',＼　 ヽ二ノ::/く::.::.ヽ
+			PRINTL .　　　 　 　 　 /　　/　 ﾑｨｭイ､|ｉ　;　|｀＞＜｀¨{`ﾊ　ヽ ﾍ ｀ｰｧ}､__／／{⌒､:ﾍ
+			PRINTL 　 　 　 　 　 /　　/　　/:.:.:.:｀ヽ|{　i　|{二ﾛ二}:::V:.:}　 ﾍ､ ヽ　 |ﾍ:::::/　 .}::.::.:';:ﾊ
+			PRINTL 　　　 　 　 /ｲ　 ,　　 /:.:.:.:.:.:.:.:.|ﾊ. V/:/:|:::ヾx::::ﾊ:.:ｉ |　 Vx ＼|__∨＿,ｨi::.::.::.;:.:.
+			PRINTL 　　　　　 //.j　　 　 入＼:.:.:.:.:.';.ﾊ　ﾚ'{:::|:::::∧ヽ::|:.リ',　.|　｀ヽ{::.｣￣::.::.:l::.::.::.::.:j
+			PRINTL .　 　 　 // /　/　　/ . ＼＼:.:.:.';:ﾊ ヽ:.}::|くヽ:.ﾍ::＼:/:j| ﾘ　 　 i￣￣￣ |::.::.;:'::/
+			PRINTL 　　 　 // /　/　　/　　　 ＼＼:.ヽﾊﾄ､ヽ| i＼＼';::::∨ﾘ/､..　　ヽ　　　　|｀´::./
+			PRINTL .　 　 // /　/　　/.　 　 　 ,ｲ＼＼:.:.//|丁l　 ＼ﾍ::::}ｲ ヽ ｀寸.　　　 　/｀ｰ '
+			PRINTL 　　 // /　/　j .ﾑ　 　 　 / |.　 ＼X/./:::| |　　　｀}:::i V　ﾍ 　 ｀＞=-‐'､
+			PRINTL ...　/' ./　 　 // 　 　 　 /. λ　　 ｀ /::::/ .|　　　/::/　.V　ﾊ　　　}　',.　ﾊ
+			PRINTL 　 ,' 　 　 　 ,ｲ 　 　 　 /i|　　'､. 　 ムイ　 |　　　イ　 　 ', i　　 　 |　　　ﾊ
+			PRINTL .　ｉ　’　　 / 〈〉.　　　 ,　l| 　.ﾉ ヽ　　　　　 ',　　 λ　　　iλ　 |　 |　 ’　 }
+			PRINTL .　|/　　 /,／||　　　 /　 !　/　　 ｀　　　　　ｉ　　　j＼ 　 |ハ　 |　 |　 j　| i
+			PRINTL 　//　 .ﾑｲ::::|:|,..ｨﾁ才　/ ｲ{　 　 　 　 　 　 |　　ノ 　 ＼.ﾘ　}　.l　 j　/ ,ｲ.j
+			PRINTL .//　　i /:::::::|;ィチ /　／: |:i　　 ヽ、.　　 　 |　　　　　 |::ﾄ､ﾑ_ノ| ./_/ノ　ﾘ
+			PRINTL . ,　　 ∧::::::::::::/| |,／:.:.／|:|　　　　　　　　∧　　　　　|::|ヽ _,イi/　　　./
+			PRINTL . |　　ﾊ:::ヽ-‐ｵ |./:.:.:.:/:.:.:.|:|　　　　 　 　 /∧.,　 　 　 |::|:.:.ﾍ､
+			PRINTL . |　 ﾉヾxzzオ以':.:.:.:.:.:.:.:.λ',.　 　 　 　 //:.:.:.ヾ.､　 　 |::|:.:.ヽ:.＼
+			PRINTL . |. |ﾊ　γi j |ｨ　ヽ:.:.:.:.:.:/:.:';::',.　 　 　 //:.:.:.:.:.:.:iヾ，　 |λ:.:.:.:＼:.>イ{
+			PRINTL .ﾊ. ', ヾ | `´lヽ__　 ＼:./:.:.:.:.';::',.　 　 //|:.:.:.:.:.:.:.:|:.ﾊ',　 |:j:.ﾍ:.:.:.:.:.:> ､_{
+			PRINTL 　 ヽ＼｀ﾄ､ヽ＼ Y　　｀＜:.:.:ﾊ::', 　 //:.:|:.:.:.:.:.:.:.:|:.:.ﾊ', //:.:.:.r-イ .ｰ}
+			PRINTL 　　 ｀ｰ＼ヾ、｀ｰУ｀ヽ　　｀ｰﾍ:ﾍ//:.:.:.:|:.:.:.:.:.:.: |:.:.:.:}ﾚﾑイ´　 v‐‐く
+			PRINTL 　　　　　　　　／::::::::::厂{迅___}::／￣｀ー'￣￣｀￣レ'　 }イ｀く:::::::::ﾊ
+			PRINTL 　　　　　　 ／::::::::::::/ 　 V><::ﾚ￣ｰ一'ヽiー'￣`ｰ'￣i`´　　　}::::::::::ﾊ
+			PRINTL 　　　　　 /:::::::::::::::/　　　ﾍ〈〉::::::::::::::::::::: 'l::::::::::::::::::::::'　　　　 .i::::::::::::j
+			PRINTL .　　　　　j:::::::::::／　　　　 ﾍ〈〉::::::::::::::::::::::|::::::::::::::::::::’　　　　 ヽ::::::::/
+			PRINTL 　　　　　 ￣￣　　　　　 　 ﾍ〈〉:::::::::::::::::: |:::::::::::::::::,'　　　　　　 ＼/
+		CASE 11
+			PRINTL 　　　　　　　　　　　　 　 　 　　　　　　　　-‐=ミ､≠　 ¨　￣　¨　＞
+			PRINTL 　　　　　　　　　　　　　　　　　　　　 イ　　　　　　　　　　　　　　　　　丶
+			PRINTL 　　　　　　　 　 　 　 　 　 　 -=≦ _　　　　　　　 _　　　　　　　　 __　　　:.
+			PRINTL 　　　　　　　　　　　　　　　　　 　 　 ＞　　　　 ´　　　　　　　　 　 　 ヽ　 .
+			PRINTL 　　　　　　　　　　　 　 　 　 　 　 ／ 　 　 　 /　　 ′/　ﾊ 　!　 }　　　 }　:}
+			PRINTL 　　　　　　　　　　　　　　　　ｰ=彡 __ /　　　′ -/‐ナ /　} ┼‐i{-　 　 !　!
+			PRINTL 　　　　　　　　　　　 　 　 　 　 　 　 ﾌ　/　 　 　 ,z＝ミ{　 } ﾊz＝ミ､ 　:|　|
+			PRINTL 　　　　　　　　　　　　　　　　 　 　 /　ｲ 　 }i　Ⅵ r'/ﾊ 　 ﾉ'　 r'/ﾊ Ⅳ　!　!
+			PRINTL 　　　　　　　　 　 　 　 　 　 　 　 /／/　　八 从 乂ソ　　　　乂ソ |　　|　|
+			PRINTL 　　　　　　　　　　　　　　　　　　 　 厶イ　i　 ヽﾄ , ,　　　 ,　　　 , , |　　|　|
+			PRINTL 　　　　　　　　　　　 　 　 　 　 　 　 　 从 | 　 圦　　 　 　 　 　 　.:|　　|　|
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　　　个　　 |ﾄ .　　｀　 ´　 .ｨ . |　　|　|
+			PRINTL 　　　　　　　　　　 　 　 　 　 　 　 　 　 　 |　　　| ィf}＞　_　＜{ｵ、|　　|　|
+			PRINTL 　　　　　　　　　　 　 　 　 　 　 　 　 　 　 |　　イﾆﾆ{|　　　　　/}ﾆ= ... _L_| _
+			PRINTL 　　　　　　　　　　　　　　　　　　 　 　 　 _」.ィ{ニニﾆ{i　　　. ://ニﾆﾑニニニミ､
+			PRINTL 　　　　　　　　　 　 　 　 　 　 　 　 　 ィニニﾆﾏニニ{ｉ､. . . ://ニニﾑニニﾆﾆ}iﾆ＼
+			PRINTL 　　　　　　　　　　　　　　 　 　 　 　 ｲj{ニニﾆﾆﾏﾆﾆ∧`. ://ニﾆﾆﾑニニニﾆ}iニﾆ丶
+			PRINTL 　　　　　　　　　　　　　　　　　　　ｲニｷニニニﾆﾏﾆﾆ∧.//ニﾆﾆムニニニﾆj{ニニニ＼
+			PRINTL 　　　　　　　　　　　　　 　 　 　 -=ニニVニニ=≦ﾏニﾆУニﾆﾆム≧=ﾆﾆニj{ニニニニ丶
+			PRINTL 　　　　　　 　 　 　 　 　 　 　 -=ﾆﾆニニVﾆニニニﾏﾆ/ニニニムニニニﾐ､j{ニニニニﾆﾆ丶
+			PRINTL 　　　　　　　　　　　　 　 　 -=ニニニニ/ニニニニﾆﾏニニニムニニニﾆニ∨ニニニニニﾆ＼
+			PRINTL 　　　　　　　　　 　 　 　 -=ﾆニニニニ.:ニニニニニ/ニニニムニニニニニﾆVニニニニニニﾆ丶
+			PRINTL 　　　　　 　 　 　 　 　 -=ﾆニニニニﾆ{ニニニニﾆ/ニニニムニニニニニニﾆ}ニニニニニニニﾆ＼
+			PRINTL 　　　　　　　　 　 　 -=ﾆニニニニニﾆ:.ニニニニ/ニニニムニニニニニニニ.ニニニニニニニニニ丶
+			PRINTL .　　　　 　 　 　 　 -=ニニニニニニﾆ∧ニニニ/ニニニムニニニニニニニ∧ニニニニニニニニニﾆ丶
+			PRINTL . 　 　 　 　 　 　 -=ニニニニニニニ/　 丶ﾆﾆ/ニニニムニニニニニニニｲ　　ニニニニニニニニﾆﾆ=-
+			PRINTL 　　 　 　 　 　 -=ニニニニニニﾆﾆ/　　 　 ≧{≧=ニニ{ニﾆ≧ニ==ニ≦〔 　 　 ヽニニニニニニニﾆﾆ=-
+			PRINTL 　　　　　　　 -=ﾆﾆニニニニニニ｛　 　 　 　 } 斗　¨¨ ￣￣￣ ¨¨　≧=- }　 　 　 }ニニニニニニニニ=-
+			PRINTL .　　　 　 　 　 -=ニニニニニニﾆﾆ丶　　　 　}　　　　　 　 　 __　..　-─…ﾄ,　 　／ニニニニニニニニ=-
+			PRINTL .　　　　　 　 　 -=ニニニニニニニニ＼　 　r}=‐ …　　　 ¨ﾐ}/〉_...-─…〈　 ／ニニニニニニニニﾆ=-
+			PRINTL .　　　　　　　 　 -=ニニニニニニニニﾆ丶　 〉-‐　 ¨　￣　｀¨´　 　　　/∧'ニニニニニニニニﾆ=-
+			PRINTL .　　　　　　 　 　 -=ニニニニニニニニニﾆヽ}/　　　　　　　 　 　 　 　 //∧ニニニニニニニ=-
+		CASE 10
+			PRINTL 　　　　　　　　　　　　　　　　　　 _　　‐==　　_
+			PRINTL 　　　　　　　　　　　　 　 　 　 ／‐‐‐‐‐‐‐‐‐‐‐‐､
+			PRINTL 　　　　　　　　　　　　　　　　/‐/‐‐‐‐‐‐‐‐‐‐‐‐‐＼
+			PRINTL 　　　　　　　　　 　 　 　 　 /‐〈‐‐‐_‐‐_　- ､, ‐ ､, -┴ 、/{
+			PRINTL 　 　 　 　 　 　 　 　 　 　 /‐‐ﾉ⌒´ ｀′　　　　　　　　　∨__
+			PRINTL 　　　　　　　　　 　 　 　 /‐‐,ｲ 　 　 　 　_　 _ 　 __　_ 　 ﾉ　　　　､
+			PRINTL 　　　　　　　　　　　　､_厶／〈　　_ __　ｨ'　}~ﾞ}~ﾞ/　 丶　｀ヽ 　　＼ ＼
+			PRINTL 　　 　 　 　 　 　 　 _ｿ ／　/7⌒´　|　 |　:}　}　} /ヽ　 ∨　‘，　 〈＼(
+			PRINTL 　　　　　　　　　 　 )／／ /i:{＼ 　 :|　 | ∧_:}　} {　}斗‐ﾄ　　 V
+			PRINTL 　　　　　　　　 　 ／／　,:i:i:i:ﾄ､　 　:|　 |/¨~､} ∧}　}/_ ﾉ } }: ﾊ}
+			PRINTL 　　　　　　　　 　 ,　 /　 i:ｉ:ｉ:iﾘ　　/~|　 |,rf芹ミ　　　,ｨf斥{ }/　}　}　}
+			PRINTL 　　　　　　　　/ /　/ 　 {i:i:ｉ/∧　∨|　 |　Vソ　　　　vﾘ　{/　 /　} /
+			PRINTL 　　　　 　 　 /イ　,′　 {i:i//　}＼ ｀l　 |　 　 　 　 ｀　 　 　 }ｲ}ノイ
+			PRINTL 　　　　　　　　　　 　 　 {:/　　 }i:/>ｲ　 ﾄ､ 　 　 ､ 　ｧ 　 ｲ　　:}＼}
+			PRINTL 　 　 　 　 　 　 ,　　　　 }' ,　　 }'　 ﾉｲ　 　>｡_ 　 ¨　 ／l |　　 ﾄ､}
+			PRINTL 　　　　　　　　 ′　 　 　 ′　　　　∧　V‐‐‐‐‐‐‐‐‐‐}　　　.:}
+			PRINTL 　　　　　　　 /　　 　 　 　 　 　 ／⌒ヽ　V‐‐‐‐‐‐‐‐‐}_ﾉﾊ　 }
+			PRINTL 　　　　　 　 　 _,　　 　 /　　　 , 　 　 　 　 ＼‐‐‐‐‐‐‐/¨ヽ}　}
+			PRINTL 　　　　　　　 /7　　　　　　　　′ 　 　 　 ‘，个　‐‐‐ｲ　　 }　}
+			PRINTL 　　　　　'　 /　 　 　 ,　　　　/　 　 　 　 　 }　}‐===ミ､　 ｀＞‐-
+			PRINTL 　　　 　 　 　,′　　 ′　 ,rzo｡_　　　 / 　ﾉ}　}　 　 __　〉､ {__　 　ｲ､
+			PRINTL 　　　　　 /　 　　　　　　 {　 　 　 ｀ヽv＾v'　}　}イ~　　ト　　v‐/‐‐iﾄ‐ ，
+			PRINTL 　　　　 }/　　　　　　　　 ｀〉zo｡_　　 ﾉ　　　}　} {　 　 {‐‐‐‐}={‐‐‐{　‐‐
+			PRINTL 　　　　 }　　　　　　 l　　 /‐‐‐‐‐‐V　 ／‐ }　}∧　　 ＼‐/-}¨ヽ‐」 }‐‐}
+			PRINTL 　　　　 } 　　　　　　| ／, ‐‐‐‐‐‐/¨V‐‐‐ ﾉ　}‐‐ヽ 　　 <‐//　}_//‐‐ﾉ
+			PRINTL 　　　　　　 l　 　 　／‐/‐‐‐‐‐‐/‐‐‘，‐‐ノイ‐‐‐‐ﾄ､　　 イ　_ ｡z=イ
+			PRINTL 　　　　　　 : 　　／‐‐/‐‐‐‐‐‐/‐‐‐‐‘，‐‐‐‐‐‐‐‐ﾄ　＼　／ ｲ‐/
+			PRINTL 　　　　　　　　 ‐‐‐‐/‐‐‐‐‐‐/‐‐‐‐‐‐‘ ‐‐‐‐‐‐‐ ,　＞､　＜7‐,
+			PRINTL 　　　　　　　 /‐‐‐‐'‐‐‐‐‐‐/‐‐‐‐‐‐‐‐}‐‐‐‐‐‐‐/　　イ＼ /‐∧
+		CASE 9
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　 ＿＿
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　　＼　 ヽ
+			PRINTL 　　　　　　　　　　　　　　　　　,.　- ――　　　 ＼-― -　..
+			PRINTL 　　　　　　　　　　　　　　　 ∠ __ ,.イ　 ＞ ´　　　　　　　　 ｀'' ＜
+			PRINTL 　　　　　　　　　　　　　　　　　／ 　 ／　　　　　　　　　　　-､　ヽ＼
+			PRINTL 　　　　　　　　　　　　　　　　　　　 /　 ./　　　 ,　　 　 ',　　',　',　 ',　 ､
+			PRINTL 　　　　　　　　　　　　　　　/ ..ｨ　 /　../ ./　　/j/!. 　i　|　i　|　 }　 i　　',
+			PRINTL 　　　　　　　　 　 　 　 　 /／ i　 i　 .i　/　′|~~.|　! |　|　| .ﾊ　!　 |　　 ,
+			PRINTL 　　　　　　　　　　　　　　′　 |　 | i .|斗 大ﾊ{　 }斗从--j/､　,　　!　　 }
+			PRINTL 　　　　　　　　　　　　　　　　　|　 iﾊ { ﾏ"沁 　　j /,イ沁ﾐ.､/|/　 .,
+			PRINTL 　　　　　　　　　　　　　　　　　|ﾊ | .N　|､ ﾋｿ　 　′ .iJ泛 》 , 　 /　　 .′
+			PRINTL 　　　　　　　　　　　　　　　　　j　 Ⅵ .ト! ,,, ﾉ　　,,　　 ー''/ /　 .ﾊ　　/
+			PRINTL 　　　　　　　　　　　　　　　　　　　　} |.ﾊ　　 __　　　　　 /ｲ　　ﾑﾉ　 {
+			PRINTL 　　　　　　　　　　　　　　　　　　　　| |　i:､　‘ ´　　　　　./ 　 /　　　|
+			PRINTL 　　　　　　　　　　　　　　　　　　　　| ,:　! iヽ　　　　　.ィ/　　/　i　　 ',　　　　　　　__
+			PRINTL 　　　　　　　　　　　　　　　　　　 　 j/　　八≧=r 　 　 ′　,　　{　　 :',　　　　　／}/,Ｙ^ヽ_
+			PRINTL 　　　　　　　　　 　 　 　 　 　 　 ／/　　/-ｰｧｧ-}　　__{　　 {ｧ-- ..､.　 ',　　 .／/-マ-Ｈ,-}ﾐ!
+			PRINTL 　　　　　　　　　　　　　　　　 ／　/　_.ノ ´彡′｀　´　 !　　 レ''　　 ＼ ヽ　 {//ィ--'､.{ し!Ｊ
+			PRINTL 　　　　　　　　　 　 　 　 　／ ＞ ´￣　　乂 .∠´ ＿ .人.　　＼　, 　　 V ＼j////|　　　　!
+			PRINTL 　　　　 　 　 　 　 　 　 ／,ｨ ´　　　　　　-= 三　　　　　 ＼　　＼ 　 　 !　 }/////!　　 　 !
+			PRINTL 　　　　　　　　　　 　 ./ / i　　　　　　　--==　--　　　　　　＼　　ヽ　　i　 ﾊ/////!　＿　.!
+			PRINTL 　　　　　　　　　　　 .′　.{　　 　　＿＿_,,:__＿　　　　　　　　　',　.　',.　 ', /　ヽ///{'　　 ヽ}
+			PRINTL 　　　　　　 　 　 　 / /　八 /´￣　　　　八　　 ￣ ｀ ＜　　 　 .} .i　 ! 　 / 　　 ｀¨i ＞--＜
+			PRINTL 　　　　　　　　　　 .i　／ 　 ゝ　__　　　 ´　 ｀　　　　　　 ヽ　　ノj/|　′ .′　　 　 ′
+			PRINTL 　　　　　　 　 　 　 j/　　　　　,′　　　/　　　　　　 ､　　 }..ィ　 ﾊ.j/ 　 ,　　　　　.′
+			PRINTL 　　　　　　　　　　　　 　 　 　 i　　　　:′　　　　　　 　￣ヽ　.ｲ　',　　 i
+			PRINTL 　　　　　　　 　 　 　 　 ＞ ´　}　　　　!　　　　　　　　　　　У 　 ﾊ　　{ 　 　 　 ,
+			PRINTL 　　　　　　　　　　 ＞ ´　　　　!　　　　　　　　　 　 　 　 ／　　　 ∧　 !　　　　/
+			PRINTL 　　　　　　　 　 ''´　　　　　　 .,　　　　　　　　　　　 　 ,ｲ　　　i　　　 ､.　　 　 /
+			PRINTL 　　　　　　∠__　　　　　　　 ノ|　　　　　　　　　　　　　 {　　　.|　　　　ヽ.__ ィ
+			PRINTL 　　　　／/////ﾊ　 ,,..　 イ　 .!　　　 .i　　 　 　 　 　 　 V　　 |　　　　　　　|
+			PRINTL 　　　　}///////ｿ´　　　　　　}　　　 j 　 　 　 　 　 　 　 ヽ　 |:
+			PRINTL 　　　 .ﾑ/////,Ｙ　　 　 　 　 ﾉ!　　　　　　　　　　　　　　　 ∨　　　　　　　 !
+			PRINTL 　　　 {////,ﾊ/ﾊ　　　　 ＿/　　　　　　　　　　　, 　 　 　 　 }.　　 i
+			PRINTL 　　　 .!/i//,:　i~~i　　　__}///＼i　　　　　　　 ／　　　　 __,ｨf∧　 i!　 ./　 ,
+			PRINTL 　　　 .ﾄ{~i~~!　し　　 _ﾉ///////}､　　　　r--'―===≦f/////,ﾊ　|　/　 ノ＿_
+			PRINTL 　　　　ヾ.ﾍ_}　　　 ∠////////ﾊ ｀￣￣ﾑ ＠/////////////∧=ミ＜::::::::::::::＞
+			PRINTL 　　　　　　　　　／　 `''乙/////∧　　 ////////////////////,::::::::::}::::::::::/
+			PRINTL 　　　　　　　 ／　　　　　 `マ////∧_.ｲ////////////////////|⌒ヾ:::::::Ｙ
+			PRINTL 　　　　　　　　　　　　　　　　　＼///i/{////s乙ノ人从ノひミ///,!　i　 ＼/
+			PRINTL 　　　　／　　　　　　　　　　　　　ヾ/ﾊ/V,／　　　　　　　　　 ｀^~ﾒ{　|　　 ',＼
+			PRINTL 　　 ／　　　　　　　　　　　　　　　　},z.イ′　　　　　　　　　 　 　 i　 ,　　 .}::::::.､
+			PRINTL 　　　　　　　　　　　　　　　　　　　.ｲ'´ /　　　　　　　　　　　　　　,　/　　./::::::::::',
+		CASE 8
+			PRINTL 　　　　　　　　　　　　　　,､ -‐ ―― ‐- ､ ,
+			PRINTL 　　　　　　　　　　　,.ィ ´　　　　　　　　　　　 o｀ヽ ､
+			PRINTL 　　　　　　　　　 ／　 .',　 　 　 __,-､ ＿　 o ./　　ヽ
+			PRINTL 　　　　　　　　　 V 　 ,ヽ.--イ　　　　　　　｀ヽ/　　 ./ゞ
+			PRINTL 　　　　　　　　　　　V'´　　　　　　　　　　　　　ヽ /　　 ＼、
+			PRINTL 　　　　　　　　　　　′　 /　｜　　　　l　　 　 ヽ ヽ ＼　　　`ーｲ
+			PRINTL 　　　　　　　　　　/　l　 /　　 |　l , へ ､　 　 　 ｌ　l ヽ　＼ 一'´
+			PRINTL 　　　　　　　　　 /　:l　 ′　 /　.l |　　 l l　.|　l　!　l　|　 　 .l　|
+			PRINTL 　　　　　　　　　 ｉ　 ｌ　 l　ィ≠ﾐ ﾊl　　 lィ≠xﾊ/ ./　.|　 |　.|∨
+			PRINTL 　　　　　　　　　 |　 |　 |　/, 二　　　　　二_ ヽ |/ｌ　 |　 l ./
+			PRINTL 　　　　　　　　　 |　 |　 l 〃iｘｲ}　　　　 {_ﾉハ jﾉ　ｌ　 ﾊ/|/
+			PRINTL 　　　　　　　　　 |　 |　 l {　ﾋZﾘ　　　　 ﾋZﾘ } !　　　 |
+			PRINTL 　　 　 　 　 　 　|　 |　 l l　｀¨´　　 ,　　｀¨´　i　　ｌ　 |
+			PRINTL 　　　　　　　,,. '´ 　 |　 l:ヽ 　""　　　　　"" : i　 :| 　|
+			PRINTL . 　 　 　 　 ,'　　　　i|　 l　{＼ 　　｀　´ 　 ／/　 / ￣ ヽ,
+			PRINTL 　　　　　　 |　　 ',　i|　 l　 ∨ ト 　 __　ィ'´　/　 / 　 　　i
+			PRINTL . 　 　 　 　 |　　 ､'.i|　 l　　ヽヽﾚこ_ゝ. ヽ'　/ 　/　　　　i
+			PRINTL 　　　　　 　ヽ ',　　iヽ│　 　 ヽ{‐-､ 　 |　C　/　 　　　i.i
+			PRINTL 　　　　　　　:|', ､　 'i从|　　　　 Lゝ,　 /　　iﾚ　　 　 　 :i
+			PRINTL .　　　　　　 ::| ヽ ＼ ',　　　　　ﾆ|　　 {　 　 ii . 　 　 　 |
+			PRINTL 　　　 　　　　|　　　 `.ゝ　　　 　ヽ 　 ヽ　　i‐'´￣ヽ＿:|
+			PRINTL 　　　 　　　　￣ヽ‐‐'¨`ゝ､ ＿ ,､:ﾊ　　 ヽ-/　 　 ./　/
+			PRINTL 　　　　　　　　　ヽヽ　　　i＼　　　 ', 　 　 ＼　　/　/
+			PRINTL 　　　　　　　　　　ヽ:ﾊ　　　､ゝ ､　　 '､　　　 　 ./│
+			PRINTL 　　　　　　　　　　　:.ﾉ　　　 ',ヽ　` 　 .ヽ　　　 / ヽ
+			PRINTL 　　　　　　　 　　 　 ,' .i　　 　 ',　　　　 ‐ `ゝ- '　　'､
+			PRINTL 　　　　　　　　　　　i　　､　　　 ',　　　　　 ,.'　i　　　 i
+			PRINTL 　　　　　　　　　 　 i . 　 ヽ　　　i　　　　/　　 i　　　 i
+			PRINTL 　 　 　 　 　　 　 　 i 　 ､. ヽ　　 i　　 .//　 o i　 　 .i
+			PRINTL .　　　　 　 　　 　 　 i　　 ､　'､　　',　　/　　　i　 　 ﾘ
+			PRINTL 　　　　　　　　　　　　i　　 '､　'､　　', ./ 　 　 i 〃 ./
+			PRINTL .　　　　　 　 　 　 　　 i　　　､ /　　 V　　　 i/　　i
+			PRINTL 　　　　　 　　 　 　 　 {　ヽ　 /　　 　 }　　oﾉ　　 ﾊ_
+			PRINTL 　　　　　　　　 　 　 　 `‐､_.ﾉ　　 　 i |　.／ヽ　　／
+			PRINTL 　 　 　 　 　 　　 　 　 　 ヽゝ-x__i .//-'´　　.〉-'´
+			PRINTL 　　　　　　　　　　　　　　　ヽ　　 しゝ'　　　 /
+		CASE 7
+
+			PRINTL 　　　　　　　　　　　　＿＿,　　　　　　　　　　　　　＿＿、
+			PRINTL 　　　　　　　　　　 ／.:::::::ヘ＼　　　　　　　　　 ,／,,;;;;;;;;;...丶、
+			PRINTL 　　　　　　　　　/　.:::::::/,;;;;;;;;;;;l　　　　　　　　/,,;;;;;;;;;.......ゝ:::.....丶
+			PRINTL 　　　　　　　　 l　　　　l ;;;;;;;;;;;;;;l　　　　　　　l;;;;;;;;;;;;;;;;;;;;;へ,,,,,,,,,,,ノ
+			PRINTL 　　　　　　　　l　　　　人:;;;;;;;;;;;;;;l　　　　　　.l;;;;;;;;;;;;;;;;;;/
+			PRINTL 　　　　　　　 l　　　　/＿ヽ;;;;;;;;;;;l　　　　　　l;;;;;;;;;;;;;;/
+			PRINTL 　　　　　　 .ﾉ...::::::::::/＿　 丶;;;;;;;;;;l-‐ﾆﾆﾆ‐-l;;;;;;;;;;;;/
+			PRINTL 　　　　　　く:::::::: ／　／￣　ヽ;;;;;;;;;l　　　 　 l;;;;;;;;;;/ヽ｀ヽ
+			PRINTL 　　　　　　　ゝノ　 ／　　 ｿ .　ヾ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;く 　 i,　ﾍ
+			PRINTL 　　　　＿＿_,. ‐'´　　　　,l　 ,,;　 　　　　　　　　｀ ::..　l　l　l
+			PRINTL 　　　　｀ヽ、　　　　　／ .l　 ./　.　/ ∧　　　ゝ　ヽ　　l　l　l
+			PRINTL 　　　　　　ゝー---/　　 .l　/　　_／ 　l　l 　ｰ---‐丶l　l　l
+			PRINTL 　　　　　　　　　　/ / /　∨|ｰ'ﾞ∧l/　..i i l　ｲ云:::: 下 l　l　l
+			PRINTL 　　　　　　　　　/ / l il　　l l　.,ｨ行::心.y i　 辷:::ﾂ　l　l　l　l
+			PRINTL 　　　　　　　　　|　| ﾍハ　ﾍ| .ゝ込:::ｼ　 y　　""~~` } .l　l　l
+			PRINTL 　　　　　　　　　∨　　　 ヽ　l　 ﾊ""`　　丶　　　　/　l　l　.l
+			PRINTL 　　　　　　　　　　　　　　ﾍ八　　ヽ　　丶　　′　ｲ 　/　　∧
+			PRINTL 　　　　　　　　　　　　　　 ｿ八　　　ヽ　　　　　 彳 　/　　/　l
+			PRINTL 　　　　　　　　　　　　　　ｿﾉ_ _ l　　Y´｀丶　イ　ﾍ　/　　/　 .l
+			PRINTL 　　　　　　　　　　　　 γ´　　 /　//　　/｀´ヽ 　 ./ /　人_ _ _l
+			PRINTL 　　　　　　　　　　　　 l　　　　ﾉ .//　＼∧ヽ<∧/ノ　 /　　　 丶
+			PRINTL 　　　　　　　　　　　 ./i　　　/　/(　　　/:::∧::} （　　 ﾉ　　　　　 }ﾍ
+			PRINTL 　　　　　　　　　　 　l　l　, ソ .∧i　　　ゝ'´ 　｀ ﾍ　（　　　　　　 .l　ﾍ
+			PRINTL 　　　　　　　　　 　 / /　 ﾑ ｿ　 ﾍ　　　　　　　 ﾍ　ﾍ　　　　　　.l　　i
+			PRINTL 　　　　　　　　 　／,ソ´　人,　,,,,,　　　 ヽ,　　　　　ﾍ ﾍ 、　 ノ　 l　　l
+			PRINTL 　　　　　　　 　ﾉノ,　　i　 γ,,,;;;;;;;;;,,,,、　　 y´　　　　ﾏﾍ,,,∠:::::　 l　　|
+			PRINTL 　　　　　　　 　 Y　　　l　i;;;;;;;;;;;;;;;;;;;;;ヽ　　ﾑ　　　　ゝﾏﾍ;;;;;;ヽ　　.l　　|
+			PRINTL 　　　　　　　 　 ﾍ、　　i .{;;;;;;;;;;;;;;;;;;,;;;;;;丶;;;l 　 , - ´,,,;;;;;;,ﾍ;;;;;;;}　　l　　|
+			PRINTL 　　　　　　　　 　　 　　l.∧;;;;;;;;;;;;;;;;;;;;;;;;;;;ヽl／;;;;;;;;;;;;;;;;;;;;;;;;;,;;;;ﾉ　　l　　|
+			PRINTL 　　　　　　　　　 　　　 l　 ヽ;;;;;;;;;;;;;;;;;;;;;;;;;;人,,;;;;;;;;;;;;;;;;;;;;;;;;;;;;ｿ　　　l　　|
+			PRINTL 　　　　　　　　　　　 　 l 　　丶''''''''''''''''': : : :ゝ;;;;;;;;;;;,;;;;;;;;;;ノ、　　　l　　|
+			PRINTL 　　　　　　　　　 　 　 /　　 ｿ: : : : : : : : : : : : : : : : : : : :ﾊ　　　　　l　　|
+			PRINTL 　　　　　　　　　 　　/　 　 ﾊ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;ﾊ　　　　 .l　 .｜
+		CASE 6
+			PRINTL 　　　　　　　 　 　 _,..　 -- 　、　, イ ´　　￣￣ ／￣ '.,ミ、
+			PRINTL 　　　　　　　　／´　　_ ..　__＿｀ヽ　　　　　　　´　´　 ', ',　｀ヽ
+			PRINTL 　　　　　 　／, ィ ´≧´　　　　 , -　　　 　 　 、　　　　! i　　 ｀i
+			PRINTL 　　　　　 〃´　　}´　　／/　 /　　.i　 ヽ　 　 ﾑ　　 　 .! i　 　 .ｌ
+			PRINTL 　　　　　　　　　　ｌ　 /　 { 　 ｌ　 　.ｌ　　 ',　　　.}、　　　! i　　　.ｌ
+			PRINTL 　　　　　　 　　 　.| /　　,i 　 i　 　 i　　.∧　　 .l ヽ　　 ! i　　　 l,
+			PRINTL 　　　　　　　　　　ｊ.,'　　,' i 　 i i、　i、　.{　'.,} i　l　ヽ 　 ﾘl　　　 ｌi
+			PRINTL 　　　　　　 　　　 ｌ.l　　.ｌ　i 　 iヾ,__.iヽ　l　 ﾉﾉ, .l-―}　ﾉ .l　 　　ｌ!
+			PRINTL 　 　 　 　 　　　 / ｌ 　 ﾊ .ﾄ,　 i ヾﾘ __ヾ　 /　}/ ,ｲ云::::下　/　 l.i
+			PRINTL 　　　　　 　 　 ./ .ﾊ　 .l .i .ﾊ　 l.,ｨ行::心ゝ　 / 　 .辷:::ﾂ/ / 　 .ｌ.i
+			PRINTL 　　　 　 　 　 /,ｲ　',　.{　i i. ヽ .{　込:::ｼ　　　　　　 ￣ゞイ i 　 ｌ i
+			PRINTL .　　　　　　　　　 　 Ⅵr‐、ｨヽ';,.iミｔ-:¨:::　　 '　　　 ::::::: /l　i　 ｌ. ﾑ
+			PRINTL 　　　　　 　 　 　 ／ ﾉ.ﾉ￣ '' ‐-,　>_　　　　 _　,　　 .／i l　i　 ｌ　 ﾑ
+			PRINTL 　　　　　　　　　/　 .{/　　 　 ,.:'/ ,i./＞ ,　　　　　イ.{ | .i.l　ｌ　 ｌ　　ﾑ
+			PRINTL 　　　　 　 　 　/　　 |　,、　, ':,.' , '--'一′ `　- ´ 　 `ーゞ .ｌ 八.＿_ﾑ_
+			PRINTL 　　　　　　　 /　　 　 /　フ::/- '＿_ -== 、　　 　 _ -‐　￣丶≧＜　　 丶
+			PRINTL .　　　 　 　 /　　　　/ ／::/　´　　　 ￣　 `　　＜　　　　　　　ヾ:::::ﾍ 　　 ヽ
+			PRINTL 　　　　　 , '　　　　/,.:'::::::/　　　　　 　 　 　 Ｙ　　　　　　　　　　}:::::::∧ 　　|
+			PRINTL .　 　 　 /　　　　 /;;::::::V　　　　　　　　　　　　　　　　 　 　 　 　l:::::;;};;ﾊ　　l
+			PRINTL .　　　 / 　 　 　 /.{::{;;::,′　　 　 　 　 　 　 ;;　　　 　 　 　 　 　 j:::::::::ﾘ } 　 |
+			PRINTL 　 　 /　　　　　,' λ::::::!　　　　　　　 　 　 八　　　　　　　　　　,'::::::::/　! 　 !
+			PRINTL 　　/　　　　　　レ';V::::!　　　　　 　 　 　 /　 ﾍ　　　　 　 　 　 ﾊ:::,.:'　 ﾉ　　|
+			PRINTL 　 ,'　　　　　　j:　　',V::l　　　　　 　 　 ／　　　 ＼　 　 　 　 ./::::,.'　／　　　l
+			PRINTL .　{　　　　 　 /　　　ﾍ::l　　　　　　＞'　　　　　　　` ＜　 __ /:::/,.イ　　　　　|
+			PRINTL 　 ';　　　　 , '　　　　λト, ‐t‐ '''　　　　　　　 　 　 　 　 　 7:/　| .{　　　　　 l
+			PRINTL .　 ﾍ　　 ／　_　‐''　　 ;;;　　|　　　　 　 　 　 　 　 　 　 　 //　 ,′l　　　　　 |
+			PRINTL 　　 `-　‐ ''' 　 　 　 　 ;;;.　 |　　　　　　 　 　 　 　 　 　 /;; 　./　∧　　　　　|
+			PRINTL 　　　 　 　 　 　 　 　 　 ;;　 l　　　　 　 　 　 　 　 　 　 //　 /　./　|　　　 　 |
+			PRINTL 　　　　　　　　　　　　　　;;　|　　　　　　　　 　 　 　 　 ;:〈　./　./ 　.}　　　　　|
+			PRINTL 　　　　　　　　　　　　　　 ;; j　　 　 　 ,′　　　　　　 ;; 　∨　.,′ /l　　　 　 .|
+			PRINTL 　　　　 　 　 　 　 　 　 　 X　 　 　 　 　 　 　 　 　 /　　　＼|　,/　}　　 　　 ';
+			PRINTL 　　　 　 　 　 　 　 　 　 /　;;　　　　　　　　　　　　/　　 　 　 ヽ.{　 l:　　 　 　 ';
+			PRINTL 　　　　　　　　 　 　 　 /　　;;　　　　　　　　　　　/　　　　　　　丶　!　　　　 　 }
+			PRINTL 　　　　　　　　　　　　/　　　;;;　　　　　 　 　 　 /　 　 　 　 　 　 ヾ| 　 　 　 　 l
+			PRINTL 　　　　　　　　　　　 ,'　　　　 ;;　 　 　 　 　 　 /　　,　　　　　　　　' 、　　　 　 l
+			PRINTL 　　　　　　　　　 　 ,'　　 　 　 l!　　　　　　　 /　　/　　　　　　　　　 ＼　　　 ﾘ
+			PRINTL 　　　　　　　　　　 ,'　　　 、 　 !l.　　　　 　 /　　/　　　　　　　 　 　 　 ＼　./
+			PRINTL .　　　　　 　 　 　 j　　　　 ' ,　　;!　　　 　 /l 　./　　　　　 　 　 　 　 　 　 ＼
+			PRINTL 　　　　　　　　 　 ;;　　　　　 ﾍ　 {:＼　　 /::|　.,'　　　　　　　　　　　　　 　 　 ＼
+			PRINTL 　　　　　 　 　 　 !　　　　　　 丶.∨:::`:彡::::|.　|　　　　　　　　　 　 　 　 　 　 　 ＼
+			PRINTL 　　　　　　 　 　 {　　　　　 　 　 ヽ V::::::::::八　l　　　　　　　　　　　　　　　　　　 　 ＼
+			PRINTL 　　　　　　　　　j　　　　　　　　　　＼ヾ:ゞ:_:::∨　　　　　　　　　　　　　　　　　　 　 　 ヽ
+			PRINTL 　　　　　　　 　 |　　　　　　　　　　　　` ー-¨.ヽ
+			PRINTL 　　　　 　 　 　 !　　　　　　　　　　　　　　　　 `ヾ
+		CASE 5
+			PRINTL 　　　　　　　　 　 　 　 　 γ´　　　二ヽ＿
+			PRINTL 　　　　　　　　 　 ,.　 -一 ' ´　　 ノ_　　　　 ｀ヽ､　 　 x‐=＝=ー-
+			PRINTL 　　　　　　 ,.　' ´　　　　　 ,.　'´　 　 ｀ ー‐-　､　｀／　＞' ´
+			PRINTL .　　　　 ／　　 　 　 　 ／　 　 　 　 　 　 　 　 ｀ '　∠-`ｰ- ､　　　　　　ﾉ
+			PRINTL .　　 　 !　　　　　　, イ /　　 /　　　　　　　　　　､　 ､　　　　 ｀ ー一 ツ
+			PRINTL 　　　　l　　　　　f´:::.:.:.l　 　 l　l　 l　|　 　 　 　 　 ヽ　＼ ＿＿,. -＜
+			PRINTL 　　　　|　　　　　|:::::.:.:.|　 　 |　|　 l　|　l　ﾊ l　|　　　}　 ､ ヽ　　 　 　 ＼
+			PRINTL 　　　　|　　　　　|::::.:.:.:|　　斗l十＝ト､ | l　l l　|　 l　 l　　ヽ ﾍ 　 　 　 　 ヽ
+			PRINTL 　　　　ｌ　　　　　|::::.:.:.:|　 　 |,z=-ﾆ._ﾊ | l　| ﾋ.Tﾄ､|　 |､ 　 ﾊ　l、 ,.　　　 　 ）
+			PRINTL .　　 　 l　　　　　|:::.fヽ|　　V {fﾟ仆ﾘ ｀λ|　ﾘz-､j ﾘ　 ハ　 } l　|'　　　　　 /
+			PRINTL 　 　 　 l　　　　　|::.{ （|　 　 | 辷 ｿ　　　　 ﾑﾟ::ﾊ}　 /　λ: l∧ | 　 　 　 /
+			PRINTL .　 　 　 l　　　　　l.:.:ヽ|　　　|｀￣　　 　 　 うｿノ .ノ 　l 　! | 　l|　　 　 /
+			PRINTL 　　　 　 l　　　　　ｌ:.:.:::|　　　|　　　　　　,　 ｀ イ´　| 　| ,ｨ: j　　　　　/
+			PRINTL .　　　 　 l 　 　 　 ∨.::|　　　|　　　r- ｧ 　 　 ﾉ:　　ﾄ､ |'　ﾚ'　　　　, ′
+			PRINTL 　　 　 　 |　　 　 　 ヽλ　　 l　　　｀´　　 ／ |:.　　|' `　　　　　 , ′
+			PRINTL 　　　　　 l　　　　　 :　Ⅵ　　 |｀ﾄ､ 　　 イ:.:. | |:.　 /　　　　　　/
+			PRINTL .　　 　 　 |　　 　 　 :　 ヽ.　　lﾊ　 ｀λ_:.|_:.／| 　 l　 　 　 　 /
+			PRINTL 　　　　 　 l　　　　　 :.　　| ｌ　|　l　　{　＼　　 ! 　 ! l　　　　/
+			PRINTL 　　　　 　λ　　 　 　 :.　 | l　j　| - ､　x‐ ＼ |　　| |　 　 , '
+			PRINTL 　　　　　 　 ヽ　 :ヽ 　 :.　| ン　ﾉ　　　　　　　|　　ゝ!　 , '
+			PRINTL .　　　　　　 　 ヽ　　ヽ　　ﾚ'　//＞ .､　　､ ;　ヽ　　 ｀二ミ ､
+			PRINTL .　　　　　　　 　 |'.　　 :.　/　////////丶、＼ ヾ￣　　 /＞ ､
+			PRINTL .　　　　　　　 　 |ﾊ 　 　 从 {////////// ＼ ヽ ＼ 　//////ヽ
+			PRINTL 　　　 　 　 　 　 |.:ﾍ　　　 } ＼////////////ヽ }　} /////////}
+			PRINTL 　　　 　 　 　 　 |.:.::ﾍ　　 ﾊﾉ//////////////ﾊ!　///////// ﾘ
+			PRINTL 　　　 　 　 　 　 | .::l:.ﾍ 　 　 V/////////////ﾉ-〈//////////
+			PRINTL 　　　 　 　 　 　 | .::| :.:.ﾍ　 　 〉//////////／　　 ヽ//////ﾝ
+			PRINTL 　　　　　　 　 　 | :.:| :.:.::ﾍ ／´　｀　ー一 ' ´　　　　　 ｀ T ´ﾍ
+			PRINTL 　　　　　　　　　 | :.:| :.:.:.::∧　　　　　　　　　　　　　　 　 j:　 ∧
+			PRINTL 　　.　　　　 　 　 l :.:| :.:.: .:::∧　　　　　　　　　　　　　　 λ:. 　∧
+			PRINTL 　　　　　　　　 　 Ⅵ　:.:. .:.::::ﾊ　　　　　　　　　　　　 　 ハ:::.　　ﾊ
+		CASE 4
+			PRINTL 　　　､（　　　　 ＿___　　＿)ヽ　　──=ミっ､＿
+			PRINTL 　　　　｀ｰ=ミ.:.:.:.:.:._彡｀.:.:.:.:.:ヽ:.)/.:.:.:.:.:ノ.:.:.:.:.:.:.:.:.:.＼
+			PRINTL 　　　　　　　 ￣フ.:.:.:.:.:.:.:.:.:.:.:.:.:.＞.:.:.:ゝ-.:.:.:.:.:.:.:.:.:.:.ヽ＼
+			PRINTL 　　　　　　　 ／.:.:.:.:.:.:. ／.:.:.:.:/.:./.:.:/.:.ヽ.:.:.:.:.:.:.:.:＼:.:.＼＼
+			PRINTL 　　　　　　 /.:.／.:.:.::／: /.:.:.:/: /.:.:.:.:.:.:ｌ|.ヽ.:.:.:.:.:.:.:.:.:.ヽ:.:.:.:.:ヽ
+			PRINTL 　 　 　 　 / ｨ.:.:.:/ /.:.:.:/ .:.:.:.|:. |.:.:.:从!.|!:.:ﾄ .:.:|! : :|.:.:.:.|:.:.:.:.:ハ
+			PRINTL .　　　 　 // |:.:.,{!:/.:.: / .:.:.:! :!:|:|.:. |　 |:li :.|_|:.:.!!.:.:.|.:.:.:.}:.:.:/ .:.:l
+			PRINTL 　　　 　 j/　|:./ |:.ヽ.:｛:..:.:.:.| :|:.ﾊL !　 !ﾊ:.:| ﾄ!:||:.:./.:.//:.:/.:.:.:.:|
+			PRINTL .　 　 　 /　 .!′.!.:|:.ﾄ |:.:.:.: l斗ｾ.|:.:|　 '　}ﾉ　.!:||:.ﾒ.:.//:.:.ｌヽ : .:|
+			PRINTL 　　　　　 　 ｝　 | :|:.|ハ : 从刈 从Ｌ　　　　ﾉﾘj/」ｲ从:.:|ﾘ｝ .:.:|
+			PRINTL .　　　　 　 　 　 | :|:.|::ハ : ﾍ,ィさ乙ミ､　 　 代辷ﾉY:.:.:.Ⅳ:.:.:.:.|
+			PRINTL 　 　 　 　 　 　 ﾉﾍ :!:.:.ハ:.:.:ゝゞ=㌢　　　　　`¨ﾞ゜/.:/: |:.:|.:.:.:.:|
+			PRINTL 　　　　　　　　　　 }:!.:.:|.:|.:.:.ミゝ､::::::　　j　　　:::_彡ｲ:.:.:|:.:|.:.:.:.:|
+			PRINTL 　　　　　　　　　　 |:!.:.:|.:|:.ﾄ .:∧　　　　 _　　　　 イ.:.:. |:.:|.:.:.:.:|
+			PRINTL 　　　　　　　　　　」└‐＜iﾊ.:.:尖t､.　　　　 , ＜/:.!:.:.|:.|.:.|:.:.:.:.|
+			PRINTL 　　　　　　　　　/　　　　|:|｀ヽ.:.:.|.:.:.} ｀　　゜　　ゝ |:.:.|:.|:/＜ ￣｀ヽ
+			PRINTL 　　　　　 　 　 / 　 　 　 !:!　｝.:.:.!ゝ'　　　　 /　 | :|:.:.|:.|　　　　　　 '
+			PRINTL 　　　　　　 　 ｛　　　　　.|:| /.:.:./ /､　　　 / _,.. L.|:.:.|/　　　　　　　|
+			PRINTL 　　 　 　 　 　 !　　 ヽ,　 |:ﾚ.:.:./ /　　`ヽ　'´　 　 从:(_ 　 　　.　 　 |
+			PRINTL 　　　　　　　　 :.　　　　Ｖ.:.::／ /　　　　　　 　 　 )､,ヽ:.ヽ　/.::　　　|
+			PRINTL 　 　 　 　 　 　 '. 　　　 {:. /　./　　　　　　　　　　　 ',⌒ヽ＼ 　 　 ,′
+			PRINTL .　　　 　 　 　 　 ',　　 , ' ´　/　　　　　＼:..ﾉ 　 　 　 ',　 .｀ヽ　　 /
+			PRINTL 　　　　　 　 　 　 ヽ／　　 /　　　　 　 　 )′　　　　 ﾊ､　 　 ＼/
+			PRINTL 　　　　　　　　　　/　 ,,.≪{　　　 　 　 　 ′　　　　　j//≫,.、　 ',
+			PRINTL 　　　　　　 　 　 / ／///∧　　 　 　 　 :.　　　　　 ∧/////＼ .::
+			PRINTL .　　　　　　　 　 |///////ハ　　　　　　 :. 　 　 　 /////////ハ｝
+			PRINTL 　　　　　　　　　｛////////人　 　 　 　 !　　　　人/////////い
+			PRINTL 　　　　　　　　　 ∨/////////＼　　 　 i　　 ／////////////ﾉ
+			PRINTL 　　　　　　　　　　 ＼//////////＞‐- 'ゝ.イ:////////////／
+			PRINTL 　　　　　　　　　　　　｀ ｰ-====彡'′　　　　｀ ｰ--====彡'′
+		CASE 3
+			PRINTL 　　　　　　　　　　　　 ＼ー -　―ヘ, -　― ―-
+			PRINTL 　　　　　　　　　　　　　　＞　　　　　 ヽ　　　　　　 ＞―　、
+			PRINTL 　　　　　　　　　　　　_／ ／/ ／　　　　　　 　ヽ∠＿＿＿ヽ
+			PRINTL 　　　　　　　　　ー＝一7　/ / ／ 　,ﾊ　 ヽ　　　 |.//////∧|
+			PRINTL 　　　　　 　 　 　 　 　 // 〈　|〈　 ／　}　　 |　 　 ﾄx//////∧
+			PRINTL 　　　　　　　　　ヽ､_ ノ {　　ヽkﾍ女" ﾒ､1ﾊ |　 　 |V∧/////∧
+			PRINTL 　　　　　　　　　　　￣ ﾊ　 i!个花㍉" ,ﾑ≧ト　|　ト,V/77ー― ､
+			PRINTL 　　　　　　　　　　　 　 |∧,入| .|:::ゞ', 　 　ﾋy＞|　|}!}.V/∧　｜
+			PRINTL 　　　　　　　　　　　 　 レ'ヽﾄ,|.人　 ,　 　 ::::|　 |　K　 ￣ ゛　 !
+			PRINTL 　　　　　　 　 　 　 　 　 　 }ﾊ|　　ヽ,　｀_　,.ｲ　 !　｢￣　ヽ　.| |
+			PRINTL 　　　　　　　　　　　　　　　　 |, ⌒ ｰ- ﾍ 　 !　 !　|　　　　Ⅵ |
+			PRINTL 　　　　　　　　　　　 　 　 　 /　　 ｀ー､ ,}　_|　 |　j　　　 　ﾄﾞ,.|
+			PRINTL 　　　　　　　　 　 　 　 　 　 |　　　　　　 　 .|　 | .ﾊ　　　　ハ＼
+			PRINTL 　　　　　　　　　　　　　　　 ﾊ.　 .〉　 　/　　|　 | j'￣￣￣￣´/
+			PRINTL 　　　　　　　　　　　　 _＿_ﾉ ,L_/　　　l　／.|　 | | -―‐‐ -イ.|
+			PRINTL 　　　　　　　　　　　　 |'~￣￣￣｀ヽ、 У　 | 　| |　　　　 　 } |
+			PRINTL 　　　　　　　　　　 　 └┬―‐ｰ ､ 　〉′/　k1,ﾙ' ／⌒ヽ　入!
+			PRINTL 　　　　　　　　　　　　　 入　ヽ　　У　 /　　 ,　′　　　　}、　ヽ、
+			PRINTL 　　　　　　　　　　　　／　 ヽ ﾉ　 / 　 /　 ／　　　　　　 ,:: |　　ハ
+			PRINTL 　　　　　　　　　　　,　　　　,ゞ　./ ＿ムｧ/　 　 　 　 　 /::∧　　 j|､
+			PRINTL 　　　　　　　　　　 /　　　,ｲ　|　У:: :: ::./　　　　 　 　 /:: :: ::＼　ﾍ ＼
+			PRINTL 　　　　　　　　　_,ム-ｰイハ ｣,/:: :: :: ::./　　　　　　　〃:: :: :: ::/:ヽ　　 ＞､
+			PRINTL 　　　　　　　／　　　 _.ノ　　 /:: :: :: ::./　　　　　 　 // !:: :: :: :: :: ::.ト､　　 ﾊ
+			PRINTL 　　　　　 ＜ ＿__ノ　　　　 /:: :: :: :: /　　　　　　 ,　/　|:: :: :: :: :: :: |:: :.ｰ-　 ゝ、
+			PRINTL 　　　／　　ー - ＿.ﾉ　　 /:: :: :: ::.:/　　　　　 ／ ./ 　 !:: :: :: :: :: :: ; :: :: :: :＼　　ー―- 、＿
+			PRINTL 　 ／　　　　　　　￣{　 ,ｲ:: :: :: ::.:./ 　 　 　 , ′ /　　 l:: :: :: :: :: :: ﾊ:: :: :: :: :∧　　　　　　　　｀ヽ_＿
+			PRINTL ＜、　　　　　　　　　　ﾉ::|:: :: :: :r<　　　 　,.::　　/　　　;:: :: :: :: :: :/:: i:: :: :: :: :: :〉ー- 、　　　　　　　　￣　_＞
+			PRINTL 　　＼ 　 ＿＿_＿_／:: /:: :: :: /　｀yヘ、/::　／　　　/:: :: :: :: :: ::|:: ::| :: :: :: :: :{　　　　 >≦三 ニﾆ￣_￣
+			PRINTL 　　　　　　　　　／:: ::_」:: :: ::./ 　 /　　 〉-‐〈　/ 　 /:: :: :: :: :: :: :|:: ::l :: :: :: :: ::|　　 ／　　｀ー　　　　　　｀ ｰャ　、_　,ィ⌒ヽ、_＿
+			PRINTL 　　　　　　　 ／:: :∠:: :: :: ::/　　/　　 /　　　Y　　〈:: :: :: 〉:: :: :: :L:: :ヽ:: :: :: ::.ﾊ ／　　　　　　　　　　　　　　 }　　　　　　　　　　 ＼
+			PRINTL 　　　　　　　 ￣￣　 ￣　7　　/　　 ,ｲ＿＿ ﾉ　 　 }:: :: 〈:: :: :: :: :: :ヽ:: :: :: :: :: ::〉　　　　　　　　　＿＿＿＿r'-ー――ﾍｨ､_,　　　　 ）
+			PRINTL 　　　　　　　　　　　　　 ノ 　 /　　/:: |　 　〈　　　　＼:: ::＼:: :r-ー―- ､:: :: :: ＞ ､＿_ , -　´￣　　　　　`ー――――-　　､ｰ- イ
+			PRINTL 　　　　　　　　　　　　 /　　Σ　 ノ￣　　　　`ー―　一＝´￣　　　　　　￣￣　　　　　　　　　　　　　　　　　　　　　　　　　　ヽ__ﾉ
+			PRINTL 　　　　 　 　 　 　 　 / 　 ／　ｱ
+			PRINTL 　　　　　　　　　　　/ 　 ,´　 ,′
+			PRINTL 　　　　　　　 　 　 /　　f　　 |
+			PRINTL 　　　　　　　　　　f　　 ,ﾚ´　ﾊ
+			PRINTL 　　　　　　　　　　ヽ__,（　　　ﾉ
+			PRINTL 　　　　　　　　　　　　 　 ￣
+		CASE 2
+			PRINTL 　　　　　　　　　　　　　 　　　　　　　　 _ ,　 ......　 、_　 ___
+			PRINTL 　　　　　　＿＿ _,..　 -- 　、　, イ ´　　　　　 ／_　 '.,ミ.、￣＞ ､　　　　__＿
+			PRINTL 　 ﾐ::ｰ::＜¨　／´　　_ ..　__＿｀ヽ　　　　　　　´　´　 ', ',　｀ヽ　　　｀￣｀ヽ:;ィ´
+			PRINTL 　　 ＼:::< ／, ィ ´≧´　　　　 , -　　　 　 　 、　　　　! i　　 ｀i　　　　_,／彡
+			PRINTL 　　　　ミ〃´___ 　}´　　／/　 /　　.i　 ヽ　 　 ﾑ　　 　 .! i　 　 .ｌー'＾￣　　ﾐ
+			PRINTL 　　　　　ヽ、　 ￣ｌ　 /　 { 　 ｌ　 　.ｌ　　 ',　　　.}、　　　! i　　　.ｌ　　 　 ／
+			PRINTL 　　　　　　 ¨ミ__,. } /　　,i 　 i　 　 i　　.∧　　 .l ヽ　　 ! i　　　 l　　／
+			PRINTL 　　　　　　　　　　ｊ.,'　　,' i 　 i i、　i、　.{　'.,} i　l　ヽ 　 ﾘl　　　 ｌΤ´
+			PRINTL 　　　　　　　　　　ｌ.l　　.ｌ　i 　 iヾ,__.iヽ　l　 ﾉﾉ, .lー‐}　ﾉ .l　 　　ｌ !
+			PRINTL 　　　　　　　　　 / ｌ 　 ﾊ .ﾄ,　 i ヾﾘ __ヾ　 /　}/ ,ｲ云::::下　/　 l i
+			PRINTL 　　　　　　　　／ .ﾊ　 .l .i .ﾊ　 l.,ｨ行::心ゝ　 /　　.辷:::ﾂ/ /　　.ｌ.i
+			PRINTL 　　　　　　　彡イ　',　.{　i i. ヽ .{　込:::ｼ　　　　　　 ￣ゞイ　i　 ｌ i
+			PRINTL  　 　　　　　　　　　.',　ﾊ ヾ　 ﾄ,.iミｔ-.¨ 　 　 '　　　　　 ./l　i　 ｌ. ﾑ
+			PRINTL  　 　　　　　　　　　　 ', { i＼　 ﾑヾﾑ、 　　　 _　,　　 .　 i l　i　 .ｌ　 ﾑ
+			PRINTL 　 　　　　　　　　　　　:|　|　　　 |ﾊ.　＼　　　　　　　 ｨ升─|　 |　　ﾑ
+			PRINTL 　 　　　　　　　　 　　　|　!　 　 ！ ＼`<＞ 、_..　＜　∧ 　！｜ ＼:ﾑ
+			PRINTL 　 　　　　　　　　　　　 |　|.　 　 ｛　　 ＼＼　　 　 　/　‘,　 ｌ. ｜ 　 Ｙﾑ
+			PRINTL 　 　　　　　　　　 　　　|　|.　 　　ｌ　　　　＼＼　　 ,ﾊ　　 !　|　| 　 　‘, l
+			PRINTL 　 　　　　　　　　 　 　.j　| ｌ　　　|　　　　　 ＼＼ ﾑ} }　　|　|　.! 　　　| |
+			PRINTL 　 　　　　　　　　　.／ﾘ .从!　 　 |＼　　　　　 ＼ヽ/ |　　|　|　| 　:.　 | |
+			PRINTL 　 　　　 　　　　 ./　 /./{　{　 　 .|　 ＼　　 　 　 `<　}　　l　|　| 　 V八|
+			PRINTL 　 　　　　　　　 /　／./人.ヾ 　 八　 　 ＼　　 　 　 ,′　j ｜ | 　　',　‘、
+			PRINTL 　 　　 　　　　 /／.／　　 ＼`　　 ヽ　　　 ＼　　　〃　 八 |　l 　　 ｌ 　 ヽ
+			PRINTL 　 　　　　 　 〃.／　　　　 　 ＼　 　 ＼　　　ヽ　〃　 /　　｝ .ｌ 　　 | 　　 ’,
+			PRINTL 　 　　　　　/／　 ´ ￣￣｀ヽ　　＼　 　 Y　　　∨ 　〃　　 |　| 　　 | 　 　 ﾊ
+			PRINTL 　 　　　　 ｛　　　　　 　　　　 ＼　 ヽ　　.}　 　 / 　 〃　　　|　| 　　 |　 　/　}
+		CASE 1
+			PRINTL 　　 　 　 　 　 　 ＞‐＜　　　　　_＿__
+			PRINTL 　 　 　 　 　 　 ,:'///∧ヽ　　 ,:'////∧ヽ
+			PRINTL 　　　　　　　　 ｌ//////)::j　　l///////l::::l
+			PRINTL 　　　　　　　　　>ー－ｲzzzzxゞ//////j:::j
+			PRINTL 　　　　　　　 ／－ｲ／￣￣ﾍzzxー--イノ
+			PRINTL 　　　　　　　´ノﾞ´/ //　ﾊ　　　 　`ｰ.ﾍ´
+			PRINTL 　　　 　 　 ／´7/i 1,i-i(　jｰj-i､j ヾ ､ ∧
+			PRINTL 　 　 　 　 　 　 !,ｲﾊ 仗}　仗勿/.l　.ﾉ : ∧___
+			PRINTL 　 　 　 　 　 　 ′ハi''',　　''' ¨ ﾉ´ ,´⌒ヽﾄ;::::＼
+			PRINTL 　　　　　 　 　 　 ∠::iヽｰ　_ 彡j /l.:::::::::::::.ヽミ:::{
+			PRINTL 　　　　　　　　　　/　ｊ /.:´:::::.:.//.∧;.::::::::::ｲ:.ヽ::}
+			PRINTL 　　　 　 　 　 　 /j　'　i.:::..ヾY/　ﾊ }::::::::::::,':::.. V
+			PRINTL 　　 　 　 　 　 　 j! j!: i.::::::::;ll!l ji i::l ｌ:::::::::::,､:::::...i
+			PRINTL 　　　　　　　　/　ﾉ i! ,'.:::::::,''.:i!ｲ i:::i |::::::::::,.:l::::::∧
+			PRINTL 　　　　　　 　 i／人i.j.:::::::,１.:.:.::l;:V .|:::::::::|/::::::::::ー＞ー､
+			PRINTL 　　　　　　 ／／i　 /.::::::::{ ゞ;.:.:::>　|:::::::::l:::::::::::::>´ ／¨ー-　､
+			PRINTL 　　　　 　 , ,ｲ　 l! /.:::::::::;′､ ¨ 　ﾘ｀;;:::::::|:::::::/　／: : : : : : : : : ヽ
+			PRINTL 　　　　　　i i/　 l :j::::::::::/ハ　; ヾ　,j::::::::::!::::/／γヽ: :ｘ≦: : : : : :Y
+			PRINTL 　　　 　 　 !′　j_i:::::::::/ l　､ﾍ 　 V::::::::::!::/〃ヽλノｲ.: : : : : : : : :l､
+			PRINTL 　　　　　　 (,ｲ´　(:::::::ハ :　　､ﾍ　j.::::::::f　ｌ lλﾉ_xj,ｲ: : : : : : : : : : |::l
+			PRINTL 　　　　　　　ﾍ　　 ー-ヽゞ ､　 ､ﾍj:::::::::l 　>ｲ⌒｀＞､: : : : : : : : : 人::.､
+			PRINTL 　　__＿,.-＜　ヽ,_＿　　）　 　ｒ´　ー-＞....::::::::::::::::::..ヾ: : : : : : ; 　　＼＼
+			PRINTL 　 「_ノ¨ _　´　,.ｲ　　￣f　　_,人　＞...::::::::::::::::::::::::::::::.::..Y: : : ／　　 　 ＼＼　　　　 ,ｲ⌒＼
+			PRINTL 　(´ _ノ¨　　.,ｲ　　　 _ノ, ＜　＞.::::::::::::::::::::::::::::::::::::::::::::::i　/　　　　　　 　ヾ,二二二,ｲ⌒ｊ:::)
+			PRINTL 　 Y　　 　／ﾌ　　／ （　..>.:::::::::::::::::::::::::::::::::::::::.::::::＞ フ_/´　　　　　　　　___　　　　　　i:::i
+			PRINTL 　　ゞ＿／　ゞ- ﾞ　　　У.:::::::::_.:.:.:.:::::::::::::::::::＞´.::::T´___/　　　　　 , -yｲ.:.:.:.....＞　 　 　｀´
+			PRINTL 　　　　　　　　　　　　/ l:::::::::::::..ｲ:.⌒ー.::.:.¨:..､-::.:ー:..-::..........,,,......::f　　 ﾍ.:.:.:.:.:.:.:.:.:.....＞
+			PRINTL 　　　　　　　　　　　　ゞﾍ:::::::::::::::::::::::::::::..........:.:.:....､:::::::::::::::::::::::::::::::...∨　　ヽ､_.:.:.:.:.:.:.:.:.:.:...ﾍ
+			PRINTL 　　　　　　　　　　　　　　ゞｔ ､__＿__:::::::::::::::::::::::::::::.....､::::::_:::::_:::::::_::__.V　ヽ､_ 　ヽ､.:.:.:.:.:.:.:.:..l
+			PRINTL 　　　　　　　　　　　　　　　V.::::::::::::..＞:､::::::::::::::::::::::::::::::......ｯ　¨/　 /:.:.:ヽｲ 　ﾍ　　ゞ.:.:.:.:.:.ｲ
+		CASE 0
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　γ苧ぅ　廴_廴乂､ ／(⌒
+			PRINTL 　　　　　　　　　　　　　　　　　　　ｨ苳乂薔ソ＞''"⌒^'くヽ´⌒≧s｡
+			PRINTL 　　　　　　　　　　　　　　　　　 　 ゞ薔Ｙ ／　/　'　 ./^Ｙ＼(　　 ､　＼
+			PRINTL 　　　　　　　　　　　　　　　　　　 o0〇 / ′/ /　 {/　 八 }　　ヽ ＼(⌒
+			PRINTL 　　　　　　　 　 　 　 　 　 　 　 /. ./. .〈　| --=彡人 ､/　 Ｙ　 　 ∨ Ｙ
+			PRINTL 　　　　　　　　　　　　　　　　　/. ./. . . 〉 {_jｘzkV(　 )｀`～ﾘ/　ｌ　 {(⌒
+			PRINTL 　　　　　　　　　　　　　 　 ／/. .ｲ. . ／　{乂ソ　 　 ｬ莎ｧ/′ .|　人
+			PRINTL 　　　　　　　　　　_　-=ﾆ. .　／＿_Ｙヽ　八/／/／'/ ¨´/　　 人(⌒
+			PRINTL 　　　　　　　　／. . . . . . ..／⌒¨¨´|i　　|＼　 r:::ｧ　　ィ(　{ ／⌒ ∨
+			PRINTL 　　　　　　 ／. . .､丶`..／）／　-- |i　　廴个:.　-=≦⌒ Ｙ∨. . . . ∨＼
+			PRINTL 　　　　　／､丶`. . . ／. . γ´　　 .八　 |乂⌒^´人≧.|　 {__　 . . . . ∨. ＼
+			PRINTL 　　　､丶`. . . . . ..／. . . . .:　　　 /⌒　人⌒^⌒∨∧人 人 ヽ＼. . . .＼. . ＼
+			PRINTL 丶`. . . . . . . ....／. . . ／　{　 ｌ　 ′(／⌒ ▽　　 ∨∧^ヽ⌒Ｙ}　.＼. . . .＼. . ＼
+			PRINTL . . . . . . . . . .／. . . ／　　 |　 |／{　 Ｙ　　 　 　 　 .∨∧　}　 }.|､　　.＼. . . . . . . .＼
+			PRINTL . . . . . . ...／. . . ／'　　 　 ､丶`⌒ ､(　ヽ　／　　　 ｀ヽ、ノ　.ﾘﾊ ＼　　.＼. . . . . .⌒≧ｓ｡
+			PRINTL . . . . . ／. . . ／ /　　　／:::　　　　　　　Ｙ　　　　 　 　 `、イ .:　　 .＼　　丶. . . . . . .
+			PRINTL . . . ／. . . ／　 '　　　 rﾉ:::::.　　　　　　 ..:　　　　.:::::.　　　　　{＼　　　丶　　 ＼. . . . . . .
+			PRINTL . . .:　. . ／　　/　　　/八:.　　　　 　 　 {　　　.:::::ｒｿ:::.　　 }ｒ‐-ミ `、　　 ∨　 　　　. . . . .
+			PRINTL ((. . . . (　'　　ｒ‐y　 / ⌒ヽ　 　 　 　 ｲ人　　 　 　 　 　 人　　　〉∨　　 ∨　　　 `、 /. . . .
+			PRINTL ..＼. . . Ｙ{　　{⌒　 ∧{⌒　≧=‐=≦Ｙ⌒〕ｈ､　　　　　ィ(⌒＼　/　 V　　　V　　　　∨ /. . . .
+			PRINTL . . . Ｙ　 }〔_　 !　 　 {⊆`～､、人___ ノ⌒＼　　￣￣＼　⌒ＹヽＹ　　 ｖ　　　W　 　 　 V. . . . . .
+			PRINTL .... .人 .人乂人　　〈＼≧s｡　`～〈　/＿＿＼__　ノ　　∨ /ノ廴〉　 　 　 　 }　　 　 　 W. . . . .
+			PRINTL . . .⌒＼　＼　 ヽ　⌒≧ｓ｡　 ＿_ノ〈＿＿＿＿ Ｙ　　　 ∨⌒＼　　 人　　.人　　 }　　　. . . . .
+			PRINTL . . . . . . .＼　＼＿＼　rく⌒＼＿＿｢￣￣￣￣人　　　〉{.　　　 ＼　　　／⌒ 　ノ 　 人. . . .
+			PRINTL . . . . . . . . ／⌒⌒ア 人／廴ノ ⌒人　 〈〈､　　__ノ　 /ﾊ V　　　　 ＼／ ､､丶`　　／. . . . . .
+			PRINTL . . . ｡ｓ≦⌒　　　(　　 Ｙ　廴　　　 ⌒ア　））＼ゝ‐ｧ //∧ 〉⌒¨¨¨¨¨ｱ)廴＼　　／ ⌒＼. . . .
+			PRINTL 　　　　　　 乂＿__≧ｓ｡　　──==≦⌒Ｙ廴＿__〈(〈/⌒＼　　　　厂⌒ア≧=‐彡　　　　≧=‐
+			PRINTL 　　　　　_　 -ﾆ　　　､:::⌒＼　r‐‐‐人　 廴　　 ､　 　 　 　 ＼⌒^´　　　 ､＼～､、
+			PRINTL 　_ -ﾆ　 　 　 　 　 　 ＼::::::::＼　　 ⌒ヽノ 廴　　＼＞=── .＼　　　　　 ＼＼､＿～､、
+			PRINTL 　　　 　 　 　 　 　 　 　 ∨::::::∧　　／:::::::::⌒ア廴(　　　(⌒ 　　＼＞=── 〉 .＼⌒ヽ　｀`～
+			PRINTL 　　　　　　　　　　　　　　 V::::::::::〉／---ミ:::::::::⌒乂　　　 ｀⌒ヽ　 ⌒〉 　 　 / (／　　　)
+			PRINTL 　　　　　　≧=‐　───--廴⌒廴厂⌒ヽ＼::::::::::::ヽ　　　　　　廴ノ＼　 ／⌒)　　 Ｙ(
+			PRINTL 　　　　　　　　　　　　　　　 ／廴√乂___ノ廴 ＼:::::::::::Ｙ　　　 ィ(⌒　　 .Υ　 ／＼　人＼
+			PRINTL 　　　　　　　　　　　　　　／　　⌒^⌒／〈/:::∧　Ｙ::::::::{　ィi〔＼　　 　 　 ｀¨´　　　 ＼ノ
+			PRINTL ＼　　　　　　　　　　　／　　　　　 ／／八_　　-=………=--　　＿
+			PRINTL 　 ｀¨¨¨¨¨ ー──　.:　　　　　　　( (　(⌒　　　　　　　　　　　　　　　ニ=‐　　＿ ｒく⌒＼
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　 ￣ ／⌒Ｙ
+			PRINTL 　　　　　　　　　　　 {　　　　　　　　　　　　　　　　　　　　　　　　　　　＿　　　　　　 〈／⌒ﾊ
+			PRINTL 　　　　　　　　　　　人　　　　　　　　　　　　　　　　　　　ニ=‐￢宀::::/　　　‐=ニ　　 〉__《:::
+			PRINTL 　　　　　　　　　　　⌒＼　　　　　　　　　　　ニ=‐　　　　　　　 v:::::::/　　　　　　　　 ≧=‐
+			PRINTL 　　　　　　　　　　　　　　≧=‐　　-=≦⌒　　　　　　　　　　　 人::::/
+	ENDSELECT
+	SETFONT
+
+
+;;"AV出演_かわゆ過ぎる○○と僕のパコパコ同棲性活"
+ELSEIF CFLAG:282 == 9 
+	SETFONT "ＭＳ Ｐゴシック"
+	SELECTCASE RAND:4
+		CASE 3
+			PRINTL 　　　　　　　　　　　　　　 　 ∠二＿　　　　　｀ミ､_＿＿＿
+			PRINTL 　　　　　　　　　　　　　　　 　 　 　 , ＞'´￣｀_　　　　　　　　｀ ミ ､
+			PRINTL 　 　 　 　 　 　 　 　 　 ` ､ｰ‐-＝彡　, ィ ,ィ´　　　　　　　　 　 　 　 ヽ
+			PRINTL 　＿　　＿　　　　　　 　 　 ｀¨ ｰ─ｧ´ｲ /　　　　　　 　 　 　 　 　 　 　 ＼
+			PRINTL ´　　｀´ 　 .ヽ　　　　　　　　　　 ／／ ./／,.' ／　/　〃 　 　 ､　 　 ヽ　　 ﾍ
+			PRINTL 　 　 　 　 　 :',　　　　 　 　 　 /,ｲ" / ,ｲ　／7　,ｲ!　 |{i　　}i　 i　　　 ﾊ　　 ∧
+			PRINTL 　　　 　 　 　 l.　　　　　　 　 //,' ./ ./　厶‐ﾒ､〃| i　{ﾊ　 从　}　　 　 i　　　 i
+			PRINTL 　　　　　　　ノ 　 　 　 　 　 ,'// /　,ｲ /,zｮｭN !　! |Α┼-ﾘi､} i　　 　 ,' 　 　 ′
+			PRINTL 　　　　　　　}.　　　 　 　 　 ,/ , /{　|!|{i《んｲﾄﾞ!|　|iｊ,zｮｮｭ､ﾉ刈＼　 　 / 　 　 ,'
+			PRINTL 　_,_　　　 ,..:'　　　　　　　　 ﾘ { i .}ｉ |iﾍi} i叱|　ﾘ　ﾘ ´ん气ﾐ､ﾘ}'　　　 / 　 　 ,
+			PRINTL ¨　 ｀¨¨¨´　　　　　　　　　　　}乂{ iﾄ､ﾘ｀ｰ┘　　　　iうｏ乃 》　　 　./ 　 　 .′
+			PRINTL 　　　　 　 r'⌒ヽ.　 　 　 　 ／　 ヽﾙi|( ;;;:　 　 　 　 ゝ､少'"ｊ　　　 ﾑヽi 　 ,i|
+			PRINTL 　　　 　 (´　　　.:｀)　　　　　　　　 ゝ!i 　 '　 　 　 　 ..;;;;;;　,ｲ　 　 / "ﾉ{ 　,ﾊ}
+			PRINTL 　　 　 　 ゝ,___,ノ´.　　　　　　 　 　 |i八　 ┌-　,　　　　　( /　　 ﾑイ　!　ｲ ﾘ
+			PRINTL 　　　　　　　　　　　　 　 　 　 　 　 |　ｉ|ﾍ　　　 ′　 ｕ　　// 　./ || !　|　ｉ|
+			PRINTL 　　　　　　　　　　　　　　　　　　 , ┤ ｉ|､_ﾍ　　 　 _ ,. ＜7/　　/ｉl ﾘ 　 !　.|
+			PRINTL 　　　　　　　　　　　　　　　 　 ／　,'　!ｊ　 `｀￣ｊ´　　　 //　　/ {i i　　 |　ｉ|
+			PRINTL 　　　_ _　　　　 　 　 　 　 　 /　　/　'厶.　 　 １　　 　 {i{　　/ﾐ丶{　　 !　.|
+			PRINTL 　／　　　＼　 　 　 　 　 　 ,'　　/　 /´￣´ 　 !.　　 　 Y　 /｀ヾ>'> 　 |　ｉ|
+			PRINTL 　　　　　 　 :ヽ.　　　　　 　 i__ｊノ　, /　　ﾍ　　ﾉ 　 　 　 〉　i{　　 ＼{　 !　.|　 　 　 ,γ⌒)
+			PRINTL 　　　　　 　　ノ　,.ィ´ ミｰ-∠､＿／　　 　 }　, ─---‐/　 ∧ｰ　　 ｀!} ､　| 　 　 (⌒:.　　　　 .._y⌒ヽ
+			PRINTL ..　　　　‐＜.　／　、｀ｰ- 、∨ 　 　 　 　 　 　 　 　 ／　 /　ﾍ　　　 ||　ヽ|　　 　 ゝ:.　　　　´　　 　　..<
+			PRINTL 　　　　　　 ::） . へ _｀ミ､　＼}　　　　　u 　 　 　 　 .＼　〈　　 》.　 　|| 　 .',　 　 　 ゛ｰ‐'｀ｰ（:.　　　　　 }
+			PRINTL 　, -=　　　　ヽﾞ／　　...､_＞┘　 　 　 　 _,.ィ´ゝ‐-､　 ｊllﾍ＼〃　u　 }| 　　i　　　　　　　　　ヽ:.　 　_,,ノ
+			PRINTL (:　　　　　　 :ﾉ　　　　　　　　 　 　 , ⊂二、｀丶｀ヽ ∨:::1 ＼＼　 　 |i!　　.}　　　　　 　 　 　 ゝ一''
+			PRINTL 　>:　　　　 　 　 ｊ　　　　　 　 　 ／__,. ---｀ゝ.　　　 ∨::{　　)　}　　ﾉﾊ〉　,'
+			PRINTL （_::　　　　　 　 ｒ'　　u　　　　　〃 ﾞｰ─＝､　　　　　　∨,ィ彡´))　 {i{　ﾞ∨!
+			PRINTL 　　￣　(＿...:ノ.　　 　 　 　 　 i.　　　　　　 ＼　　 　 　 Ｙ / 　(( 　 }}　 / i|
+			PRINTL .　　　 　 ﾍ　　ゞ､　　 　 　 　 ,i　u　　　 　 　 .＼　　 　 ∨　 　 )　 il　∧ .|
+			PRINTL 　　　　 　 ',　　　 ｀ｰ-ｩ.- 　 .ﾍ!.　　　　,γ⌒)ノ.ﾞﾍ_　　　 }　　　　 　 /i　 i|
+			PRINTL 　　　　　　 ﾍ　　　　 ,'.　 　 　 ﾍ､. 　 (⌒:　 　 .｀ヽ.　　 　 !　　　　　/. !　 .|
+			PRINTL 　　　　　　　 ',　　 　 !.　 　 　 　 ＼　 ゝ:.　　γＹ⌒ヽ. 　 ',　 　 　 /　iｌ 　ｉ|　　 　 　 r'⌒ヽ
+			PRINTL 　　　　 　 　 　 　 　 {　　　 　 　 ,ﾚﾍ.,.－:　　　　　 　 :）...　,　　　./i|　i|　 i.|　 　 　 (´　　　.:｀)
+			PRINTL 　　　　　　　　 ﾍ　　 |.　　　　　く　 　 　 　 :⌒ゝ、＿ノ　　ﾍ　　 / i|　 | 　 i|　　　　 ゝ,___,ノ´
+			PRINTL 　　　　　　　　 　 , 　 i　　　　　　>:.　　 　..__:ﾉ　　|.　 　 u 　 ',　/:.:.i|　i|　　.|
+			PRINTL .　　　　　 　 　 　 ゝ、i　　　　　ハ:__,、.　　.）　 　 |　　　　　　∨:.:.:.:i|　.|　　i|
+			PRINTL 　　　　　　　　　　　 ｀}　u　　　　　　 `ー ′　　　',　　　 　 　 !:.:.:.:.:i|　i|　　.|
+			PRINTL .　　　　　　　 　 　 　 i　　　　　　　　　　　　　　　 　 ,　　　　 /:.:.:.:.:.}}　.|　　i|
+			PRINTL 　　　　　　　　　　　　{　　　　　　　　　　　　　　 　 　 ＼＿／:.:.:.:.:.:.ﾊ　i|　　.|
+		CASE 2
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　 _ ,　 ......　 、_
+			PRINTL 　　　　　　　　　　　　　_,..　 -- 　、　, イ ´　　　　　 ／_　 '.,ミ、
+			PRINTL 　　　　　　　　　　 ／´　　_ ..　__＿｀ヽ　　　　　　　´　´　 ', ',　｀ヽ
+			PRINTL 　　　　　　　 　 ／, ィ ´≧´　　　　 , -　　　 　 　 、　　　　! i　　 ｀i
+			PRINTL 　　　　　　　　〃´　　}´　　／/　 /　　.i　 ヽ　 　 ﾑ　　 　 .! i　 　 .ｌ
+			PRINTL 　　　　　　　　　　　　 ｌ　 /　 { 　 ｌ　 　.ｌ　　 ',　　　.}、　　　! i　　　.ｌ
+			PRINTL 　　 　 　 　 　 　 　 　 } /　　,i 　 i　 　 i　　.∧　　 .l ヽ　　 ! i　　　 l,
+			PRINTL 　　　　　　　　　　　　 ｊ.,'　　,' i 　 i i、　i、　.{　'.,} i　l　ヽ 　 ﾘl　　　 ｌi
+			PRINTL 　　　　　　　　　 　 　 ｌ.l　　.ｌ　i 　 iヾ,__.iヽ　l　 ﾉﾉ, .lー‐}　ﾉ .l　 　　ｌ!
+			PRINTL 　　　　 　 　 　 　 　 / ｌ 　 ﾊ .ﾄ,　 i ヾﾘ __ヾ　 /　}/ 　 /／　/ /.　 l.i
+			PRINTL 　 　 　 　 　 　 　 ／ .ﾊ　 .l .i .ﾊ　 l.,ｨ行::心ゝ　 /　 .ｨ云ミx/ /　　.ｌ.i
+			PRINTL 　　　　　　　　　 彡イ　',　.{　i i. ヽ .{　込:::ｼ　　　　　　 　 ゞイ　i　 ｌ i
+			PRINTL 　　　　　　　 　 　 　 　 .',　ﾊ ヾ　 ﾄ,.iミｔ-.¨ 　 　 '　　　　　 ./l　i　 ｌ　i
+			PRINTL 　　 　 　 　 　 　 　 　 　 ', { i＼　 ﾑヾ∧　　　　 _　,　　 .／i l　i　 ｌ　.i_
+			PRINTL 　　　　　　　　　　　 　 　 ヾ.i　. ＼{ .＼ i ＞　　　　　　イ　 i.l　ｌ／　　 ｀ヽ
+			PRINTL 　　　　　　　　　　　　　 　 　 　 　 　 　 l　　 ≧　-r 　 　／ //　　　　　　!
+			PRINTL 　　　　　　　　　　　　　　　　　　　　 　 |　 　i 　 　 }__∠./ / ,　　　　　　　|
+			PRINTL 　　　　　　　　　　　　　　　　　　　　 　 |　　 i　 .,-'/'"　/ / / 　　　　　　　!
+			PRINTL 　　　　　　　　　　　　　　　　　 　 　 　 |　.,..-'/　/　　　i　! !　　　　　　　　!
+			PRINTL 　　　　　　　　 　 　 　 　 　 　 　 　 　 |／　/　/　　　　!　!.! 　　 _,..-'',)　/__
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　/ 　 /　/　　　　 .!　V,.. ''~-==ﾆ二￣'
+			PRINTL 　　　　　　　　　　　　　　 　　　　　　 .!　　 !　!,へ,-‐ﾍ'''''-／　　　　'''---~二`
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　!　　!￣__－-－-／　　　　　_ ＼-、＼
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　!.／´￣　　　　／　　　　,.-'" ヽ .!:::!~"
+			PRINTL 　　　　　　　　　　　　　　　　　　　　 , '　　　　 　 .／　　　 ／~ 　　　/'-':
+			PRINTL 　　　　　　　　　　　　　　　　　　　　,　　　　　 .／　　　 ／ !　　　　　!　|
+			PRINTL 　　　　　　　　　　　　　　　　　　　　{　　　　.／　　　　/　　!　　 　　.!,　|
+			PRINTL 　　　　　　　　　　　 　 　 　 　 　 　 iゝ　　 /　　　　 /　　　.!　　　　.! >､----____
+			PRINTL 　　　　　　　　　　　　　　　　　　　　!　＞/　　　　　/　　..ノ!　　　　.!/　/~＼_　　￣,, 7
+			PRINTL 　　　　　　　　　　　　　　　　　　　　!　 /　　　　　/　　ヽ　 !　　　　!,　/　＼　＼　　`7＼
+			PRINTL 　　　　　　　　　　　　　　　　　　　　 ! 　　　　　./　　　　　!　　　　 .!Y.　　　 ＼　＼　!＼＼
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　!　　　　／ ＞、 ＼ .!　　　　　! !　　　　　 ＼-' '＼ ＼!
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　ヽ　.／　／,／`! 　`!　　　　　! !　　　　　　　＼　　＼!
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　　｀~　ヽ!／　　　＼ .!　　　　　!/＼.　　　　　　 ヽ　　 ヽ、
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　／　　／　／I .!　　　 /,　　　!　　　　　　　ヽ　　　!
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　!　　/　　/ ／ .!　　　／ 　　　!　　　　　　　 !＼　!
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　( ／ _,,-''''　　　!　　/,　、 !　　!　 　　　　　　!　ヽ!
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　　　_,,..-‐'~,,　　　　,　.!,／　　ヽ, !　　!　　　　　　　!
+			PRINTL 　　　　　　　　　　　　　　　　　　　　_,,,-'''　　,r''／　　 ／　／　　　　 ヽ!　 ! 　　　　　　/
+			PRINTL 　　　　　　　　　　　　　　　　　　　　!　　,.-''／　 　 ／　 ／,.--、　　　 ＼/　　　　　　/
+			PRINTL 　　　　　　　　　　　　　　　　　　　　>-'-／'-、　／　　_/-'- =、　　　　　>　　　　　 /
+			PRINTL 　　　　　　　　　　　　　　　　　　　 /~''>' .ヽ、ヽ''　　 ./　 ! 、　 `　　　　./　　　　　/
+			PRINTL 　　　　　　　　　　　　　　　　　　　ヽ／　　　!''!　　　/_,,,,,_!　!ヽ　　　　 /　　　　 ／
+			PRINTL 　　　　　　　　　　　　　　　　　　　 /　　 　(　 ヽ_　/~_,,,,,_!,　!,,,＼　　./　　　　／
+			PRINTL 　　　　　　　　　　　　　　　　　　 /　　　　　＼　ヽ!/'!　　＼_!-,＼＼/.　　　／
+			PRINTL 　　　　　　　　　　　　　　　　　　/　　　　　　　'!　 `/　　　 　　ヽヽ,<　 　／
+			PRINTL 　　　　　　　　　　　.　　　　　　/　　　　　　　　 "> !　　　　　　　＼''!　／
+			PRINTL 　　　　　　　　　　　　　　　　　!　　　　　　　　／'"!　　　　　　　　.ヽ!/
+			PRINTL 　　　　　　　　　　　　　　　　　ヽ　　　　　　　　　 !　　　　　　　　　/'
+			PRINTL 　　　　　　　　　　　　　　　　　　＼　　　　　　　 .!　 　 　 　 　 　 /
+		CASE 1
+			PRINTL 　　　　　　　　　　　　　　ヽ
+			PRINTL 　　　　　　　　　　　　 　 　 ＼　　　　　＿
+			PRINTL 　　　　　 　 　 ., -_―ニー .､ .,>､´ ￣　　　　｀ ・ .、　, --､
+			PRINTL 　　　　　　　 イ´　　.,ｲ ⌒　 `　 .}　　 　 　 　 　 　 X
+			PRINTL 　　　　　　　　 　,.イ　.,ｨ　 /　　　　　　　 　 　 ,、　 　 ＼
+			PRINTL 　　　　　　　ー=' - イ 　 /　　　　　 .,、　　 }　ハ　}　　　',
+			PRINTL 　　　　　　　 　 　 ./,ｲ　/ .i.　,i i　 .i ハ　i　ﾉ ∧ヽ l　　l.　',
+			PRINTL 　　　　　 　 　 　 〃{　 .{　.i .ﾊ八　.l{　 } .}/ / ‐ヽ .j 　 i　 .}
+			PRINTL 　　　　　　　, ､､_/.八　 l 八.{ |i .iヽ l　 .|,ﾊ./　 ＿.ｙ　　j　 .j
+			PRINTL 　　　　　　./　ヾ￣,｀ー ､_j八 .ﾊ.{. ヾ　 i 〃,.イ心/ i　.八. ,′
+			PRINTL 　　　　　 人_ ,.イ_..ィ　,.ｲ .ﾉー-ィ弐ミ､　　　　ゞつ i ./　i ,′
+			PRINTL 　　　　 ./　　∨ `＝≦≦ニ=イ',　 　 　 '　　 　 ,′..ﾊ　i,′
+			PRINTL 　　　　/　　　 .＼__　　./-イ/ ,∧.　　,、　,.、　./.i i　{　 .{
+			PRINTL 　　　./　　　.:::::::::::::>イ/　//}/ 　 ＞:..　__ ,...イ-{ i ｌ_　八
+			PRINTL 　　 /　　:::::::::::::::::ノ　./　 { {,′ /,ィﾁ_}　 　 ,.イ::{ .i |　｀ヽヾ
+			PRINTL 　 ./　 　 ＿_;::イ〈　_,.ィ￣ゝ/ ./ｲ:;イ　′ ／　::::∧　j .,ィ´`.〉
+			PRINTL 　/　　　　:::::::: ／ゞ:::: ＼:::: 〉./ ／-　ィ.´/　 　/:::ﾉ /ｲ　　　{、
+			PRINTL 　{　　 　 :::: ／:::::::: `ー　,ｲイ,.ｲ　　　 ,.へ　　 { / ./　　　　.l ヽ
+			PRINTL 　.l 　 　 .／ :::::::::::::　 ,.イ.／　 ／　,〈　　 `ー{/　{:::/　　　.j 　 '.,
+			PRINTL 　 '.,　　　　　　_,ィ_／ .／　.,　' 　 /　　　　　　ﾏﾉ,ｲ　　 　 l､ 　 ﾊ
+			PRINTL 　　.＼_＞ ' ´ 　 / ,／　　/　 　 /　　　 　 ..::八{　　　　　 l　}　 .ﾊ
+			PRINTL 　　　　　　　 　 ,'.,ｲ 　 　 ′ 　 .{..:.､:,...::::::::::/:/:/　　 　 　 l .ﾉ　　ﾊ､
+			PRINTL 　 　 　 　 　 　〈 .l　　　 　 ゝ 　 l::::::::::::::､ィ:::〈:/　　 　ヽ:::::l j }　i　 }､ヽ
+			PRINTL 　　　　　　　 　 .ﾏ.､ _ _ , ィ　`ーl::::-:::::　ヾ{::／::／/　　 ';::l.,'　l　i　 | ヽヽ
+			PRINTL 　　　　　　　　 　 jヽ:ﾊ　 　 　 　 ',　　　　　 {イ::;;ノ　　　 ｙ'/　j　}　 ｌ　}　}
+			PRINTL 　　　 　 　 　 　 / ∧:ﾊ.　　　　　 ',　　 ,ィ⌒￣　　　　　//　 ,　 ｌ　 ｌ　}　}
+			PRINTL 　　　　　 　 　 ./ /.∧Ⅶ　　　 　 .ｊ, ィ'￣　 　 　 　 　 ./.,′ ｊ／,ｲ　.} .,' .,'
+			PRINTL 　　　　　　　 .,ｲ,ｲ./　j.∧　　,ィ ≦´..::::::::::::::... 　 　 _,.ｲ .{　./　/ .}　.l./ /
+			PRINTL 　　　　　　 ,ｲ.,ｲ ./　 ＞イ´/　　/::::::::::::::::::::::::,＝イゝ､{ .{ /　/　 l　 l ./
+			PRINTL 　　　　 .／／/ ./{ィ´　　,ィ{　　 {:::::::::;　-＜´/::::::::::::::::::＞､ /　　ｊ　 j/
+			PRINTL 　　　　/ ./ ./,,ィ´　　_,イ__} ∨　ヽ≦}　 　／　 :::::::::::::::::::::::::＼　/　/{
+			PRINTL 　　　./.,ｲ　.{ ｊｲ//∧/////|､V___,.ィ　　 　　　　／　　::::＼::::.ハ　./ゞー
+			PRINTL 　　　{ .{ i　 l ヾ.}.}.}///}/}:Ⅵ ∨　　　　　　　　/,　-―　　ﾉ｀ ＜ヽ
+			PRINTL 　 　 .i/　　 l .| ヾ'////}/|Ⅵ　ｊ　 o__ 　 　 　 //::::　　 　/　　　 ヾ,
+			PRINTL 　　　i　　　 ヾ{ .|:////:j/jⅥ　ヽ ＼ー-.......::::::::::　　 　 /　　　　 .j}}
+			PRINTL 　　　　　　　　ヽ|////////j　ーゝ. ＼:::::::::::::::　　 　 ,ｲ　　 　 　 l}|
+			PRINTL 　　 　 　 　 　 　 ￣∧ ￣　 　 　 X　 `ー―　　　 ,ｲ　　　　　　,':|
+			PRINTL 　　　　　　 　 　 　 ,'　∨　　　, イ　ゞ､　　　　　 ／　　 　 　 　 ,':ｊ
+			PRINTL 　　　　　　　 　 　 ,′　∨,イ´　　　　 ./`.j＜,.イ　　　　　　　　,':;'
+			PRINTL 　　　　　　　　 　 ,'　　　　 　 　 　 　 /　 .|　　　　 　 　 　 　 .,′
+			PRINTL 　　　　　　 　 　 ,′　　　　　　　 　 /　　 |　　　　　　　　　　,′
+		CASE 0
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　　_　-―‐‐-＜￣ ￣　｀ 　＞_､
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　　＿∠＞　　　,ｲ⌒¨　　　　　　　-‐=z ､
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　`ーｚ´　　　　 斗＜
+			PRINTL 　　　　　　　　　　　　　　　　　 　 　 　／/´　〃　,ｲ　　　　　　　　　　　､ヽ　 　 ､　､
+			PRINTL 　　　　　　　　　　　　　　　　　　　　／ /　　/. 　/　/　 ,\ .ハ i　　　　　 i　＼
+			PRINTL 　　　　　　　　　　　　　　　　　　　 /´ 7　　/ 　 '/　l/i /'!/　 l!l　　ji　　 　 　 i　　 iい
+			PRINTL 　　　　　　　　　　　　　　　　　　　′./　／i 　 '/i　∧>､/　　jj＿/ ,ｊ　 i! i　　|!､
+			PRINTL 　　　　　　　　　　　　　　　　　　　　/ , '　｜　′! 《ｽ心!　　 ﾉjフ7才メ　i　　|! i i　|　ｌ
+			PRINTL 　　　　　　　　　　　　　　　　　　 　. >´　　|,ｲ　,'ヘ､::::ﾁ!　　　"斗ﾐ､,.クi!木　ｲi!| i! ,i /
+			PRINTL 　　　　　　　　　　　　　　　　　　　´　　　　! |　i i |　¨¨´　　　　､j::::::ﾇ》ﾘ/ﾍ.∧j! .:.:
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　　　 　ﾍ i i!ﾍ　く　　 　 　 ｀`ーﾞ//　/-i!ｌ　!/
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　　 ﾞl从,ﾍ ､＿_　　 　 　 斗/　/ﾌﾉﾉノ
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　　　　　i∧∨¨ヽ　　_.ノﾁ　　/イﾃ´
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　　　　　l .∧丶ノ'　　 ノ 　,イﾍvz--､_＿
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　　　　　|!　iﾄ-＝エフ'' "´=ミ;ilil|z////∧
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　　　 　 　 　 i|　 | fﾌ///////Z∠ij/Ⅹ≧=-
+			PRINTL 　　　　　　　　　　　　　　　　　 　 　 　 　 　 　 　 ,　ｊ.ﾉ.////////タ///　ヾtv//Z＞
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　　 　 　 　 /＞ｲ///／////j//∧i!　ヾ ､
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　　　/f, -jZX／//////_／.:.|　　　Vﾊ
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　　ノ_ｊ／////////"⌒.::.:.:.:.:|　　 　';　';
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　 .::∠//////,ｲ￣丶.:.:.:.:.:.:.:.:i i!　　|! Ni
+			PRINTL 　　　　　　　　 　 　 　 　 　 __ __　 　　, イ.:.'´1.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:..Y.::.:.:.:.:.:| i!　　| 　 ヾ ､
+			PRINTL 　　　　　　　　　　　　　　　//// 　 , <.:.:.:.:.:.:.:.:.|.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.::i.:.::.:.:.:.:.:| i!　　i!
+			PRINTL 　　　　　　　　 　 　 　 　 ////.　／.:.:.:.:.:.:.:.:.:.:.:|.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.|.:.:.:.:.:.:.:ﾍﾊ　　 　　　∧ﾍ､
+			PRINTL 　　　 　 　 　 　 　 　 　 //// ／.:.:.:.:.:.:.:.:.:.:.:.:.:.|:.:.:.:./.:.:.:.:.:.:.:.:.:.:.:.ﾚ.:.:.:.:.:.:.:ﾊ　　　 ∨　　　　ヽ､
+			PRINTL 　　　　　　　　　　　　　//7/.;'.:.:.:.:.:.:.:.:.:.:.:.:.:.:.::.:|!.:.:./.:.:.:.:.:.:.:.:.:.:.::ｆﾞ.:.:.:.:.:.:.:.:.:.:N
+			PRINTL 　　　　　　　　 　 　 ∠ﾀ´￣l.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.|.:.://.:/.:.:.:.:.:.:.:.:.|!.:.:.:.:.:.:.:.:.:.:.:人i　　　V　　､ 　　､､
+			PRINTL 　　　　　　　　　　　/>tｧｆ´T:ﾞ:.:.:.:.:.:.:.:.:.:.:.:.:.:.::.:.:|.:.:/.:/.:.:.:.:.:.:.:.:.:/.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:丶　　V
+			PRINTL 　　　　　　　　　　,ｲ///ハ､t∨.:.:.:.:.:.:.:.:.:.:.:.:.::.:.|,ｲ.:./.:.:.:.:.:.:.:.::.:.!.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:∧　　 　　　　 　　N
+			PRINTL 　　　　　　　　　　 ///∧.ﾊ_j　ﾞ' ､.:.:.:.:.:.:.:.:.:.:.::.:i/.:/.:.:.:.:.:.:.:.:.:.:/.:.:.:.:.:.:.:.:.:.:.:.:.:// ∧　　 i!　 　 　 　 iい
+			PRINTL 　　 　 　 　 　 　 //// 　 　 　 　 ` ＜_＿_＞ﾉ ノ.:.:.:.:.:.:.::.:.:.:|.:.:.:.:.:.:.:.:.:.:.:.:.// 　.∧ 　.i!　　 i!　 　 　 ｌ
+			PRINTL 　　　　　　　　　////　　　　　　　　　　　　,ｲ／.:.:.:.:.:.:.:.:.:.:.:/.:.:.:.:.:.:.:.:.:.:.:.://　　　 ∧
+			PRINTL 　　 　 　 　 　 ////　　　　　　　　　　　　 У|,ｨ壬≧ｭ.､.:./.:.:.:.:.:.:.:.:.:.:.:／/
+			PRINTL -‐=ﾆ二二二////二二二二二ﾆﾆ=‐-xｲ´.:.:.:.:.:.:.:.:.:.:.:.:.:./.:.:.:.:.:.:.:.:.:／.:.:/　　　　　　　＼　　　　　　　　　ヽ
+			PRINTL l|l|l|l|l|l|l|l|l|,ｲ ￣￣ ｀ ､l|l|l|l|l|l|l|l|l|l|l|i!＞ﾞ..:.:.:.:.:.:.:.:.:.:.:.:.:.:.:/ー-―‐¨,ｲ.:.:.∧　 　 　 　 　 　 Ⅳ　,ｲ
+			PRINTL ﾆ=‐--r＜　,　　　　　/ ー天ﾆ二,ｲ.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:ノ.:.:_＿__.:..:＞.:.:.:.:.{､　　　　　　　　 i!и
+			PRINTL ゝ7ZZZゞ⌒ｰｲ　　　/ 　/.:.:.:.:／.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:＞´.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.ヽ､　　 　 　 　 |　|
+			PRINTL 　 フ　　　　　　　　/　 /_,ｲ.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:＞´.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:＼　　 　 　 |　|
+			PRINTL 　/　　　　　　　　 :i　　|.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:＞´.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:ｊ　　　　　i!　!
+			PRINTL 　l　　　 　 　 　 　 | 　 |.:.:.:.:.:.:.:.:.:.:.:.:.:＞ｆ´.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:,ｲﾍ　　 　 i!
+			PRINTL __i 　 　 　 　 　 　 ﾍ　 ヽー- フﾅ￣　　Y⌒iー-―iｲ⌒ーttヘ、_＿__＞iｲ¨´ゞ､　ヽ､　　.j!
+			PRINTL 　N　　　　　　　　　 ＼ 　＼ｲ /　　　　 i　 }}　　　　}}　　　}}　　　ヾ､　　ヾ ､.:.:.:.ヾ ､j　　i!
+			PRINTL 　ﾍ＼　　　　　　　＞ ヘ_＿_V　　 　 　 ゞ_{{＿__＿_{{_＿__{{_　　　 ヾ､　　ヾ v＜⌒ヘ　ii!
+			PRINTL 　　＞ー----- イ　　　　　　　　 　 　 　 i!　　　　　　　　　　　￣￣　　 　 　 　 　 　 ｀Y
+			PRINTL 　　　　　　　　　　　　　　　 　 　 　 　 　 j!　　　　　　　　　　　　　　　　　　　　 　 　 　 i
+	ENDSELECT
+	SETFONT
+
+
+;;"AV出演_無理矢理犯されるアナル 4時間"
+ELSEIF CFLAG:282 == 10 
+	SETFONT "ＭＳ Ｐゴシック"
+	SELECTCASE RAND:2
+		CASE 1
+
+		CASE 0
+	ENDSELECT
+	SETFONT
+
+
+;;"AV出演_おしおきされてイキまくるドジっ娘メイド"
+ELSEIF CFLAG:282 == 11 
+	SETFONT "ＭＳ Ｐゴシック"
+	SELECTCASE RAND:6
+		CASE 5
+			PRINTL 　　　　　　　　　　　　 　 　 　 　 　 　 ´ッ⌒)
+			PRINTL 　　　　　　　　　　　　　　　　　　　 　 (（, 　｀ゝ
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　 　 jil　　γ⌒',
+			PRINTL 　　　　　　　　　　　　　　 _ｒ'`i￣Y￣7ｰ､_　 .〃゛ｰ ‐
+			PRINTL 　　　　 　 　 ―=＝＝二´i＞'‐- ､─-ｧ'　i‐-､
+			PRINTL 　　　　　　　　　　　!￣￣　　 l　　､ 　 ￣｀ヽ/-､　　　　　＿＿＿＿＿__
+			PRINTL 　　　　　　　　　　 /　 ! !　|　 |', 　 ＼　|　|　ｉY´i　　　 　 ||　　　　 　 　 |
+			PRINTL 　　　　　　　　　 /　〃ﾚ　 |　 |＼ 　ヽゝ-｜　iン　　　　 .||　　ｴﾛ本 　 .|
+			PRINTL 　　　　　　　　 /／　ｉ　 |-⊥_/_　＞示心 |∧　!　 　 　　||.　　 　 _　　 .|
+			PRINTL 　　　　　　　 ／　 　 !　 |'〃',心　 　 ゞソ　 |_/. ',　　　 　||　　 f^!{.f'.､ . |
+			PRINTL 　　　　　　　　　 　 　 ',　|　｀ ゞ　,　 /// |　 |　 | ｉ　　 　 ||. 　　| |.',ヽヽ |
+			PRINTL 　　　　　　　　　　　 　 ヽ|　 ﾄ、 ﾏ￣ヽ　/ |　|　 |.|　　　 .||　,ﾍ､| | | | .ｉ._|
+			PRINTL 　　　　　　　　　　　　 　 |　 !___＞｀ _／　/!　| 　　!　　 　￣ヽ｀　~　ｌ. }
+			PRINTL 　　　　　　　　　　　_,ｲ ヽ|　/　/:./ ゝ ', ´ ./',　|ｰｭ_',　　　 　 {　　　　.!
+			PRINTL 　　　　　　 　 __ r'´:.:.:.;ゝ| /　/:.:.ｉ/∨ |　/:.:.:ヽ. |フ ヽ.　　　　 ゝ　　　|
+			PRINTL 　　　 　 r ＜:.:.:.:.:.:.:.:.:.r{// ,/:.:.:.:.|／ﾞヽⅥ:.:.:.:.:',　!７:.:.:.ヽ.　　　|､　　 ∧
+			PRINTL .　　　 　 !:.:.:.:.:.:.:.:.:.:.:.rf///:.:.:.:.:.:.:.:.|：|:.:.:.:.:.:.:.:､.ヽ ヽ:.:.:.:.:.}　　　}　＼_|_〃
+			PRINTL 　　　　　|:.:.:.＼__:.＞フ /:.:.:.:.:.:.:.:.:.:.:V´.:.:.:.:.:.:.:.:.ヽヽヽ､｀:.7 　 /＼ 　　./
+			PRINTL 　　　　　∨:.:.:.:.:.:.:.} /　 {:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:. }:.:ヽヽヽ‐- /:.:.:.:.:ヽ‐7
+			PRINTL 　　　　　 ∨:.:.:.:.:.:.ｉ/|　| ', :.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.: ∧:.:.ヽヽ:::::/:.:.:.:.:.:.:.:.:/
+			PRINTL 　　　　　　∨::.:.:.:.〃| | ! ヽ、:.:.:.:.:.:.:.:.:､.:.:.:.:.:.:.,イ　',ヽ:.ヽ ∨:.:.:.:.:.:.:.:./
+			PRINTL 　　　　　　 ∨:.:/:.ｉｉ:.:|｜', |　ー ‐----- -‐'´/.　　ｉ ヽ:.:ｉ }|:.:.:.:.:.:.:.:/
+			PRINTL 　　　　　　　ヽ/:.:_||‐ | ヽ/　､　　　　　_　 , ∧　　 |　∧| |:.:.:.:.:.:／
+			PRINTL 　　　　　　　 ヽ/| | 　ヽ_/｀ヽ. 　 　 　 　ノ ,'　 ヽ　 | /　}/ヽ--′
+			PRINTL 　　　　　　　　 L| 　 rλ｀ヽ ｀ｰ------‐'7 .ヽ、　 .|/　/　__
+			PRINTL 　　　　　　　　　 ! rゞr.ｿ 　 ｀ ー---‐＜ｨﾞ--=-_＼| ／＜::/
+			PRINTL 　　 　 　 　 　 　 i_rｿ/　　　　　　　　/ﾂ{:.:.ｉ　ｉ::::::::ヽ´::::::::::::|
+			PRINTL 　　　　　　　　　/:rﾂ　　　　　　　 　 んｿ:.:.:|　{::／/ヾ≦￣‐y
+			PRINTL 　　　　　　　　 ,rソ　　　 　 　 　 　 /f７:.:.:.:.| ./:/::{ | | ヽ:::::/
+			PRINTL 　　 　 　 　 　 {ツ　　　　　　　　　 ｉ＾ｿ:.:.:.:.:.:|-､::::::ｉ | |　ヽ´
+			PRINTL 　　 　 　 　 　 ゝｿゝ､　　　　　　 ,ｲf ｿ:.:.:.:.:.:.|　｀‐‐} |　 /
+			PRINTL 　　 　 　 　 　 |:.:.:~^ヽ｀=-ｪ－二~ン´:.:.:.:.:.:.:.|　　　// ./
+			PRINTL 　　　　　　　　 !:.:.:.:.:.:.:｀^ｰ~＾´:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.|　　 /／
+			PRINTL 　　　　　　　　 ',:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:|　／
+			PRINTL 　　　　　　　　 丶＿:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.」
+			PRINTL 　　　　　　 　 　 ',　　￣￣ Ｔ――'T ￣￣￣|
+			PRINTL 　　　　　　　　 　 ｉ　　　　　 |　　　 ｉ　　 　 　 |
+		CASE 4
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　_ _, ‐v-ｆ´￣｀ｰv´ヽ
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　　,.xく　,. ゝ: ⌒: ゝ._　人 /／/
+			PRINTL 　　　　　　　　　　　　　　　　　　　　　／/　／　　　　　　　　 ｀´ ／￣二ﾆ=-
+			PRINTL 　　　　　　　　　　　　　　　　　　　　//: ノ /　　　　　　　　　　_ ヽ　＼'
+			PRINTL 　　　　　　　　　　　　　　　　　　∧ / :{／　　i i　　i　ﾄ　　　　 ﾍ　i　　 ＼
+			PRINTL 　　　　　　　　　　　　　　　　 　/　ﾊi iY:　廴i__i___i i / i　i　i i 　 i　i ﾍ　ﾍ ＼
+			PRINTL 　　　　　　　　　　　　　 o :o : :|　　 'i　i　´l　i　i　i i/　 i 了辷-　i .i ﾘ ,　 i ∨
+			PRINTL 　　　　　　　　　　　｡　｡　. : :＿}__　 i　i　 ゝ犾抃 !　　/ﾋﾘzノ､ /　l　ﾊ　 i
+			PRINTL 　　　　　　　　.　: : : : : : :/ｏ ,　 ｀ヽ i　i 　 i 仍了　　　 仍乍7' ,　/i/　i　!
+			PRINTL 　　　. . : : : : : : : : : : : . /ｏ /　 　　〉　i 　 i ｀‐‐´　　　 込ツ / i./　 　 |/
+			PRINTL 　　　: : : : : : : : : : + 　 ｰ‐/:=‐-ミ/ i　i 　 i　　　 　 '　　　　/　i
+			PRINTL 　　　: : : : : :　　　　　 　 /.:::::::::::/　 i　i 　 i＼　　｀ ‐ '　 ／/　i
+			PRINTL 　: : :　　 　 　 　　 　　/.:.:::::::::::/　　廴i 　 i::::::;}≧ｒ‐‐i{/{::::/　/＿ -┐
+			PRINTL 　　　　 　 　 　 　　 /.::::::::::::::/ 　ノ　　l 　 l　　Ｙ.:心　{　 /　/／ 　　{八
+			PRINTL 　.　　 　 　 　 　　/.::::::::::::〃　￣　ミ　l 　 l＿_/ Ｖ:::;ﾉ　}/.／/{　　　 } ノ}
+			PRINTL 　　:　　 　 　 　 /.:::::::::::::/ }}　 ≠＜　| 　/　 -‐〃　人 　　'.　{　　 ￣}　 }
+			PRINTL 　　　　　　　　/.::::::::::::::::::::::ｉ{　／　　│/` ～'´ i{　　　 ｀ヽ　Y´　 　 _}＼}
+			PRINTL 　　　　　　　　､:::::::::::::::ノ.::::::/　　 　 　 　 ‐-=八_　　, ～^　V　 ｀X::::::::.＼
+			PRINTL 　　　　 　 　 　 ヽ_:::: ﾆ=-‐《_　　　　　　　　　　　　　　　　　 '　　{:::::::::::::::::i
+			PRINTL 　　　　　　　　　　 ＿　　　　、　　　　　　ｰ-=　　　　　　　　 ｉ 　ﾉ.::::::::::::::::|
+			PRINTL 　　　　　　　　　　{　　｀丶、　ヽ、　　　　　　　　　 　 　 　 　 !く:::::::::::::::::::/
+			PRINTL 　　　　 　 　 　 　 }　　　　 ＼　 }≧=‐=≠､＼　　　　　　 　 ﾉ (::::::::::::::::::.＼
+			PRINTL 　　　　 　 　 　 　 }, -‐ ､　 　 ∨｀　｀`丶、　　＞‐-　　=≦__ ノ^ヽ:::::::::::::::::.＼
+			PRINTL 　　　　　　　　 　 〈　　　 ＼　,〈＼　 　 　 　 　 　 　 　 /=-‐=＝ミ ＼:::::::::::::::::.＼
+			PRINTL 　--‐‐=＝=‐- ミ/　　　　　У ヽ　　　 　 　 　 　 　 ＿{　　　　　　}　 ＼:::::::::::::::::.＼
+			PRINTL 　:::::::::::::::::::::::::::::::::｀丶、＞く　＼　丶、　　 　 　 　 　 　 〉　　‐-ミ/　　　 ＼:::::::::::::::::.＼
+			PRINTL 　:::::::::::::::;:　-‐‐-=ミ／　　　 >ー-ミ　　　　　　　　　 ／∨　　　　｀ヽ　　 　 ＼:::::::::::::::::.＼
+			PRINTL 　:::::::::／　　 　 　 　 　 　 ／　　　　 丶、＿__　 　 　 __彡､＿__　 　_}　　 　 　 ＼:::::::::::::::::.＼
+			PRINTL 　:::／　　　　　　　　　　　　　　 　 　 　 /　　　　￣｢　　　ﾉ｀丶、::::::::::｀`丶、
+		CASE 3
+			PRINTL 　　　　　　　　　　　　　　＿, ―― ､ ＿_、_
+			PRINTL 　　　　　_,..　 --_／￣ヽ　i, ..-. ､ i´　　ヽ　 '.,ミ、
+			PRINTL 　　 ／´　　_ ..∠_ﾉ　 ,. .:':´　　　　　　｀丶.._└‐､｀ヽ
+			PRINTL 　／, ィ ´≧´' 　 ゝ.'　　　　　　　　　　　　｀: ..､ ヽ ｀i
+			PRINTL 〃´　　}´　/ 　 ／　　　　　　　　　　　　　　　＼〉　 .ｌ
+			PRINTL 　　　　 ｌ　 :_ゝ　'　　　　　　　　　　　　　　　　　　ヽﾌｌ
+			PRINTL 　　　　 } /　 /,i 　 i　 　 i　　.∧　　 .l ヽ　　 ! i　　ゝ;l,
+			PRINTL 　　　　 ｊ.i　 ,',' i 　 i i、　i、　.{　'.,} i　l　ヽ 　 ﾘl　　　i:iｌ
+			PRINTL 　　　　ｌ.l　　.ｌ　i 　 iヾ,__.iヽ　l　 ﾉﾉ, .lー‐}　ﾉ .l　 　 :!jｌ
+			PRINTL 　　　 / ｌ 　 ﾊ .ﾄ,　 i ヾﾘ __ヾ　 /　}/ ,ｲ云::::下　/　 l.i
+			PRINTL 　　／ .ﾊ　 .l .i .ﾊ　 l.,ｨ行::心ゝ　 /　　.辷:::ﾂ/ /　　.ｌ.i
+			PRINTL 　 彡イ　',　.{　i i. ヽ .{　込:::ｼ　　　　　　 ￣ゞイ　i　 ｌ i
+			PRINTL 　　　　　.',　ﾊ ヾ　 ﾄ,.iミｔ-.¨ 　 　 '　　　　　 ./l　i　 ｌ. ﾑ
+			PRINTL 　　　　　　', { i＼　 ﾑヾヽ　　　　 _　,　　 .／i l　i　 ｌ　 ﾑ　　　｡　　　　 人
+			PRINTL 　*　　 　/ ヾ.i　i ＼　＼ i ＞　　　　　　イlマi.l　ｌ　ｌ　　ﾑ　*　　　　　 ｀Ｙ´
+			PRINTL 　　　　　|　　　＼. ∨　　厶イ< ｉ　 ､　イ/　　人ｌ　 ｌ　　　ﾑ　 ＿＿ ＿＿
+			PRINTL 　☆　　 ＞､＿　　　∨ /: : : : ﾍ＞‐' : /　／ノ: :＼l＿,.　‐＜　　　　／.::.:.｝
+			PRINTL 　　;　　/ ＼ 　　　　 ﾊ/: : : : : Ｖ{＿: :/イ: : : : : : :.／ ,. -　¨¨刀　 〈::.:..:.:.:|
+			PRINTL 　　* ./|　　 ＼　　　　|: : : : : : ｒ＝く: : : : : : : : : :厶／　　 ,∠::厶イ:.:.:.::ｒ┘
+			PRINTL 　　／:::|　　　　 ー　　!: : :._,厶{O　}ﾊ: : : : : : : :./　　　　 /:::::::::::::::|＿:厶
+			PRINTL 　〈:::::::::::＼　　　　　 ∧: :/　､　`‐くｉ | : : : : : : /　　ｰ―┴┐::::::::::|::.:.:.:.:|
+			PRINTL 　. ＼:::::::::::`ーｒ＿__/／/　ヽ.{ヽ-イ_ﾊ: : : : : :/＿＿＿　　/::::::::::::::|:.:.／
+			PRINTL 　　　 ＼::::::::::::::| /: : : / ヽ、　＼ｒﾍつ!: : : : :.| 　　／ヽ|／:::::::::::::::::|/
+			PRINTL 　　　　　|::::::::::::| |: : :.〈 ､　　`ｰ‐ﾍ.∧―‐く: ∧／:＿::::::::::::::::::::::::::::|
+			PRINTL 　　　　　|::::::::::::|: : : : :.＼ヽ　＿___)　 ＼ｒく/√|ﾌ:::::::::｀ ー-､::::::::::::|
+			PRINTL 　　*　　 |:::::::::::|: : : : : : : ＼ヽ __,// ⌒ヽ＼ ∨―-､:::::::::::::::::::::￣::〉
+			PRINTL 　　　;　 /::::::::::::＼: : : : : : : :.`ｰ'/||::::::{⌒} ! }く:::::::::::::::＼::＿＿:::／
+			PRINTL 　　 :　　|:::::::::::::::::::＼: : : : : : :／ ＼::::::￣:ソ 　∨:::::::::::::/
+			PRINTL 　　｡　　|:::::::::::::::::::::::::￣:_｣／　　　　￣￣　　　人:::::::::::|
+			PRINTL 　　 ;　　∨::::::::::::::(二二. __ ／ _　 _　　/´ 　／: : :＼::/＞ ､
+			PRINTL 　　_人_　 ＼::::::::::::_/　　／ .／ ／　／　 ／: : : : : ／!　　　 ｀＞､
+			PRINTL 　　｀Y´　 　 ＞‐'　 　／ .／ ／　／{__／ : : : : : ／:::人　　　　　　＼
+			PRINTL 　　　　　 ／ 　　　　〈 ／ ／〈／　　＼: : : : : :／:::／　 ＼　　　 　／
+		CASE 2
+			PRINTL 　　　　　　　　　　　 　 　 　 　 r─‐､＿r──､
+			PRINTL .　　　　　　　 　 　 ￣二ﾆ=.､√　　　∨　　 　 ｀¨''､
+			PRINTL 　　　　　　　　 　　／　　　　 ＼≧z‐┴―‐z≦ﾊ　　/ ＼
+			PRINTL 　　　　　　　　　／　　　 　　,.へ　　　　　　　　　｀'＜／　{｀､
+			PRINTL 　　＿＿ _,. ‐'´／ 　　　　 /　　　　　　　　　 　 　 　 ＼,　}　!
+			PRINTL 　　｀ヽ、＿＿/ 　 　 /　 / /　/ / 　 　 　 　 　 　 　 　 ∨　 !
+			PRINTL 　　　　　　　/ /　　/　　,' /　/ /　/ 　, ヘ、　　　　　　　', 　 |
+			PRINTL .　　　　　　/ /　　/　　 l ,'　｜ i＿!__| |　　| |__|＿| !　 |　 i |　|
+			PRINTL 　　　　　　|ｲ　　/ 　 '　| !　 ィ'∧ハ∧!　　|,ハﾄ､ﾉﾉ｀ヽ　 ,' | ,'|
+			PRINTL 　　　　　　　'.,　ﾄ、　l　 | ﾄ､　 r ‐＝ミ　　 　 ィ＝- 、//　 !　|
+			PRINTL .　　　　　　 　ヽ|. ＼ﾄ,　|　 ヽ|　　　　　　　 　　　　　7　 ∧　|
+			PRINTL 　　　 　　　　　　　　 |　|　 　', 　　　　　､　 　　　　 / 　,' 　 ｜
+			PRINTL .　　　　 　 　 　　 　　ﾚ∧　　ハ　　 　 ｒ　ｧ　 　　 / 　 ,　　　|
+			PRINTL 　　　　　　　　　　 　　/　',　　 !　` ､　　　　　　 イ　　 l　　　,r '´￣ ｀}
+			PRINTL 　　　　　 　 r‐‐‐- ､._|　　!　　|_,. -‐＞=　 - イ　|_|　 ｜_＞'´　 　　./´ }
+			PRINTL 　　 　 　 　 .{　　 　 　 ｀ヽ| 　 |::::::::{ 　｛ 　 　 ／ﾞ |　　|/ 　 　,､　　l.ヽ, 〈
+			PRINTL 　 　 　 　 　 ＼ ゝ r ´` 　 | 　| :::::::::＼__｝._,､イﾞ:::::| 　| |　　.'´　　　｀ヽ.i　｀ヽ
+			PRINTL 　　　　　　 .f´￣'ヽ 　 　 __ |　|:::::::::::r '´ .}:::::::::::::::::|　 l |　 　 　 　 　 /.:.i　 /
+			PRINTL 　　　　　　 {　　 　 |／´　 ､ヽ|`､::／　,.ィゝ＼::::::::: | /　|　　,､　　　／.:.:.ｉ ./
+			PRINTL 　　　 　 　 {　　　./'´　　　　｀ヽ,＼ ィ　　∧い:::::::::::: |　|　/　　 ／.:.:.:.:.:.|
+			PRINTL 　　　　　　 〉､　 /　　　　 _　　　ヽ.ヽ ゝ '´ Vﾊ ￣｀ヾ　.,} 　 　.f.:.:.:.:.:.:.:.:.}.}
+			PRINTL 　　　　　 /　　' i　　　 ／ ク､　 　 ',. ',　　 　〉 〉　　　∨　　 　.|.:.:.:.:.:.:.:.:.V
+			PRINTL 　　 　 　 {　 　 .|　　 /　/ / l_　　r-'-､i ､,／ /　　　 /　.r‐‐‐'｀.:.:.:.:.:.:.:.:.:.i
+			PRINTL 　　　　 　 ＼　 |　　.|　　 　 i |　r‐ミゝ ｀. ヽ/　　 　 .l　/.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:}
+			PRINTL 　　　　 　 　 〉r |　　|　　 　 ._|　こﾆ　　 　 ﾍ 　 　 　.Ｙ.:.:.:＿.:.:.:.:.:.:.:.:.:.:.:.:ﾉ
+			PRINTL 　 　 　 　 　 ヽi ゝv‐､　　　./　 ｀'‐‐‐､　 　 ゝ}ヽ　　.∧.:.:.:.:.:ニ＝.:.:.:_／
+			PRINTL 　　　 　 　 　 r'‐r'´.:.:＼＿/　　　　　 i＼　　 ﾉ .ヽ,､〈:.:.:}　¨￣.:.:.:.:.:._}
+			PRINTL 　　　　 　 　 {＿.ｌ.:.:.:.:.:.:.:.:.:}　　　　　　| .{ゝ‐'｀　　ゝ､ T/.:.:.:.:.:.:.:.:.:.:l'ヽ､
+			PRINTL 　　　　　　 /.:.:.:r'. ゝ､.:.:.:./　　　 　 　 |　|ヽ 　 　 　 　 }￣¨¨マｰ.:.|　　 ＼
+			PRINTL 　 　 　 　 ｜.:.:.ゝ- '.}￣r{_}　　　　 　 i　.i /　　,-‐ .}｀´.:.:.:.:.:.:.:.:.:.:.:.|　　 　.ｲ
+			PRINTL .　　　　 　 ¨ｌ.:.:.:.:.:.:.:.:￣{　　 　 　 　./　/ ゝ､,∧ゝ'´:.:.:.:.:.:.:.:.:.:.:.:.:.:/　　／
+			PRINTL 　　　　　 　 .V.:.:.:.:.:.:.:.:/.ﾄ､ 　 　 　./　/¨¨￣　　＼:.:.:.:.:.:.:.:.:.:.:.:.:./　　.}
+			PRINTL 　　　　　　　 ∧:.:.:.:／　|.　｀' ‐---‐'´　　 　 　／　`lゝ､,_:.:.:.:.:./ヽ　 /
+			PRINTL 　　　　 　 　 |＿フ´ ./ .|　　　　　　　　　　　 '´　　./　　　ヽ¨´　　Ｖ
+		CASE 1
+			PRINTL 　　　　　　　　　　　　　　　　　　_r'⌒ゝ‐'⌒ゝ､_
+			PRINTL 　　　　　　　　　　　　　　 _ノ⌒´_ニ======ニ_. ｀ヽ､,_
+			PRINTL 　　　　　　　　　　　　　y'_ァクﾆゝ-'´￣ゝ‐'´　ﾊ. ｀ヽ､ﾍ
+			PRINTL 　　　　 　 ,..-. .‐.￣ .rv'rー‐ァ.―v:'⌒｀ヽ`ヽー.､'ー‐ｪ,ヽヽ
+			PRINTL 　.　　　　　 　　／i ﾉ-/　　　　　. 　　　　　　　　 .｀ゝ: ､｀ ﾊ　ヽ
+			PRINTL 　 　　　　　　／　　　.／　　　　./　　　　　　　　　　　　　ヽく　ヽ
+			PRINTL 　.＿＿ _,. ‐'´ ／　　　,' /　/　/　　　/　 ﾍ　　　 　　　　　　　　ヽ
+			PRINTL ｀ヽ、＿＿/ //　　　/ /　/　/ 　 ,ｲ '　　　l　 i　ﾄ､　　　　　　　　 l
+			PRINTL 　　　　　/ / ｲ　　 /　'　 ,　ｲ＿_」 i ｌ　　　l　 ｰ┼ i-　　　　　　 　i
+			PRINTL 　　　　./ /　.l　　/　 i斗七「　　 !ヽ|　　　!　/i　f ヽi-.!　　.l　　　 .i
+			PRINTL 　　　　 | ｲ　 l 　 l　　「 i　!　ﾏ.　 ｌ　　　　 |/　ﾚ:.'､　＼!　　.!　　　i
+			PRINTL 　　　　 | 　　|　　|　　ﾄ　!斗＝ミ､j　　　 　 　,ｨ弌 .＼　＼　 .!　　i
+			PRINTL 　　.　　l / l　　l　i　 i　 /　）::ハ　　　　　　　 　）::ハ｀ヽ､ ｀`ｰ-､i
+			PRINTL 　　　　　　 │　l　＼ﾄ 〈　ｌ　じ　i　　　　　　　ｌ　じ　ｉ　. ゝ'´ノ　 , ヽ
+			PRINTL 　　　　　　 │.　l 　 　 ﾊ弋__とﾉ　　　　　　 弋__とﾉ.／　, / 　 / 　 .＼
+			PRINTL 　　　　　　.　l　　 l　 ｉ＼ ﾊ xxxx　　　　　　 　　 xxｱ´,／: :ヽ,　f 　 ,,　　＼
+			PRINTL 　　　　　 .　 ヽ　ｌ l　　　ﾄ､!　 　 　 　 　 '　　　　 'ー',.-‐‐‐'ゝ-L_,こ　　　　〉｀ゝマｰュ
+			PRINTL 　　　　　　　　 ヽl　l　 　ﾊ　　　　　　　　　　　　　　'-――-､　 　 ''　　　ノ　　 ｀ヽ 弋
+			PRINTL 　　　　　　　.　　　/l　　 i　ヽ　　 　 ` ｰ‐　'　　 　, '　.i　　 .i ｀'ー‐ｪ-‐'"　 　　　　 i く.ヽ､
+			PRINTL 　　　　　　 　　 . .i　!　　l　i　＞　　　　　　　　 イ 　　 i　　 .i　　　i!_: : : .:　　　　　ﾉ　ﾉ　　｀　､
+			PRINTL 　　　　　　　　　 .i　 i　　l　ｉ 　ｉ　＞　　 　　＜ｉ　i　　 .. .i 　　.i　.｀'ｰ'⌒ l　ヽ､＿_,　'　r '　　　　｀ .､
+			PRINTL 　　　　　　　　　/. ⌒i　　i -ｰ---く三三ﾍﾊ/三クー‐/::.i　 　i: . : . : . : . ゝ‐-､__r-,'´　 　　　　　　 ヽ
+			PRINTL 　　　　　　　　／: . .　.i　 .i: .::/ー―-マﾐｲ　.ﾄﾐア-‐‐' :.:: i.　　i:.: . : . : . :. : .::::: ,| }　＼ .　　　　　　　　ヽ
+			PRINTL 　　　　　　 ./: . : . :.: .::.i　i: . 〉　　　　　ハXハ　　 　 〈: .:: i.　　i: . : . : . :: . : . ::::| }　　　 ､　　　　 　 　 ﾉ
+			PRINTL 　　　　　　ﾉ: . : . : .:.: .::i　i: .〈　　　　,ｨク´　｀ヾｭ､, 　 .〉: .:::.i　 .i . : . : . : : . : . ::::Yゝ､　　　__ ,　 -‐ ' ´
+			PRINTL 　　　　／: . : . : . :.:..:　i i: .:::〉__,,ｨク''´　 　 　 　 ｀ﾞ''ｭｧ.:　..:: .＼i : . ／:.: . : . : . ヽ_こア´
+			PRINTL 　 　／:.: . : . : . : . : . , ' ´｀.　　｀ '　 ､　 　 　 , . ' ´　　´｀｀　.ヽ:.:.: . : . : . :　: . : . ／
+			PRINTL 　／ . : . : . : . : . : . /　　　　　　　　　｀ゝ'^'‐'　　 　 　 　 　 　 ヽ／ー-- ､＿,／
+			PRINTL ..{:.: . : . : . : . : . : . ,'　　　　　　　　　　　　　　　　　　　　　　　　 ',
+			PRINTL 　V:. : . : . : . : . : . {　　　　　　　　　　　　　　　　 　 　 　 　 　 　 }
+			PRINTL 　 ヽ,: . : .ヽ: . : . :.:.'．　 　 　 　 　 　 　 ,　 　 　 　 　 　 　 　 　 /
+			PRINTL 　 　 L_,: .: .＼,: . : . :.､　　　　　　　　 　 ',　　　　　　　　　　　 , '
+			PRINTL 　　　 ＼＿_　＼＿＿ゝ､　 　 　 　 　 　 i　 ＞ ､　　　　　,.　',
+			PRINTL 　 　 　 i　　ゝー――|　 ｀ ー―― '　　 　 　 　 ｀ ー― ' 　 |
+		CASE 0
+			PRINTL 　　　　　　　　　　　　ｒ､ｒ'ﾞ　 `|　 〉　　>ﾞ´ヽｒ､
+			PRINTL 　　　　　　　　　,.r'｀´i　 l　i　 !　i　　/　 ／　ｿL..､
+			PRINTL 　　　　　　　　r' ＼ _,.! ｒ‐ ' ´￣｀` 'ヽ､/　　 ／　ﾘ
+			PRINTL 　　　　　　　　Lｒ'_´三´　￣　｀`　ヽ､　　ヽ／　／ヾfヽ、
+			PRINTL 　　　　　 ／　　　　　　／　/'　　　　　＼　　`< _,. -'　 /
+			PRINTL 　　　　／　 ／　,　　 /　/ 　　　　 ､ ',　　 ヽ　 ヽ　,. -‐'ヽ_
+			PRINTL 　 -=ﾆ-‐''/ 　 /　/ /　/　　 ヘ 　　 　}　　　ヽ　 i´　 _,. - }
+			PRINTL 　　　　　/　　/　 i　i　│ l .l　　 |　.　　|　i　ｌ ハ　レ'´　　ﾉ､
+			PRINTL 　　　　/　　/　　l　 |　 | │l　　 l .ｌ 　 |l│ｌ | | 　い-‐´￣ ﾉ
+			PRINTL 　　　　i 　 ,ｲ　　 !　|.!-l/‐ﾚ、　 l/ ﾘ_l,.|-‐ｻﾅ|　　l ﾋニ￣_ﾉ
+			PRINTL 　　　　|　/　{　　ﾊ　l l ﾐ=ﾁｨ, 　　　ﾙ.ッﾊ;;ん |　　|　ｌ　 　 |
+			PRINTL 　　　　| ,'　 | 　| |'､　W{j（:::;ん　　　 `弋:::ソ l　　.|　|　　　|
+			PRINTL 　　　　l l　 i　　| l ヽ　i　 ゛'ッ 　,　　　´ ￣ ´|　　|　!　　　|
+			PRINTL 　　　　 l　 .l　　l l ハ ﾊ　 　　　　　 　　　　　|　　|　|　　　|
+			PRINTL 　　　　 　　|　ﾊl l/ / !　丶　　　´｀　　　　,/ |　 /　.| 　　 |
+			PRINTL 　　　　　　 ﾚ'　i｀ ./　|l　l　l｀　、.　 　 , イ/ｨ |　/.:/ !　　　|
+			PRINTL 　　　　　　　　 .l/ / ,i l　l　l　　f=≧≦=＝ ./ / /　 !　　　|
+			PRINTL 　　　　　 　　　 // .ﾉ ﾊ! l ,.._ .ﾉl　　,.. -'　,/ ./ /､　 |　　　|
+			PRINTL 　　　　　 　 .　// 　| |,ｒ ' ´ ､ 　 !　　　 ./　/ /　　 ヽ 　　 |
+			PRINTL 　　　　　　　　.| |　 .|/　　　　ヽ　　,. ｧ'/　:,' /　　　　 ヽ.　 |
+			PRINTL 　　　　　　　　 |.|__,.l　　　　　　　'´　 //'´! |　　　　 　 ﾍ　 |
+			PRINTL 　　　　　　　　. {ゝ l　 　 }　　　　　　ノl |／l　　　　　　,　l　|
+			PRINTL 　　　　　　　　/　 ＼　 /　　,.　　　 7´` フ､─　､....._ /　 l｜
+			PRINTL 　　　　　　　 |／,仆 >'　　 /　　　　{ /´,.ノ＿＿　　 ｀ヽ､ }｜
+			PRINTL 　　　　　　　/.／ l /　　　 i　　 , ｒ' /　ﾉ　　　 `ヽ､　　 ト、ヽ、
+			PRINTL 　　　　　　　| ../　 |　　 　 {　　　 ,､/ﾚ ／ヽ､　　　　　 `ヽ､　＼
+			PRINTL 　　　　　　　/.　ｿ＼　　 　 ', 　／ li　ﾚ' ノ‐-　ﾆ=　　　　　　＼/
+			PRINTL 　　　　　　　| 　　　 ゝ 　__ ,.ｿ´ 　 i! =ﾆ　ヽ､　　　　ヽ､　　　　 ヽ
+			PRINTL 　　　　　　　ヽ.　　. ..／　　　　　　　 ﾄ､　　　 ヽ　　　　　　ヽ､ｒ'
+			PRINTL 　　　　　　　　ヽｿ／　　　　　　 　 !_}　　　　　　　　　　　 _,. -l
+			PRINTL 　　　　　　　　　/　　　　　　　　　 シ　　　　　　　､,..　 ト､,.┘
+			PRINTL 　　　　　　　　/　　　　　　　　　 / !ﾆ=-　　/　　　ト､／　　｜
+	ENDSELECT
+	SETFONT
+
+
+ENDIF
+
+
+;================================================================================
+; 【"公衆便所_基本"】
+;================================================================================
+;【公衆便所_（路地裏）】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_TOILET_roji
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_TOILET_roji
+
+
+
+@KOJO_1712_SEISAN_TOILET_roji
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_TOILET_roji
+
+
+
+@KOJO_フェイト_SEISAN_TOILET_roji
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_TOILET_roji
+ENDSELECT
+
+
+
+;================================================================================
+;【公衆便所_（浮浪者）】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_TOILET_homeless
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_TOILET_homeless
+
+
+
+@KOJO_1712_SEISAN_TOILET_homeless
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_TOILET_homeless
+
+
+
+@KOJO_フェイト_SEISAN_TOILET_homeless
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_TOILET_homeless
+ENDSELECT
+
+
+
+;================================================================================
+;【公衆便所_（野良犬）】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_TOILET_dog
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_TOILET_dog
+
+
+
+@KOJO_1712_SEISAN_TOILET_dog
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_TOILET_dog
+
+
+
+@KOJO_フェイト_SEISAN_TOILET_dog
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_TOILET_dog
+ENDSELECT
+
+
+
+;================================================================================
+; 【"アイドル活動_基本"】
+;================================================================================
+;【アイドル活動（下積み：低知名度）】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_IDOL1
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_IDOL1
+
+
+
+@KOJO_1712_SEISAN_IDOL1
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_IDOL1
+
+
+
+@KOJO_フェイト_SEISAN_IDOL1
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_IDOL1
+ENDSELECT
+
+
+
+;================================================================================
+;【アイドル活動（下積み：高知名度）】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_IDOL2
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_IDOL2
+
+
+
+@KOJO_1712_SEISAN_IDOL2
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_IDOL2
+
+
+
+@KOJO_フェイト_SEISAN_IDOL2
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_IDOL2
+ENDSELECT
+
+
+
+;================================================================================
+;【アイドル活動（路上ライブ）】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_IDOL3
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_IDOL3
+
+
+
+@KOJO_1712_SEISAN_IDOL3
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_IDOL3
+
+
+
+@KOJO_フェイト_SEISAN_IDOL3
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_IDOL3
+ENDSELECT
+
+
+
+;================================================================================
+;【アイドル活動（売り込み）】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_IDOL4
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_IDOL4
+
+
+
+@KOJO_1712_SEISAN_IDOL4
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_IDOL4
+
+
+
+@KOJO_フェイト_SEISAN_IDOL4
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_IDOL4
+ENDSELECT
+
+
+
+;================================================================================
+;【アイドル活動（テレビ番組）】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_IDOL_TV
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_IDOL_TV
+
+
+
+@KOJO_1712_SEISAN_IDOL_TV
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_IDOL_TV
+
+
+
+@KOJO_フェイト_SEISAN_IDOL_TV
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_IDOL_TV
+ENDSELECT
+
+
+
+;================================================================================
+;【アイドル活動（新曲）】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_IDOL_music
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_IDOL_music
+
+
+
+@KOJO_1712_SEISAN_IDOL_music
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_IDOL_music
+
+
+
+@KOJO_フェイト_SEISAN_IDOL_music
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_IDOL_music
+ENDSELECT
+
+
+
+;================================================================================
+;【アイドル活動（イベント）】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_IDOL_event
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_IDOL_event
+
+
+
+@KOJO_1712_SEISAN_IDOL_event
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_IDOL_event
+
+
+
+@KOJO_フェイト_SEISAN_IDOL_event
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_IDOL_event
+ENDSELECT
+
+
+
+;================================================================================
+; 【"アイドル活動_グラビア"】
+;================================================================================
+;【アイドル活動_グラビア】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_IDOL_picture
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_IDOL_picture
+
+@KOJO_1712_SEISAN_IDOL_picture
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+
+
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_IDOL_picture
+
+@KOJO_フェイト_SEISAN_IDOL_picture
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_IDOL_picture
+ENDSELECT
+
+
+
+;================================================================================
+; 【"アイドル活動_枕営業_基本"】
+;================================================================================
+;【アイドル活動_枕営業_プロデューサー：フェラ】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_MAKURA_pro1
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_MAKURA_pro1
+
+
+
+@KOJO_1712_SEISAN_MAKURA_pro1
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_MAKURA_pro1
+
+
+
+@KOJO_フェイト_SEISAN_MAKURA_pro1
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_MAKURA_pro1
+ENDSELECT
+
+
+
+;================================================================================
+;【アイドル活動_枕営業_役員：処女正常位】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_MAKURA_client1
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_MAKURA_client1
+
+
+
+@KOJO_1712_SEISAN_MAKURA_client1
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_MAKURA_client1
+
+
+
+@KOJO_フェイト_SEISAN_MAKURA_client1
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_MAKURA_client1
+ENDSELECT
+
+
+
+;================================================================================
+;【アイドル活動_枕営業_プロデューサー：立ちバック】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_MAKURA_pro2
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_MAKURA_pro2
+
+
+
+@KOJO_1712_SEISAN_MAKURA_pro2
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:2 
+	CASE 1
+		PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　　　　　_＿　　　 _＿＿
+		PRINTL 　　　　　　　　　　　　　　　　　　 　 　 　 　 　 ,　´ 　 　 ＼/ ｒ＜⌒｀
+		PRINTL 　　　　　　　　　　　　　　　　　 　 　 　 　 　 ,:′　　　　　　 =ミ　＼_ノ
+		PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　/　　　　　　 　 　 ; }ヾ.￣
+		PRINTL 　　　　　　　　　　　　　　　　　　　 　 　 　 ;　　　　　　　　　　ﾄ　ハ
+		PRINTL 　　　　　　　　　　　　　　　　　　　 　 　 　 i　　　　　　　　 　 |ｲ/}ﾉ
+		PRINTL 　　　　　　　　　　　　　　　　　　　 　 　 　 |　　　　　 　 　 　 |/ /
+		PRINTL 　　　　　　　　　　　　　　　　　　　 　 　 　 |　　　　　 　 　 　 |{. 　 　 i^!.m _
+		PRINTL 　　　　　　　　　　　　　　　　　i!.　　　　 　 |　　　　　 　 　 　 |i　　r ､} iﾉ ﾚ.ﾉ
+		PRINTL 　　　　　　　　　　 　 　 　 　 ,ri V{.　　　　 |　　　　　 　 　 　 |／￣ ヽ　　./
+		PRINTL 　　　　　　　　　　　　　　　 / .'.　 } /´￣ . l　　　　　　　　 　 |.　　 　 ',　 ′
+		PRINTL 　　　　　　　　　　　　　　　 {　　 〈 {　　　　|　　　　　 　 　 　 |　　　　 i　 i
+		PRINTL 　　　　　　　　　　　　　 　 八　 　 ',:　　　{ﾞ|　　　　　 　 　 　 |....　{　　|　 |
+		PRINTL 　　　　　　　　　　　　　　　　 ヽ　　 ',　　 i..|　　　　　 　 　 　 |. 　 |　 _! -===--　 ..,,_
+		PRINTL 　　　　　　　 　 　 　 　 　 ＞　"´￣￣￣ ｀ﾞ''＜　　　　　　　 |.＞ ´　　　　　　　　　　｀'' ＜
+		PRINTL 　　 　 　 　 　 　 ＞-rrｧ´　　　　　　　　　　　　 '' ＜ ____.＞ ´　　　　　　　　　　　　　　　　＼
+		PRINTL 　　　　　　　　／　　/:/　　　　　　　　　　　　　　　　　　 ′　　　　　　　　　　　　　　　　',　 __.` ＜
+		PRINTL 　　　　　　　/ 　　 /ﾆ′ 　　　　　　　　　　　　　　　 i　 i　　　　　　　　　　　　 　 　 　 　 Vﾆミ､　 .Ｙ
+		PRINTL .　　　　　 ィ{　　　/ニ{　　　　　　　　　　　　 　 　 　 ,:　 ',　　　　　　　　　　　　　　　　　　/ニニ}　 .}ﾆヽ
+		PRINTL 　　　　 /　|ﾑ　　 iニﾆ､　　　　　　　　　　　　　　　ノ　　 ヽ　　　　　　＼　　　　　　　　 .ｲニニ/　 ./ニ.ﾄ､
+		PRINTL .　　　　′ |ニ､　 |ニニ＼　　　　　　　　　　_　　　　　　　　　　　ー-r--ヽ　　　　　　／ニニ./__,.ｨニ／　.}
+		PRINTL 　　　　i!　　Vニｰ'ニニﾆﾆヽ　　　　　　 .ィ´　　　　__ . =＝ｫ- 　　　　ｰ､ニヽ.. ＿_ .ィニニニ/ニニ／　 ..ｨ{
+		PRINTL 　　　 ,.{乂__ ∨ニニニニニ＼　　　　ノニ}　　　　　 ´ ￣　　　　　　 ／ ﾏニニニニニニニニニニ ー≦ノ
+		PRINTL .　　 ｲ ヾニニニニニニニニニ≧=≦ニ/￣ ｀　　　　　　　　　　　　　　　Vニニニニニニニニニニﾆ/ニﾊ
+		PRINTL 　　′　　＼ニニニニニニニニニニニ.′　　　／　　　　　＼.　　　　　　 ヽニニニニニニニニニニ＞'　 ',
+		PRINTL .　 i　　 　 　 ヽニニニニニニニニﾆﾆ/　　 　 /　　/.ィ==ミヽ ヽ　　　　　　　＼ニニニニニニﾆﾆ／
+		PRINTL 　 　 　 　 　 　 Vニニニニニニﾆﾆ／　　　　 ,　　/´ ⌒ヽ ハ　 ',　　　　　　　　VニニニニニﾆＹ　　　　　　}
+		PRINTL .　　',　　　 　 　 }ニニニニニニ./´　　　　　　{　{/　　　　i {　 ',　　}　　　　　　　 ∨ニニニニニ乂　　　 　 ,
+		PRINTL 　　　',　　　 　.ｲニニニニニニ/　　　　　　　 .　/　 i　　 .| !　　＼/　　　　　 　 　 ∨ニニニニﾆﾆ＼　 　 /
+		PRINTL 　　　 ヽ.　 ／ニニニニニﾆﾆ/　　　　　　　　_.Vi.　i |　　 .Ｊ　　∨ ヽ　　　　　 　 　 ∨ニニニニニニ＼ ｲ
+		PRINTL .　　　　 ／ニニニニニニニ/　　　　　　　 ´　/ |　| |　　i　 　 　ﾄ. 　 ',　　　　　　 　 .∨ニニニニニニﾆ＼
+		PRINTL 　　　／ニニニニニニニﾆ/　　　　　　　　　 /　|　| |　　|　　 　 | ﾍ　 ',　　　　　　　　 ∨ニニニニニニﾆﾆ＼
+		PRINTL 　 ／ニニニニニニニﾆﾆ/　　　　　　　　　 /.　 !　! |　　| 　 i 　i!　 ヽ i　　　　　　　　　∨ニニニニニニニニ
+		PRINTL イニニニニニニニニニ/　　　　　　　　.ィ / ,　 |　　|　　|　　!　 |　　　|≧..　　　　　 __..ィVニニニニニニニニ
+		PRINTL ニニニニニニニニﾆﾆ/ー--, -- =≦　　/ /　 .|　i　　　　　 |　 |　　.Ｕ　　　｀ ￣ ヽ　　　∨ニニニニニニﾆﾆ
+		PRINTL ニニニニニニニﾆニ/　　　/　　　　　 　 し　　 |　|　　 　 　 |　 |　　　　　　　　　　 ＼.　　∨ニニニニニニニ
+	CASE 0
+		PRINTL 　　 　 　 　 　 　 　 　 　 ＿__ .　､
+		PRINTL 　　　　　　　　 　 　 　 ´　　　　　 ＼=
+		PRINTL 　　　　　　 　 ／　　　　　　　＼　 　 ＼　＼
+		PRINTL ﾞi 　 　 　 __／　　 {　　 }　　　 }. ヽ　　　∨　 ヽ
+		PRINTL ﾞ{ｰ==≦´ｲ}　 从.八　　|､　 　 |　.ﾊ.　　　∨　 ‘，
+		PRINTL ..ゝ-=／ {./　 {ヾ{ヽ ヽ　!｀ヽ￣| ./}/}、　　.|　　 ﾊ
+		PRINTL ..　／　/Y　 .八､{　}ヾ{､| 　ｨ伝示刃ﾊ　　 .!-.､　 |
+		PRINTL ..〃/ / ,′ 　 { ヽ} ﾘ 　 　 　 しﾘ㌢.}/!　　.|　 }　 !
+		PRINTL ..{　{ i{ i{　　{ 八∨ゝｨz､　 　´／／/　! 　 .|　ﾉ　 |　ニニニニニニニニニニニ }/////////////
+		PRINTL 　　| l|八 　 ＼. ＼{ﾊし〉,　　　　　 　 八　 !ｲ　　ﾊ..ニニニニニニニニニニﾆﾆﾊ＼///////////
+		PRINTL ....　ヾﾊ　{　 　 ≧=ヽ ´　　 　 　　　.// 　 .|..,,　　 .＼....ニニニニニニニニニ:/ニニヽ/////////
+		PRINTL ....　　　V.ゝ　＼ ＼}∧　　ー つ 　 {ｲ|　　 レ　｀ｰ- ､ ヽヽニニニニニニニﾆｲニニニﾆ＞､/////
+		PRINTL .　 　 　 ヾ{≧z-＼{＼}.>　.　　　 　 |{.　 　 {　 　 　 　 ｀'　.',ニニニニニニ／ニニニニニニ＼///
+		PRINTL 　　　　 　 |　 | }　 |　 |　　 } ≧r=.´八　　∧　-{　　　　　　 ﾏiニニニ-=ニニニニニニニニ{　.ゝ/
+		PRINTL 　　　　 　 |　 | |　 |　.八―.!　/､._./／｀ヽ　ﾊ.....i　　　　　 ／　Vニニニニニニニニニニ.＞≦///
+		PRINTL 　　　　 　 |　 ハ　.!./}./　 ﾉ./　　　　　 　 ｀ヾ＼..　__　彡　　 　 ヽニニニニニニニﾆﾆ／///////
+		PRINTL .　　 　 　 从l{　.}　/ /　／´　　　　　　　　 　 ヾ!...　　＿　　　　　 }ニニニニニニニ／/////////
+		PRINTL 　　　　／..ﾞヾ|　.!./Y. 　 　 　 /　　　　　　　 :､　　 ヽ...__　　　　　 ハニニニニニ＞//////////＞
+		PRINTL 　　　/　　　　　　　　　 　 ／　　　　　　 　 　 ',　　　 ',＿_ ,,.ィ　　　/ﾏニニ_＞//////////＞
+		PRINTL 　　r.:.:',　　　　　　　　　 /　　　　　　　　　　　 ',　　　 i　　 }ヾ-- ´　　 ヾ/////////＞ｆニニ{
+		PRINTL 　　 Y:ﾉ　　　　　　　　　′　　　 .:.:_:.:.:, 　 　 　 |　　　{　　 .!ニ＼　　　　}//////rff,.ﾍニニニ!
+		PRINTL 　　八 　 i　　　　　　　 {　　　　 :.:.ゞ:.:ﾉ　　　　}.! 　　.ﾊ　　 |ニニ.>:.　　ﾉ//////, ノ!　＼ニニ,
+		PRINTL 　　　 ヽi |　　　　 　 .ィ:ﾍ　 　i.　｀　 ´　　i　 ,. :.|　　/　 fz._jニニニﾊｰ彡//////ヽ{　　　〉ﾆﾆ:',
+		PRINTL .　 　 　 | !　ー- ｆ ´　 ヽ ゝ.　| i　　　　　Jィ　　!　./　　 }　 ≧z..ニニゝ＜//彡　　 j　＼{ニﾆﾆ:
+		PRINTL 　　　　　　　　 }　',　　　 ＼.　! |= ― =≦　　　|　　　　 i　　八　　ーt..ニニ}＞ ,,／　　　}ニニニ
+		PRINTL 　　　　　　　　 i　 }　　　　　 ､　!　　　　　　　　|　　　　 j　　　 ',　　　}　 マﾆゞ＜　　　　ﾉ　　 ｀
+		PRINTL 　　　　　　　　 |　　　　　　 　 ＞.　　　､　　 　 |　 ,　　　　　　　　　　,　　　＼ﾆﾆヽ__ .:く
+		PRINTL 　　　　　　　　 ,　　　　 ヽ　　 　 i　ヽ　 ヾ　 　 | ./　　i　　　　　i　　/　　　　　ヽニニニヽ　 （ニ
+		PRINTL 　　　　　　　　 i　 　 　 　 ', -― }　　｀　.　　　 | ′　 }　　　　　.|／　　　　　　　ﾏニニニ＞　ヽ
+		PRINTL 　　　　　　　　 |　　　　　　}　　 /　　　　　''ｰ- |　　　 |＿＿＿ 」　　　　　i　　 　 Vニニニニヽﾉ
+		PRINTL 　　　　　　　　 |　　　　　 / 　 /　　　　　　　　 |　　 __j　 　 /　　　　　　　し　　　 Ⅵニニニニニ
+		PRINTL 　　　　　　　　 |　　 -― '　　 ′ 　　　　　　　 j.. ィ 　 ーｧ.'　　　　　　　　　　　　　iニニニニニﾆ
+		PRINTL 　　　　　　　　 ﾚ'´　　　　　 /　　　　　　　　　　　　　　r'　′　　　　　　 　 　 　 　 }ニニニニニﾆ
+		PRINTL 　　　　　　　　　 　 　 　 　 ,　　　　　　　　　　　　　　 /Y i　　　　　　 　 　 　 　 　 !ニニニニニニ
+		PRINTL 　　　　　　　　　　　　　　　　　　　　　　 　 　 　 { 　 /　|! !　　　　　　　 　 　 　 　 ﾑニニニニニニ
+		PRINTL 　　　　　　　　　　　　　　　′　　　　　　　　　　J　/　　} |　　　　　　　　　　　　　,ニニニニニニニ
+		PRINTL 　　　　　　　　　　　　　 　 i　　　　　　　　　　　　.ｲ　　 .j i　　　　　　　　　　　　 /ニニニニニニニ
+
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_MAKURA_pro2
+
+
+
+@KOJO_フェイト_SEISAN_MAKURA_pro2
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_MAKURA_pro2
+ENDSELECT
+
+
+
+;================================================================================
+;【アイドル活動_枕営業_お得意様：正常位】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_MAKURA_client2
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_MAKURA_client2
+
+
+
+@KOJO_1712_SEISAN_MAKURA_client2
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_MAKURA_client2
+
+
+
+@KOJO_フェイト_SEISAN_MAKURA_client2
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_MAKURA_client2
+ENDSELECT
+
+
+
+;================================================================================
+;【アイドル活動_枕営業_コスプレ：アナル】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_MAKURA_client3
+SETFONT "ＭＳ Ｐゴシック"
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_MAKURA_client3
+
+@KOJO_1712_SEISAN_MAKURA_client3
+SETFONT "ＭＳ Ｐゴシック"
+PRINTL 　　　　　　　　　　　　　　　　　　　　　_＿__
+PRINTL 　　　　　　　　　　　　　　　　　'"´　　　　 　 　 ｀`丶､
+PRINTL 　　　　　　　　　　 　 　 ／　　　　　　　 　 　 　 　 　 ＼
+PRINTL 　　　　　　　　　　　-‐/　　　　　　　　　　　　　　　　　　＼　　　　　 　 　 　 　 　 ,,..-‐'' "￣ " ''ー-.._／ ﾆ__..=-‐ ´
+PRINTL 　/　　 　 　 　 ´　　　　　　　　　　　　　　　　　　　　　　　 ヽ_.　　　　　　 　 　 ／　 　 .／　.,　　　　 ´ 　´　＞ 、
+PRINTL 爻_彡　　／　　 　 ,｛　　　　　　　　　　　　　　　　　　　　　　| i、.　　 　 　 　 /　 　　 ./　　/ ./ .//　,..、　 ....___ ｀''ｰ---‐,'
+PRINTL 　￣￣￣￣ 三ﾆ'く　Y　　　　　　　 　 　 　 u　 　 　 　 　 　 | i　　　　　　　 /　　　　.,'　　/ ./ ./,' /', 　.} | i ヽ　tー ''　´
+PRINTL 　　 　 , 　 　 .ニ二}　　　　　　　　　　　　　　　　　　　　　 　 | i　'.　　 　 　 ,'　　　　 ,'　　ﾑ,/i　{,' .{　i　ﾉ l| .i　｝ .iヽ
+PRINTL 　 　 　 　 , 　 三.ノ　っ　　　　　　　　　　　　　　　　　　　　　| i　 '.　　　 　 | 　/　,/ l　i .i|行心iﾊ |　j/,'-jｌ. |. j 　ｌ ﾊ
+SELECTCASE RAND:4
+	CASE 3
+		PRINTL 　/￣厂(/￣￣｀ヽ　　、　　　　　　　　　　　 　 　 　 　 u　 　网＿{`ｰ-...　│ ,'　/ﾍ卜l|..と辷ツ　` /'　 .,'.i .ｌ. !　 }', .}
+		PRINTL 　　　{　　　　　　_ｒｖ┐　_　　　　　　　　　　　　　　　 　 　 　 }｢￣: i　 　 　 　 ｀ '　 彳 i| |i丶　　　 　 =ミっiﾞi/j　.ﾉ ,ｿ
+		PRINTL 　　　:u　　　　　｝|｜}　/ )｀ヽ、　　　　　　　　　　　　　　　　 }|: : : : : .　　 　 　 　 　 `'.　 ﾊ　　　　　' 　.ﾑ〕/,'／／
+	CASE 2
+		PRINTL 　/￣厂(/￣￣｀ヽ　　、　　　　　　　　　　　 　 　 　 　 u　 　网＿{`ｰ-...　│ ,'　/ﾍ卜l| ｌ{ 辷ツ　` /'　 .,'.i .ｌ. !　 }', .}
+		PRINTL 　　　{　　　　　　_ｒｖ┐　_　　　　　　　　　　　　　　　 　 　 　 }｢￣: i　 　 　 　 ｀ '　 彳 i| |i丶:::::::　　　=ミ| i .i/j　.ﾉ ,ｿ
+		PRINTL 　　　:u　　　　　｝|｜}　/ )｀ヽ、　　　　　　　　　　　　　　　　 }|: : : : : .　　 　 　 　 　 `'.　 ﾊ　　　　　'::::::ﾑ〕/,'／／
+	CASE 1
+		PRINTL 　/￣厂(/￣￣｀ヽ　　、　　　　　　　　　　　 　 　 　 　 u　 　网＿{`ｰ-...　│ ,'　/ﾍ卜l| ｌ{ 辷ツ　` /'仍.,'.i .ｌ. !　 }', .}
+		PRINTL 　　　{　　　　　　_ｒｖ┐　_　　　　　　　　　　　　　　　 　 　 　 }｢￣: i　 　 　 　 ｀ '　 彳 i| |i丶 　　　　:ﾋｿっiﾞi/j　.ﾉ ,ｿ
+		PRINTL 　　　:u　　　　　｝|｜}　/ )｀ヽ、　　　　　　　　　　　　　　　　 }|: : : : : .　　 　 　 　 　 `'.　 ﾊ　　　　　' 　.ﾑ〕/,'／／
+	CASE 0
+		PRINTL 　/￣厂(/￣￣｀ヽ　　、　　　　　　　　　　　 　 　 　 　 u　 　网＿{`ｰ-...　│ ,'　/ﾍ卜l| ｌ{ 辷ツ　` /'仍.,'.i .ｌ. !　 }', .}
+		PRINTL 　　　{　　　　　　_ｒｖ┐　_　　　　　　　　　　　　　　　 　 　 　 }｢￣: i　 　 　 　 ｀ ' 　彳 i| |i丶:::::::::　　:ﾋｿっiﾞi/j　.ﾉ ,ｿ
+		PRINTL 　　　:u　　　　　｝|｜}　/ )｀ヽ、　　　　　　　　　　　　　　　　 }|: : : : : .　　 　 　 　 　 `'.　 ﾊ　　　　　'::::::ﾑ〕/,'／／
+ENDSELECT
+
+SELECTCASE RAND:2
+	CASE 1
+		PRINTL 　　　　　　　 　 { |｜∨ /　　､＼　 　 {　 　 　 　 　 　 　 　 /: : : : : : : :.＿__ 。 　 -‐.　　　ﾊ.　　!. フ 　/.i .ｲ/
+		PRINTL 　　　　＼　　　　、　 　　＼ ヾ爻＼　ij　　　　　　 u 　 　,. : : : : : : : :/ : :.　　　　　　 　 　 　 ＼　.|| ,∠i .i　|'
+	CASE 0
+		PRINTL 　　　　　　　 　 { |｜∨ /　　､＼　 　 {　 　 　 　 　 　 　 　 /: : : : : : : :.＿__ 。 　 -‐.　　　ﾊ. 　 `　 -　/.i. ｲ/
+		PRINTL 　　　　＼　　　　、　 　　＼ ヾ爻＼　ij　　　　　　 u 　 　,. : : : : : : : :/ : :.　　　　　　 　 　 　 ＼　　 ,∠i .i　|'
+ENDSELECT
+
+
+
+
+PRINTL .　 　 　 --ミ　　　＼　　 　 ＼_＿＿､　　　　　　　　　／. : : : : : : : / . :./::.　　　　ι　　　　　　}. ¨.　　} i .|
+PRINTL 　　／　. : : : ＼　　　　　　　　 ｀　　　＼　　　　 　 ／. : : : : : : : ／ . : /: : :＼＿__　　　　　 　 ﾉ.　　　 | l!│
+PRINTL .　,′ . : : : : : : :.丶､u 　` ｰ- 　 . 　 _＿_＼___ . . :": : : : : : : : ／. : : :,.: : : : : : ::.､ 　　ｧ…‐-‐く..ﾊ　　　{. i!.{
+PRINTL ...ﾞ{　 : : : : : : : : : : : : : . .. 　 　 _.二._／ : : ﾉ＼ : : : : : : : : : ／. : : :／ : : : : : : : : ::.　 ,′　　　　V∧. 　 ﾏ.i!ﾊ
+PRINTL 　　　　: : : : : : : : : : : : : : ｀７´ . : : . ｀`'＜ :_:ノﾞ>､ : :_,　 　 　 -‐'━‐-　　ミ: : : : : :Ｖ',.　 　 　 　 Vﾊ　　　} i! }
+PRINTL .　 !　. : : : : : : : : : : : : : : : :{　. : : : : : : : : : : ｀¨¨¨¨´ : : : : : : : : : : : : : : : : : :`丶、: ::.::',.　 　 　 　 Vﾊ 　 ﾉ ﾘﾉ
+PRINTL 　/　. :. : : : : :／´￣`丶、: :.　 : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : : :＼: ::..:　　　　　　 Ⅵ.　巛.〈
+PRINTL ./. : : : : : : : /　　　 　 　 ＼}　 : : : : : : : : : _ ノ : : : : : : : : : : : : : : : : : : : : : : : : : : : 丶::.　　 　 　 　 }　　　ヾヽ
+PRINTL {: : : :{: :　: : {　　　　　 　 　 }　.: : : : : : : : : : :, -‐‐-　､ : : : : : : : : : : : : : : : : : : : : : : : : :}
+SELECTCASE RAND:5
+	CASE 4
+	CASE 3
+	CASE 2
+	CASE 1
+	CASE 0
+ENDSELECT
+SETFONT
+
+
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_MAKURA_client3
+
+@KOJO_フェイト_SEISAN_MAKURA_client3
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_MAKURA_client3
+ENDSELECT
+
+
+
+;================================================================================
+;【アイドル活動_枕営業_ファンクラブ：輪姦】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_MAKURA_fanclub
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_MAKURA_fanclub
+
+
+
+@KOJO_1712_SEISAN_MAKURA_fanclub
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_MAKURA_fanclub
+
+
+
+@KOJO_フェイト_SEISAN_MAKURA_fanclub
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_MAKURA_fanclub
+ENDSELECT
+
+
+
+;================================================================================
+; 【"アイドル活動_枕営業_基本"】
+;================================================================================
+;【アイドル活動_ライブ公演（触手拘束具）】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_LIVE_syokusyu
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_LIVE_syokusyu
+
+
+
+@KOJO_1712_SEISAN_LIVE_syokusyu
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_LIVE_syokusyu
+
+
+
+@KOJO_フェイト_SEISAN_LIVE_syokusyu
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_LIVE_syokusyu
+ENDSELECT
+
+
+
+;================================================================================
+;【アイドル活動_ライブ公演（転んだ）】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_LIVE_kobori
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_LIVE_kobori
+
+
+
+@KOJO_1712_SEISAN_LIVE_kobori
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_LIVE_kobori
+
+
+
+@KOJO_フェイト_SEISAN_LIVE_kobori
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_LIVE_kobori
+ENDSELECT
+
+
+
+;================================================================================
+;【アイドル活動_ライブ公演（通常）】
+;--------------------------------------------------
+@KOJO_1702_SEISAN_LIVE_normal
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_LIVE_normal
+
+@KOJO_1712_SEISAN_LIVE_normal
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEISAN_LIVE_normal
+
+@KOJO_フェイト_SEISAN_LIVE_normal
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEISAN_LIVE_normal
+ENDSELECT
+
+
+

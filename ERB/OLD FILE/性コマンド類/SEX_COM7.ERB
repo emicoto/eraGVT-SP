@@ -1,0 +1,114 @@
+;B攻め強 CVA弱を追加
+
+;性コマンド分類
+@SEX_TYPE_COM7
+RETURN 通常
+
+@SEX_COM7,ARG = 0,ARG:1 = 0
+;EX_COM	追加責め実行部位（ビット）
+;	1：Ｃ　2：Ｖ　4：Ａ　8：Ｂ
+;追加責め
+CALL SEX_COMEX_RANDOM, Ｂ, ARG:1
+EX_COM = RESULT:0
+SH_COM = RESULT:1
+
+;取得パラメータ計算
+;ベース値の明示的初期化
+REPEAT 12
+	LOCAL:COUNT = 0
+REND
+
+;油断度の上昇
+TFLAG:3 += 50
+
+;射精値 50
+CALL TENTACLE_SYASEI_UP, 50
+
+;触手サイズの設定
+CALL SET_TENTACLE_SIZE, FLAG:10, FLAG:11, FLAG:110, FLAG:111, 7
+
+IF FLAG:10 == 2
+	CALLFORM MESSAGE_MOB_{ARG}_COM7, EX_COM, SH_COM
+ELSE
+	;地の文：洗脳/悪堕ちキャラが操作キャラにB攻め強をした
+	SIF FLAG:110 == 1
+		CALL MESSAGE_OTHER_SEX_COM7
+	;地の文：COM7
+	CALL MESSAGE_SEX_COM7, EX_COM, SH_COM
+ENDIF
+
+;結界による触手本数の変動
+CALL SET_TENTACLE_POOL
+;服へのダメージ
+CALL CLOTH_BATTLE_DAMAGE, 8
+
+;ベース
+;快B
+IF ABL:Ｂ感覚 == 0
+	LOCAL:3 = 400
+ELSEIF ABL:Ｂ感覚 == 1
+	LOCAL:3 = 1000
+ELSEIF ABL:Ｂ感覚 == 2
+	LOCAL:3 = 2000
+ELSEIF ABL:Ｂ感覚 == 3
+	LOCAL:3 = 4000
+ELSEIF ABL:Ｂ感覚 == 4
+	LOCAL:3 = 10000
+ELSEIF ABL:Ｂ感覚 >= 5
+	LOCAL:3 = 20000
+ENDIF
+
+;竿持ちの場合
+IF (TALENT:ふたなり > 0 || TALENT:オトコ > 0 )
+;快C
+     IF ABL:Ｂ感覚 == 0
+	  LOCAL:0 = 5
+      ELSEIF ABL:Ｂ感覚 == 1
+	  LOCAL:0 = 50
+      ELSEIF ABL:Ｂ感覚 == 2
+	  LOCAL:0 = 100
+      ELSEIF ABL:Ｂ感覚 == 3
+	  LOCAL:0 = 200
+      ELSEIF ABL:Ｂ感覚 == 4
+	  LOCAL:0 = 300
+      ELSEIF ABL:Ｂ感覚 >= 5
+	  LOCAL:0 = 4000
+     ENDIF
+ENDIF
+
+;追加責め実行
+IF EX_COM
+	CALL SEX_COMEX, Ｂ, 1, EX_COM | SH_COM
+	REPEAT 12
+		LOCAL:COUNT += RESULT:COUNT
+	REND
+ENDIF
+
+;行動予約なし
+TFLAG:17 = -1
+;触手の行動を記録
+TFLAG:20 = 7
+
+;習得基本値
+LOCAL:6 += 2500
+
+;欲情基本値
+LOCAL:7 += 0
+
+;屈服基本値
+LOCAL:8 += 1000
+
+;恥情基本値
+LOCAL:9 += 200
+
+;苦痛基本値
+LOCAL:10 += 800
+
+;恐怖基本値
+LOCAL:11 += 100
+
+;体力消費基本値
+LOCAL:12 += 100
+
+;計算へ
+CALL PALAM_CAL, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, LOCAL:12

@@ -1,0 +1,697 @@
+;**********************************************************
+;幽閉中パラメータ変動共通処理
+;ARG:0 快Ｃ
+;ARG:1 快Ｖ
+;ARG:2 快Ａ
+;ARG:3 快Ｂ
+;ARG:4 潤滑 潤滑は未使用
+;ARG:5 恭順
+;ARG:6 習得
+;ARG:7 欲情
+;ARG:8 屈服
+;ARG:9 恥情
+;ARG:10 苦痛
+;ARG:11 恐怖
+
+;ARG:12 結界が反応するかどうか 0=反応する 1=反応しない
+
+@COMMON_PRISON, ARG:0, ARG:1, ARG:2, ARG:3, ARG:4, ARG:5, ARG:6, ARG:7, ARG:8, ARG:9, ARG:10, ARG:11, ARG:12 = 0
+#DIM LCOUNT
+#DIM CAL_VAR, 2
+
+;経験数の受け渡し用変数を初期化
+VARSET COMMON_EXP
+
+;素質に関する補正
+;----------------------------------------------------------
+;快C
+IF TALENT:Ｃ敏感 > 0
+	TIMES ARG:0, 2.00
+ELSEIF TALENT:Ｃ鈍感 > 0
+	TIMES ARG:0, 0.50
+ENDIF
+SIF TALENT:淫核 > 0
+	TIMES ARG:0, 1.50
+
+;快V
+IF TALENT:Ｖ敏感 > 0
+	TIMES ARG:1, 2.00
+ELSEIF TALENT:Ｖ鈍感 > 0
+	TIMES ARG:1, 0.50
+ENDIF
+SIF TALENT:淫壷 > 0
+	TIMES ARG:1, 1.50
+
+;快A
+IF TALENT:Ａ敏感 > 0
+	TIMES ARG:2, 2.00
+ELSEIF TALENT:Ａ鈍感 > 0
+	TIMES ARG:2, 0.50
+ENDIF
+SIF TALENT:淫尻 > 0
+	TIMES ARG:2, 1.50
+
+;快B
+IF TALENT:Ｂ敏感 > 0
+	TIMES ARG:3, 2.00
+ELSEIF TALENT:Ｂ鈍感 > 0
+	TIMES ARG:3, 0.50
+ENDIF
+IF TALENT:貧乳 == 2
+	TIMES ARG:3, 0.75
+ELSEIF TALENT:貧乳 == 1
+	TIMES ARG:3, 0.80
+ELSEIF TALENT:巨乳 == 5
+	TIMES ARG:1, 1.40
+ELSEIF TALENT:巨乳 == 4
+	TIMES ARG:1, 1.35
+ELSEIF TALENT:巨乳 == 3
+	TIMES ARG:1, 1.30
+ELSEIF TALENT:巨乳 == 2
+	TIMES ARG:1, 1.25
+ELSEIF TALENT:巨乳 == 1
+	TIMES ARG:1, 1.20
+ENDIF
+SIF TALENT:淫乳 > 0
+	TIMES ARG:3, 1.50
+
+;恭順
+SIF TALENT:触手の虜 > 0
+	TIMES ARG:5, 2.00
+
+;習得
+
+;欲情
+SIF TALENT:触手の虜 > 0
+	TIMES ARG:7, 2.00
+SIF TALENT:淫乱 > 0
+	TIMES ARG:7, 2.00
+
+;屈服
+SIF TALENT:触手の虜 > 0
+	TIMES ARG:8, 2.00
+
+;恥情
+SIF TALENT:パイパン > 0
+	TIMES ARG:9, 1.50
+SIF TALENT:淫乱 > 0
+	TIMES ARG:9, 2.00
+
+;苦痛
+
+;恐怖
+
+
+;性格に関する補正
+;----------------------------------------------------------
+LOCAL = SEIKAKU_CHECK_F(TARGET)
+ARG:7 = SEIKAKU_HOSEI_PALAM_F(LOCAL, 13, ARG:7)
+ARG:8 = SEIKAKU_HOSEI_PALAM_F(LOCAL, 14, ARG:8)
+ARG:9 = SEIKAKU_HOSEI_PALAM_F(LOCAL, 15, ARG:9)
+ARG:10 = SEIKAKU_HOSEI_PALAM_F(LOCAL, 16, ARG:10)
+ARG:11 = SEIKAKU_HOSEI_PALAM_F(LOCAL, 17, ARG:11)
+
+;触手に関する補正
+;----------------------------------------------------------
+IF CFLAG:0 == 1 || CFLAG:0 == 2 || CFLAG:0 == 3 || CFLAG:0 == 9
+	CALL TENTACLE_ACCESS_PRISON, TARGET, "PALAM_HOSEI"
+	;快C
+	ARG:0 = ARG:0 * RESULT:0 / 100
+	;快V
+	ARG:1 = ARG:1 * RESULT:1 / 100
+	;快A
+	ARG:2 = ARG:2 * RESULT:2 / 100
+	;快B
+	ARG:3 = ARG:3 * RESULT:3 / 100
+	;潤滑
+	ARG:4 = ARG:4 * RESULT:4 / 100
+	;恭順
+	ARG:5 = ARG:5 * RESULT:5 / 100
+	;習得
+	ARG:6 = ARG:6 * RESULT:6 / 100
+	;欲情
+	ARG:7 = ARG:7 * RESULT:7 / 100
+	;屈服
+	ARG:8 = ARG:8 * RESULT:8 / 100
+	;恥情
+	ARG:9 = ARG:9 * RESULT:9 / 100
+	;苦痛
+	ARG:10 = ARG:10 * RESULT:10 / 100
+	;恐怖
+	ARG:11 = ARG:11 * RESULT:11 / 100
+ENDIF
+
+;触手中毒に関する補正
+;----------------------------------------------------------
+LOCAL = 0
+FOR LOCAL, 0, 11
+	IF ABL:触手中毒 == 1
+		TIMES ARG:LOCAL, 1.20
+	ELSEIF ABL:触手中毒 == 2
+		TIMES ARG:LOCAL, 1.50
+	ELSEIF ABL:触手中毒 == 3
+		TIMES ARG:LOCAL, 2.00
+	ELSEIF ABL:触手中毒 == 4
+		TIMES ARG:LOCAL, 2.50
+	ELSEIF ABL:触手中毒 == 5
+		TIMES ARG:LOCAL, 4.00
+	ENDIF
+NEXT
+
+;感覚LV6以上補正
+;----------------------------------------------------------
+FOR LCOUNT, 0, 感覚数
+	CALL PALAM_OVERFEEL, TARGET, LCOUNT
+	ARG:LCOUNT = ARG:LCOUNT * RESULT / 100
+NEXT
+
+;結界チェック
+;----------------------------------------------------------
+FOR LCOUNT, 0, 感覚数
+	IF BASE:(LCOUNT + 30) > 0 && ARG:12 == 0
+		;デバッグ表示
+		STRLENFORM {MAXBASE:(LCOUNT + 30)}
+		SETCOLOR 96, 96, 96
+		SIF FLAG:999 == 1
+			PRINTFORML /* debug */ %BASENAME:(LCOUNT + 30)%：{BASE:(LCOUNT + 30), RESULT} - {ARG:LCOUNT * 150 + (ARG:LCOUNT > 0) * 2000, RESULT} = {BASE:(LCOUNT + 30) - ARG:LCOUNT * 150 + (ARG:LCOUNT > 0) * 2000, RESULT}
+		RESETCOLOR
+		BASE:(LCOUNT + 30) -= ARG:LCOUNT * 150 + (ARG:LCOUNT > 0) * 2000
+		SIF ARG:LCOUNT > 0
+			CALL MESSAGE_SHIELD_STATE, LCOUNT
+		ARG:LCOUNT = 0
+	ENDIF
+NEXT
+
+;取得予定の珠から絶頂回数の逆算
+;----------------------------------------------------------
+LOCAL:100 = 0
+LOCAL:101 = 0
+LOCAL:102 = 0
+LOCAL:103 = 0
+
+SIF ARG:0 > 1000
+	LOCAL:100 = SQRT(ARG:0) / 10
+SIF ARG:1 > 1000
+	LOCAL:101 = SQRT(ARG:1) / 10
+SIF ARG:2 > 1000
+	LOCAL:102 = SQRT(ARG:2) / 10
+SIF ARG:3 > 1000
+	LOCAL:103 = SQRT(ARG:3) / 10
+
+;恥情のボーナス計算
+;戦闘時と同じように快C,快V,快A,快Bの上昇値,絶頂の状態で計算した値を上乗せ
+LOCAL = ARG:0 + (ARG:1 * 2) + (ARG:2 * 2) + ARG:3
+LOCAL:1 = 0
+IF LOCAL == 0
+	LOCAL:1 = 0
+ELSEIF LOCAL < 1000
+	LOCAL:1 = 200
+ELSEIF LOCAL < 3000
+	LOCAL:1= 500
+ELSEIF LOCAL < 5000
+	LOCAL:1 = 1000
+ELSEIF LOCAL < 10000
+	LOCAL:1 = 2000
+ELSEIF LOCAL < 30000
+	LOCAL:1 = 5000
+ELSEIF LOCAL < 50000
+	LOCAL:1 = 10000
+ELSE
+	LOCAL:1 = 20000
+ENDIF
+LOCAL = LOCAL:100 + LOCAL:101 + LOCAL:102 + LOCAL:103
+IF LOCAL < 10
+	TIMES LOCAL:1, 1.00
+ELSEIF LOCAL < 25
+	TIMES LOCAL:1, 2.00
+ELSEIF LOCAL < 50
+	TIMES LOCAL:1, 3.00
+ELSE
+	TIMES LOCAL:1, 4.00
+ENDIF
+ARG:9 += LOCAL:1
+
+;欲情のボーナス計算
+;快C,快V,快A,快B,恥情の上昇値,苦痛の上昇値(マゾっ気あり),絶頂の状態で計算する
+LOCAL = 0
+LOCAL:1 = 0
+LOCAL:2 = 0
+LOCAL:3 = 0
+LOCAL = ARG:0 + (ARG:1 * 2) + (ARG:2 * 2) + ARG:3
+IF LOCAL == 0
+	LOCAL:1 = 0
+ELSEIF LOCAL < 1000
+	LOCAL:1 = 100
+ELSEIF LOCAL < 3000
+	LOCAL:1 = 200
+ELSEIF LOCAL < 5000
+	LOCAL:1 = 500
+ELSEIF LOCAL < 10000
+	LOCAL:1 = 1000
+ELSEIF LOCAL < 20000
+	LOCAL:1 = 2000
+ELSEIF LOCAL < 35000
+	LOCAL:1 = 5000
+ELSE
+	LOCAL:1 = 10000
+ENDIF
+
+LOCAL = LOCAL:100 + LOCAL:101 + LOCAL:102 + LOCAL:103
+IF LOCAL < 10
+	TIMES LOCAL:1, 1.00
+ELSEIF LOCAL < 25
+	TIMES LOCAL:1, 2.00
+ELSEIF LOCAL < 50
+	TIMES LOCAL:1, 3.00
+ELSE
+	TIMES LOCAL:1, 4.00
+ENDIF
+
+;恥情
+IF ARG:9 == 0
+	LOCAL:2 = 0
+ELSEIF ARG:9 < 1000
+	LOCAL:2 = 500
+ELSEIF ARG:9 < 3000
+	LOCAL:2 = 1000
+ELSEIF ARG:9 < 5000
+	LOCAL:2 = 2000
+ELSE
+	LOCAL:2 = 5000
+ENDIF
+IF ABL:露出癖 < 2
+	TIMES LOCAL:2, 0.00
+ELSEIF ABL:露出癖 == 2
+	TIMES LOCAL:2, 0.75
+ELSEIF ABL:露出癖 == 3
+	TIMES LOCAL:2, 1.00
+ELSEIF ABL:露出癖 == 4
+	TIMES LOCAL:2, 1.25
+ELSEIF ABL:露出癖 ==5
+	TIMES LOCAL:2, 1.50
+ENDIF
+
+;苦痛
+IF ARG:10 == 0
+	LOCAL:3 = 0
+ELSEIF ARG:10 < 1000
+	LOCAL:3 = 100
+ELSEIF ARG:10 < 3000
+	LOCAL:3 = 200
+ELSEIF ARG:10 < 5000
+	LOCAL:3 = 500
+ELSE
+	LOCAL:3 = 1000
+ENDIF
+IF ABL:マゾっ気 > 3
+ELSEIF ABL:マゾっ気 == 3
+	TIMES LOCAL:3, 0.50
+ELSEIF ABL:マゾっ気 == 4
+	TIMES LOCAL:3, 1.00
+ELSEIF ABL:マゾっ気 == 5
+	TIMES LOCAL:3, 1.50
+ENDIF
+ARG:7 = ARG:7 + LOCAL:1 + LOCAL:2 + LOCAL:3
+
+
+;射精の処理と射精によるボーナス
+;射精中毒によってC絶頂回数から射精回数を計算
+LOCAL:110 = 0
+IF LOCAL:100 > 0 && (TALENT:ふたなり > 0 || TALENT:オトコ > 0)
+	IF ABL:射精中毒 == 0
+		LOCAL:110 = LOCAL:100 / 6
+	ELSEIF ABL:射精中毒 == 1
+		LOCAL:110 = LOCAL:100 / 5
+	ELSEIF ABL:射精中毒 == 2
+		LOCAL:110 = LOCAL:100 / 4
+	ELSEIF ABL:射精中毒 == 3
+		LOCAL:110 = LOCAL:100 / 3
+	ELSEIF ABL:射精中毒 == 4
+		LOCAL:110 = LOCAL:100 / 2
+	ELSEIF ABL:射精中毒 == 5
+		LOCAL:110 = LOCAL:100
+	ENDIF
+ENDIF
+;欲情にボーナス
+LOCAL:7 += 200 * LOCAL:110
+;屈服にボーナス
+LOCAL:8 += 200 * LOCAL:110
+;恥情にボーナス
+LOCAL:9 += 200 * LOCAL:110
+
+;噴乳の処理と噴乳によるボーナス
+;噴乳中毒によってB絶頂回数から噴乳回数を計算
+LOCAL:113 = 0
+IF LOCAL:103 > 0 && TALENT:母乳体質 > 0
+	IF ABL:噴乳中毒 == 0
+		LOCAL:113 = LOCAL:103 / 6
+	ELSEIF ABL:噴乳中毒 == 1
+		LOCAL:113 = LOCAL:103 / 5
+	ELSEIF ABL:噴乳中毒 == 2
+		LOCAL:113 = LOCAL:103 / 4
+	ELSEIF ABL:噴乳中毒 == 3
+		LOCAL:113 = LOCAL:103 / 3
+	ELSEIF ABL:噴乳中毒 == 4
+		LOCAL:113 = LOCAL:103 / 2
+	ELSEIF ABL:噴乳中毒 == 5
+		LOCAL:113 = LOCAL:103
+	ENDIF
+ENDIF
+;恭順にボーナス
+LOCAL:5 += 200 * LOCAL:113
+;欲情にボーナス
+LOCAL:7 += 200 * LOCAL:113
+;恥情にボーナス
+LOCAL:9 += 200 * LOCAL:113
+
+;幽閉中でなければ刻印の処理をスキップ
+SIF CFLAG:0 != 1
+	GOTO SKIP
+
+;刻印の取得 幽閉中は取得する予定の珠の量で刻印を付ける
+;----------------------------------------------------------
+;快楽刻印
+LOCAL = 0
+SIF ARG:7 >= (800 + MARK:快楽刻印防止 * 80)
+	LOCAL = 1
+SIF ARG:7 >= (2000 + MARK:快楽刻印防止 * 200) && MARK:快楽刻印 == 1
+	LOCAL = 2
+SIF ARG:7 >= (8000 + MARK:快楽刻印防止 * 800) && MARK:快楽刻印 == 2
+	LOCAL = 3
+SIF ARG:7 >= (25000 + MARK:快楽刻印防止 * 2500) && MARK:快楽刻印 == 3
+	LOCAL = 4
+SIF ARG:7 >= (80000 + MARK:快楽刻印防止 * 8000) && MARK:快楽刻印 == 4
+	LOCAL = 5
+IF LOCAL > MARK:快楽刻印
+	MARK:快楽刻印 = LOCAL
+	IF LOCAL == 1
+		;地の文：快楽刻印１
+		CALL MESSAGE_SEX_MARK_KAIRAKU_1
+		;地の文：洗脳/悪堕ちキャラが操作キャラに快楽刻印１が付くのを見た
+		SIF CFLAG:20 == 2
+			CALL MESSAGE_OTHER_SEX_MARK_KAIRAKU_1
+	ELSEIF LOCAL == 2
+		;地の文：快楽刻印２
+		CALL MESSAGE_SEX_MARK_KAIRAKU_2
+		;地の文：洗脳/悪堕ちキャラが操作キャラに快楽刻印２が付くのを見た
+		SIF CFLAG:20 == 2
+			CALL MESSAGE_OTHER_SEX_MARK_KAIRAKU_2
+	ELSEIF LOCAL == 3
+		;地の文：快楽刻印３
+		CALL MESSAGE_SEX_MARK_KAIRAKU_3
+		;地の文：洗脳/悪堕ちキャラが操作キャラに快楽刻印３が付くのを見た
+		SIF CFLAG:20 == 2
+			CALL MESSAGE_OTHER_SEX_MARK_KAIRAKU_3
+	ELSEIF LOCAL == 4
+		;地の文：快楽刻印４
+		CALL MESSAGE_SEX_MARK_KAIRAKU_4
+		;地の文：洗脳/悪堕ちキャラが操作キャラに快楽刻印４が付くのを見た
+		SIF CFLAG:20 == 2
+			CALL MESSAGE_OTHER_SEX_MARK_KAIRAKU_4
+	ELSEIF LOCAL == 5
+		;地の文：快楽刻印５
+		CALL MESSAGE_SEX_MARK_KAIRAKU_5
+		;地の文：洗脳/悪堕ちキャラが操作キャラに快楽刻印５が付くのを見た
+		SIF CFLAG:20 == 2
+			CALL MESSAGE_OTHER_SEX_MARK_KAIRAKU_5
+	ENDIF
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は%MARKNAME:0%{LOCAL}を取得した
+	PRINTL 
+ENDIF
+
+;苦痛刻印
+LOCAL = 0
+SIF ARG:10 >= (700 + MARK:苦痛刻印防止 * 70)
+	LOCAL = 1
+SIF ARG:10 >= (1800 + MARK:苦痛刻印防止 * 180) && CFLAG:31 >= 6 && MARK:苦痛刻印 == 1
+	LOCAL = 2
+SIF ARG:10 >= (7500 + MARK:苦痛刻印防止 * 750) && CFLAG:31 >= 12 && MARK:苦痛刻印 == 2
+	LOCAL = 3
+SIF ARG:10 >= (10000 + MARK:苦痛刻印防止 * 1000) && CFLAG:31 >= 18 && MARK:苦痛刻印 == 3
+	LOCAL = 4
+SIF ARG:10 >= (75000 + MARK:苦痛刻印防止 * 7500) && CFLAG:31 >= 24 && MARK:苦痛刻印 == 4
+	LOCAL = 5
+IF LOCAL > MARK:苦痛刻印
+	MARK:苦痛刻印 = LOCAL
+	IF LOCAL == 1
+		;地の文：苦痛刻印１
+		CALL MESSAGE_SEX_MARK_KUTUU_1
+		;地の文：洗脳/悪堕ちキャラが操作キャラに苦痛刻印１が付くのを見た
+		SIF CFLAG:20 == 2
+			CALL MESSAGE_OTHER_SEX_MARK_KUTUU_1
+	ELSEIF LOCAL == 2
+		;地の文：苦痛刻印２
+		CALL MESSAGE_SEX_MARK_KUTUU_2
+		;地の文：洗脳/悪堕ちキャラが操作キャラに苦痛刻印２が付くのを見た
+		SIF CFLAG:20 == 2
+			CALL MESSAGE_OTHER_SEX_MARK_KUTUU_2
+	ELSEIF LOCAL == 3
+		;地の文：苦痛刻印３
+		CALL MESSAGE_SEX_MARK_KUTUU_3
+		;地の文：洗脳/悪堕ちキャラが操作キャラに苦痛刻印３が付くのを見た
+		SIF CFLAG:20 == 2
+			CALL MESSAGE_OTHER_SEX_MARK_KUTUU_3
+	ELSEIF LOCAL == 4
+		;地の文：苦痛刻印４
+		CALL MESSAGE_SEX_MARK_KUTUU_4
+		;地の文：洗脳/悪堕ちキャラが操作キャラに苦痛刻印４が付くのを見た
+		SIF CFLAG:20 == 2
+			CALL MESSAGE_OTHER_SEX_MARK_KUTUU_4
+	ELSEIF LOCAL == 5
+		;地の文：苦痛刻印５
+		CALL MESSAGE_SEX_MARK_KUTUU_5
+		;地の文：洗脳/悪堕ちキャラが操作キャラに苦痛刻印５が付くのを見た
+		SIF CFLAG:20 == 2
+			CALL MESSAGE_OTHER_SEX_MARK_KUTUU_5
+	ENDIF
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は%MARKNAME:1%{LOCAL}を取得した
+	PRINTL 
+ENDIF
+
+;屈服刻印
+LOCAL = 0
+SIF ARG:8 >= (600 + MARK:屈服刻印防止 * 60)
+	LOCAL = 1
+SIF ARG:8 >= (1600 + MARK:屈服刻印防止 * 160) && CFLAG:31 >= 6 && MARK:屈服刻印 == 1
+	LOCAL = 2
+SIF ARG:8 >= (6000 + MARK:屈服刻印防止 * 600) && CFLAG:31 >= 12 && MARK:屈服刻印 == 2
+	LOCAL = 3
+SIF ARG:8 >= (12000 + MARK:屈服刻印防止 * 1200) && CFLAG:31 >= 18 && MARK:屈服刻印 == 3
+	LOCAL = 4
+SIF ARG:8 >= (80000 + MARK:屈服刻印防止 * 8000) && CFLAG:31 >= 24 && MARK:屈服刻印 == 4
+	LOCAL = 5
+IF LOCAL > MARK:屈服刻印
+	MARK:屈服刻印 = LOCAL
+	IF LOCAL == 1
+		;地の文：屈服刻印１
+		CALL MESSAGE_SEX_MARK_KUPPUKU_1
+		;地の文：洗脳/悪堕ちキャラが操作キャラに屈服刻印１が付くのを見た
+		SIF CFLAG:20 == 2
+			CALL MESSAGE_OTHER_SEX_MARK_KUPPUKU_1
+	ELSEIF LOCAL == 2
+		;地の文：屈服刻印２
+		CALL MESSAGE_SEX_MARK_KUPPUKU_2
+		;地の文：洗脳/悪堕ちキャラが操作キャラに屈服刻印２が付くのを見た
+		SIF CFLAG:20 == 2
+			CALL MESSAGE_OTHER_SEX_MARK_KUPPUKU_2
+	ELSEIF LOCAL == 3
+		;地の文：屈服刻印３
+		CALL MESSAGE_SEX_MARK_KUPPUKU_3
+		;地の文：洗脳/悪堕ちキャラが操作キャラに屈服刻印３が付くのを見た
+		SIF CFLAG:20 == 2
+			CALL MESSAGE_OTHER_SEX_MARK_KUPPUKU_3
+	ELSEIF LOCAL == 4
+		;地の文：屈服刻印４
+		CALL MESSAGE_SEX_MARK_KUPPUKU_4
+		;地の文：洗脳/悪堕ちキャラが操作キャラに屈服刻印４が付くのを見た
+		SIF CFLAG:20 == 2
+			CALL MESSAGE_OTHER_SEX_MARK_KUPPUKU_4
+	ELSEIF LOCAL == 5
+		;地の文：屈服刻印５
+		CALL MESSAGE_SEX_MARK_KUPPUKU_5
+		;地の文：洗脳/悪堕ちキャラが操作キャラに屈服刻印５が付くのを見た
+		SIF CFLAG:20 == 2
+			CALL MESSAGE_OTHER_SEX_MARK_KUPPUKU_5
+	ENDIF
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は%MARKNAME:2%{LOCAL}を取得した
+	PRINTL 
+ENDIF
+
+;恐怖刻印
+LOCAL = 0
+SIF ARG:11 >= (500 + MARK:恐怖刻印防止 * 50)
+	LOCAL = 1
+SIF ARG:11 >= (1500 + MARK:恐怖刻印防止 * 150) && CFLAG:31 >= 6 && MARK:恐怖刻印 == 1
+	LOCAL = 2
+SIF ARG:11 >= (5000 + MARK:恐怖刻印防止 * 500) && CFLAG:31 >= 12 && MARK:恐怖刻印 == 2
+	LOCAL = 3
+SIF ARG:11 >= (20000 + MARK:恐怖刻印防止 * 2000) && CFLAG:31 >= 18 && MARK:恐怖刻印 == 3
+	LOCAL = 4
+SIF ARG:11 >= (75000 + MARK:恐怖刻印防止 * 7500) && CFLAG:31 >= 24 && MARK:恐怖刻印 == 4
+	LOCAL = 5
+IF LOCAL > MARK:恐怖刻印
+	MARK:恐怖刻印 = LOCAL
+	IF LOCAL == 1
+		;地の文：恐怖刻印１
+		CALL MESSAGE_SEX_MARK_KYOUHU_1
+		;地の文：洗脳/悪堕ちキャラが操作キャラに恐怖刻印１が付くのを見た
+		SIF CFLAG:20 == 2
+			CALL MESSAGE_OTHER_SEX_MARK_KYOUHU_1
+	ELSEIF LOCAL == 2
+		;地の文：恐怖刻印２
+		CALL MESSAGE_SEX_MARK_KYOUHU_2
+		;地の文：洗脳/悪堕ちキャラが操作キャラに恐怖刻印２が付くのを見た
+		SIF CFLAG:20 == 2
+			CALL MESSAGE_OTHER_SEX_MARK_KYOUHU_2
+	ELSEIF LOCAL == 3
+		;地の文：恐怖刻印３
+		CALL MESSAGE_SEX_MARK_KYOUHU_3
+		;地の文：洗脳/悪堕ちキャラが操作キャラに恐怖刻印３が付くのを見た
+		SIF CFLAG:20 == 2
+			CALL MESSAGE_OTHER_SEX_MARK_KYOUHU_3
+	ELSEIF LOCAL == 4
+		;地の文：恐怖刻印４
+		CALL MESSAGE_SEX_MARK_KYOUHU_4
+		;地の文：洗脳/悪堕ちキャラが操作キャラに恐怖刻印４が付くのを見た
+		SIF CFLAG:20 == 2
+			CALL MESSAGE_OTHER_SEX_MARK_KYOUHU_4
+	ELSEIF LOCAL == 5
+		;地の文：恐怖刻印５
+		CALL MESSAGE_SEX_MARK_KYOUHU_5
+		;地の文：洗脳/悪堕ちキャラが操作キャラに恐怖刻印５が付くのを見た
+		SIF CFLAG:20 == 2
+			CALL MESSAGE_OTHER_SEX_MARK_KYOUHU_5
+	ENDIF
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は%MARKNAME:3%{LOCAL}を取得した
+	PRINTL 
+ENDIF
+
+;恥辱刻印
+LOCAL = 0
+SIF ARG:9 >= (500 + MARK:恥辱刻印防止 * 50)
+	LOCAL = 1
+SIF ARG:9 >= (1500 + MARK:恥辱刻印防止 * 150) && CFLAG:31 >= 6 && MARK:恥辱刻印 == 1
+	LOCAL = 2
+SIF ARG:9 >= (5000 + MARK:恥辱刻印防止 * 500) && CFLAG:31 >= 12 && MARK:恥辱刻印 == 2
+	LOCAL = 3
+SIF ARG:9 >= (15000 + MARK:恥辱刻印防止 * 1500) && CFLAG:31 >= 18 && MARK:恥辱刻印 == 3
+	LOCAL = 4
+SIF ARG:9 >= (75000 + MARK:恥辱刻印防止 * 7500) && CFLAG:31 >= 24 && MARK:恥辱刻印 == 4
+	LOCAL = 5
+IF LOCAL > MARK:恥辱刻印
+	MARK:恥辱刻印 = LOCAL
+	IF LOCAL == 1
+		;地の文：恥辱刻印１
+		CALL MESSAGE_SEX_MARK_TIJYOKU_1
+		;地の文：洗脳/悪堕ちキャラが操作キャラに恥辱刻印１が付くのを見た
+		SIF CFLAG:20 == 2
+			CALL MESSAGE_OTHER_SEX_MARK_TIJYOKU_1
+	ELSEIF LOCAL == 2
+		;地の文：恥辱刻印２
+		CALL MESSAGE_SEX_MARK_TIJYOKU_2
+		;地の文：洗脳/悪堕ちキャラが操作キャラに恥辱刻印２が付くのを見た
+		SIF CFLAG:20 == 2
+			CALL MESSAGE_OTHER_SEX_MARK_TIJYOKU_2
+	ELSEIF LOCAL == 3
+		;地の文：恥辱刻印３
+		CALL MESSAGE_SEX_MARK_TIJYOKU_3
+		;地の文：洗脳/悪堕ちキャラが操作キャラに恥辱刻印３が付くのを見た
+		SIF CFLAG:20 == 2
+			CALL MESSAGE_OTHER_SEX_MARK_TIJYOKU_3
+	ELSEIF LOCAL == 4
+		;地の文：恥辱刻印４
+		CALL MESSAGE_SEX_MARK_TIJYOKU_4
+		;地の文：洗脳/悪堕ちキャラが操作キャラに恥辱刻印４が付くのを見た
+		SIF CFLAG:20 == 2
+			CALL MESSAGE_OTHER_SEX_MARK_TIJYOKU_4
+	ELSEIF LOCAL == 5
+		;地の文：恥辱刻印５
+		CALL MESSAGE_SEX_MARK_TIJYOKU_5
+		;地の文：洗脳/悪堕ちキャラが操作キャラに恥辱刻印５が付くのを見た
+		SIF CFLAG:20 == 2
+			CALL MESSAGE_OTHER_SEX_MARK_TIJYOKU_5
+	ENDIF
+	PRINTFORML %MARKNAME:4%{LOCAL}を取得した
+	PRINTL 
+ENDIF
+
+$SKIP
+
+;絶頂回数、射精回数、噴乳回数の増加
+;----------------------------------------------------------
+IF LOCAL:100 + LOCAL:101 + LOCAL:102 + LOCAL:103 > 0
+	COMMON_EXP:22 = LOCAL:100 + LOCAL:101 + LOCAL:102 + LOCAL:103
+ELSE
+	COMMON_EXP:22 = 0
+ENDIF
+IF LOCAL:110 > 0
+	COMMON_EXP:53 = LOCAL:110
+ELSE
+	COMMON_EXP:53 = 0
+ENDIF
+IF LOCAL:113 > 0
+	COMMON_EXP:54 = LOCAL:113
+ELSE
+	COMMON_EXP:54 = 0
+ENDIF
+
+
+;珠の集計
+;----------------------------------------------------------
+;FEAT効果による珠の入手量増加
+IF TALENT:背徳の烙印 > 0
+	FOR LOCAL, 0, 12
+		ARG:LOCAL *= 135 / 100
+	NEXT
+ENDIF
+JUEL:快Ｃ += ARG:0
+JUEL:快Ｖ += ARG:1
+JUEL:快Ａ += ARG:2
+JUEL:快Ｂ += ARG:3
+;JUEL:潤滑 += ARG:4
+JUEL:恭順 += ARG:5
+JUEL:習得 += ARG:6
+JUEL:欲情 += ARG:7
+JUEL:屈服 += ARG:8
+JUEL:恥情 += ARG:9
+JUEL:苦痛 += ARG:10
+JUEL:恐怖 += ARG:11
+
+;**********************************************************
+;経験数を結界に応じて変更
+@COMMON_PRISON_EXP_SH, ARG:0, ARG:1, ARG:2, ARG:3
+IF SHIELD:1 > 0 && SHIELD:2 <= 0
+	ARG:1 += ARG:0
+	ARG:0 = 0
+	ARG:3 += ARG:2
+	ARG:2 = 0
+ELSEIF SHIELD:1 <= 0 && SHIELD:2 > 0
+	ARG:0 += ARG:1
+	ARG:1 = 0
+	ARG:2 += ARG:3
+	ARG:3 = 0
+ELSEIF SHIELD:1 > 0 && SHIELD:2 > 0
+	ARG:0 = 0
+	ARG:1 = 0
+	ARG:2 = 0
+	ARG:3 = 0
+ENDIF
+
+RETURN ARG:0, ARG:1, ARG:2, ARG:3
+
+;**********************************************************
+;経験数の表示
+@COMMON_PRISON_EXP, ARG:0, ARG:1
+LOCAL = ARG:0 - 100
+ARG:1 += COMMON_EXP:LOCAL
+SIF ARG:1 < 1
+	RETURN
+
+EXP:LOCAL += ARG:1
+
+PRINTFORML %EXPNAME:LOCAL%：＋{ARG:1}
+;実績
+CALL GET_STATE_EXPUP,TARGET
+
+
+

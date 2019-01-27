@@ -1,0 +1,440 @@
+;**********************************************************
+;ê´ÉRÉ}ÉìÉhÇÃCOMABLE
+;ÉLÉÉÉâÇÃêgëÃìIì¡í•Ç…ÇÊÇ¡Çƒé¿çsïsâ¬Ç»ÉRÉ}ÉìÉhÇëºÇÃÉRÉ}ÉìÉhÇ…äÑÇËêUÇÈ
+;ARG=ÉRÉ}ÉìÉhî‘çÜ
+@SEX_COMABLE, ARG
+#DIM CLOTH_NO_INNER_L
+#DIM CLOTH_OUTER_PER_L
+#DIM CLOTH_OUTER_DEF_L
+#DIM CLOTH_INNER_PER_L
+#DIM CLOTH_INNER_DEF_L
+;ÉçÅ[ÉJÉãÇ»ïœêîÇ…ílÇà⁄ÇµÇƒéQè∆Ç∑ÇÈ
+CLOTH_NO_INNER_L = CLOTH_NO_INNER
+CLOTH_OUTER_PER_L = CLOTH_OUTER_PER
+CLOTH_OUTER_DEF_L = CLOTH_OUTER_DEF
+CLOTH_INNER_PER_L = CLOTH_INNER_PER
+CLOTH_INNER_DEF_L = CLOTH_INNER_DEF
+IF FLAG:10 == 2
+	;í«â¡ê”Çﬂïîà éwíË
+	TRYCCALLFORM SEXCOM_OPTION_MOB_{FLAG:11}_COM{ARG}
+		LOCAL = RESULT
+	CATCH
+		LOCAL = -1
+	ENDCATCH
+ELSE
+	LOCAL = 0
+ENDIF
+;ì¡íËàﬂëïÇ…ÇÊÇÈï€åÏã@î\ñ≥éã
+;ÉCÉìÉiÅ[ÅFëOì\ÇË
+IF CFLAG:42 == 398 && CLOTH_NO_INNER_L == 0
+	;Ç`çUÇﬂã≠ÅAÇ`çUÇﬂÇrÇoÅAÇ`ägí£çUÇﬂ
+	SIF ARG == 5 || ARG == 1002 || ARG == 1010
+		CLOTH_INNER_DEF_L = 100
+ENDIF
+SELECTCASE ARG
+	;CçUÇﬂé„
+	CASE 0
+		CALL SEX_COM0, FLAG:11, LOCAL
+	;CçUÇﬂã≠
+	CASE 1
+		;àﬂëïÇÃëœãvìxÇ™çÇÇØÇÍÇŒàﬂëïîjâÛÇóDêÊÇ∑ÇÈ
+		IF CLOTH_OUTER_PER_L > 90 || CLOTH_INNER_PER_L > CLOTH_INNER_DEF_L
+			CALL SEX_COM14, FLAG:11, LOCAL
+		ELSE
+			CALL SEX_COM1, FLAG:11, LOCAL
+		ENDIF
+	;VçUÇﬂé„
+	CASE 2
+		;ÉIÉgÉRÇÃèÍçáÇÕCçUÇﬂé„Ç…êUÇËë÷Ç¶ÇÈ
+		IF TALENT:ÉIÉgÉR > 0
+			CALL SEX_COM0, FLAG:11, LOCAL
+		ELSE
+			CALL SEX_COM2, FLAG:11, LOCAL
+		ENDIF
+	;VçUÇﬂã≠
+	CASE 3
+		;àﬂëïÇÃëœãvìxÇ™çÇÇØÇÍÇŒàﬂëïîjâÛÇóDêÊÇ∑ÇÈ
+		IF CLOTH_OUTER_PER_L > 90 || CLOTH_INNER_PER_L > CLOTH_INNER_DEF_L
+			CALL SEX_COM14, FLAG:11, LOCAL
+		ELSE
+			;ÉIÉgÉRÇÃèÍçáÇÕCçUÇﬂã≠Ç…êUÇËë÷Ç¶ÇÈ
+			IF TALENT:ÉIÉgÉR > 0
+				CALL SEX_COM1, FLAG:11, LOCAL
+			ELSE
+				CALL SEX_COM3, FLAG:11, LOCAL
+			ENDIF
+		ENDIF
+	;AçUÇﬂé„
+	CASE 4
+		;ÉIÉgÉRÇ©Ç¬íjèóïΩìôÉIÉtÇ»ÇÁCçUÇﬂé„Ç…êUÇËë÷Ç¶ÇÈ
+		IF TALENT:ÉIÉgÉR > 0 && FILTER_CHECK_F(5)
+			CALL SEX_COM0, FLAG:11, LOCAL
+		ELSE
+			CALL SEX_COM4, FLAG:11, LOCAL
+		ENDIF
+	;AçUÇﬂã≠
+	CASE 5
+		;àﬂëïÇÃëœãvìxÇ™çÇÇØÇÍÇŒàﬂëïîjâÛÇóDêÊÇ∑ÇÈ
+		IF CLOTH_OUTER_PER_L > 90 || CLOTH_INNER_PER_L > CLOTH_INNER_DEF_L
+			CALL SEX_COM14, FLAG:11, LOCAL
+		ELSE
+			;ÉIÉgÉRÇ©Ç¬íjèóïΩìôÉIÉtÇ»ÇÁCçUÇﬂã≠Ç…êUÇËë÷Ç¶ÇÈ
+			IF TALENT:ÉIÉgÉR > 0 && FILTER_CHECK_F(5)
+				CALL SEX_COM1, FLAG:11, LOCAL
+			ELSE
+				CALL SEX_COM5, FLAG:11, LOCAL
+			ENDIF
+		ENDIF
+	;BçUÇﬂé„
+	CASE 6
+		CALL SEX_COM6, FLAG:11, LOCAL
+	;BçUÇﬂã≠
+	CASE 7
+		;àﬂëïÇÃëœãvìxÇ™çÇÇØÇÍÇŒàﬂëïîjâÛÇóDêÊÇ∑ÇÈ
+		IF CLOTH_OUTER_PER_L > 90 || CLOTH_INNER_PER_L > CLOTH_INNER_DEF_L
+			CALL SEX_COM14, FLAG:11, LOCAL
+		ELSE
+			;ÉIÉgÉRÇ©Ç¬íjèóïΩìôÉIÉtÇ»ÇÁÇbçUÇﬂé„Ç…êUÇËë÷Ç¶ÇÈ
+			IF TALENT:ÉIÉgÉR > 0 && FILTER_CHECK_F(5)
+				CALL SEX_COM0, FLAG:11, LOCAL
+			ELSE
+				CALL SEX_COM7, FLAG:11, LOCAL
+			ENDIF
+		ENDIF
+	;ÉXÉpÉìÉLÉìÉO
+	CASE 8
+		CALL SEX_COM8, FLAG:11, LOCAL
+	;êj
+	CASE 9
+		;écçìÉtÉBÉãÉ^ÉIÉìÇ»ÇÁÉXÉpÉìÉLÉìÉOÇ…êUÇËë÷Ç¶ÇÈ
+		IF FILTER_CHECK_F(14) > 0
+			CALL SEX_COM8, FLAG:11, LOCAL
+		ELSE
+			CALL SEX_COM9, FLAG:11, LOCAL
+		ENDIF
+	;éËà˙
+	CASE 10
+		;ãCê‚íÜÇÕÇbçUÇﬂé„Ç…êUÇËë÷Ç¶ÇÈ
+		IF (TCVAR:12 & ãCê‚)
+			CALL SEX_COM0, FLAG:11, LOCAL
+		ELSE
+			CALL SEX_COM10, FLAG:11, LOCAL
+		ENDIF
+	;ÉtÉFÉâ
+	CASE 11
+		;ÉIÉgÉRÇ©Ç¬íjèóïΩìôÉIÉtÇ»ÇÁÉXÉpÉìÉLÉìÉOÇ…êUÇËë÷Ç¶ÇÈ
+		IF TALENT:ÉIÉgÉR > 0 && FILTER_CHECK_F(5)
+			CALL SEX_COM8, FLAG:11, LOCAL
+		ELSE
+			CALL SEX_COM11, FLAG:11, LOCAL
+		ENDIF
+	;ÉCÉâÉ}É`ÉI
+	CASE 12
+		;ÉIÉgÉRÇ©Ç¬íjèóïΩìôÉIÉtÇ»ÇÁÉXÉpÉìÉLÉìÉOÇ…êUÇËë÷Ç¶ÇÈ
+		IF TALENT:ÉIÉgÉR > 0 && FILTER_CHECK_F(5)
+			CALL SEX_COM9, FLAG:11, LOCAL
+		;écçìÉtÉBÉãÉ^ÉIÉìÇ»ÇÁÉtÉFÉâÇ…êUÇËë÷Ç¶ÇÈ
+		ELSEIF FILTER_CHECK_F(14) > 0
+			CALL SEX_COM11, FLAG:11, LOCAL
+		ELSE
+			CALL SEX_COM12, FLAG:11, LOCAL
+		ENDIF
+	;ê‚í∏ã÷é~
+	CASE 13
+		CALL SEX_COM13, FLAG:11, LOCAL
+	;àﬂëïÇîjÇ≠
+	CASE 14
+		IF (CLOTH_OUTER_PER_L > 90 || CLOTH_INNER_PER_L > CLOTH_INNER_DEF_L) && RAND:100 < 70
+			CALL SEX_COM14, FLAG:11, LOCAL
+		ELSEIF (CLOTH_OUTER_PER_L > 90 || CLOTH_INNER_PER_L > 0) && RAND:100 < 15
+			CALL SEX_COM14, FLAG:11, LOCAL
+		ELSE
+			RETURN 0
+		ENDIF
+	;éÌïtÇØÉsÉXÉgÉì
+	CASE 15
+		;ÉIÉgÉRÇÃèÍçáÇÕCçUÇﬂã≠Ç…êUÇËë÷Ç¶ÇÈ
+		IF TALENT:ÉIÉgÉR > 0
+			;ã≠çSë©Çè¡Ç∑
+			SIF (TCVAR:12 & ã≠çSë©)
+				TCVAR:12 -= ã≠çSë©
+			CALL SEX_COM1, FLAG:11, LOCAL
+		ELSE
+			CALL SEX_COM15, FLAG:11, LOCAL
+		ENDIF
+	;éÌïtÇØÉtÉBÉjÉbÉVÉÖ
+	CASE 16
+		;ÉIÉgÉRÇÃèÍçáÇÕCçUÇﬂã≠Ç…êUÇËë÷Ç¶ÇÈ
+		IF TALENT:ÉIÉgÉR > 0
+			;ã≠çSë©Çè¡Ç∑
+			SIF (TCVAR:12 & ã≠çSë©)
+				TCVAR:12 -= ã≠çSë©
+			CALL SEX_COM1, FLAG:11, LOCAL
+		ELSE
+			CALL SEX_COM16, FLAG:11, LOCAL
+		ENDIF
+	;ÉAÉiÉãÉsÉXÉgÉì
+	CASE 17
+		;ÉIÉgÉRÇ©Ç¬íjèóïΩìôÉIÉtÇ»ÇÁCçUÇﬂã≠Ç…êUÇËë÷Ç¶ÇÈ
+		IF TALENT:ÉIÉgÉR > 0 && FILTER_CHECK_F(5)
+			;ã≠çSë©Çè¡Ç∑
+			SIF (TCVAR:12 & ã≠çSë©)
+				TCVAR:12 -= ã≠çSë©
+			CALL SEX_COM1, FLAG:11, LOCAL
+		ELSE
+			CALL SEX_COM17, FLAG:11, LOCAL
+		ENDIF
+	;ÉAÉiÉãÉtÉBÉjÉbÉVÉÖ
+	CASE 18
+		;ÉIÉgÉRÇ©Ç¬íjèóïΩìôÉIÉtÇ»ÇÁCçUÇﬂã≠Ç…êUÇËë÷Ç¶ÇÈ
+		IF TALENT:ÉIÉgÉR > 0 && FILTER_CHECK_F(5)
+			;ã≠çSë©Çè¡Ç∑
+			SIF (TCVAR:12 & ã≠çSë©)
+				TCVAR:12 -= ã≠çSë©
+			CALL SEX_COM1, FLAG:11, LOCAL
+		ELSE
+			CALL SEX_COM18, FLAG:11, LOCAL
+		ENDIF
+	;óºåäÉsÉXÉgÉì
+	CASE 19
+		;ÉIÉgÉRÇÃèÍçáÇ‹ÇΩÇÕêGéËÇéùÇΩÇ»Ç¢êÙî]/à´ë¬ÇøÉLÉÉÉâÇÃèÍçáÇÕëOÉ^Å[ÉìÇÃçsìÆÇ…âûÇ∂ÇƒêUÇËë÷Ç¶ÇÈ
+		IF TALENT:ÉIÉgÉR > 0 || (FLAG:110 == 1 && TALENT:(FLAG:111):äÒê∂ == 0)
+			IF TFLAG:20 == 15
+				CALL SEX_COM15, FLAG:11, LOCAL
+			ELSEIF TFLAG:20 == 17
+				CALL SEX_COM17, FLAG:11, LOCAL
+			ELSE
+				;ã≠çSë©Çè¡Ç∑
+				SIF (TCVAR:12 & ã≠çSë©)
+					TCVAR:12 -= ã≠çSë©
+				CALL SEX_COM1, FLAG:11, LOCAL
+			ENDIF
+		ELSE
+			CALL SEX_COM19, FLAG:11, LOCAL
+		ENDIF
+	;óºåäÉtÉBÉjÉbÉVÉÖ
+	CASE 20
+		;ÉIÉgÉRÇÃèÍçáÇ‹ÇΩÇÕêGéËÇéùÇΩÇ»Ç¢êÙî]/à´ë¬ÇøÉLÉÉÉâÇÃèÍçáÇÕëOÉ^Å[ÉìÇÃçsìÆÇ…âûÇ∂ÇƒêUÇËë÷Ç¶ÇÈ
+		IF TALENT:ÉIÉgÉR > 0 || (FLAG:110 == 1 && TALENT:(FLAG:111):äÒê∂ == 0)
+			IF TFLAG:20 == 15
+				CALL SEX_COM16, FLAG:11, LOCAL
+			ELSEIF TFLAG:20 == 17
+				CALL SEX_COM18, FLAG:11, LOCAL
+			ELSE
+				;ã≠çSë©Çè¡Ç∑
+				SIF (TCVAR:12 & ã≠çSë©)
+					TCVAR:12 -= ã≠çSë©
+				CALL SEX_COM1, FLAG:11, LOCAL
+			ENDIF
+		ELSE
+			CALL SEX_COM20, FLAG:11, LOCAL
+		ENDIF
+	;CçUÇﬂSP
+	CASE 1000
+		;àﬂëïÇÃëœãvìxÇ™çÇÇØÇÍÇŒàﬂëïîjâÛÇóDêÊÇ∑ÇÈ
+		IF CLOTH_OUTER_PER_L > 90 || CLOTH_INNER_PER_L > CLOTH_INNER_DEF_L / 2
+			CALL SEX_COM14, FLAG:11, LOCAL
+		ELSE
+			CALL SEX_SPCOM0
+		ENDIF
+	;VçUÇﬂSP
+	CASE 1001
+		;àﬂëïÇÃëœãvìxÇ™çÇÇØÇÍÇŒàﬂëïîjâÛÇóDêÊÇ∑ÇÈ
+		IF CLOTH_OUTER_PER_L > 90 || CLOTH_INNER_PER_L > CLOTH_INNER_DEF_L / 2
+			CALL SEX_COM14, FLAG:11, LOCAL
+		ELSE
+			;ÉIÉgÉRÇÃèÍçáÇÕCçUÇﬂã≠Ç…êUÇËïœÇ¶ÇÈ
+			IF TALENT:ÉIÉgÉR > 0
+				CALL SEX_COM1, FLAG:11, LOCAL
+			ELSE
+				CALL SEX_SPCOM1
+			ENDIF
+		ENDIF
+	;AçUÇﬂSP
+	CASE 1002
+		;àﬂëïÇÃëœãvìxÇ™çÇÇØÇÍÇŒàﬂëïîjâÛÇóDêÊÇ∑ÇÈ
+		IF CLOTH_OUTER_PER_L > 90 || CLOTH_INNER_PER_L > CLOTH_INNER_DEF_L / 2
+			CALL SEX_COM14, FLAG:11, LOCAL
+		ELSE
+			;ÉIÉgÉRÇ©Ç¬íjèóïΩìôÉIÉtÇ»ÇÁCçUÇﬂSPÇ…êUÇËë÷Ç¶ÇÈ
+			IF TALENT:ÉIÉgÉR > 0 && FILTER_CHECK_F(5)
+				CALL SEX_SPCOM0
+			;É\ÉtÉgÉ{ÉfÉBÉXÅ[ÉcÇÃèÍçáÇÕä—í Ç≈Ç´Ç»Ç¢ÇÃÇ≈AçUÇﬂã≠Ç…êUÇËï‘ÇÈ
+			ELSEIF CFLAG:41 == 299 && CFLAG:1 > 0
+				CALL SEX_COM5, FLAG:11, LOCAL
+			ELSE
+				CALL SEX_SPCOM2
+			ENDIF
+		ENDIF
+	;BçUÇﬂSP
+	CASE 1003
+		;àﬂëïÇÃëœãvìxÇ™çÇÇØÇÍÇŒàﬂëïîjâÛÇóDêÊÇ∑ÇÈ
+		IF CLOTH_OUTER_PER_L > 90
+			CALL SEX_COM14, FLAG:11, LOCAL
+		ELSE
+			;ÉIÉgÉRÇ©Ç¬íjèóïΩìôÉIÉtÇ»ÇÁÇaçUÇﬂé„Ç…êUÇËë÷Ç¶ÇÈ
+			IF TALENT:ÉIÉgÉR > 0 && FILTER_CHECK_F(5)
+				CALL SEX_COM6, FLAG:11, LOCAL
+			ELSE
+				CALL SEX_SPCOM3
+			ENDIF
+		ENDIF
+	;ìdåÇ
+	CASE 1004
+		CALL SEX_SPCOM4
+	;ÉpÉCÉYÉä
+	CASE 1005
+		;ÉIÉgÉRÇÃèÍçáÇÕBçUÇﬂã≠Ç…êUÇËïœÇ¶ÇÈ
+		IF TALENT:ÉIÉgÉR > 0
+			CALL SEX_COM7, FLAG:11, LOCAL
+		ELSE
+			CALL SEX_SPCOM5
+		ENDIF
+	;ã≠êßé©à‘
+	CASE 1006
+		;ãCê‚íÜÇÕÇbçUÇﬂé„Ç…êUÇËë÷Ç¶ÇÈ
+		IF (TCVAR:12 & ãCê‚)
+			CALL SEX_COM0, FLAG:11, LOCAL
+		ELSE
+			CALL SEX_SPCOM6
+		ENDIF
+	;„µípÉvÉåÉC
+	CASE 1007
+		;ãCê‚íÜÇÕÇbçUÇﬂé„Ç…êUÇËë÷Ç¶ÇÈ
+		IF (TCVAR:12 & ãCê‚)
+			CALL SEX_COM0, FLAG:11, LOCAL
+		;ÉIÉgÉRÇ©Ç¬íjèóïΩìôÉIÉtÇ»ÇÁCçUÇﬂã≠Ç…êUÇËë÷Ç¶ÇÈ
+		ELSEIF TALENT:ÉIÉgÉR > 0 && FILTER_CHECK_F(5)
+			CALL SEX_COM1, FLAG:11, LOCAL
+		ELSE
+			CALL SEX_SPCOM7
+		ENDIF
+	;îAìπçUÇﬂ
+	CASE 1008
+		;àﬂëïÇÃëœãvìxÇ™çÇÇØÇÍÇŒàﬂëïîjâÛÇóDêÊÇ∑ÇÈ
+		IF CLOTH_OUTER_PER_L > 90 || CLOTH_INNER_PER_L > CLOTH_INNER_DEF_L / 2
+			CALL SEX_COM14, FLAG:11, LOCAL
+		ELSE
+			IF BASE:ÇbåãäEëœãvóÕ > 0 || TFLAG:20 < 0
+				CALL SEX_SPCOM0
+			ELSE
+				CALL SEX_SPCOM8
+			ENDIF
+		ENDIF
+	;Vägí£çUÇﬂ
+	CASE 1009
+		;àﬂëïÇÃëœãvìxÇ™çÇÇØÇÍÇŒàﬂëïîjâÛÇóDêÊÇ∑ÇÈ
+		IF CLOTH_OUTER_PER_L > 90 || CLOTH_INNER_PER_L > CLOTH_INNER_DEF_L / 2
+			CALL SEX_COM14, FLAG:11, LOCAL
+		ELSE
+			;ÉIÉgÉRÇÃèÍçáÇÕCçUÇﬂã≠Ç…êUÇËë÷Ç¶ÇÈ
+			IF TALENT:ÉIÉgÉR > 0
+				CALL SEX_COM1, FLAG:11, LOCAL
+			ELSEIF BASE:ÇuåãäEëœãvóÕ > 0 || TFLAG:20 < 0
+				CALL SEX_SPCOM1
+			ELSE
+				CALL SEX_SPCOM9
+			ENDIF
+		ENDIF
+	;Aägí£çUÇﬂ
+	CASE 1010
+		;àﬂëïÇÃëœãvìxÇ™çÇÇØÇÍÇŒàﬂëïîjâÛÇóDêÊÇ∑ÇÈ
+		IF CLOTH_OUTER_PER_L > 90 || CLOTH_INNER_PER_L > CLOTH_INNER_DEF_L / 2
+			CALL SEX_COM14, FLAG:11, LOCAL
+		ELSE
+			;ÉIÉgÉRÇ©Ç¬íjèóïΩìôÉIÉtÇ»ÇÁCçUÇﬂSPÇ…êUÇËë÷Ç¶ÇÈ
+			IF TALENT:ÉIÉgÉR > 0 && FILTER_CHECK_F(5)
+				CALL SEX_SPCOM0
+			;É\ÉtÉgÉ{ÉfÉBÉXÅ[ÉcÇÃèÍçáÇÕä—í Ç≈Ç´Ç»Ç¢ÇÃÇ≈AçUÇﬂã≠Ç…êUÇËï‘ÇÈ
+			ELSEIF CFLAG:41 == 299 && CFLAG:1 > 0
+				CALL SEX_COM5, FLAG:11, LOCAL
+			ELSEIF BASE:Ç`åãäEëœãvóÕ > 0 || TFLAG:20 < 0
+				CALL SEX_SPCOM2
+			ELSE
+				CALL SEX_SPCOM10
+			ENDIF
+		ENDIF
+	;ä√Ç¶ÇÒñVéˆì˚ÉvÉåÉC
+	CASE 1011
+		;àﬂëïÇÃëœãvìxÇ™çÇÇØÇÍÇŒàﬂëïîjâÛÇóDêÊÇ∑ÇÈ
+		IF CLOTH_OUTER_PER_L > 90 || CLOTH_INNER_PER_L > CLOTH_INNER_DEF_L / 2
+			CALL SEX_COM14, FLAG:11, LOCAL
+		ELSE
+			;ÉIÉgÉRÇÃèÍçáÇÕCçUÇﬂã≠Ç…êUÇËë÷Ç¶ÇÈ
+			IF TALENT:ÉIÉgÉR > 0
+				CALL SEX_COM1, FLAG:11, LOCAL
+			ELSEIF BASE:ÇaåãäEëœãvóÕ > 0 || (TFLAG:20 < 0 && RAND:2 == 0)
+				CALL SEX_SPCOM5
+			ELSEIF BASE:ÇuåãäEëœãvóÕ > 0 || TFLAG:20 < 0
+				CALL SEX_SPCOM1
+			ELSE
+				CALL SEX_SPCOM11
+			ENDIF
+		ENDIF
+	;ÉwÉ\âıäyçUÇﬂ
+	CASE 1012
+		;àﬂëïÇÃëœãvìxÇ™çÇÇØÇÍÇŒàﬂëïîjâÛÇóDêÊÇ∑ÇÈ
+		IF CLOTH_OUTER_PER_L > 90 || CLOTH_INNER_PER_L > CLOTH_INNER_DEF_L / 2
+			CALL SEX_COM14, FLAG:11, LOCAL
+		ELSEIF FILTER_CHECK_F(14) == 0
+			CALL SEX_SPCOM12
+		ELSE
+			CALL SEX_COM8, FLAG:11, LOCAL
+		ENDIF
+	;ä€à˘Ç›ê∏âtçUÇﬂ
+	CASE 1013
+		;àﬂëïÇÃëœãvìxÇ™çÇÇØÇÍÇŒàﬂëïîjâÛÇóDêÊÇ∑ÇÈ
+		IF CLOTH_OUTER_PER_L > 90
+			CALL SEX_COM14, FLAG:11, LOCAL
+		ELSE
+			;ÉIÉgÉRÇ©Ç¬íjèóïΩìôÉIÉtÇ»ÇÁCçUÇﬂSPÇ…êUÇËë÷Ç¶ÇÈ
+			IF TALENT:ÉIÉgÉR > 0 && FILTER_CHECK_F(5)
+				CALL SEX_SPCOM0
+			ELSEIF BASE:ÇuåãäEëœãvóÕ > 0 || (TFLAG:20 < 0 && RAND:2 == 0)
+				CALL SEX_SPCOM1
+			ELSEIF BASE:Ç`åãäEëœãvóÕ > 0 || TFLAG:20 < 0
+				CALL SEX_SPCOM2
+			ELSE
+				CALL SEX_SPCOM13
+			ENDIF
+		ENDIF
+	;ç√ñ∞ä≠
+	CASE 1014
+		;àﬂëïÇÃëœãvìxÇ™çÇÇØÇÍÇŒàﬂëïîjâÛÇóDêÊÇ∑ÇÈ
+		IF CLOTH_OUTER_PER_L > 90 || CLOTH_INNER_PER_L > CLOTH_INNER_DEF_L / 2
+			CALL SEX_COM14, FLAG:11, LOCAL
+		ELSE
+			;ÉIÉgÉRÇÃèÍçáÇÕCçUÇﬂã≠Ç…êUÇËë÷Ç¶ÇÈ
+			IF TALENT:ÉIÉgÉR > 0
+				CALL SEX_COM1, FLAG:11, LOCAL
+			ELSEIF BASE:ÇuåãäEëœãvóÕ > 0 || TFLAG:20 < 0
+				CALL SEX_SPCOM1
+			;ãCê‚íÜÇ©Ç¬à”íÜÇÃëäéËÇ™ãèÇ»Ç¢èÍçá
+			ELSEIF (TCVAR:12 & ãCê‚) && TALENT:åç€ëäéË == 0
+				CALL SEX_SPCOM1
+			ELSE
+				CALL SEX_SPCOM14
+			ENDIF
+		ENDIF
+	;ÉTÉuÉ~ÉbÉVÉáÉìÉtÉ@ÉbÉN
+	CASE 1015
+		;àﬂëïÇÃëœãvìxÇ™çÇÇØÇÍÇŒàﬂëïîjâÛÇóDêÊÇ∑ÇÈ
+		IF CLOTH_OUTER_PER_L > 90 || CLOTH_INNER_PER_L > CLOTH_INNER_DEF_L / 2
+			CALL SEX_COM14, FLAG:11, LOCAL
+		ELSE
+			;ÉIÉgÉRÇÃèÍçáÇÕCçUÇﬂã≠Ç…êUÇËë÷Ç¶ÇÈ
+			IF TALENT:ÉIÉgÉR > 0
+				CALL SEX_COM1, FLAG:11, LOCAL
+			ELSEIF BASE:ÇuåãäEëœãvóÕ > 0 || FILTER_CHECK_F(14) || (TCVAR:12 & ãCê‚) || TFLAG:20 < 0
+				CALL SEX_SPCOM1
+			ELSE
+				CALL SEX_SPCOM15
+			ENDIF
+		ENDIF
+	;éGãõìGÉIÉäÉWÉiÉãÉRÉ}ÉìÉh
+	CASE 2000 TO 2999
+		SIF FLAG:10 == 2
+			TRYCALLFORM SEXCOM_MOB_{FLAG:11}_COM{ARG}, FLAG:11, LOCAL
+ENDSELECT
+RETURN 1
+

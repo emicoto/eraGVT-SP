@@ -1,0 +1,1222 @@
+;--------------------------------------------------
+;キャラの性格に関する処理
+;--------------------------------------------------
+;性格のチェック
+@SEIKAKU_CHECK, ARGS, ARG
+LOCAL = 0
+LOCAL:1 = 0
+LOCAL:2 = 0
+LOCAL:3 = 0
+FOR LOCAL:2, 10, 50
+	SIF TALENTNAME:(LOCAL:2) != ""
+		LOCAL:1 += 1
+NEXT
+FOR LOCAL:3,0,LOCAL:1
+	LOCAL = LOCAL:3 + 10
+	IF TALENT:ARG:LOCAL == 1
+		SELECTCASE ARGS
+			CASE "STRING"
+				RESULTS = %TALENTNAME:LOCAL%
+				RETURN LOCAL
+			CASE "PRINT"
+				PRINTFORM %TALENTNAME:LOCAL%
+				RETURN LOCAL
+			CASE "GET_TALENT_VALUE"
+				RETURN LOCAL
+		ENDSELECT
+	ENDIF
+NEXT
+SELECTCASE ARGS
+	CASE "STRING"
+		RESULTS = ランダム
+	CASE "PRINT"
+		PRINTFORM ランダム
+		RETURN 0
+	CASE "GET_TALENT_VALUE"
+		RETURN 0
+ENDSELECT
+;--------------------------------------------------
+;性格のチェック、式中関数版
+;ARG = キャラ番号
+@SEIKAKU_CHECK_F(ARG)
+#FUNCTION
+LOCAL = 0
+LOCAL:1 = 0
+LOCAL:2 = 0
+LOCAL:3 = 0
+FOR LOCAL:2, 10, 50
+	SIF TALENTNAME:(LOCAL:2) != ""
+		LOCAL:1 += 1
+NEXT
+FOR LOCAL:3,0,LOCAL:1
+	LOCAL = LOCAL:3 + 10
+	SIF TALENT:ARG:LOCAL == 1
+			RETURNF LOCAL
+NEXT
+RETURNF 0
+
+;--------------------------------------------------
+;性格によるベースの補正
+;ARG:0 性格の番号（素質番号10～）
+;ARG:1 どのベースか（0=体力,1=気力,2=性耐性,10=攻撃,11=防御,12=敏捷,13=知性）
+;ARG:2 補正前の元値
+@SEIKAKU_HOSEI_F(ARG:0, ARG:1, ARG:2)
+#FUNCTION
+;臆病
+IF ARG:0 == 10
+	;体力
+	IF ARG:1 == 0
+	;気力
+	ELSEIF ARG:1 == 1
+		TIMES ARG:2, 0.90
+	;性耐性
+	ELSEIF ARG:1 == 2
+	;攻撃
+	ELSEIF ARG:1 == 10
+	;防御
+	ELSEIF ARG:1 == 11
+	;敏捷
+	ELSEIF ARG:1 == 12
+		TIMES ARG:2, 1.10
+	;知性
+	ELSEIF ARG:1 == 13
+		TIMES ARG:2, 1.20
+	ENDIF
+
+;恥ずかしがり屋
+ELSEIF ARG:0 == 11
+	;体力
+	IF ARG:1 == 0
+	;気力
+	ELSEIF ARG:1 == 1
+	;性耐性
+	ELSEIF ARG:1 == 2
+		TIMES ARG:2, 0.90
+	;攻撃
+	ELSEIF ARG:1 == 10
+	;防御
+	ELSEIF ARG:1 == 11
+		TIMES ARG:2, 1.10
+	;敏捷
+	ELSEIF ARG:1 == 12
+		TIMES ARG:2, 1.20
+	;知性
+	ELSEIF ARG:1 == 13
+	ENDIF
+
+;勝気
+ELSEIF ARG:0 == 12
+	;体力
+	IF ARG:1 == 0
+	;気力
+	ELSEIF ARG:1 == 1
+	;性耐性
+	ELSEIF ARG:1 == 2
+	;攻撃
+	ELSEIF ARG:1 == 10
+		TIMES ARG:2, 1.20
+	;防御
+	ELSEIF ARG:1 == 11
+		TIMES ARG:2, 0.80
+	;敏捷
+	ELSEIF ARG:1 == 12
+	;知性
+	ELSEIF ARG:1 == 13
+	ENDIF
+
+;元気っ子
+ELSEIF ARG:0 == 13
+	;体力
+	IF ARG:1 == 0
+		TIMES ARG:2, 1.20
+	;気力
+	ELSEIF ARG:1 == 1
+	;性耐性
+	ELSEIF ARG:1 == 2
+	;攻撃
+	ELSEIF ARG:1 == 10
+	;防御
+	ELSEIF ARG:1 == 11
+	;敏捷
+	ELSEIF ARG:1 == 12
+	;知性
+	ELSEIF ARG:1 == 13
+		TIMES ARG:2, 0.80
+	ENDIF
+
+;おっとり
+ELSEIF ARG:0 == 14
+	;体力
+	IF ARG:1 == 0
+	;気力
+	ELSEIF ARG:1 == 1
+	;性耐性
+	ELSEIF ARG:1 == 2
+	;攻撃
+	ELSEIF ARG:1 == 10
+	;防御
+	ELSEIF ARG:1 == 11
+		TIMES ARG:2, 1.20
+	;敏捷
+	ELSEIF ARG:1 == 12
+		TIMES ARG:2, 0.80
+	;知性
+	ELSEIF ARG:1 == 13
+		TIMES ARG:2, 1.20
+	ENDIF
+
+;面倒くさがり
+ELSEIF ARG:0 == 15
+	;体力
+	IF ARG:1 == 0
+		TIMES ARG:2, 0.90
+	;気力
+	ELSEIF ARG:1 == 1
+		TIMES ARG:2, 0.90
+	;性耐性
+	ELSEIF ARG:1 == 2
+	;攻撃
+	ELSEIF ARG:1 == 10
+		TIMES ARG:2, 1.10
+	;防御
+	ELSEIF ARG:1 == 11
+		TIMES ARG:2, 1.10
+	;敏捷
+	ELSEIF ARG:1 == 12
+		TIMES ARG:2, 1.10
+	;知性
+	ELSEIF ARG:1 == 13
+		TIMES ARG:2, 0.90
+	ENDIF
+
+;真面目
+ELSEIF ARG:0 == 16
+	;体力
+	IF ARG:1 == 0
+	;気力
+	ELSEIF ARG:1 == 1
+		TIMES ARG:2, 1.20
+	;性耐性
+	ELSEIF ARG:1 == 2
+		TIMES ARG:2, 0.80
+	;攻撃
+	ELSEIF ARG:1 == 10
+	;防御
+	ELSEIF ARG:1 == 11
+	;敏捷
+	ELSEIF ARG:1 == 12
+	;知性
+	ELSEIF ARG:1 == 13
+		TIMES ARG:2, 1.10
+	ENDIF
+
+;楽天家
+ELSEIF ARG:0 == 17
+	;体力
+	IF ARG:1 == 0
+	;気力
+	ELSEIF ARG:1 == 1
+	;性耐性
+	ELSEIF ARG:1 == 2
+		TIMES ARG:2, 1.20
+	;攻撃
+	ELSEIF ARG:1 == 10
+		TIMES ARG:2, 0.90
+	;防御
+	ELSEIF ARG:1 == 11
+	;敏捷
+	ELSEIF ARG:1 == 12
+	;知性
+	ELSEIF ARG:1 == 13
+	ENDIF
+
+;悲観的
+ELSEIF ARG:0 == 18
+	;体力
+	IF ARG:1 == 0
+	;気力
+	ELSEIF ARG:1 == 1
+		TIMES ARG:2, 0.90
+	;性耐性
+	ELSEIF ARG:1 == 2
+	;攻撃
+	ELSEIF ARG:1 == 10
+	;防御
+	ELSEIF ARG:1 == 11
+		TIMES ARG:2, 1.10
+	;敏捷
+	ELSEIF ARG:1 == 12
+	;知性
+	ELSEIF ARG:1 == 13
+		TIMES ARG:2, 1.10
+	ENDIF
+
+;素直
+ELSEIF ARG:0 == 19
+	;体力
+	IF ARG:1 == 0
+		TIMES ARG:2, 1.10
+	;気力
+	ELSEIF ARG:1 == 1
+		TIMES ARG:2, 1.10
+	;性耐性
+	ELSEIF ARG:1 == 2
+		TIMES ARG:2, 1.10
+	;攻撃
+	ELSEIF ARG:1 == 10
+	;防御
+	ELSEIF ARG:1 == 11
+	;敏捷
+	ELSEIF ARG:1 == 12
+	;知性
+	ELSEIF ARG:1 == 13
+	ENDIF
+
+;ツンデレ
+ELSEIF ARG:0 == 20
+	;体力
+	IF ARG:1 == 0
+	;気力
+	ELSEIF ARG:1 == 1
+		TIMES ARG:2, 1.10
+	;性耐性
+	ELSEIF ARG:1 == 2
+		TIMES ARG:2, 0.90
+	;攻撃
+	ELSEIF ARG:1 == 10
+	;防御
+	ELSEIF ARG:1 == 11
+	;敏捷
+	ELSEIF ARG:1 == 12
+	;知性
+	ELSEIF ARG:1 == 13
+	ENDIF
+
+;ヤンデレ
+ELSEIF ARG:0 == 21
+	;体力
+	IF ARG:1 == 0
+	;気力
+	ELSEIF ARG:1 == 1
+	;性耐性
+	ELSEIF ARG:1 == 2
+	;攻撃
+	ELSEIF ARG:1 == 10
+	;防御
+	ELSEIF ARG:1 == 11
+	;敏捷
+	ELSEIF ARG:1 == 12
+	;知性
+	ELSEIF ARG:1 == 13
+	ENDIF
+
+;無口
+ELSEIF ARG:0 == 22
+	;体力
+	IF ARG:1 == 0
+	;気力
+	ELSEIF ARG:1 == 1
+		TIMES ARG:2, 1.10
+	;性耐性
+	ELSEIF ARG:1 == 2
+		TIMES ARG:2, 1.10
+	;攻撃
+	ELSEIF ARG:1 == 10
+		TIMES ARG:2, 1.10
+	;防御
+	ELSEIF ARG:1 == 11
+		TIMES ARG:2, 0.90
+	;敏捷
+	ELSEIF ARG:1 == 12
+	;知性
+	ELSEIF ARG:1 == 13
+		TIMES ARG:2, 1.10
+	ENDIF
+
+;おしゃべり
+ELSEIF ARG:0 == 23
+	;体力
+	IF ARG:1 == 0
+		TIMES ARG:2, 1.10
+	;気力
+	ELSEIF ARG:1 == 1
+	;性耐性
+	ELSEIF ARG:1 == 2
+	;攻撃
+	ELSEIF ARG:1 == 10
+	;防御
+	ELSEIF ARG:1 == 11
+	;敏捷
+	ELSEIF ARG:1 == 12
+		TIMES ARG:2, 1.10
+	;知性
+	ELSEIF ARG:1 == 13
+	ENDIF
+
+;古風
+ELSEIF ARG:0 == 24
+	;体力
+	IF ARG:1 == 0
+	;気力
+	ELSEIF ARG:1 == 1
+	;性耐性
+	ELSEIF ARG:1 == 2
+		TIMES ARG:2, 0.80
+	;攻撃
+	ELSEIF ARG:1 == 10
+		TIMES ARG:2, 1.10
+	;防御
+	ELSEIF ARG:1 == 11
+		TIMES ARG:2, 1.10
+	;敏捷
+	ELSEIF ARG:1 == 12
+	;知性
+	ELSEIF ARG:1 == 13
+	ENDIF
+
+;かるい性格
+ELSEIF ARG:0 == 25
+	;体力
+	IF ARG:1 == 0
+		TIMES ARG:2, 0.80
+	;気力
+	ELSEIF ARG:1 == 1
+		TIMES ARG:2, 0.90
+	;性耐性
+	ELSEIF ARG:1 == 2
+		TIMES ARG:2, 1.10
+	;攻撃
+	ELSEIF ARG:1 == 10
+		TIMES ARG:2, 1.10
+	;防御
+	ELSEIF ARG:1 == 11
+	;敏捷
+	ELSEIF ARG:1 == 12
+		TIMES ARG:2, 1.10
+	;知性
+	ELSEIF ARG:1 == 13
+	ENDIF
+
+;意地っ張り
+ELSEIF ARG:0 == 26
+	;体力
+	IF ARG:1 == 0
+	;気力
+	ELSEIF ARG:1 == 1
+		TIMES ARG:2, 1.10
+	;性耐性
+	ELSEIF ARG:1 == 2
+		TIMES ARG:2, 1.20
+	;攻撃
+	ELSEIF ARG:1 == 10
+	;防御
+	ELSEIF ARG:1 == 11
+	;敏捷
+	ELSEIF ARG:1 == 12
+		TIMES ARG:2, 0.90
+	;知性
+	ELSEIF ARG:1 == 13
+	ENDIF
+;乱暴者
+ELSEIF ARG:0 == 27
+	;体力
+	IF ARG:1 == 0
+		TIMES ARG:2, 1.10
+	;気力
+	ELSEIF ARG:1 == 1
+	;性耐性
+	ELSEIF ARG:1 == 2
+	;攻撃
+	ELSEIF ARG:1 == 10
+		TIMES ARG:2, 1.30
+	;防御
+	ELSEIF ARG:1 == 11
+	;敏捷
+	ELSEIF ARG:1 == 12
+		TIMES ARG:2, 0.90
+	;知性
+	ELSEIF ARG:1 == 13
+		TIMES ARG:2, 0.80
+	ENDIF
+
+;感情乏しい
+ELSEIF ARG:0 == 28
+	;体力
+	IF ARG:1 == 0
+		TIMES ARG:2, 0.95
+	;気力
+	ELSEIF ARG:1 == 1
+		TIMES ARG:2, 0.95
+	;性耐性
+	ELSEIF ARG:1 == 2
+	;攻撃
+	ELSEIF ARG:1 == 10
+	;防御
+	ELSEIF ARG:1 == 11
+		TIMES ARG:2, 0.95
+	;敏捷
+	ELSEIF ARG:1 == 12
+		TIMES ARG:2, 0.95
+	;知性
+	ELSEIF ARG:1 == 13
+		TIMES ARG:2, 1.20
+	ENDIF
+
+;アイドル
+ELSEIF ARG:0 == 29
+	;体力
+	IF ARG:1 == 0
+		TIMES ARG:2, 1.05
+	;気力
+	ELSEIF ARG:1 == 1
+		TIMES ARG:2, 1.10
+	;性耐性
+	ELSEIF ARG:1 == 2
+		TIMES ARG:2, 0.80
+	;攻撃
+	ELSEIF ARG:1 == 10
+	;防御
+	ELSEIF ARG:1 == 11
+		TIMES ARG:2, 0.90
+	;敏捷
+	ELSEIF ARG:1 == 12
+	;知性
+	ELSEIF ARG:1 == 13
+		TIMES ARG:2, 1.30
+	ENDIF
+
+ENDIF
+RETURNF ARG:2
+
+;--------------------------------------------------
+;性格によるパラメータの補正
+;ARG:0 性格の番号（素質番号10～）
+;ARG:1 どのパラメータか（11=恭順,13=欲情,14=屈服,15=恥情,16=苦痛,17=恐怖）
+;ARG:2 補正前の元値
+@SEIKAKU_HOSEI_PALAM_F(ARG:0, ARG:1, ARG:2)
+#FUNCTION
+;臆病
+IF ARG:0 == 10
+	;恭順
+	IF ARG:1 == 11
+		TIMES ARG:2, 1.20
+	;欲情
+	ELSEIF ARG:1 == 13
+	;屈服
+	ELSEIF ARG:1 == 14
+	;恥情
+	ELSEIF ARG:1 == 15
+	;苦痛
+	ELSEIF ARG:1 == 16
+	;恐怖
+	ELSEIF ARG:1 == 17
+		TIMES ARG:2, 1.20
+	ENDIF
+
+;恥ずかしがり屋
+ELSEIF ARG:0 == 11
+	;恭順
+	IF ARG:1 == 11
+		TIMES ARG:2, 0.80
+	;欲情
+	ELSEIF ARG:1 == 13
+	;屈服
+	ELSEIF ARG:1 == 14
+	;恥情
+	ELSEIF ARG:1 == 15
+		TIMES ARG:2, 1.20
+	;苦痛
+	ELSEIF ARG:1 == 16
+	;恐怖
+	ELSEIF ARG:1 == 17
+	ENDIF
+
+;勝気
+ELSEIF ARG:0 == 12
+	;恭順
+	IF ARG:1 == 11
+	;欲情
+	ELSEIF ARG:1 == 13
+		TIMES ARG:2, 1.15
+	;屈服
+	ELSEIF ARG:1 == 14
+		TIMES ARG:2, 0.90
+	;恥情
+	ELSEIF ARG:1 == 15
+	;苦痛
+	ELSEIF ARG:1 == 16
+		TIMES ARG:2, 0.90
+	;恐怖
+	ELSEIF ARG:1 == 17
+		TIMES ARG:2, 0.90
+	ENDIF
+
+;元気っ子
+ELSEIF ARG:0 == 13
+	;恭順
+	IF ARG:1 == 11
+	;欲情
+	ELSEIF ARG:1 == 13
+		TIMES ARG:2, 1.05
+	;屈服
+	ELSEIF ARG:1 == 14
+	;恥情
+	ELSEIF ARG:1 == 15
+	;苦痛
+	ELSEIF ARG:1 == 16
+	;恐怖
+	ELSEIF ARG:1 == 17
+		TIMES ARG:2, 0.90
+	ENDIF
+
+;おっとり
+ELSEIF ARG:0 == 14
+	;恭順
+	IF ARG:1 == 11
+		TIMES ARG:2, 1.10
+	;欲情
+	ELSEIF ARG:1 == 13
+		TIMES ARG:2, 0.95
+	;屈服
+	ELSEIF ARG:1 == 14
+		TIMES ARG:2, 1.20
+	;恥情
+	ELSEIF ARG:1 == 15
+	;苦痛
+	ELSEIF ARG:1 == 16
+		TIMES ARG:2, 0.90
+	;恐怖
+	ELSEIF ARG:1 == 17
+	ENDIF
+
+;面倒くさがり
+ELSEIF ARG:0 == 15
+	;恭順
+	IF ARG:1 == 11
+	;欲情
+	ELSEIF ARG:1 == 13
+	;屈服
+	ELSEIF ARG:1 == 14
+		TIMES ARG:2, 1.10
+	;恥情
+	ELSEIF ARG:1 == 15
+		TIMES ARG:2, 0.90
+	;苦痛
+	ELSEIF ARG:1 == 16
+	;恐怖
+	ELSEIF ARG:1 == 17
+	ENDIF
+
+;真面目
+ELSEIF ARG:0 == 16
+	;恭順
+	IF ARG:1 == 11
+		TIMES ARG:2, 0.90
+	;欲情
+	ELSEIF ARG:1 == 13
+		TIMES ARG:2, 0.90
+	;屈服
+	ELSEIF ARG:1 == 14
+	;恥情
+	ELSEIF ARG:1 == 15
+	;苦痛
+	ELSEIF ARG:1 == 16
+		TIMES ARG:2, 1.10
+	;恐怖
+	ELSEIF ARG:1 == 17
+	ENDIF
+
+;楽天家
+ELSEIF ARG:0 == 17
+	;恭順
+	IF ARG:1 == 11
+	;欲情
+	ELSEIF ARG:1 == 13
+		TIMES ARG:2, 0.95
+	;屈服
+	ELSEIF ARG:1 == 14
+		TIMES ARG:2, 0.95
+	;恥情
+	ELSEIF ARG:1 == 15
+		TIMES ARG:2, 0.95
+	;苦痛
+	ELSEIF ARG:1 == 16
+		TIMES ARG:2, 0.95
+	;恐怖
+	ELSEIF ARG:1 == 17
+		TIMES ARG:2, 0.95
+	ENDIF
+
+;悲観的
+ELSEIF ARG:0 == 18
+	;恭順
+	IF ARG:1 == 11
+		TIMES ARG:2, 0.90
+	;欲情
+	ELSEIF ARG:1 == 13
+		TIMES ARG:2, 0.80
+	;屈服
+	ELSEIF ARG:1 == 14
+		TIMES ARG:2, 1.20
+	;恥情
+	ELSEIF ARG:1 == 15
+	;苦痛
+	ELSEIF ARG:1 == 16
+		TIMES ARG:2, 1.20
+	;恐怖
+	ELSEIF ARG:1 == 17
+	ENDIF
+
+;素直
+ELSEIF ARG:0 == 19
+	;恭順
+	IF ARG:1 == 11
+		TIMES ARG:2, 1.05
+	;欲情
+	ELSEIF ARG:1 == 13
+		TIMES ARG:2, 1.05
+	;屈服
+	ELSEIF ARG:1 == 14
+	;恥情
+	ELSEIF ARG:1 == 15
+	;苦痛
+	ELSEIF ARG:1 == 16
+	;恐怖
+	ELSEIF ARG:1 == 17
+	ENDIF
+
+;ツンデレ
+ELSEIF ARG:0 == 20
+	;恭順
+	IF ARG:1 == 11
+		TIMES ARG:2, 1.20
+	;欲情
+	ELSEIF ARG:1 == 13
+	;屈服
+	ELSEIF ARG:1 == 14
+		TIMES ARG:2, 0.80
+	;恥情
+	ELSEIF ARG:1 == 15
+		TIMES ARG:2, 1.20
+	;苦痛
+	ELSEIF ARG:1 == 16
+		TIMES ARG:2, 0.80
+	;恐怖
+	ELSEIF ARG:1 == 17
+	ENDIF
+
+;ヤンデレ
+ELSEIF ARG:0 == 21
+	;恭順
+	IF ARG:1 == 11
+	;欲情
+	ELSEIF ARG:1 == 13
+		TIMES ARG:2, 1.40
+	;屈服
+	ELSEIF ARG:1 == 14
+		TIMES ARG:2, 0.90
+	;恥情
+	ELSEIF ARG:1 == 15
+		TIMES ARG:2, 0.90
+	;苦痛
+	ELSEIF ARG:1 == 16
+		TIMES ARG:2, 0.40
+	;恐怖
+	ELSEIF ARG:1 == 17
+		TIMES ARG:2, 0.40
+	ENDIF
+
+;無口
+ELSEIF ARG:0 == 22
+	;恭順
+	IF ARG:1 == 11
+	;欲情
+	ELSEIF ARG:1 == 13
+		TIMES ARG:2, 1.10
+	;屈服
+	ELSEIF ARG:1 == 14
+	;恥情
+	ELSEIF ARG:1 == 15
+		TIMES ARG:2, 1.10
+	;苦痛
+	ELSEIF ARG:1 == 16
+		TIMES ARG:2, 0.90
+	;恐怖
+	ELSEIF ARG:1 == 17
+	ENDIF
+
+;おしゃべり
+ELSEIF ARG:0 == 23
+	;恭順
+	IF ARG:1 == 11
+	;欲情
+	ELSEIF ARG:1 == 13
+		TIMES ARG:2, 1.20
+	;屈服
+	ELSEIF ARG:1 == 14
+		TIMES ARG:2, 1.10
+	;恥情
+	ELSEIF ARG:1 == 15
+		TIMES ARG:2, 0.80
+	;苦痛
+	ELSEIF ARG:1 == 16
+	;恐怖
+	ELSEIF ARG:1 == 17
+		TIMES ARG:2, 1.20
+	ENDIF
+
+;古風
+ELSEIF ARG:0 == 24
+	;恭順
+	IF ARG:1 == 11
+	;欲情
+	ELSEIF ARG:1 == 13
+	;屈服
+	ELSEIF ARG:1 == 14
+		TIMES ARG:2, 0.95
+	;恥情
+	ELSEIF ARG:1 == 15
+		TIMES ARG:2, 1.15
+	;苦痛
+	ELSEIF ARG:1 == 16
+		TIMES ARG:2, 0.95
+	;恐怖
+	ELSEIF ARG:1 == 17
+		TIMES ARG:2, 0.95
+	ENDIF
+
+;かるい性格
+ELSEIF ARG:0 == 25
+	;恭順
+	IF ARG:1 == 11
+	;欲情
+	ELSEIF ARG:1 == 13
+		TIMES ARG:2, 1.10
+	;屈服
+	ELSEIF ARG:1 == 14
+	;恥情
+	ELSEIF ARG:1 == 15
+		TIMES ARG:2, 0.90
+	;苦痛
+	ELSEIF ARG:1 == 16
+	;恐怖
+	ELSEIF ARG:1 == 17
+		TIMES ARG:2, 1.10
+	ENDIF
+
+;意地っ張り
+ELSEIF ARG:0 == 26
+	;恭順
+	IF ARG:1 == 11
+		TIMES ARG:2, 1.20
+	;欲情
+	ELSEIF ARG:1 == 13
+		TIMES ARG:2, 0.80
+	;屈服
+	ELSEIF ARG:1 == 14
+		TIMES ARG:2, 0.90
+	;恥情
+	ELSEIF ARG:1 == 15
+	;苦痛
+	ELSEIF ARG:1 == 16
+		TIMES ARG:2, 1.20
+	;恐怖
+	ELSEIF ARG:1 == 17
+	ENDIF
+
+;乱暴者
+ELSEIF ARG:0 == 27
+	;恭順
+	IF ARG:1 == 11
+		TIMES ARG:2, 1.10
+	;欲情
+	ELSEIF ARG:1 == 13
+	;屈服
+	ELSEIF ARG:1 == 14
+	;恥情
+	ELSEIF ARG:1 == 15
+		TIMES ARG:2, 0.80
+	;苦痛
+	ELSEIF ARG:1 == 16
+	;恐怖
+	ELSEIF ARG:1 == 17
+		TIMES ARG:2, 1.30
+	ENDIF
+
+;感情乏しい
+ELSEIF ARG:0 == 28
+	;恭順
+	IF ARG:1 == 11
+		TIMES ARG:2, 0.30
+	;欲情
+	ELSEIF ARG:1 == 13
+		TIMES ARG:2, 0.90
+	;屈服
+	ELSEIF ARG:1 == 14
+		TIMES ARG:2, 0.30
+	;恥情
+	ELSEIF ARG:1 == 15
+		TIMES ARG:2, 0.30
+	;苦痛
+	ELSEIF ARG:1 == 16
+		TIMES ARG:2, 0.90
+	;恐怖
+	ELSEIF ARG:1 == 17
+		TIMES ARG:2, 0.30
+	ENDIF
+
+;アイドル
+ELSEIF ARG:0 == 29
+	;恭順
+	IF ARG:1 == 11
+		TIMES ARG:2, 0.60
+	;欲情
+	ELSEIF ARG:1 == 13
+		TIMES ARG:2, 1.10
+	;屈服
+	ELSEIF ARG:1 == 14
+		TIMES ARG:2, 0.30
+	;恥情
+	ELSEIF ARG:1 == 15
+		TIMES ARG:2, 0.90
+	;苦痛
+	ELSEIF ARG:1 == 16
+		TIMES ARG:2, 0.80
+	;恐怖
+	ELSEIF ARG:1 == 17
+		TIMES ARG:2, 0.80
+	ENDIF	
+ENDIF
+RETURNF ARG:2
+
+;--------------------------------------------------
+;性格による心境変化の補正
+;ARG=性格番号、ARGS=変化を判定する心境
+;基本を30（3割で変化）にし、変化しやすいは50、変化しにくいものは10に
+@SEIKAKU_HOSEI_SHINKYOU, ARG, ARGS
+LOCAL = 30
+;臆病
+IF ARG:0 == 10
+	SELECTCASE ARGS
+		CASE "TOUSAKU"
+			LOCAL = 10
+		CASE "DOUYOU"
+			LOCAL = 50
+	ENDSELECT
+;恥ずかしがり屋
+ELSEIF ARG:0 == 11
+	SELECTCASE ARGS
+		CASE "TOUSAKU"
+			LOCAL = 10
+		CASE "KOUYOU"
+			LOCAL = 10
+	ENDSELECT
+;勝気
+ELSEIF ARG:0 == 12
+	SELECTCASE ARGS
+		CASE "TOUSAKU"
+			LOCAL = 50
+		CASE "IKARI"
+			LOCAL = 50
+	ENDSELECT
+;元気っ子
+ELSEIF ARG:0 == 13
+	SELECTCASE ARGS
+		CASE "REISEI"
+			LOCAL = 10
+		CASE "TEIKAN"
+			LOCAL = 10
+	ENDSELECT
+;おっとり
+ELSEIF ARG:0 == 14
+	SELECTCASE ARGS
+		CASE "IKARI"
+			LOCAL = 10
+		CASE "SYOUTIN"
+			LOCAL = 10
+	ENDSELECT
+;面倒くさがり
+ELSEIF ARG:0 == 15
+	SELECTCASE ARGS
+		CASE "TEIKAN"
+			LOCAL = 50
+		CASE "DOUYOU"
+			LOCAL = 10
+	ENDSELECT
+;真面目
+ELSEIF ARG:0 == 16
+	SELECTCASE ARGS
+		CASE "REISEI"
+			LOCAL = 50
+		CASE "DOUYOU"
+			LOCAL = 50
+	ENDSELECT
+;楽天家
+ELSEIF ARG:0 == 17
+	SELECTCASE ARGS
+		CASE "IKARI"
+			LOCAL = 10
+		CASE "TEIKAN"
+			LOCAL = 10
+		CASE "REISEI"
+			LOCAL = 10
+		CASE "DOUYOU"
+			LOCAL = 10
+		CASE "KOUYOU"
+			LOCAL = 10
+		CASE "SYOUTIN"
+			LOCAL = 10
+	ENDSELECT
+;悲観的
+ELSEIF ARG:0 == 18
+	SELECTCASE ARGS
+		CASE "TOUSAKU"
+			LOCAL = 10
+		CASE "TEIKAN"
+			LOCAL = 50
+	ENDSELECT
+;素直
+ELSEIF ARG:0 == 19
+	SELECTCASE ARGS
+		CASE "KOUYOU"
+			LOCAL = 50
+		CASE "SYOUTIN"
+			LOCAL = 50
+	ENDSELECT
+;ツンデレ
+ELSEIF ARG:0 == 20
+	SELECTCASE ARGS
+		CASE "IKARI"
+			LOCAL = 50
+		CASE "SYOUTIN"
+			LOCAL = 50
+	ENDSELECT
+;ヤンデレ
+ELSEIF ARG:0 == 21
+	SELECTCASE ARGS
+		CASE "TEIKAN"
+			LOCAL = 10
+		CASE "REISEI"
+			LOCAL = 10
+	ENDSELECT
+;無口
+ELSEIF ARG:0 == 22
+	SELECTCASE ARGS
+		CASE "TOUSAKU"
+			LOCAL = 50
+		CASE "REISEI"
+			LOCAL = 50
+	ENDSELECT
+;おしゃべり
+ELSEIF ARG:0 == 23
+	SELECTCASE ARGS
+		CASE "KOUYOU"
+			LOCAL = 50
+		CASE "DOUYOU"
+			LOCAL = 50
+	ENDSELECT
+;古風
+ELSEIF ARG:0 == 24
+	SELECTCASE ARGS
+		CASE "TEIKAN"
+			LOCAL = 50
+		CASE "DOUYOU"
+			LOCAL = 10
+	ENDSELECT
+;かるい性格
+ELSEIF ARG:0 == 25
+	SELECTCASE ARGS
+		CASE "TOUSAKU"
+			LOCAL = 50
+		CASE "KOUYOU"
+			LOCAL = 50
+	ENDSELECT
+;意地っ張り
+ELSEIF ARG:0 == 26
+	SELECTCASE ARGS
+		CASE "TEIKAN"
+			LOCAL = 10
+		CASE "KOUYOU"
+			LOCAL = 10
+	ENDSELECT
+;乱暴者
+ELSEIF ARG:0 == 27
+	SELECTCASE ARGS
+		CASE "IKARI"
+			LOCAL = 50
+		CASE "REISEI"
+			LOCAL = 10
+	ENDSELECT
+;感情乏しい
+ELSEIF ARG:0 == 28
+	SELECTCASE ARGS
+		CASE "IKARI"
+			LOCAL = 0
+		CASE "TEIKAN"
+			LOCAL = 0
+		CASE "REISEI"
+			LOCAL = 0
+		CASE "DOUYOU"
+			LOCAL = 0
+		CASE "KOUYOU"
+			LOCAL = 0
+		CASE "SYOUTIN"
+			LOCAL = 0
+	ENDSELECT
+;アイドル
+ELSEIF ARG:0 == 29
+	SELECTCASE ARGS
+		CASE "TEIKAN"
+			LOCAL = 15
+		CASE "REISEI"
+			LOCAL = 50
+		CASE "DOUYOU"
+			LOCAL = 15
+		CASE "KOUYOU"
+			LOCAL = 50
+		CASE "SYOUTIN"
+			LOCAL = 50
+	ENDSELECT
+
+ENDIF
+RETURN LOCAL
+
+
+;性格ごとの調教耐性を表示
+;ARG 性格の番号（素質番号10～）
+@SHOW_SEIKAKUHOSEI,ARG
+FOR LOCAL,0,14
+	SIF LOCAL >= 3 && LOCAL <= 9
+		CONTINUE
+	LOCAL:1 = SEIKAKU_HOSEI_F(ARG, LOCAL, 100)
+	IF LOCAL:1 < 90
+		SETCOLOR 0,60,250
+		PRINT ×  
+	ELSEIF LOCAL:1 < 100
+		SETCOLOR 120,120,250
+		PRINT ▽  
+	ELSEIF LOCAL:1 < 110
+		SETCOLOR 128,128,128
+		PRINT －  
+	ELSEIF LOCAL:1 < 120
+		SETCOLOR 250,180,0
+		PRINT ○  
+	ELSE
+		SETCOLOR 250,60,0
+		PRINT ◎  
+	ENDIF
+	RESETCOLOR
+	SIF LOCAL == 2
+		PRINT 　
+NEXT
+
+;性格ごとの調教耐性を表示
+;ARG 　　性格の番号（素質番号10～）
+;ARG:1 　対象者の番号
+;ARG:2 　表示オプション
+@SHOW_RESISTSEX,ARG, ARG:1, ARG:2 = 0
+FOR LOCAL,11,18
+	SIF LOCAL == 12
+		CONTINUE
+	LOCAL:1 = SEIKAKU_HOSEI_PALAM_F(ARG, LOCAL, 100)
+
+	IF LOCAL == 11
+		SIF ARG:2 == 0
+			PRINT 恭:
+		IF ARG != 28
+			SIF TALENT:(ARG:1):快楽に弱い
+				LOCAL:1 += 10
+			SIF TALENT:(ARG:1):恥じらい
+				LOCAL:1 -= 10
+			SIF TALENT:(ARG:1):母性的
+				LOCAL:1 += 10
+		ENDIF
+	ELSEIF LOCAL == 13
+		SIF ARG:2 == 0
+			PRINT 欲:
+		IF ARG != 28
+			SIF TALENT:(ARG:1):快楽の否定
+				LOCAL:1 -= 10
+			SIF TALENT:(ARG:1):度胸
+				LOCAL:1 += 10
+			SIF TALENT:(ARG:1):喧嘩上等
+				LOCAL:1 += 10
+			SIF TALENT:(ARG:1):潔癖症
+				LOCAL:1 -= 20
+		ENDIF
+	ELSEIF LOCAL == 14
+		SIF ARG:2 == 0
+			PRINT 屈:
+		IF ARG != 28
+			SIF TALENT:(ARG:1):快楽の否定
+				LOCAL:1 += 10
+			IF TALENT:(ARG:1):プライド高い && MARK:(ARG:1):屈服刻印 >= 3
+				LOCAL:1 += 20
+			ELSEIF TALENT:(ARG:1):プライド高い
+				LOCAL:1 -= 10
+			ENDIF
+			SIF TALENT:(ARG:1):争いを好まない
+				LOCAL:1 -= 10
+			SIF TALENT:(ARG:1):小悪魔
+				LOCAL:1 += 10
+			SIF TALENT:(ARG:1):潔癖症
+				LOCAL:1 -= 10
+		ENDIF
+	ELSEIF LOCAL == 15
+		SIF ARG:2 == 0
+			PRINT 恥:
+		IF ARG != 28
+			SIF TALENT:(ARG:1):恥じらい
+				LOCAL:1 += 10
+			SIF TALENT:(ARG:1):度胸
+				LOCAL:1 -= 10
+			SIF TALENT:(ARG:1):上品
+				LOCAL:1 += 10
+			SIF TALENT:(ARG:1):潔癖症
+				LOCAL:1 += 30
+		ENDIF
+	ELSEIF LOCAL == 16
+		SIF ARG:2 == 0
+			PRINT 苦:
+		IF ARG != 28
+			SIF TALENT:(ARG:1):快楽に弱い
+				LOCAL:1 -= 10
+			SIF TALENT:(ARG:1):小心者
+				LOCAL:1 += 10
+			SIF TALENT:(ARG:1):目立ちたがり
+				LOCAL:1 += 10
+		ENDIF
+	ELSEIF LOCAL == 17
+		SIF ARG:2 == 0
+			PRINT 恐:
+		IF ARG != 28
+			SIF TALENT:(ARG:1):争いを好まない
+				LOCAL:1 += 10
+			SIF TALENT:(ARG:1):喧嘩上等
+				LOCAL:1 -= 10
+			SIF TALENT:(ARG:1):泣き虫
+				LOCAL:1 += 10
+			SIF TALENT:(ARG:1):潔癖症
+				LOCAL:1 += 20
+		ENDIF
+	ENDIF
+
+	IF LOCAL:1 < 90
+		SETCOLOR 250,60,0
+		PRINT ◎  
+	ELSEIF LOCAL:1 < 100
+		SETCOLOR 250,180,0
+		PRINT ○  
+	ELSEIF LOCAL:1 < 110
+		SETCOLOR 128,128,128
+		PRINT －  
+	ELSEIF LOCAL:1 < 120
+		SETCOLOR 120,120,250
+		PRINT ▽  
+	ELSE
+		SETCOLOR 0,60,250
+		PRINT ×  
+	ENDIF
+	RESETCOLOR
+NEXT
+

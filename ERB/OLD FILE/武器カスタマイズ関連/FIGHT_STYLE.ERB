@@ -1,0 +1,147 @@
+;------------------------------------------------------------------------
+;戦闘スタイルに関連する処理群
+
+
+
+;戦闘スタイルの名前を返す式中関数
+;ARG=対象キャラNO、ARG:1=現在の距離
+@FSTYLE_NAME_F,ARG,ARG:1
+#FUNCTIONS
+VARSET LOCALS
+SELECTCASE CDFLAG:(ARG):(ARG:1):戦闘スタイル
+	CASE 1
+		LOCALS = 連続
+	CASE 2
+		LOCALS = 装甲
+	CASE 3
+		LOCALS = 撹乱
+	CASE 4
+		LOCALS = 重撃
+	CASE 5
+		LOCALS = 広範
+	CASE 6
+		LOCALS = 全力
+	CASE 7
+		LOCALS = 知略
+	CASE 8
+		LOCALS = 設置
+	CASE 9
+		LOCALS = 使役
+	CASEELSE
+		LOCALS = 通常
+ENDSELECT
+RETURNF LOCALS
+
+
+;戦闘スタイルごとの攻撃力の実数値を返す式中関数
+;ARG   = 対象キャラNO
+;ARG:1 = 現在の距離
+;ARG:2 = キャラメイク中なら1
+@FSTYLE_ATTACK, ARG, ARG:1, ARG:2 = 0
+#DIM ATTACK
+VARSET LOCAL
+;対象キャラの各能力を取得
+LOCAL:10 = MAXBASE:ARG:攻撃
+LOCAL:11 = MAXBASE:ARG:防御
+LOCAL:12 = MAXBASE:ARG:敏捷
+LOCAL:13 = MAXBASE:ARG:知性
+;キャラメイク中なら未加算のボーナスを反映
+IF ARG:2 > 0
+	LOCAL:10 += CFLAG:ARG:53
+	LOCAL:11 += CFLAG:ARG:54
+	LOCAL:12 += CFLAG:ARG:55
+	LOCAL:13 += CFLAG:ARG:56
+ENDIF
+;衣装による補正
+CALL CLOTH_BATTLE_HOSEI, "KOUGEKI", ARG
+LOCAL:10 = LOCAL:10 * RESULT / 100
+CALL CLOTH_BATTLE_HOSEI, "BOUGYO", ARG
+LOCAL:11 = LOCAL:11 * RESULT / 100
+CALL CLOTH_BATTLE_HOSEI, "BINSYOU", ARG
+LOCAL:12 = LOCAL:12 * RESULT / 100
+CALL CLOTH_BATTLE_HOSEI, "CHISEI", ARG
+LOCAL:13 = LOCAL:13 * RESULT / 100
+;小柄・長身なら補正
+IF TALENT:小柄 == 1
+	TIMES LOCAL:10, 0.95
+	TIMES LOCAL:12, 1.05
+ENDIF
+IF TALENT:長身 == 1
+	TIMES LOCAL:10, 1.05
+	TIMES LOCAL:12, 0.95
+ENDIF
+;計算開始
+SELECTCASE FSTYLE_NAME_F(ARG,ARG:1)
+	CASE "連続"
+		ATTACK = LOCAL:10 * 25 /100 + LOCAL:12 * 20 /100
+	CASE "装甲"
+		ATTACK = LOCAL:10 * 45 /100 + LOCAL:11 * 40 /100
+	CASE "撹乱"
+		ATTACK = LOCAL:10 * 75 /100 + LOCAL:12 * 35 /100
+	CASE "重撃"
+		ATTACK = LOCAL:10 * 90 /100 + LOCAL:11 * 30 /100
+	CASE "広範"
+		ATTACK = LOCAL:10 * 115 /100
+	CASE "全力"
+		ATTACK = LOCAL:10 * 150 /100
+	CASE "知略"
+		ATTACK = LOCAL:10 * 75 /100 + LOCAL:13 * 25 /100
+	CASE "設置"
+		ATTACK = LOCAL:10 * 50 /100 + LOCAL:13 * 30 /100
+	CASE "使役"
+		ATTACK = LOCAL:10 * 25 /100 + LOCAL:13 * 20 /100
+	CASE "通常"
+		ATTACK = LOCAL:10 * 100 /100
+ENDSELECT
+RETURN ATTACK
+
+
+
+
+
+;戦闘スタイル情報を取得
+@SET_FSTYLE_INFO, ARG,ARG:1
+SELECTCASE FSTYLE_NAME_F(ARG,ARG:1)
+	CASE "連続"
+		RESULTS:0 = 威力影響度：攻撃*0.25 + 敏捷*0.20
+		RESULTS:1 = 追加効果　：攻撃が２回ヒットする
+		RESULTS:2 = BURST性能 ：６ヒットする連続攻撃。全て直撃すれば高威力
+	CASE "装甲"
+		RESULTS:0 = 威力影響度：攻撃*0.45 + 防御*0.40
+		RESULTS:1 = 追加効果　：被ダメージ軽減　クリティカルされない
+		RESULTS:2 = BURST性能 ：直撃しやすくなる。攻撃後にオートガード
+	CASE "撹乱"
+		RESULTS:0 = 威力影響度：攻撃*0.75 + 敏捷*0.35
+		RESULTS:1 = 追加効果　：クリティカル率ＵＰ　ただし防御力にペナルティ
+		RESULTS:2 = BURST性能 ：威力が上がる。確率で相手を怯ませる
+	CASE "重撃"
+		RESULTS:0 = 威力影響度：攻撃*0.90 + 防御*0.30
+		RESULTS:1 = 追加効果　：威力が高い　ただし回避率にペナルティ
+		RESULTS:2 = BURST性能 ：直撃しにくいが大振りな一撃
+	CASE "広範"
+		RESULTS:0 = 威力影響度：攻撃*1.15
+		RESULTS:1 = 追加効果　：カス当たりの威力が高い　ただし直撃しにくい
+		RESULTS:2 = BURST性能 ：絶対直撃する。ただし反動で回避できなくなる
+	CASE "全力"
+		RESULTS:0 = 威力影響度：攻撃*1.50
+		RESULTS:1 = 追加効果　：反動で疲労蓄積　疲労度に応じて直撃率ダウン
+		RESULTS:2 = BURST性能 ：捨て身で放つ、強烈な一撃
+	CASE "知略"
+		RESULTS:0 = 威力影響度：攻撃*0.75 + 知性*0.25
+		RESULTS:1 = 追加効果　：知性に応じて直撃率が上昇
+		RESULTS:2 = BURST性能 ：クリティカルしやすくなる。攻撃後に見切り効果
+	CASE "設置"
+		RESULTS:0 = 威力影響度：攻撃*0.50 + 知性*0.30
+		RESULTS:1 = 追加効果　：直撃、カス当たり時に相手の油断度を増加
+		RESULTS:2 = BURST性能 ：油断度上昇効果２倍
+	CASE "使役"
+		RESULTS:0 = 威力影響度：攻撃*0.25 + 知性*0.20
+		RESULTS:1 = 追加効果　：攻撃が２回ヒットする
+		RESULTS:2 = BURST性能 ：直撃しにくいが大振りな一撃
+	CASE "通常"
+		RESULTS:0 = 威力影響度：攻撃*1.00
+		RESULTS:1 = 追加効果　：標準的な性能　直撃率が少し高い
+		RESULTS:2 = BURST性能 ：ダメージ効率の良い強攻撃
+ENDSELECT
+RETURN
+

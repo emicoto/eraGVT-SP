@@ -1,0 +1,3071 @@
+﻿;eraGVT口上テンプレver0.390改造 by 雑魚の人 2018/05/06
+;
+;各関数のKOJO_0_の_0_がcsvのキャラ番号に対応しています
+;
+;
+;--------------------------------------------------
+;キャラクターの性成長で分岐させる際のガイダンス
+;分岐フラグの詳細については、資料フォルダの「地の文と口上：分岐条件」をご覧ください。
+;
+;　IF (MESSAGE_BRANCH_F(TARGET) & 堕落)			自分から触手に犯されたいと感じている、ほぼ陥落している状態です。
+;　IF (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)		快楽に身体が屈して理性が働かなくなっている状態です。
+;　IF (MESSAGE_BRANCH_F(TARGET) & 性抵抗)		快楽に流されないよう必死に抗っている状態です。
+;　IF (MESSAGE_BRANCH_F(TARGET) & 絶望)			心が折れて戦意を失っている状態です。
+;　IF (MESSAGE_BRANCH_F(TARGET) & 苦戦)			余裕が無くなってきている状態です。
+;
+;　BASE:Ｃ結界耐久力	結界の耐久力が残っていると、該当する部位に触手は触れません。
+;　BASE:Ｖ結界耐久力	触れられていないため快楽も感じませんが、目の前に触手があるので嫌悪感や恐怖は感じます。
+;　BASE:Ａ結界耐久力	
+;　BASE:Ｂ結界耐久力	
+;
+;　TCVAR:2 == 体勢：奉仕する		奉仕フラグが立っている状態です。望むと望まざるとに関わらず、積極的に奉仕している状態です。
+;　TCVAR:2 == 体勢：Ｖ防御		Ｖ挿入防御フラグが立っている状態です。Ｖに挿入できませんが、触れられているので快楽は感じます。
+;
+;　IF CHECK_PREGNANT_F(TARGET) > 0	妊娠しているかどうかを判定します。正の値であれば妊娠中です。
+;
+;  絶頂状態の参照	NOWEXでそれぞれの「このターンに絶頂した回数」を参照することができます。
+;			0=Ｃ絶頂、1=Ｖ絶頂、2=Ａ絶頂、3=Ｂ絶頂です。例えばＶ絶頂した回数を参照したければ、NOWEX:1を参照してください。
+;
+;　挿入状態の参照	ユーザー定義変数 INSERT に現在挿入している個所が記録されています。
+;			なので、SIF (INSERT & 膣)などのように表記することで挿入中かどうかを判定することができます。
+;			ただしDIMで定義している定数の関係上、GETBITを使いたい場合には GETBIT (INSERT, 膣-1)と表記する必要があります
+;
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+@KOJO_366_PERSONALITY_CHANGE_1
+IF CSTR:TARGET:5 == "正拳突き"
+	LOCAL:0 = RAND:8
+	SIF LOCAL:0 == 7
+		LOCAL:0 ++
+	CDFLAG:TARGET:近距離:戦闘スタイル = LOCAL:0
+	SELECTCASE LOCAL:0
+		CASE 0;通常
+			CSTR:TARGET:5 = ストレート
+		CASE 1;連続
+			CSTR:TARGET:5 = ワンツーパンチ
+		CASE 2;装甲
+			CSTR:TARGET:5 = シールドチャージ
+		CASE 3;撹乱
+			CSTR:TARGET:5 = スイングパンチ
+		CASE 4;重撃
+			CSTR:TARGET:5 = 膝蹴り
+		CASE 5;広範
+			CSTR:TARGET:5 = 旋風脚
+		CASE 6;全力
+			CSTR:TARGET:5 = 突っ張り
+;		CASE 7;知略
+;			CSTR:TARGET:5 = 裏拳打ち
+		CASE 8;設置
+			CSTR:TARGET:5 = サマーソルトキック
+;		CASE 9;使役
+;			CSTR:TARGET:5 = ミニミニゴーレムメイド
+	ENDSELECT
+
+	LOCAL:1 = RAND:8
+	SIF LOCAL:1 == 7
+		LOCAL:1 ++
+	CDFLAG:TARGET:中距離:戦闘スタイル = LOCAL:1
+	SELECTCASE LOCAL:1
+		CASE 0;通常
+			CSTR:TARGET:6 = 釘バット
+		CASE 1;連続
+			CSTR:TARGET:6 = ヌンチャク
+		CASE 2;装甲
+			CSTR:TARGET:6 = シールドバッシュ
+		CASE 3;撹乱
+			CSTR:TARGET:6 = 槍
+		CASE 4;重撃
+			CSTR:TARGET:6 = 硬鞭
+		CASE 5;広範
+			CSTR:TARGET:6 = バラ鞭
+		CASE 6;全力
+			CSTR:TARGET:6 = フレイル
+;		CASE 7;知略
+;			CSTR:TARGET:6 = 棒手裏剣
+		CASE 8;設置
+			CSTR:TARGET:6 = ぴこぴこハンマー
+;		CASE 9;使役
+;			CSTR:TARGET:6 = 地雷ゴーレム犬
+	ENDSELECT
+
+	LOCAL:2 = RAND:8
+	SIF LOCAL:2 == 7
+		LOCAL:2 ++
+	CDFLAG:TARGET:遠距離:戦闘スタイル = LOCAL:2
+	SELECTCASE LOCAL:2
+		CASE 0;通常
+			CSTR:TARGET:7 = ライフル
+		CASE 1;連続
+			CSTR:TARGET:7 = サブマシンガン
+		CASE 2;装甲
+			CSTR:TARGET:7 = ガンシールド
+		CASE 3;撹乱
+			CSTR:TARGET:7 = スナイパーライフル
+		CASE 4;重撃
+			CSTR:TARGET:7 = 火炎放射機
+		CASE 5;広範
+			CSTR:TARGET:7 = クレイモア爆弾
+		CASE 6;全力
+			CSTR:TARGET:7 = 対物ライフル
+;		CASE 7;知略
+;			CSTR:TARGET:7 = 迫撃砲
+		CASE 8;設置
+			CSTR:TARGET:7 = ネットランチャー
+;		CASE 9;使役
+;			CSTR:TARGET:7 = 誘導ミサイル
+	ENDSELECT
+ENDIF
+
+
+@KOJO_366_PERSONALITY_CHANGE_2
+IF CSTR:TARGET:5 != "正拳突き"
+	CSTR:TARGET:5 = 正拳突き
+	CDFLAG:TARGET:近距離:戦闘スタイル = 0
+	;正拳突き// //通常
+	CSTR:TARGET:6 = バトン殴り
+	CDFLAG:TARGET:中距離:戦闘スタイル = 0
+	;バトン殴り// //通常
+	CSTR:TARGET:7 = 仕込み銃
+	CDFLAG:TARGET:遠距離:戦闘スタイル = 0
+	;仕込み銃// //通常
+ENDIF
+
+
+;@KOJO_366_PERSONALITY_CHANGE_2_3
+;IF CSTR:TARGET:5 == "ストレート" 
+;	CSTR:TARGET:5 = ジェットパンチ
+;ELSEIF CSTR:TARGET:5 == "ジェットパンチ"
+;	CSTR:TARGET:5 = ストレート
+;ENDIF
+;IF CSTR:TARGET:5 == "ワンツーパンチ"
+;	CSTR:TARGET:5 = 百裂脚
+;ELSEIF CSTR:TARGET:5 == "百裂脚"
+;	CSTR:TARGET:5 = ワンツーパンチ
+;ENDIF
+;IF CSTR:TARGET:5 == "シールドチャージ"
+;	CSTR:TARGET:5 = ジャガーノートヘッドクラッシュ
+;ELSEIF CSTR:TARGET:5 == "ジャガーノートヘッドクラッシュ"
+;	CSTR:TARGET:5 = シールドチャージ
+;ENDIF
+;IF CSTR:TARGET:5 == "スイングパンチ"
+;	CSTR:TARGET:5 = エレキ肘鉄
+;ELSEIF CSTR:TARGET:5 == "エレキ肘鉄"
+;	CSTR:TARGET:5 = スイングパンチ
+;ENDIF
+;IF CSTR:TARGET:5 == "膝蹴り"
+;	CSTR:TARGET:5 = スーパー頭突き
+;ELSEIF CSTR:TARGET:5 == "スーパー頭突き"
+;	CSTR:TARGET:5 = 膝蹴り
+;ENDIF
+;IF CSTR:TARGET:5 == "旋風脚"
+;	CSTR:TARGET:5 = スピニングバードキック
+;ELSEIF CSTR:TARGET:5 == "スピニングバードキック"
+;	CSTR:TARGET:5 = 旋風脚
+;ENDIF
+;IF CSTR:TARGET:5 == "突っ張り"
+;	CSTR:TARGET:5 = ライダーキック
+;ELSEIF CSTR:TARGET:5 == "ライダーキック"
+;	CSTR:TARGET:5 = 突っ張り
+;ENDIF
+;;「知略」はない
+;IF CSTR:TARGET:5 == "サマーソルトキック"
+;	CSTR:TARGET:5 = プレミアムサイン
+;ELSEIF CSTR:TARGET:5 == "プレミアムサイン"
+;	CSTR:TARGET:5 = サマーソルトキック
+;ENDIF
+;;「使役」はない
+;
+;IF CSTR:TARGET:6 == "釘バット"
+;	CSTR:TARGET:6 = 微細振動剣
+;ELSEIF CSTR:TARGET:6 == "微細振動剣"
+;;		CASE 0;通常
+;	CSTR:TARGET:6 = 釘バット
+;ENDIF
+;IF CSTR:TARGET:6 == "ヌンチャク"
+;	CSTR:TARGET:6 = 小型グラインドブレード
+;ELSEIF CSTR:TARGET:6 == "小型グラインドブレード"
+;	CSTR:TARGET:6 = ヌンチャク
+;ENDIF
+;IF CSTR:TARGET:6 == "シールドバッシュ"
+;	CSTR:TARGET:6 = 
+;ELSEIF CSTR:TARGET:6 == ""
+;	CSTR:TARGET:6 = シールドバッシュ
+;ENDIF
+;IF CSTR:TARGET:6 == "槍"
+;	CSTR:TARGET:6 = 
+;ELSEIF CSTR:TARGET:6 == ""
+;	CSTR:TARGET:6 = 槍
+;ENDIF
+;IF CSTR:TARGET:6 == "硬鞭"
+;	CSTR:TARGET:6 = 個人携行マスブレード
+;ELSEIF CSTR:TARGET:6 == "個人携行マスブレード"
+;	CSTR:TARGET:6 = 硬鞭
+;ENDIF
+;IF CSTR:TARGET:6 == "バラ鞭"
+;	CSTR:TARGET:6 = ムーンスクレイパー
+;ELSEIF CSTR:TARGET:6 == "ムーンスクレイパー"
+;	CSTR:TARGET:6 = バラ鞭
+;ENDIF
+;IF CSTR:TARGET:6 == "フレイル"
+;	CSTR:TARGET:6 = パイルバンカー
+;ELSEIF CSTR:TARGET:6 == "パイルバンカー"
+;	CSTR:TARGET:6 = フレイル
+;ENDIF
+;;「知略」はない
+;IF CSTR:TARGET:6 == "ぴこぴこハンマー"
+;	CSTR:TARGET:6 = 5tハンマー
+;ELSEIF CSTR:TARGET:6 == "5tハンマー"
+;	CSTR:TARGET:6 = ぴこぴこハンマー
+;ENDIF
+;;「使役」はない
+;
+;ENDIF
+;IF CSTR:TARGET: == "ライフル"
+;	CSTR:TARGET:7 = 
+;ELSEIF CSTR:TARGET:7 == ""
+;	CSTR:TARGET:7 = ライフル
+;ENDIF
+;IF CSTR:TARGET: == "サブマシンガン"
+;	CSTR:TARGET:7 = 超高速電磁レールキャノン 
+;ELSEIF CSTR:TARGET:7 == "超高速電磁レールキャノン "
+;	CSTR:TARGET:7 = サブマシンガン
+;ENDIF
+;IF CSTR:TARGET: == "ガンシールド"
+;	CSTR:TARGET:7 = フリント地獄突き
+;ELSEIF CSTR:TARGET:7 == "フリント地獄突き"
+;	CSTR:TARGET:7 = ガンシールド
+;ENDIF
+;IF CSTR:TARGET: == "スナイパーライフル"
+;	CSTR:TARGET:7 = ヒュージブレード
+;ELSEIF CSTR:TARGET:7 == "ヒュージブレード"
+;	CSTR:TARGET:7 = スナイパーライフル
+;ENDIF
+;IF CSTR:TARGET: == "火炎放射機"
+;	CSTR:TARGET:7 = 衝撃波動砲
+;ELSEIF CSTR:TARGET:7 == "衝撃波動砲"
+;	CSTR:TARGET:7 = 火炎放射機
+;ENDIF
+;IF CSTR:TARGET: == "クレイモア爆弾"
+;	CSTR:TARGET:7 = 車載型マルチプルパルス
+;ELSEIF CSTR:TARGET:7 == "車載型マルチプルパルス"
+;	CSTR:TARGET:7 = クレイモア爆弾
+;ENDIF
+;IF CSTR:TARGET: == "対物ライフル"
+;	CSTR:TARGET:7 = パイルバンカー帯電式Ｈ型
+;ELSEIF CSTR:TARGET:7 == "パイルバンカー帯電式Ｈ型"
+;	CSTR:TARGET:7 = 対物ライフル
+;ENDIF
+;「知略」はない
+;IF CSTR:TARGET: == "ネットランチャー"
+;	CSTR:TARGET:7 = パンジャンドラム
+;ELSEIF CSTR:TARGET:7 == "パンジャンドラム"
+;	CSTR:TARGET:7 = ネットランチャー
+;ENDIF
+;;「使役」はない
+
+
+
+
+;キャラ口上色
+;--------------------------------------------------
+@KOJO_366_COLOR
+IF CFLAG:1 > 0
+	;変身時に性格を変更
+	CALL KOJO_366_PERSONALITY_CHANGE_1
+	TRYCALLFORM KOJO_2_COLOR
+ELSE
+	;変身解除時に性格を変更
+	CALL KOJO_366_PERSONALITY_CHANGE_2
+	TRYCALLFORM KOJO_2_COLOR
+ENDIF
+
+
+;キャラ個別のオープニング
+;--------------------------------------------------
+@KOJO_366_FIRST
+;ゲーム開始時に表示されるテキストを設定します
+;キャラが戦うに至った動機の説明など
+TRYCALLFORM KOJO_2_FIRST
+
+
+;ターン終了時の処理
+;--------------------------------------------------
+@KOJO_366_TURNEND
+;ターン終了時に呼び出されるキャラ専用の処理です
+TRYCALLFORM KOJO_2_TURNEND
+
+;ショップ画面
+;--------------------------------------------------
+@KOJO_366_HITOKUTI_SHOP
+;ショップ画面で選択されているときに一言しゃべります
+;普段の様子や体調、今の心情など
+TRYCALLFORM KOJO_2_HITOKUTI_SHOP
+
+
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+;鍛錬
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+;鍛練開始
+;--------------------------------------------------
+@KOJO_366_TRAINING_BEGIN
+TRYCALLFORM KOJO_2_TRAINING_BEGIN
+
+;鍛練終了
+;--------------------------------------------------
+@KOJO_366_TRAINING_END
+TRYCALLFORM KOJO_2_TRAINING_END
+
+;走りこみ
+;--------------------------------------------------
+@KOJO_366_TRAINING_HASHIRI
+TRYCALLFORM KOJO_2_TRAINING_HASHIRI
+
+;精神鍛錬
+;--------------------------------------------------
+@KOJO_366_TRAINING_SEISHIN
+TRYCALLFORM KOJO_2_TRAINING_SEISHIN
+
+;瞑想
+;--------------------------------------------------
+@KOJO_366_TRAINING_MEISOU
+TRYCALLFORM KOJO_2_TRAINING_MEISOU
+
+;筋トレ
+;--------------------------------------------------
+@KOJO_366_TRAINING_KINTORE
+TRYCALLFORM KOJO_2_TRAINING_KINTORE
+
+;自衛訓練
+;--------------------------------------------------
+@KOJO_366_TRAINING_JIEI
+TRYCALLFORM KOJO_2_TRAINING_JIEI
+
+;ダッシュ
+;--------------------------------------------------
+@KOJO_366_TRAINING_DASH
+TRYCALLFORM KOJO_2_TRAINING_DASH
+
+;近距離戦闘訓練
+;--------------------------------------------------
+@KOJO_366_TRAINING_SHORT
+TRYCALLFORM KOJO_2_TRAINING_SHORT
+
+;中距離戦闘訓練
+;--------------------------------------------------
+@KOJO_366_TRAINING_MIDDLE
+TRYCALLFORM KOJO_2_TRAINING_MIDDLE
+
+;遠距離戦闘訓練
+;--------------------------------------------------
+@KOJO_366_TRAINING_LONG
+TRYCALLFORM KOJO_2_TRAINING_LONG
+
+;戦術研究
+;--------------------------------------------------
+@KOJO_366_TRAINING_TACTICS
+TRYCALLFORM KOJO_2_TRAINING_TACTICS
+
+;触手拘束具が鍛錬の邪魔をする
+;--------------------------------------------------
+@KOJO_366_TRAINING_TENTACLECLOTH
+TRYCALLFORM KOJO_2_TRAINING_TENTACLECLOTH
+
+
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+;触手と遭遇
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+;ザコ触手と戦闘(自動勝利)
+;--------------------------------------------------
+@KOJO_366_ENCOUNT_MOB
+TRYCALLFORM KOJO_2_ENCOUNT_MOB
+
+;雑魚触手と戦闘
+;--------------------------------------------------
+@KOJO_366_ENCOUNT_MOB_BATTLE
+PRINTFORML 「駆除対象を確認」
+PRINTFORML 「戦闘モードに移行します」
+
+;ボス触手と戦闘
+;--------------------------------------------------
+@KOJO_366_ENCOUNT_BOSS
+TRYCALLFORM KOJO_2_ENCOUNT_BOSS
+
+;ラスボス触手と戦闘
+;--------------------------------------------------
+@KOJO_366_ENCOUNT_LASTBOSS
+TRYCALLFORM KOJO_2_ENCOUNT_LASTBOSS
+
+
+
+;初めて洗脳キャラと対峙した
+;--------------------------------------------------
+@KOJO_366_ENCOUNT_SENNOU_FIRST
+PRINTL 「要救助者を発見」
+PRINTL 「無力化の後、回収します」
+
+
+;洗脳キャラと対峙
+;--------------------------------------------------
+@KOJO_366_ENCOUNT_SENNOU
+PRINTL 「要救助者を発見」
+PRINTL 「無力化を試みます」
+
+
+;始めて悪堕ちキャラと対峙した
+;--------------------------------------------------
+@KOJO_366_ENCOUNT_AKUOTI_FIRST
+PRINTL 「要救助者を発見」
+PRINTL 「無力化の後、回収します」
+
+
+;悪堕ちキャラと対峙
+;--------------------------------------------------
+@KOJO_366_ENCOUNT_AKUOTI
+PRINTL 「要救助者を発見」
+PRINTL 「無力化を試みます」
+
+
+
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+;戦闘中のキャラの行動
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+;変身前のかけ声
+@KOJO_366_BATTLE_CHARA_TRANSFORMCALL
+SIF CHARATALENT_F(TARGET,0,"オトコ") > 0 || CHARATALENT_F(TARGET,1,"オトコ") == 0 || TALENT:妊娠 == 0
+	CALL TRANSFORM, 1
+TRYCALLFORM KOJO_2_COLOR
+PRINTFORML 「殲滅モードに移行」
+PRINTFORML 「武装の生成を開始します」
+
+
+;変身後の名乗り
+;口上オリジナルの名乗りを使用する場合のみコメントアウトを外して記述してください
+@KOJO_366_BATTLE_CHARA_NANORI
+;変身時に性格を変更
+CALL KOJO_366_PERSONALITY_CHANGE_1
+TRYCALLFORM KOJO_2_COLOR
+
+PRINTDL 
+PRINTDL 一時的に攻撃スタイルが変わった！
+PRINTFORMDL 
+PRINTFORMDL 　近距離『%CSTR:TARGET:5%』<<%FSTYLE_NAME_F(TARGET,1)%>>
+PRINTFORMDL 　中距離『%CSTR:TARGET:6%』<<%FSTYLE_NAME_F(TARGET,2)%>>
+PRINTFORMDL 　遠距離『%CSTR:TARGET:7%』<<%FSTYLE_NAME_F(TARGET,3)%>>
+PRINTFORML 
+PRINTFORML 「武装の生成が完了しました」
+
+
+
+;気力が尽きて変身が強制的に解けた
+;--------------------------------------------------
+@KOJO_366_BATTLE_CHARA_TRANSRELEASE
+;変身解除時に性格を変更
+CALL KOJO_366_PERSONALITY_CHANGE_2
+TRYCALLFORM KOJO_2_COLOR
+
+PRINTL 「システム……オーバーヒート……」
+PRINTL 「殲滅モード……維持不能……」
+PRINTDL 
+PRINTDL 武装が消失した
+PRINTDL 攻撃スタイルが戻った！
+PRINTFORMDL 
+PRINTFORMDL 　近距離『%CSTR:TARGET:5%』<<%FSTYLE_NAME_F(TARGET,1)%>>
+PRINTFORMDL 　中距離『%CSTR:TARGET:6%』<<%FSTYLE_NAME_F(TARGET,2)%>>
+PRINTFORMDL 　遠距離『%CSTR:TARGET:7%』<<%FSTYLE_NAME_F(TARGET,3)%>>
+PRINTFORML 
+
+
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+;衣装の損傷が酷くなった関連
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+;アウターが破れ始めた
+;--------------------------------------------------
+@KOJO_366_BATTLE_CLOTH_OUTERDAMAGE
+;攻撃でアウターが大きな損傷を受けた場合
+TRYCALLFORM KOJO_2_BATTLE_CLOTH_OUTERDAMAGE
+
+
+;アウターが破れた
+;--------------------------------------------------
+@KOJO_366_BATTLE_CLOTH_OUTERBREAK
+;アウターの耐久力が尽きた場合
+TRYCALLFORM KOJO_2_BATTLE_CLOTH_OUTERBREAK
+
+
+;インナーが破れ始めた
+;--------------------------------------------------
+@KOJO_366_BATTLE_CLOTH_INNERDAMAGE
+;攻撃でインナーが大きな損傷を受けた場合
+TRYCALLFORM KOJO_2_BATTLE_CLOTH_INNERDAMAGE
+
+
+;インナーが破れた
+;--------------------------------------------------
+@KOJO_366_BATTLE_CLOTH_INNERBREAK
+;インナーの耐久力が尽きた場合
+TRYCALLFORM KOJO_2_BATTLE_CLOTH_INNERBREAK
+
+
+
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+;戦闘行動関連
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+;撤退成功
+;--------------------------------------------------
+@KOJO_366_BATTLE_CHARA_TETTAI_SUCCESS
+IF BASE:体力 < MAXBASE:体力 / 4
+	PRINTFORML 「……撤退、成功……」
+ELSE
+	PRINTFORML 「……撤退成功しました」
+ENDIF
+
+
+;撤退失敗
+;--------------------------------------------------
+@KOJO_366_BATTLE_CHARA_TETTAI_FALSE
+IF BASE:体力 < MAXBASE:体力 / 4
+	PRINTFORML 「……撤退、失敗……」
+ELSE
+	PRINTFORML 「……撤退失敗しました」
+ENDIF
+
+
+
+;戦闘スタイル変更
+;--------------------------------------------------
+@KOJO_366_BATTLE_CHARA_BATTLE_STYLE_CHANGE
+TRYCALLFORM KOJO_2_BATTLE_CHARA_BATTLE_STYLE_CHANGE
+
+
+
+;近距離攻撃
+;--------------------------------------------------
+@KOJO_366_BATTLE_CHARA_ATTACK_RANGE_SHORT
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_ATTACK_RANGE_SHORT
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_ATTACK_RANGE_SHORT
+ENDIF
+
+
+
+;中距離攻撃
+;--------------------------------------------------
+@KOJO_366_BATTLE_CHARA_ATTACK_RANGE_MIDDLE
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_ATTACK_RANGE_MIDDLE
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_ATTACK_RANGE_MIDDLE
+ENDIF
+
+
+
+;遠距離攻撃
+;--------------------------------------------------
+@KOJO_366_BATTLE_CHARA_ATTACK_RANGE_LONG
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_ATTACK_RANGE_LONG
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_ATTACK_RANGE_LONG
+ENDIF
+
+
+
+;防御
+;--------------------------------------------------
+@KOJO_366_BATTLE_CHARA_DEFENSE
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_DEFENSE
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_DEFENSE
+ENDIF
+
+
+
+;距離をとる
+;--------------------------------------------------
+@KOJO_366_BATTLE_CHARA_TAKEAWAY
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_TAKEAWAY
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_TAKEAWAY
+ENDIF
+
+
+
+;何もしない
+;--------------------------------------------------
+@KOJO_366_BATTLE_CHARA_NOACTION
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_NOACTION
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_NOACTION
+ENDIF
+
+
+
+;振り解く
+;--------------------------------------------------
+@KOJO_366_BATTLE_CHARA_HURIHODOKU
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_HURIHODOKU
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_HURIHODOKU
+ENDIF
+
+
+
+;暴れる
+;--------------------------------------------------
+@KOJO_366_BATTLE_CHARA_ABARERU
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_ABARERU
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_ABARERU
+ENDIF
+
+
+
+;耐える
+;--------------------------------------------------
+@KOJO_366_BATTLE_CHARA_TAERU
+;あまり調教が進んでおらず、闘志が残っている状態です
+;情報を集めるため、油断を誘うためなど、まだ諦めていないような口上が相応しいでしょう
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_TAERU
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_TAERU
+ENDIF
+
+
+
+;なすがまま
+;--------------------------------------------------
+@KOJO_366_BATTLE_CHARA_NASUGAMAMA
+;苦痛や恐怖が高くなって翻弄されている状態です
+;余裕がなくなった様子を描写するのが良いでしょう
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_NASUGAMAMA
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_NASUGAMAMA
+ENDIF
+
+
+
+;受け入れる
+;--------------------------------------------------
+@KOJO_366_BATTLE_CHARA_UKEIRERU
+;屈服で心が折れたか、快楽に流されている状態です
+;普段よりも快楽に素直になっている様子を描写するのが良いでしょう
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_UKEIRERU
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_UKEIRERU
+ENDIF
+
+
+
+;奉仕する
+;--------------------------------------------------
+@KOJO_366_BATTLE_CHARA_HOUSI
+;恭順する気持ちから触手を満足させようとしている状態です
+;口では言い訳しつつ、心の底では触手のことが大好きです
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_HOUSI
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_HOUSI
+ENDIF
+
+
+
+;Ｖ挿入防御
+;--------------------------------------------------
+@KOJO_366_BATTLE_CHARA_ANTI_V
+;なりふり構わず処女だけを守り通す構えです
+;調教が進むと使えなくなるのであまり調教が進んでいない状況を想定しましょう
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_ANTI_V
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_ANTI_V
+ENDIF
+
+
+
+;引き剥がす
+;--------------------------------------------------
+@KOJO_366_BATTLE_CHARA_HIKIHAGASU
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_HIKIHAGASU
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_HIKIHAGASU
+ENDIF
+
+
+
+;睨みつける
+;--------------------------------------------------
+@KOJO_366_BATTLE_CHARA_NIRAMI
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_NIRAMI
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_NIRAMI
+ENDIF
+
+
+
+;罵倒する
+;--------------------------------------------------
+@KOJO_366_BATTLE_CHARA_BATOU
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_BATOU
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_BATOU
+ENDIF
+
+
+
+;反抗する
+;--------------------------------------------------
+@KOJO_366_BATTLE_CHARA_RESISTANCE
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_RESISTANCE
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_RESISTANCE
+ENDIF
+
+
+
+;説得する
+;----------------------------------------------------------
+@KOJO_366_BATTLE_CHARA_PERSUADE
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_PERSUADE
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_PERSUADE
+ENDIF
+
+
+;SP変身
+;--------------------------------------------------
+@KOJO_366_BATTLE_CHARA_SP_TRANSFORMCALL
+PRINTFORML 「魔導機関、オーバードライブ」
+PRINTFORML 「ヒートアクションを開始します」
+
+;CALL KOJO_366_PERSONALITY_CHANGE_2_3
+;PRINTDL 
+;PRINTDL 一時的に攻撃スタイルが変わった！
+;PRINTFORMDW 
+;PRINTFORMD 　『%CSTR:TARGET:5%』
+;PRINTFORMDL <<%FSTYLE_NAME_F(TARGET,1)%>>
+;PRINTFORMD 　『%CSTR:TARGET:6%』
+;PRINTFORMDL <<%FSTYLE_NAME_F(TARGET,2)%>>
+;PRINTFORMD 　『%CSTR:TARGET:7%』
+;PRINTFORMDL <<%FSTYLE_NAME_F(TARGET,3)%>>
+PRINTFORML 
+PRINTFORML 「魔導機関、オーバーロード」
+
+
+
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+;キャラによる性コマンド
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+;手淫攻撃
+;--------------------------------------------------
+@KOJO_366_BATTLE_CHARA_SEX_ATTACK100
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_SEX_ATTACK100
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_SEX_ATTACK100
+ENDIF
+
+
+
+;フェラ攻撃
+;--------------------------------------------------
+@KOJO_366_BATTLE_CHARA_SEX_ATTACK101
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_SEX_ATTACK101
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_SEX_ATTACK101
+ENDIF
+
+
+
+;足コキ攻撃
+;--------------------------------------------------
+@KOJO_366_BATTLE_CHARA_SEX_ATTACK102
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_SEX_ATTACK102
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_SEX_ATTACK102
+ENDIF
+
+
+
+;素股焦らし
+;--------------------------------------------------
+@KOJO_366_BATTLE_CHARA_SEX_ATTACK103
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_SEX_ATTACK103
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_SEX_ATTACK103
+ENDIF
+
+
+
+;腰を振る
+;--------------------------------------------------
+@KOJO_366_BATTLE_CHARA_SEX_ATTACK104
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_SEX_ATTACK104
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_SEX_ATTACK104
+ENDIF
+
+
+
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+;キャラの行動の結果
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+;攻撃がクリティカルヒット
+;--------------------------------------------------
+@KOJO_366_BATTLE_CHARA_ATTACK_CRITICAL_HIT
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_ATTACK_CRITICAL_HIT
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_ATTACK_CRITICAL_HIT
+ENDIF
+
+
+
+;攻撃が通常ヒット
+;--------------------------------------------------
+@KOJO_366_BATTLE_CHARA_ATTACK_HIT
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_ATTACK_HIT
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_ATTACK_HIT
+ENDIF
+
+
+
+;攻撃失敗
+;--------------------------------------------------
+@KOJO_366_BATTLE_CHARA_ATTACK_FALSE
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_ATTACK_FALSE
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_ATTACK_FALSE
+ENDIF
+
+
+
+;振り解く成功
+;--------------------------------------------------
+@KOJO_366_BATTLE_CHARA_HURIHODOKU_SUCCESS
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_HURIHODOKU_SUCCESS
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_HURIHODOKU_SUCCESS
+ENDIF
+
+
+
+;振り解く失敗
+;--------------------------------------------------
+@KOJO_366_BATTLE_CHARA_HURIHODOKU_FALSE
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_HURIHODOKU_FALSE
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_HURIHODOKU_FALSE
+ENDIF
+
+
+
+;引き剥がす成功
+;--------------------------------------------------
+@KOJO_366_BATTLE_CHARA_HIKIHAGASU_SUCCESS
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_HIKIHAGASU_SUCCESS
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_HIKIHAGASU_SUCCESS
+ENDIF
+
+
+
+;引き剥がす失敗
+;--------------------------------------------------
+@KOJO_366_BATTLE_CHARA_HIKIHAGASU_FALSE
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_HIKIHAGASU_FALSE
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_CHARA_HIKIHAGASU_FALSE
+ENDIF
+
+
+
+
+
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+;敵側の行動（攻撃など）
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+;敵が攻撃
+;--------------------------------------------------
+@KOJO_366_BATTLE_TENTACLE_ATTACK
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_TENTACLE_ATTACK
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_TENTACLE_ATTACK
+ENDIF
+
+
+
+;敵が絡みつく
+;--------------------------------------------------
+@KOJO_366_BATTLE_TENTACLE_KARAMITUKU
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_TENTACLE_KARAMITUKU
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_TENTACLE_KARAMITUKU
+ENDIF
+
+
+
+;敵が体液を吐く
+;--------------------------------------------------
+@KOJO_366_BATTLE_TENTACLE_TAIEKI
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_TENTACLE_TAIEKI
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_TENTACLE_TAIEKI
+ENDIF
+
+
+
+;敵が距離をとる
+;--------------------------------------------------
+@KOJO_366_BATTLE_TENTACLE_TAKEAWAY
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_TENTACLE_TAKEAWAY
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_TENTACLE_TAKEAWAY
+ENDIF
+
+
+
+;敵が押し倒すを開始
+;--------------------------------------------------
+@KOJO_366_BATTLE_TENTACLE_OSHITAOSU
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_TENTACLE_OSHITAOSU
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_TENTACLE_OSHITAOSU
+ENDIF
+
+
+
+
+
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+;敵の行動の結果
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+;敵の攻撃がクリティカルヒット
+;--------------------------------------------------
+@KOJO_366_BATTLE_TENTACLE_ATTACK_CRITICAL_HIT
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_TENTACLE_ATTACK_CRITICAL_HIT
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_TENTACLE_ATTACK_CRITICAL_HIT
+ENDIF
+
+
+
+;敵の攻撃が通常ヒット
+;--------------------------------------------------
+@KOJO_366_BATTLE_TENTACLE_ATTACK_HIT
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_TENTACLE_ATTACK_HIT
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_TENTACLE_ATTACK_HIT
+ENDIF
+
+
+
+;敵の攻撃を回避
+;--------------------------------------------------
+@KOJO_366_BATTLE_TENTACLE_ATTACK_FALSE
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_TENTACLE_ATTACK_FALSE
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_TENTACLE_ATTACK_FALSE
+ENDIF
+
+
+
+;敵の絡みつくが成功
+;--------------------------------------------------
+@KOJO_366_BATTLE_TENTACLE_KARAMITUKU_SUCCESS
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_TENTACLE_KARAMITUKU_SUCCESS
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_TENTACLE_KARAMITUKU_SUCCESS
+ENDIF
+
+
+
+;敵の絡みつくを回避
+;--------------------------------------------------
+@KOJO_366_BATTLE_TENTACLE_KARAMITUKU_FALSE
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_TENTACLE_KARAMITUKU_FALSE
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_TENTACLE_KARAMITUKU_FALSE
+ENDIF
+
+
+
+;敵の体液を吐くがヒット
+;--------------------------------------------------
+@KOJO_366_BATTLE_TENTACLE_TAIEKI_HIT
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_TENTACLE_TAIEKI_HIT
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_TENTACLE_TAIEKI_HIT
+ENDIF
+
+
+
+;敵の体液を吐くを回避
+;--------------------------------------------------
+@KOJO_366_BATTLE_TENTACLE_TAIEKI_FALSE
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_TENTACLE_TAIEKI_FALSE
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_TENTACLE_TAIEKI_FALSE
+ENDIF
+
+
+
+;敵の押し倒すがヒット
+;--------------------------------------------------
+@KOJO_366_BATTLE_TENTACLE_OSHITAOSU_SUCCESS
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_TENTACLE_OSHITAOSU_SUCCESS
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_TENTACLE_OSHITAOSU_SUCCESS
+ENDIF
+
+
+
+;敵の押し倒すを回避
+;--------------------------------------------------
+@KOJO_366_BATTLE_TENTACLE_OSHITAOSU_FALSE
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_TENTACLE_OSHITAOSU_FALSE
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_TENTACLE_OSHITAOSU_FALSE
+ENDIF
+
+
+
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+;敵から受ける性コマンド関連
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+;COM0：C攻め弱　クリトリスを撫でる
+;--------------------------------------------------
+@KOJO_366_SEX_COM0
+;オトコ/ふたなりの場合はペニスを愛撫されている扱いになります。
+IF TALENT:オトコ > 0 || TALENT:ふたなり > 0
+ELSE
+ENDIF
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_COM0
+ELSE
+	TRYCALLFORM KOJO_2_SEX_COM0
+ENDIF
+
+
+
+;COM1：C攻め強　クリトリスに吸い付く
+;--------------------------------------------------
+@KOJO_366_SEX_COM1
+;オトコ/ふたなりの場合はペニスを吸われている扱いになります。
+IF TALENT:オトコ > 0 || TALENT:ふたなり > 0
+ELSE
+ENDIF
+
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_COM1
+ELSE
+	TRYCALLFORM KOJO_2_SEX_COM1
+ENDIF
+
+
+
+;COM2：V攻め弱　膣口を愛撫（処女は奪いません）
+;--------------------------------------------------
+@KOJO_366_SEX_COM2
+;今にも犯されそうな状態で弄ばれます。
+;### FLAG:900 ###
+;1　クンニされる（吸う、舐める）
+;2　突起触手に跨らされる
+;3　男性器触手を擦りつけられる
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_COM2
+ELSE
+	TRYCALLFORM KOJO_2_SEX_COM2
+ENDIF
+
+
+
+;COM3：V攻め強　挿入
+;--------------------------------------------------
+@KOJO_366_SEX_COM3
+;膣に挿入され、犯されます。
+;TCVAR:2 == 体勢：Ｖ防御のときはＶに挿入されません。
+;Ｖ感覚が0のときは苦痛が強く、Ｖ感覚が4以上なら強烈な快感を感じます。
+IF TCVAR:2 == 体勢：Ｖ防御
+ELSEIF ABL:Ｖ感覚 == 0
+ELSEIF ABL:Ｖ感覚 >= 4
+ENDIF
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_COM3
+ELSE
+	TRYCALLFORM KOJO_2_SEX_COM3
+ENDIF
+
+
+
+;COM4：A攻め弱　アナルを撫で回す
+;--------------------------------------------------
+@KOJO_366_SEX_COM4
+;軽いちょっかいを出されている段階なので、それほど危機感は感じていない場面です。
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_COM4
+ELSE
+	TRYCALLFORM KOJO_2_SEX_COM4
+ENDIF
+
+
+
+;COM5：A攻め強　アナルに挿入
+;--------------------------------------------------
+@KOJO_366_SEX_COM5
+;A攻め弱とは一転して激しく犯されます。
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_COM5
+ELSE
+	TRYCALLFORM KOJO_2_SEX_COM5
+ENDIF
+
+
+
+;COM6：B攻め弱　胸を揉みしだく
+;--------------------------------------------------
+@KOJO_366_SEX_COM6
+;胸を撫でられたり、乳首を引っ張られたりします。
+;鬼畜度の低い愛撫です。
+;### FLAG:900 ###
+;1　撫でられる
+;2　乳首を引っ張られる
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_COM6
+ELSE
+	TRYCALLFORM KOJO_2_SEX_COM6
+ENDIF
+
+
+
+;COM7：B攻め強　乳首に吸い付く
+;--------------------------------------------------
+@KOJO_366_SEX_COM7
+;ややハードですが苦痛成分がないプレイです。母乳体質のアピールポイントです。
+;### FLAG:900 ###
+;1　揉まれる
+;2　吸われる
+;3　揉みながら吸われる
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_COM7
+ELSE
+	TRYCALLFORM KOJO_2_SEX_COM7
+ENDIF
+
+
+
+;COM8：スパンキング
+;--------------------------------------------------
+@KOJO_366_SEX_COM8
+;割と手加減なしで暴行されるので、痛い！というよりは叫び声が出ると思います。
+;マゾっ気Lv2以上なら喜びます。
+;### FLAG:900 ###
+;1　身体を鞭打たれて痣ができる
+;2　胸を鞭打たれて切り傷ができる
+;3　腹部に打撃を入れられる
+;4　尻を鞭打たれて腫れあがる
+;5　蹲ったところを何度も蹴られる（悪堕ちキャラ）
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_COM8
+ELSE
+	TRYCALLFORM KOJO_2_SEX_COM8
+ENDIF
+
+
+
+;COM9：針
+;--------------------------------------------------
+@KOJO_366_SEX_COM9
+;これもハード。殴られるより痛いはず。マゾっ気がLv3以上で欲情します。
+;### FLAG:900 ###
+;1　敏感な部分に針を突き立てられる
+;2　乳首に針を突き立てられる
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_COM9
+ELSE
+	TRYCALLFORM KOJO_2_SEX_COM9
+ENDIF
+
+
+
+;COM10：手淫
+;--------------------------------------------------
+@KOJO_366_SEX_COM10
+;調教が進んでいたり「奉仕する」を選んでいる場合は素直に手淫します。
+;また、悪堕ちキャラやＨ触手が相手の場合は催眠手淫させられます。
+IF FLAG:110 == 0
+	;まずはボス触手の名前を取得
+	CALL TENTACLE_ACCESS, "GETNAME"
+	LOCALS:0 = %RESULTS%
+ELSE
+	LOCALS:0 = 
+ENDIF
+IF FLAG:110 && (TALENT:(FLAG:111):寄生 == 0 || FILTER_CHECK_F(13) > 0)
+	;悪堕ちキャラが相手の場合
+ELSEIF LOCALS:0 == "Ｈ触手"
+	;Ｈ触手が相手の場合
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落) || TCVAR:2 == 体勢：奉仕する
+ELSE
+ENDIF
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_COM10
+ELSE
+	TRYCALLFORM KOJO_2_SEX_COM10
+ENDIF
+
+
+
+;COM11：フェラ
+;--------------------------------------------------
+@KOJO_366_SEX_COM11
+;基本的に無理やり口を犯されます。
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_COM11
+ELSE
+	TRYCALLFORM KOJO_2_SEX_COM11
+ENDIF
+
+
+
+;COM12：イラマチオ
+;--------------------------------------------------
+@KOJO_366_SEX_COM12
+;フェラをさらにハードにしたバージョン。こちらは喉を犯される。
+;地の文では息ができなくて気絶しかけるので、口上のほうも息も絶え絶えという感じが良いでしょう。
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_COM12
+ELSE
+	TRYCALLFORM KOJO_2_SEX_COM12
+ENDIF
+
+
+
+;COM13：絶頂禁止
+;--------------------------------------------------
+@KOJO_366_SEX_COM13
+IF TCVAR:40
+	;絶頂禁止を解除した場合
+ELSE
+	;絶頂禁止した場合
+ENDIF
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_COM13
+ELSE
+	TRYCALLFORM KOJO_2_SEX_COM13
+ENDIF
+
+
+
+;COM14：衣装を破く
+;--------------------------------------------------
+@KOJO_366_SEX_COM14
+;拘束中に衣装を破かれます。
+;これから犯されることが分かって抵抗する、怯える、悪態をつくなど。
+;### FLAG:900 ###
+;1　通常の脱衣
+;2　異臭のする液体
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_COM14
+ELSE
+	TRYCALLFORM KOJO_2_SEX_COM14
+ENDIF
+
+
+
+;COM15：種付けピストン（Ｖ系統）
+;--------------------------------------------------
+@KOJO_366_SEX_COM15
+;Ｖ攻め強などで触手が射精しなかった場合は次のターンにこのコマンドに派生します。
+;体勢を固定されてじゅぽじゅぽ犯されている状態です。
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_COM15
+ELSE
+	TRYCALLFORM KOJO_2_SEX_COM15
+ENDIF
+
+
+
+;COM16：種付けフィニッシュ（Ｖ系統）
+;--------------------------------------------------
+@KOJO_366_SEX_COM16
+;種付けピストンでフィニッシュされる場合の口上です。
+;連続でハメられ続けているので通常よりも快楽を受けている描写にすると良いでしょう。
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_COM16
+ELSE
+	TRYCALLFORM KOJO_2_SEX_COM16
+ENDIF
+
+
+
+;COM17：アナルピストン（Ａ系統）
+;--------------------------------------------------
+@KOJO_366_SEX_COM17
+;Ａ攻め強などで触手が射精しなかった場合は次のターンにこのコマンドに派生します。
+;体勢を固定されてじゅぽじゅぽ犯されている状態です。
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_COM17
+ELSE
+	TRYCALLFORM KOJO_2_SEX_COM17
+ENDIF
+
+
+
+;COM18：アナルフィニッシュ（Ａ系統）
+;--------------------------------------------------
+@KOJO_366_SEX_COM18
+;アナルピストンでフィニッシュされる場合の口上です。
+;連続でハメられ続けているので通常よりも快楽を受けている描写にすると良いでしょう。
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_COM18
+ELSE
+	TRYCALLFORM KOJO_2_SEX_COM18
+ENDIF
+
+
+
+;COM19：両穴ピストン（ＶＡ系統）
+;--------------------------------------------------
+@KOJO_366_SEX_COM19
+;種付けフィニッシュ、アナルピストンなどからこのコマンドに派生する場合があります。
+;体勢を固定されてじゅぽじゅぽ犯されている状態です。
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_COM19
+ELSE
+	TRYCALLFORM KOJO_2_SEX_COM19
+ENDIF
+
+
+
+;COM20：両穴フィニッシュ（ＶＡ系統）
+;--------------------------------------------------
+@KOJO_366_SEX_COM20
+;両穴ピストンでフィニッシュされる場合の口上です。
+;連続でハメられ続けているので通常よりも快楽を受けている描写にすると良いでしょう。
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_COM20
+ELSE
+	TRYCALLFORM KOJO_2_SEX_COM20
+ENDIF
+
+
+
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+;ボス専用SPコマンド関連
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+;SPCOM0：C攻めSP　クリトリスに噛み付く/逆レイプされる
+;--------------------------------------------------
+@KOJO_366_SEX_SPCOM0
+;媚薬を注入されて、感度を高められたまま放置されたタイミングで表示されます。
+;自分がオトコ/ふたなりで相手が女性悪堕ちキャラの場合は逆レイプされます。
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_SPCOM0
+ELSE
+	TRYCALLFORM KOJO_2_SEX_SPCOM0
+ENDIF
+
+
+
+;SPCOM1：V攻めSP　奥を突く
+;--------------------------------------------------
+@KOJO_366_SEX_SPCOM1
+;激しいピストンで子宮口を責められている場面です。
+;「少女に似合わぬ獣のような喘ぎ声を上げ続けている・・・」に続く形になるため、
+;快楽に翻弄されているような文にするのが良いでしょう。
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_SPCOM1
+ELSE
+	TRYCALLFORM KOJO_2_SEX_SPCOM1
+ENDIF
+
+
+
+;SPCOM2：A攻めSP　激しくアナルを犯す
+;--------------------------------------------------
+@KOJO_366_SEX_SPCOM2
+;かなりハードなプレイで、アナルから入った触手が口から出て"貫通"します。
+;地の文でもアヘ顔だったり白目を剥いて泡を吹いているので、相応の描写が必要です。
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_SPCOM2
+ELSE
+	TRYCALLFORM KOJO_2_SEX_SPCOM2
+ENDIF
+
+
+
+;SPCOM3：B攻めSP　媚薬ニプルファック
+;--------------------------------------------------
+@KOJO_366_SEX_SPCOM3
+;胸の感度を高められてニプルファックで責められます。
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_SPCOM3
+ELSE
+	TRYCALLFORM KOJO_2_SEX_SPCOM3
+ENDIF
+
+
+
+;SPCOM4：電流
+;--------------------------------------------------
+@KOJO_366_SEX_SPCOM4
+;このゲーム内で最も苦痛が入るコマンドなので、たとえマゾでも絶叫しか聞かれないでしょう。
+;マゾっ気Lv4以上で欲情します。
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_SPCOM4
+ELSE
+	TRYCALLFORM KOJO_2_SEX_SPCOM4
+ENDIF
+
+
+
+;SPCOM5：パイズリ
+;--------------------------------------------------
+@KOJO_366_SEX_SPCOM5
+;ごく普通のパイズリ…というわけではなく、無理やり奉仕させられる感が強いです。
+;触手の虜や「奉仕する」を選択している場合は普通のパイズリをしている感じになります。
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_SPCOM5
+ELSE
+	TRYCALLFORM KOJO_2_SEX_SPCOM5
+ENDIF
+
+
+
+;SPCOM6：強制自慰
+;--------------------------------------------------
+@KOJO_366_SEX_SPCOM6
+;自分の意に反して自慰させられます。
+;このあと普通の自慰の口上も表示されるので、クドくならないように。
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_SPCOM6
+ELSE
+	TRYCALLFORM KOJO_2_SEX_SPCOM6
+ENDIF
+
+
+
+;SPCOM7：羞恥プレイ
+;--------------------------------------------------
+@KOJO_366_SEX_SPCOM7
+;恥ずかしい姿を衆目に晒されます。
+;### FLAG:900 ###
+;1　雑魚触手をけしかけられる（悪堕ちキャラ）
+;2　強制開脚させられる
+;3　動画配信サイトに個人情報を晒される
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_SPCOM7
+ELSE
+	TRYCALLFORM KOJO_2_SEX_SPCOM7
+ENDIF
+
+
+
+;SPCOM8：C触手専用SP　尿道責め
+;--------------------------------------------------
+@KOJO_366_SEX_SPCOM8
+;イモムシ型のＣ触手に尿道を責められ、お漏らしさせられます。
+;公開排尿なので、羞恥心を煽られます。
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_SPCOM8
+ELSE
+	TRYCALLFORM KOJO_2_SEX_SPCOM8
+ENDIF
+
+
+
+;SPCOM9：V触手専用SP　V拡張責め（腹ボコ系
+;--------------------------------------------------
+@KOJO_366_SEX_SPCOM9
+;通常なら入らない極太ペニスによる拡張責め、V拡張経験によって地の文が変化します。
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_SPCOM9
+ELSE
+	TRYCALLFORM KOJO_2_SEX_SPCOM9
+ENDIF
+
+
+
+;SPCOM10：A触手専用SP　A拡張攻め（腹ボコ
+;--------------------------------------------------
+@KOJO_366_SEX_SPCOM10
+;不定形のＡ触手による疑似浣腸による拡張、拡張経験によって地の文が変化します。
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_SPCOM10
+ELSE
+	TRYCALLFORM KOJO_2_SEX_SPCOM10
+ENDIF
+
+
+
+;SPCOM11：B触手専用SP　甘えん坊授乳プレイ
+;--------------------------------------------------
+@KOJO_366_SEX_SPCOM11
+;巨大な赤ん坊型のボスに圧し掛かられ、乳房を吸われながら正常位で犯されます。
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_SPCOM11
+ELSE
+	TRYCALLFORM KOJO_2_SEX_SPCOM11
+ENDIF
+
+
+
+;SPCOM12：S触手専用SP ヘソ快楽攻め
+;--------------------------------------------------
+@KOJO_366_SEX_SPCOM12
+;コンフィグでグロ表現がオフの場合、ヘソ挿入はありません。
+;コンフィグオンオフにかかわらず、快感で限界気絶確定
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_SPCOM12
+ELSE
+	TRYCALLFORM KOJO_2_SEX_SPCOM12
+ENDIF
+
+
+
+;SPCOM13：P触手専用SP　丸飲み精液攻め
+;--------------------------------------------------
+@KOJO_366_SEX_SPCOM13
+;受けると幽閉確定の即死攻撃です。
+;ウツボカツラ型のＰ触手に丸飲みされ、精液風呂で倒れるまで射精されます。
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_SPCOM13
+ELSE
+	TRYCALLFORM KOJO_2_SEX_SPCOM13
+ENDIF
+
+
+
+;SPCOM14：H触手専用SP　催眠姦
+;--------------------------------------------------
+@KOJO_366_SEX_SPCOM14
+;触手の虜or欲望3以上なら受け入れ、前記条件未取得なら屈辱＆羞恥
+;被姦後なので、されてる最中の描写は不可
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_SPCOM14
+ELSE
+	TRYCALLFORM KOJO_2_SEX_SPCOM14
+ENDIF
+
+
+
+;SPCOM15：K触手専用SP サブミッションファック
+;--------------------------------------------------
+@KOJO_366_SEX_SPCOM15
+;関節を極められて、さらに太い触手に犯されます。
+;基本激痛で泣きわめいているような状態
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_SPCOM15
+ELSE
+	TRYCALLFORM KOJO_2_SEX_SPCOM15
+ENDIF
+
+
+
+
+;キャラが射精
+;--------------------------------------------------
+@KOJO_366_SEX_CHARA_SYASEI
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_CHARA_SYASEI
+ELSE
+	TRYCALLFORM KOJO_2_SEX_CHARA_SYASEI
+ENDIF
+
+
+
+;キャラが大量射精
+;--------------------------------------------------
+@KOJO_366_SEX_CHARA_SYASEI_HI
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_CHARA_SYASEI_HI
+ELSE
+	TRYCALLFORM KOJO_2_SEX_CHARA_SYASEI_HI
+ENDIF
+
+
+
+;キャラが噴乳
+;--------------------------------------------------
+@KOJO_366_SEX_CHARA_HUNNYU
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_CHARA_HUNNYU
+ELSE
+	TRYCALLFORM KOJO_2_SEX_CHARA_HUNNYU
+ENDIF
+
+
+
+;キャラが大量噴乳
+;--------------------------------------------------
+@KOJO_366_SEX_CHARA_HUNNYU_HI
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_CHARA_HUNNYU_HI
+ELSE
+	TRYCALLFORM KOJO_2_SEX_CHARA_HUNNYU_HI
+ENDIF
+
+
+
+
+
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+;絶頂関連
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+;C絶頂
+;--------------------------------------------------
+@KOJO_366_SEX_ECSTASY_C
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_ECSTASY_C
+ELSE
+	TRYCALLFORM KOJO_2_SEX_ECSTASY_C
+ENDIF
+
+
+
+;C強絶頂
+;--------------------------------------------------
+@KOJO_366_SEX_ECSTASY_C_HI
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_ECSTASY_C_HI
+ELSE
+	TRYCALLFORM KOJO_2_SEX_ECSTASY_C_HI
+ENDIF
+
+
+
+;V絶頂
+;--------------------------------------------------
+@KOJO_366_SEX_ECSTASY_V
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_ECSTASY_V
+ELSE
+	TRYCALLFORM KOJO_2_SEX_ECSTASY_V
+ENDIF
+
+
+
+;V強絶頂
+;--------------------------------------------------
+@KOJO_366_SEX_ECSTASY_V_HI
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_ECSTASY_V_HI
+ELSE
+	TRYCALLFORM KOJO_2_SEX_ECSTASY_V_HI
+ENDIF
+
+
+
+;A絶頂
+;--------------------------------------------------
+@KOJO_366_SEX_ECSTASY_A
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_ECSTASY_A
+ELSE
+	TRYCALLFORM KOJO_2_SEX_ECSTASY_A
+ENDIF
+
+
+
+;A強絶頂
+;--------------------------------------------------
+@KOJO_366_SEX_ECSTASY_A_HI
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_ECSTASY_A_HI
+ELSE
+	TRYCALLFORM KOJO_2_SEX_ECSTASY_A_HI
+ENDIF
+
+
+
+;B絶頂
+;--------------------------------------------------
+@KOJO_366_SEX_ECSTASY_B
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_ECSTASY_B
+ELSE
+	TRYCALLFORM KOJO_2_SEX_ECSTASY_B
+ENDIF
+
+
+
+;B強絶頂
+;--------------------------------------------------
+@KOJO_366_SEX_ECSTASY_B_HI
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_ECSTASY_B_HI
+ELSE
+	TRYCALLFORM KOJO_2_SEX_ECSTASY_B_HI
+ENDIF
+
+
+
+
+
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+;多重絶頂に関する口上
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+;四重絶頂
+;--------------------------------------------------
+@KOJO_366_SEX_MULTIECSTASY_CVAB
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_MULTIECSTASY_CVAB
+ELSE
+	TRYCALLFORM KOJO_2_SEX_MULTIECSTASY_CVAB
+ENDIF
+
+
+
+;CVA三重絶頂
+;--------------------------------------------------
+@KOJO_366_SEX_MULTIECSTASY_CVA
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_MULTIECSTASY_CVA
+ELSE
+	TRYCALLFORM KOJO_2_SEX_MULTIECSTASY_CVA
+ENDIF
+
+
+
+;CVB三重絶頂
+;--------------------------------------------------
+@KOJO_366_SEX_MULTIECSTASY_CVB
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_MULTIECSTASY_CVB
+ELSE
+	TRYCALLFORM KOJO_2_SEX_MULTIECSTASY_CVB
+ENDIF
+
+
+
+;CAB三重絶頂
+;--------------------------------------------------
+@KOJO_366_SEX_MULTIECSTASY_CAB
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_MULTIECSTASY_CAB
+ELSE
+	TRYCALLFORM KOJO_2_SEX_MULTIECSTASY_CAB
+ENDIF
+
+
+
+;VAB三重絶頂
+;--------------------------------------------------
+@KOJO_366_SEX_MULTIECSTASY_VAB
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_MULTIECSTASY_VAB
+ELSE
+	TRYCALLFORM KOJO_2_SEX_MULTIECSTASY_VAB
+ENDIF
+
+
+
+;CV二重絶頂
+;--------------------------------------------------
+@KOJO_366_SEX_MULTIECSTASY_CV
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_MULTIECSTASY_CV
+ELSE
+	TRYCALLFORM KOJO_2_SEX_MULTIECSTASY_CV
+ENDIF
+
+
+
+;CA二重絶頂
+;--------------------------------------------------
+@KOJO_366_SEX_MULTIECSTASY_CA
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_MULTIECSTASY_CA
+ELSE
+	TRYCALLFORM KOJO_2_SEX_MULTIECSTASY_CA
+ENDIF
+
+
+
+;CB二重絶頂
+;--------------------------------------------------
+@KOJO_366_SEX_MULTIECSTASY_CB
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_MULTIECSTASY_CB
+ELSE
+	TRYCALLFORM KOJO_2_SEX_MULTIECSTASY_CB
+ENDIF
+
+
+
+;VA二重絶頂
+;--------------------------------------------------
+@KOJO_366_SEX_MULTIECSTASY_VA
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_MULTIECSTASY_VA
+ELSE
+	TRYCALLFORM KOJO_2_SEX_MULTIECSTASY_VA
+ENDIF
+
+
+
+;VB二重絶頂
+;--------------------------------------------------
+@KOJO_366_SEX_MULTIECSTASY_VB
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_MULTIECSTASY_VB
+ELSE
+	TRYCALLFORM KOJO_2_SEX_MULTIECSTASY_VB
+ENDIF
+
+
+
+;AB二重絶頂
+;--------------------------------------------------
+@KOJO_366_SEX_MULTIECSTASY_AB
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_MULTIECSTASY_AB
+ELSE
+	TRYCALLFORM KOJO_2_SEX_MULTIECSTASY_AB
+ENDIF
+
+
+
+
+
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+;触手が射精したときの処理
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+;膣に通常射精
+;--------------------------------------------------
+@KOJO_366_SEX_TENTACLE_SYASEI_VAGINA
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_TENTACLE_SYASEI_VAGINA
+ELSE
+	TRYCALLFORM KOJO_2_SEX_TENTACLE_SYASEI_VAGINA
+ENDIF
+
+
+
+;膣に大量射精
+;--------------------------------------------------
+@KOJO_366_SEX_TENTACLE_SYASEI_VAGINA_HI
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_TENTACLE_SYASEI_VAGINA_HI
+ELSE
+	TRYCALLFORM KOJO_2_SEX_TENTACLE_SYASEI_VAGINA_HI
+ENDIF
+
+
+
+;アナルに通常射精
+;--------------------------------------------------
+@KOJO_366_SEX_TENTACLE_SYASEI_ANAL
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_TENTACLE_SYASEI_ANAL
+ELSE
+	TRYCALLFORM KOJO_2_SEX_TENTACLE_SYASEI_ANAL
+ENDIF
+
+
+
+;アナルに大量射精
+;--------------------------------------------------
+@KOJO_366_SEX_TENTACLE_SYASEI_ANAL_HI
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_TENTACLE_SYASEI_ANAL_HI
+ELSE
+	TRYCALLFORM KOJO_2_SEX_TENTACLE_SYASEI_ANAL_HI
+ENDIF
+
+
+
+;手に通常射精
+;--------------------------------------------------
+@KOJO_366_SEX_TENTACLE_SYASEI_HAND
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_TENTACLE_SYASEI_HAND
+ELSE
+	TRYCALLFORM KOJO_2_SEX_TENTACLE_SYASEI_HAND
+ENDIF
+
+
+
+;手に大量射精
+;--------------------------------------------------
+@KOJO_366_SEX_TENTACLE_SYASEI_HAND_HI
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_TENTACLE_SYASEI_HAND_HI
+ELSE
+	TRYCALLFORM KOJO_2_SEX_TENTACLE_SYASEI_HAND_HI
+ENDIF
+
+
+
+;口内に通常射精
+;--------------------------------------------------
+@KOJO_366_SEX_TENTACLE_SYASEI_MOUTH
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_TENTACLE_SYASEI_MOUTH
+ELSE
+	TRYCALLFORM KOJO_2_SEX_TENTACLE_SYASEI_MOUTH
+ENDIF
+
+
+
+;口内に大量射精
+;--------------------------------------------------
+@KOJO_366_SEX_TENTACLE_SYASEI_MOUTH_HI
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_TENTACLE_SYASEI_MOUTH_HI
+ELSE
+	TRYCALLFORM KOJO_2_SEX_TENTACLE_SYASEI_MOUTH_HI
+ENDIF
+
+
+
+;胸に通常射精
+;--------------------------------------------------
+@KOJO_366_SEX_TENTACLE_SYASEI_BUST
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_TENTACLE_SYASEI_BUST
+ELSE
+	TRYCALLFORM KOJO_2_SEX_TENTACLE_SYASEI_BUST
+ENDIF
+
+
+
+;胸に大量射精
+;--------------------------------------------------
+@KOJO_366_SEX_TENTACLE_SYASEI_BUST_HI
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_TENTACLE_SYASEI_BUST_HI
+ELSE
+	TRYCALLFORM KOJO_2_SEX_TENTACLE_SYASEI_BUST_HI
+ENDIF
+
+
+
+;避妊結界が破られた
+;--------------------------------------------------
+@KOJO_366_PREGNANCY_BARRIER_COLLAPSED
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_PREGNANCY_BARRIER_COLLAPSED
+ELSE
+	TRYCALLFORM KOJO_2_PREGNANCY_BARRIER_COLLAPSED
+ENDIF
+
+
+
+
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+;戦闘終了関連
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+;ボス触手・ラスボス触手に勝利
+;--------------------------------------------------
+@KOJO_366_BATTLE_END_WIN
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_END_WIN
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_END_WIN
+ENDIF
+
+
+
+;敵キャラに勝利
+;--------------------------------------------------
+@KOJO_366_BATTLE_END_WIN_ENEMY
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_END_WIN_ENEMY
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_END_WIN_ENEMY
+ENDIF
+
+
+
+;ラスボス触手出現
+;--------------------------------------------------
+@KOJO_366_BATTLE_END_LASTBOSSAPPEAR
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_END_LASTBOSSAPPEAR
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_END_LASTBOSSAPPEAR
+ENDIF
+
+
+
+;完全殲滅
+;--------------------------------------------------
+@KOJO_366_BATTLE_END_PERFECT
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_END_PERFECT
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_END_PERFECT
+ENDIF
+
+
+
+;捕らわれキャラの救出
+;--------------------------------------------------
+@KOJO_366_BATTLE_END_RESCUED
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_END_RESCUED
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_END_RESCUED
+ENDIF
+
+
+
+;洗脳中キャラの救出
+;--------------------------------------------------
+@KOJO_366_BATTLE_END_RESCUE_SENNOU
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_END_RESCUE_SENNOU
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_END_RESCUE_SENNOU
+ENDIF
+
+
+
+;敵キャラの救出
+;--------------------------------------------------
+@KOJO_366_BATTLE_END_RESCUE_ENEMY
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_END_RESCUE_ENEMY
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_END_RESCUE_ENEMY
+ENDIF
+
+
+
+;敗北
+;--------------------------------------------------
+@KOJO_366_BATTLE_END_LOSS
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_END_LOSS
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_END_LOSS
+ENDIF
+
+
+
+;時間切れ
+;--------------------------------------------------
+@KOJO_366_BATTLE_END_TIMEUP
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_END_TIMEUP
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_END_TIMEUP
+ENDIF
+
+
+
+
+
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+;素質関連
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+;処女喪失
+;--------------------------------------------------
+@KOJO_366_SEX_LOSTVIRGIN
+;特に喋らせたいことが無ければ空白でもＯＫ
+;また、分岐を全て埋めなければいけないわけでもない
+;例
+;恋人で処女喪失
+;IF CFLAG:TARGET:206 == 5
+;	PRINTFORML 「んぐっ！ …だい…じょうぶ、痛くない…よ❤」
+;犬で処女喪失
+;ELSEIF CFLAG:TARGET:206 == 10
+;	PRINTFORML 「んぐっ！ …ワンちゃんに…奪われちゃったぁ❤」
+
+;子触手襲撃
+IF CFLAG:TARGET:206 == 1
+;通常戦闘中（敵）
+ELSEIF CFLAG:TARGET:206 == 2
+;幽閉中（敵）
+ELSEIF CFLAG:TARGET:206 == 3
+;触手拘束具/寄生触手
+ELSEIF CFLAG:TARGET:206 == 4
+;恋人との夜の営み
+ELSEIF CFLAG:TARGET:206 == 5
+;仲間夜這い
+ELSEIF CFLAG:TARGET:206 == 6
+;枕営業
+ELSEIF CFLAG:TARGET:206 == 7
+;援助交際
+ELSEIF CFLAG:TARGET:206 == 8
+;公衆便所（浮浪者）
+ELSEIF CFLAG:TARGET:206 == 9
+;公衆便所（犬）
+ELSEIF CFLAG:TARGET:206 == 10
+;クズ市民
+ELSEIF CFLAG:TARGET:206 == 11
+;情報屋
+ELSEIF CFLAG:TARGET:206 == 12
+ENDIF
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_LOSTVIRGIN
+ELSE
+	TRYCALLFORM KOJO_2_SEX_LOSTVIRGIN
+ENDIF
+
+
+
+;触手の虜取得
+;--------------------------------------------------
+@KOJO_366_GETTALENT_TORIKO
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_GETTALENT_TORIKO
+ELSE
+	TRYCALLFORM KOJO_2_GETTALENT_TORIKO
+ENDIF
+
+
+
+;淫乱取得
+;--------------------------------------------------
+@KOJO_366_GETTALENT_INRAN
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_GETTALENT_INRAN
+ELSE
+	TRYCALLFORM KOJO_2_GETTALENT_INRAN
+ENDIF
+
+
+
+;淫核取得
+;--------------------------------------------------
+@KOJO_366_GETTALENT_INKAKU
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_GETTALENT_INKAKU
+ELSE
+	TRYCALLFORM KOJO_2_GETTALENT_INKAKU
+ENDIF
+
+
+
+;淫壷取得
+;--------------------------------------------------
+@KOJO_366_GETTALENT_INTUBO
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_GETTALENT_INTUBO
+ELSE
+	TRYCALLFORM KOJO_2_GETTALENT_INTUBO
+ENDIF
+
+
+
+;淫尻取得
+;--------------------------------------------------
+@KOJO_366_GETTALENT_INJIRI
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_GETTALENT_INJIRI
+ELSE
+	TRYCALLFORM KOJO_2_GETTALENT_INJIRI
+ENDIF
+
+
+
+;淫乳取得
+;--------------------------------------------------
+@KOJO_366_GETTALENT_INNYUU
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_GETTALENT_INNYUU
+ELSE
+	TRYCALLFORM KOJO_2_GETTALENT_INNYUU
+ENDIF
+
+
+
+;清純派喪失
+;--------------------------------------------------
+@KOJO_366_LOSETALENT_SEIJUNHA
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_LOSETALENT_SEIJUNHA
+ELSE
+	TRYCALLFORM KOJO_2_LOSETALENT_SEIJUNHA
+ENDIF
+
+
+
+
+
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+;刻印関連
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+;快楽刻印１取得
+;--------------------------------------------------
+@KOJO_366_SEX_MARK_KAIRAKU_1
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_MARK_KAIRAKU_1
+ELSE
+	TRYCALLFORM KOJO_2_SEX_MARK_KAIRAKU_1
+ENDIF
+
+
+
+;快楽刻印２取得
+;--------------------------------------------------
+@KOJO_366_SEX_MARK_KAIRAKU_2
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_MARK_KAIRAKU_2
+ELSE
+	TRYCALLFORM KOJO_2_SEX_MARK_KAIRAKU_2
+ENDIF
+
+
+
+;快楽刻印３取得
+;--------------------------------------------------
+@KOJO_366_SEX_MARK_KAIRAKU_3
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_MARK_KAIRAKU_3
+ELSE
+	TRYCALLFORM KOJO_2_SEX_MARK_KAIRAKU_3
+ENDIF
+
+
+
+;快楽刻印４取得
+;--------------------------------------------------
+@KOJO_366_SEX_MARK_KAIRAKU_4
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_MARK_KAIRAKU_4
+ELSE
+	TRYCALLFORM KOJO_2_SEX_MARK_KAIRAKU_4
+ENDIF
+
+
+
+;快楽刻印５取得
+;--------------------------------------------------
+@KOJO_366_SEX_MARK_KAIRAKU_5
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_MARK_KAIRAKU_5
+ELSE
+	TRYCALLFORM KOJO_2_SEX_MARK_KAIRAKU_5
+ENDIF
+
+
+
+;苦痛刻印１取得
+;--------------------------------------------------
+@KOJO_366_SEX_MARK_KUTUU_1
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_MARK_KUTUU_1
+ELSE
+	TRYCALLFORM KOJO_2_SEX_MARK_KUTUU_1
+ENDIF
+
+
+
+;苦痛刻印２取得
+;--------------------------------------------------
+@KOJO_366_SEX_MARK_KUTUU_2
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_MARK_KUTUU_2
+ELSE
+	TRYCALLFORM KOJO_2_SEX_MARK_KUTUU_2
+ENDIF
+
+
+
+;苦痛刻印３取得
+;--------------------------------------------------
+@KOJO_366_SEX_MARK_KUTUU_3
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_MARK_KUTUU_3
+ELSE
+	TRYCALLFORM KOJO_2_SEX_MARK_KUTUU_3
+ENDIF
+
+
+
+;苦痛刻印４取得
+;--------------------------------------------------
+@KOJO_366_SEX_MARK_KUTUU_4
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_MARK_KUTUU_4
+ELSE
+	TRYCALLFORM KOJO_2_SEX_MARK_KUTUU_4
+ENDIF
+
+
+
+;苦痛刻印５取得
+;--------------------------------------------------
+@KOJO_366_SEX_MARK_KUTUU_5
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_MARK_KUTUU_5
+ELSE
+	TRYCALLFORM KOJO_2_SEX_MARK_KUTUU_5
+ENDIF
+
+
+
+;屈服刻印１取得
+;--------------------------------------------------
+@KOJO_366_SEX_MARK_KUPPUKU_1
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_MARK_KUPPUKU_1
+ELSE
+	TRYCALLFORM KOJO_2_SEX_MARK_KUPPUKU_1
+ENDIF
+
+
+
+;屈服刻印２取得
+;--------------------------------------------------
+@KOJO_366_SEX_MARK_KUPPUKU_2
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_MARK_KUPPUKU_2
+ELSE
+	TRYCALLFORM KOJO_2_SEX_MARK_KUPPUKU_2
+ENDIF
+
+
+
+;屈服刻印３取得
+;--------------------------------------------------
+@KOJO_366_SEX_MARK_KUPPUKU_3
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_MARK_KUPPUKU_3
+ELSE
+	TRYCALLFORM KOJO_2_SEX_MARK_KUPPUKU_3
+ENDIF
+
+
+
+;屈服刻印４取得
+;--------------------------------------------------
+@KOJO_366_SEX_MARK_KUPPUKU_4
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_MARK_KUPPUKU_4
+ELSE
+	TRYCALLFORM KOJO_2_SEX_MARK_KUPPUKU_4
+ENDIF
+
+
+
+;屈服刻印５取得
+;--------------------------------------------------
+@KOJO_366_SEX_MARK_KUPPUKU_5
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_MARK_KUPPUKU_5
+ELSE
+	TRYCALLFORM KOJO_2_SEX_MARK_KUPPUKU_5
+ENDIF
+
+
+
+;恐怖刻印１取得
+;--------------------------------------------------
+@KOJO_366_SEX_MARK_KYOUHU_1
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_MARK_KYOUHU_1
+ELSE
+	TRYCALLFORM KOJO_2_SEX_MARK_KYOUHU_1
+ENDIF
+
+
+
+;恐怖刻印２取得
+;--------------------------------------------------
+@KOJO_366_SEX_MARK_KYOUHU_2
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_MARK_KYOUHU_2
+ELSE
+	TRYCALLFORM KOJO_2_SEX_MARK_KYOUHU_2
+ENDIF
+
+
+
+;恐怖刻印３取得
+;--------------------------------------------------
+@KOJO_366_SEX_MARK_KYOUHU_3
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_MARK_KYOUHU_3
+ELSE
+	TRYCALLFORM KOJO_2_SEX_MARK_KYOUHU_3
+ENDIF
+
+
+
+;恐怖刻印４取得
+;--------------------------------------------------
+@KOJO_366_SEX_MARK_KYOUHU_4
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_MARK_KYOUHU_4
+ELSE
+	TRYCALLFORM KOJO_2_SEX_MARK_KYOUHU_4
+ENDIF
+
+
+
+;恐怖刻印５取得
+;--------------------------------------------------
+@KOJO_366_SEX_MARK_KYOUHU_5
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_MARK_KYOUHU_5
+ELSE
+	TRYCALLFORM KOJO_2_SEX_MARK_KYOUHU_5
+ENDIF
+
+
+
+;恥辱刻印１取得
+;--------------------------------------------------
+@KOJO_366_SEX_MARK_TIJYOKU_1
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_MARK_TIJYOKU_1
+ELSE
+	TRYCALLFORM KOJO_2_SEX_MARK_TIJYOKU_1
+ENDIF
+
+
+
+;恥辱刻印２取得
+;--------------------------------------------------
+@KOJO_366_SEX_MARK_TIJYOKU_2
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_MARK_TIJYOKU_2
+ELSE
+	TRYCALLFORM KOJO_2_SEX_MARK_TIJYOKU_2
+ENDIF
+
+
+
+;恥辱刻印３取得
+;--------------------------------------------------
+@KOJO_366_SEX_MARK_TIJYOKU_3
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_MARK_TIJYOKU_3
+ELSE
+	TRYCALLFORM KOJO_2_SEX_MARK_TIJYOKU_3
+ENDIF
+
+
+
+;恥辱刻印４取得
+;--------------------------------------------------
+@KOJO_366_SEX_MARK_TIJYOKU_4
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_MARK_TIJYOKU_4
+ELSE
+	TRYCALLFORM KOJO_2_SEX_MARK_TIJYOKU_4
+ENDIF
+
+
+
+;恥辱刻印５取得
+;--------------------------------------------------
+@KOJO_366_SEX_MARK_TIJYOKU_5
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SEX_MARK_TIJYOKU_5
+ELSE
+	TRYCALLFORM KOJO_2_SEX_MARK_TIJYOKU_5
+ENDIF
+
+
+
+
+
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+;心境変化関連
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+;倒錯
+;--------------------------------------------------
+@KOJO_366_BATTLE_SHINKYOU_CHANGE_TOUSAKU
+;犯された場合
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_SHINKYOU_CHANGE_TOUSAKU
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_SHINKYOU_CHANGE_TOUSAKU
+ENDIF
+
+
+
+;怒り
+;--------------------------------------------------
+@KOJO_366_BATTLE_SHINKYOU_CHANGE_IKARI
+;罵倒した場合
+IF SELECTCOM == 45
+;攻撃を受けた場合
+ELSE
+ENDIF
+
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_SHINKYOU_CHANGE_IKARI
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_SHINKYOU_CHANGE_IKARI
+ENDIF
+
+
+
+;諦観
+;--------------------------------------------------
+@KOJO_366_BATTLE_SHINKYOU_CHANGE_TEIKAN
+;反抗した場合
+IF SELECTCOM == 46
+;攻撃を受けた場合
+ELSE
+ENDIF
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_SHINKYOU_CHANGE_TEIKAN
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_SHINKYOU_CHANGE_TEIKAN
+ENDIF
+
+
+
+;冷静
+;--------------------------------------------------
+@KOJO_366_BATTLE_SHINKYOU_CHANGE_REISEI
+;反抗した場合
+IF SELECTCOM == 46
+;絡みつかれた場合
+ELSE
+ENDIF
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_SHINKYOU_CHANGE_REISEI
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_SHINKYOU_CHANGE_REISEI
+ENDIF
+
+
+
+;動揺
+;--------------------------------------------------
+@KOJO_366_BATTLE_SHINKYOU_CHANGE_DOUYOU
+;罵倒した場合
+IF SELECTCOM == 45
+;絡みつかれた場合
+ELSE
+ENDIF
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_SHINKYOU_CHANGE_DOUYOU
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_SHINKYOU_CHANGE_DOUYOU
+ENDIF
+
+
+
+;高揚
+;--------------------------------------------------
+@KOJO_366_BATTLE_SHINKYOU_CHANGE_KOUYOU
+;背後に回り込んだ場合
+IF SELECTCOM == 6
+;攻撃を回避された場合
+ELSE
+ENDIF
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_SHINKYOU_CHANGE_KOUYOU
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_SHINKYOU_CHANGE_KOUYOU
+ENDIF
+
+
+
+;消沈
+;--------------------------------------------------
+@KOJO_366_BATTLE_SHINKYOU_CHANGE_SYOUTIN
+;攻撃を回避された場合
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_SHINKYOU_CHANGE_SYOUTIN
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_SHINKYOU_CHANGE_SYOUTIN
+ENDIF
+
+
+
+
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+;体が竦んだ関連
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+;触手の虜で体が竦む
+;--------------------------------------------------
+@KOJO_366_BATTLE_DISACTION_TORIKO
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_DISACTION_TORIKO
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_DISACTION_TORIKO
+ENDIF
+
+
+
+;快楽で体が竦む
+;--------------------------------------------------
+@KOJO_366_BATTLE_DISACTION_KAIRAKU
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_DISACTION_KAIRAKU
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_DISACTION_KAIRAKU
+ENDIF
+
+
+
+;苦痛で体が竦む
+;--------------------------------------------------
+@KOJO_366_BATTLE_DISACTION_KUTUU
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_DISACTION_KUTUU
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_DISACTION_KUTUU
+ENDIF
+
+
+
+;屈辱で体が竦む
+;--------------------------------------------------
+@KOJO_366_BATTLE_DISACTION_KUTUZYOKU
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_DISACTION_KUTUZYOKU
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_DISACTION_KUTUZYOKU
+ENDIF
+
+
+
+;恐怖で体が竦む
+;--------------------------------------------------
+@KOJO_366_BATTLE_DISACTION_KYOUHU
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_DISACTION_KYOUHU
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_DISACTION_KYOUHU
+ENDIF
+
+
+
+;恥辱で体が竦む
+;--------------------------------------------------
+@KOJO_366_BATTLE_DISACTION_TIZYOKU
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_DISACTION_TIZYOKU
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_DISACTION_TIZYOKU
+ENDIF
+
+
+
+;寄生の影響で体が竦む
+;--------------------------------------------------
+@KOJO_366_BATTLE_DISACTION_PARASITE
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_BATTLE_DISACTION_PARASITE
+ELSE
+	TRYCALLFORM KOJO_2_BATTLE_DISACTION_PARASITE
+ENDIF
+
+
+
+
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+;自慰関連
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+;戦闘後自慰
+;--------------------------------------------------
+@KOJO_366_SELF_BATTLEEND
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SELF_BATTLEEND
+ELSE
+	TRYCALLFORM KOJO_2_SELF_BATTLEEND
+ENDIF
+
+
+
+;普通の自慰
+;--------------------------------------------------
+@KOJO_366_SELF_N
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SELF_N
+ELSE
+	TRYCALLFORM KOJO_2_SELF_N
+ENDIF
+
+
+
+;胸自慰
+;--------------------------------------------------
+@KOJO_366_SELF_B
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SELF_B
+ELSE
+	TRYCALLFORM KOJO_2_SELF_B
+ENDIF
+
+
+
+;アナニー
+;--------------------------------------------------
+@KOJO_366_SELF_A
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SELF_A
+ELSE
+	TRYCALLFORM KOJO_2_SELF_A
+ENDIF
+
+
+
+
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+;幽閉関係
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+;初めての幽閉
+;--------------------------------------------------
+@KOJO_366_PRISON_PRISENTENCE_FIRST
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_PRISON_PRISENTENCE_FIRST
+ELSE
+	TRYCALLFORM KOJO_2_PRISON_PRISENTENCE_FIRST
+ENDIF
+
+
+
+;二度目以降の幽閉後の初被姦
+;--------------------------------------------------
+@KOJO_366_PRISON_PRISENTENCE_START
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_PRISON_PRISENTENCE_START
+ELSE
+	TRYCALLFORM KOJO_2_PRISON_PRISENTENCE_START
+ENDIF
+
+
+
+;幽閉後の被姦開始文
+;--------------------------------------------------
+@KOJO_366_PRISON_PRISENTENCE
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_PRISON_PRISENTENCE
+ELSE
+	TRYCALLFORM KOJO_2_PRISON_PRISENTENCE
+ENDIF
+
+
+
+;洗脳になった
+;--------------------------------------------------
+@KOJO_366_PRISON_SENNOU
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_PRISON_SENNOU
+ELSE
+	TRYCALLFORM KOJO_2_PRISON_SENNOU
+ENDIF
+
+
+
+;悪堕ちになった
+;--------------------------------------------------
+@KOJO_366_PRISON_AKUOTI
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_PRISON_AKUOTI
+ELSE
+	TRYCALLFORM KOJO_2_PRISON_AKUOTI
+ENDIF
+
+
+
+;取り込まれ
+;--------------------------------------------------
+@KOJO_366_PRISON_DEAD
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_PRISON_DEAD
+ELSE
+	TRYCALLFORM KOJO_2_PRISON_DEAD
+ENDIF
+
+
+
+;ふたなり化
+;--------------------------------------------------
+@KOJO_366_PRISON_HUTANARI
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_PRISON_HUTANARI
+ELSE
+	TRYCALLFORM KOJO_2_PRISON_HUTANARI
+ENDIF
+
+
+
+;母乳体質化
+;--------------------------------------------------
+@KOJO_366_PRISON_BONYU
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_PRISON_BONYU
+ELSE
+	TRYCALLFORM KOJO_2_PRISON_BONYU
+ENDIF
+
+
+
+;C中心攻め
+;--------------------------------------------------
+@KOJO_366_PRISON_COM_0
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_PRISON_COM_0
+ELSE
+	TRYCALLFORM KOJO_2_PRISON_COM_0
+ENDIF
+
+
+
+;V中心攻め
+;--------------------------------------------------
+@KOJO_366_PRISON_COM_1
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_PRISON_COM_1
+ELSE
+	TRYCALLFORM KOJO_2_PRISON_COM_1
+ENDIF
+
+
+
+;A中心攻め
+;--------------------------------------------------
+@KOJO_366_PRISON_COM_2
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_PRISON_COM_2
+ELSE
+	TRYCALLFORM KOJO_2_PRISON_COM_2
+ENDIF
+
+
+
+;B中心攻め
+;--------------------------------------------------
+@KOJO_366_PRISON_COM_3
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_PRISON_COM_3
+ELSE
+	TRYCALLFORM KOJO_2_PRISON_COM_3
+ENDIF
+
+
+
+;Sな攻め
+;--------------------------------------------------
+@KOJO_366_PRISON_COM_4
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_PRISON_COM_4
+ELSE
+	TRYCALLFORM KOJO_2_PRISON_COM_4
+ENDIF
+
+
+
+;強制奉仕
+;--------------------------------------------------
+@KOJO_366_PRISON_COM_5
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_PRISON_COM_5
+ELSE
+	TRYCALLFORM KOJO_2_PRISON_COM_5
+ENDIF
+
+
+
+;羞恥な攻め
+;--------------------------------------------------
+@KOJO_366_PRISON_COM_6
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_PRISON_COM_6
+ELSE
+	TRYCALLFORM KOJO_2_PRISON_COM_6
+ENDIF
+
+
+
+;子触手に犯される
+;--------------------------------------------------
+@KOJO_366_PRISON_COM_7
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_PRISON_COM_7
+ELSE
+	TRYCALLFORM KOJO_2_PRISON_COM_7
+ENDIF
+
+
+
+;ふたなり攻め
+;--------------------------------------------------
+@KOJO_366_PRISON_COM_100
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_PRISON_COM_100
+ELSE
+	TRYCALLFORM KOJO_2_PRISON_COM_100
+ENDIF
+
+
+
+;V拡張
+;--------------------------------------------------
+@KOJO_366_PRISON_COM_101
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_PRISON_COM_101
+ELSE
+	TRYCALLFORM KOJO_2_PRISON_COM_101
+ENDIF
+
+
+
+;A拡張
+;--------------------------------------------------
+@KOJO_366_PRISON_COM_102
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_PRISON_COM_102
+ELSE
+	TRYCALLFORM KOJO_2_PRISON_COM_102
+ENDIF
+
+
+
+;搾乳攻め
+;--------------------------------------------------
+@KOJO_366_PRISON_COM_103
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_PRISON_COM_103
+ELSE
+	TRYCALLFORM KOJO_2_PRISON_COM_103
+ENDIF
+
+
+
+;Vに産卵
+;--------------------------------------------------
+@KOJO_366_PRISON_COM_200
+
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_PRISON_COM_200
+ELSE
+	TRYCALLFORM KOJO_2_PRISON_COM_200
+ENDIF
+
+
+;Aに産卵
+;--------------------------------------------------
+@KOJO_366_PRISON_COM_201
+
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_PRISON_COM_201
+ELSE
+	TRYCALLFORM KOJO_2_PRISON_COM_201
+ENDIF
+
+
+;注射
+;--------------------------------------------------
+@KOJO_366_PRISON_COM_300
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_PRISON_COM_300
+ELSE
+	TRYCALLFORM KOJO_2_PRISON_COM_300
+ENDIF
+
+
+
+;触手の寄生
+;--------------------------------------------------
+@KOJO_366_PRISON_COM_301
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_PRISON_COM_301
+ELSE
+	TRYCALLFORM KOJO_2_PRISON_COM_301
+ENDIF
+
+
+
+
+
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+;サブイベント関連
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+;悪堕ちキャラに敗北して犯される
+;--------------------------------------------------
+@KOJO_366_SUBEVENT_BATTLE_RAPED_ENEMY
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SUBEVENT_BATTLE_RAPED_ENEMY
+ELSE
+	TRYCALLFORM KOJO_2_SUBEVENT_BATTLE_RAPED_ENEMY
+ENDIF
+
+
+
+;触手拘束具を着せられた
+;--------------------------------------------------
+@KOJO_366_SUBEVENT_BATTLE_SETTENTACLECLOTH
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SUBEVENT_BATTLE_SETTENTACLECLOTH
+ELSE
+	TRYCALLFORM KOJO_2_SUBEVENT_BATTLE_SETTENTACLECLOTH
+ENDIF
+
+
+
+;触手拘束具による被姦
+;--------------------------------------------------
+@KOJO_366_SUBEVENT_BATTLE_ACTTENTACLECLOTH
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_2_SUBEVENT_BATTLE_ACTTENTACLECLOTH
+ELSE
+	TRYCALLFORM KOJO_2_SUBEVENT_BATTLE_ACTTENTACLECLOTH
+ENDIF
+
+
+
+

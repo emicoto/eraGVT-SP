@@ -1,0 +1,76 @@
+;ＳＰバースト
+@COM70
+
+;距離表示
+CALL PRINT_DISTANCE
+PRINTL 
+
+;疲労が蓄積し過ぎていると使用できない
+IF CFLAG:99 >= 100
+	PRINTFORML %PRINT_CALLNAME(TARGET)%に蓄積した疲労はもう限界に達している…！
+	PRINTFORML ＳＰバーストは使えない…！
+	PRINTW 
+	RETURN 0
+ENDIF
+
+TCVAR:0 = 2
+TFLAG:4 = 0
+
+;全ゲージ消費
+TCVAR:6 += -500
+
+FONTBOLD
+PRINTL SPバースト
+FONTREGULAR
+
+;地の文：SPバースト
+CALL MESSAGE_BATTLE_CHARA_SP_BURST
+
+;体力気力最大値、防御力、残ゲージ、行動ポイント依存の固定ダメージ
+LOCAL = MAX((MAXBASE:体力 + MAXBASE:気力 - 2000) * 2 + (MAXBASE:防御 - 100) * 3, 480) * POWER(MAX(TCVAR:4 + TCVAR:5 - 200, 0), 2) * (100 + EX:行動ポイント * 2) / 4800000 + 2500 * (CFLAG:1 == 2)
+
+;直前に睨みつける、罵倒する、反抗する、説得するを使っていた場合ダメージ上昇
+SIF PREVCOM == 44 || PREVCOM == 45 || PREVCOM == 46 || PREVCOM == 47
+	LOCAL = LOCAL * 115 / 100
+;雑魚にはダメージ強化
+SIF FLAG:110 == 0 && FLAG:10 == 2
+	LOCAL *= 2
+;消耗度が低いとダメージ低下、高いとダメージ上昇
+LOCAL = LOCAL * (125 - PERCENT_CAL_F(BASE:体力 + BASE:気力 + BASE:性耐性 * 40, MAXBASE:体力 + MAXBASE:気力 + MAXBASE:性耐性 * 40)) / 100
+;変身能力のないキャラはリスクが少ないぶんダメージ低下
+SIF TALENT:変身能力 < 1
+	LOCAL = LOCAL * 85 / 100
+;ダメージキャップ
+LOCAL = LIMIT(LOCAL, 500, 99999)
+
+FLAG:13 -= LOCAL
+FONTBOLD
+IF (FLAG:110 == 0)
+	CALL TENTACLE_ACCESS, "NAME"
+ELSEIF (FLAG:110 == 1)
+	PRINTFORM %PRINT_TRANSCALLNAME(FLAG:111)%
+ENDIF
+PRINTFORML に{LOCAL}のダメージを与えた！
+
+;反動として残り体力と気力の1/4分を消費
+LOCAL = BASE:体力 / 4
+LOCAL:1 = BASE:気力 / 4
+BASE:体力 -= LOCAL
+BASE:気力 -= LOCAL:1
+PRINTFORML 体力を{LOCAL}、気力を{LOCAL:1}消費した！
+PRINTW 
+FONTREGULAR
+
+;威力に応じて疲労が蓄積
+TFLAG:99 += 2 + MAX(TCVAR:4 + TCVAR:5 - 200, 0) * EX:行動ポイント / 400
+
+;行動ポイントを半減
+SIF EX:行動ポイント > 0
+	EX:行動ポイント = EX:行動ポイント / 2 + 1
+
+;触手の体勢が崩れる
+TFLAG:1 = 1
+;自動で戦闘メニューを選択する
+TCVAR:8 = 1
+
+RETURN 1

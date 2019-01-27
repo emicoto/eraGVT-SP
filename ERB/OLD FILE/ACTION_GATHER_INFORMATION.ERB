@@ -1,0 +1,768 @@
+;--------------------------------------------------
+;情報収集
+@GATHER_INFORMATION
+#DIM CCOUNT
+#DIM ACTION
+#DIM LOST
+ACTION = 0
+LOST = 0
+;行方不明の仲間が居るかどうかサーチ
+FOR CCOUNT, 0, CHARANUM
+	SIF CCOUNT == MASTER
+		CONTINUE
+	SIF CFLAG:CCOUNT:0 == 1 || CFLAG:CCOUNT:0 == 2 || CFLAG:CCOUNT:0 == 3 || CFLAG:CCOUNT:0 == 4
+		LOST += 1
+NEXT
+
+;変身可能キャラは変身状態になるか選べる
+CALL ACTION_TRANSFORMATION_SELECT, TARGET, "情報収集"
+
+PRINTFORM [0]噂話の聞き込み　　　
+PRINTFORM [1]事件の捜査　　　　　
+SIF CFLAG:122 > 0
+	PRINTFORM [2]情報を買う　　　　　
+SIF LOST > 0
+	PRINTFORM [3]仲間の捜索　　　　　
+PRINTL 
+PRINTL
+DRAWLINE
+
+IF CFLAG:112 > 0
+	CALL RES_SCHEDULE, 112
+	IF RESULT == 0
+		PRINTL 
+		PRINT スケジュール：噂話の聞き込み
+		PRINTL 
+	ENDIF
+	IF RESULT == 1
+		PRINTL 
+		PRINT スケジュール：事件の捜査
+		PRINTL 
+	ENDIF
+	IF RESULT == 2
+		PRINTL 
+		PRINT スケジュール：情報を買う
+		IF CFLAG:122 == 0
+			PRINT （実行不能）
+			PRINTL 
+			PRINTL 手動で行動を選択してください
+			GOTO INPUT_LOOP
+		ENDIF
+	ENDIF
+	IF RESULT == 3
+		PRINTL 
+		PRINT スケジュール：仲間の捜索
+		IF LOST == 0
+			PRINT （実行不能）
+			PRINTL 
+			PRINTL 手動で行動を選択してください
+			GOTO INPUT_LOOP
+		ENDIF
+	ENDIF
+ELSE
+	$INPUT_LOOP
+	INPUT
+ENDIF
+
+PRINTL 
+IF RESULT == 0
+	ACTION = 0
+ELSEIF RESULT == 1
+	ACTION = 1
+ELSEIF RESULT == 2 && CFLAG:122 > 0
+	ACTION = 2
+ELSEIF RESULT == 3 && LOST > 0
+	ACTION = 3
+ELSE
+	PRINTL 正しい値を入力してください
+	GOTO INPUT_LOOP
+ENDIF
+CALL MESSAGE_GATHER_INFORMATION, ACTION
+CALL _ABLUP, 1
+SIF CFLAG:1 > 0
+	CALL TRANSFORM, 0
+BEGIN TURNEND
+
+;情報収集メッセージ
+@MESSAGE_GATHER_INFORMATION, ARG
+#DIM GATHER
+#DIM HANTEI
+GATHER = 0
+DRAWLINE
+SELECTCASE ARG
+	;噂話の聞き込み
+	CASE 0
+		PRINTL 噂話の聞き込み
+		PRINTL 
+		;情報収集の判定
+		HANTEI = RAND:85 + SQRT(EXP:魅了経験) * 2
+		;内向的
+		SIF TALENT:内向的 > 0
+			HANTEI -= 15
+		;社交的
+		SIF TALENT:社交的 > 0
+			HANTEI += 15
+		;FEAT効果による幸運補正
+		SIF TALENT:ラッキーチャーム > 0
+			HANTEI += 20
+
+		;コネ『噂好きの友人』
+		IF CFLAG:120 > 0 && RAND:2 == 0 && CFLAG:1 == 0
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は噂好きの友人に目ぼしい話がないか聞いてみた。
+			HANTEI += RAND:25 + RAND:25 + 25
+		;学生
+		ELSEIF RAND:4 != 0 && TALENT:801 > 0 && TIME == 0 && CFLAG:1 == 0
+			;小学生の場合
+			IF TALENT:801 == 1
+				LOCALS = 小学校
+			;中学生の場合
+			ELSEIF TALENT:801 == 2
+				LOCALS = 中学校
+			;高校生の場合
+			ELSEIF TALENT:801 == 3
+				LOCALS = 高校
+			;大学生の場合
+			ELSEIF TALENT:801 == 4
+				LOCALS = 大学
+			ENDIF
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は自分が通う%LOCALS%で妙な噂話が無いか聞いて回った。
+		;日常生活
+		ELSEIF RAND:2 == 0 && CFLAG:1 == 0
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は日常生活の中で出来る限り情報を集めた。
+		;周囲の人々
+		ELSE
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は周囲の人々からさりげなく情報を集めた。
+		ENDIF
+		;平和だと噂が減る
+		HANTEI = HANTEI - SQRT(FLAG:852) / 10
+
+		;情報収集の結果
+		IF HANTEI < 10
+			PRINTFORML しかしあまり情報は集まらなかった・・・
+			GATHER = 2 + RAND:3
+		ELSEIF HANTEI < 50
+			IF RAND:3 == 0
+				PRINTFORML 思ったより情報が集まったのは良いが、曖昧な話が多すぎる・・・
+			ELSEIF RAND:2 == 0
+				PRINTFORML 他愛ない噂話ばかりだったが、その背後に触手が関わっている可能性は高い・・・
+			ELSE
+				PRINTFORML 一見すると無関係な話題の中に、ひとつ気になる情報が混じっていた・・・
+			ENDIF
+			GATHER = 4 + RAND:3
+		ELSEIF HANTEI < 75
+			PRINTFORML その結果、敵の居場所のヒントになりそうな話を聞くことができた！
+			GATHER = 8 + RAND:3
+		ELSE
+			PRINTFORML その結果、かなり信憑性の高い目撃情報を手に入れることができた！
+			GATHER = 12 + RAND:3
+		ENDIF
+		IF CONFIG_CHECK_SCREEN_F(3) == 0
+			PRINTW 
+		ELSE
+			PRINTL 
+		ENDIF
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%による調査の結果、探索度が{GATHER}上昇しました。
+		CALL RESEARCH_PROGRESS, GATHER
+		;魅了経験の上昇とFEATの効果
+		LOCAL = 0
+		IF RAND:2 == 0 && EXP:魅了経験 > 30 && (EXP:魅了経験 < 99 || EXP:魅了経験 > 99)
+			LOCAL += 1
+			SIF TALENT:平凡 > 0 && RAND:4 == 0
+				LOCAL -= 1
+			SIF TALENT:人外の美貌 > 0 && RAND:4 == 0 && EXP:魅了経験 < 98
+				LOCAL += 1
+		ELSEIF RAND:3 == 0 && EXP:魅了経験 < 28
+			LOCAL += 2
+			SIF TALENT:平凡 > 0 && RAND:4 != 0
+				LOCAL -= 1
+			SIF TALENT:人外の美貌 > 0 && RAND:4 != 0 && EXP:魅了経験 < 27
+				LOCAL += 1
+		ELSEIF EXP:魅了経験 < 29
+			LOCAL += 1
+			SIF TALENT:平凡 > 0 && RAND:4 == 0
+				LOCAL -= 1
+			SIF TALENT:人外の美貌 > 0 && RAND:4 != 0 && EXP:魅了経験 < 28
+				LOCAL += 1
+		ENDIF
+		IF LOCAL > 0
+			EXP:魅了経験 += LOCAL
+			PRINTFORML 魅了経験が{LOCAL}上がった
+		ENDIF
+		;噂好きの友人とのコネ獲得
+		IF CFLAG:120 == 0 && HANTEI >= 50 && RAND:4 == 0 && CFLAG:1 == 0
+			PRINTL 
+			PRINTW ・
+			PRINTW ・・
+			PRINTW ・・・
+			PRINTFORML なんと、%PRINT_TRANSCALLNAME(TARGET)%は『コネ：噂好きの友人』を獲得した！
+			CFLAG:120 = 1
+		;情報屋とのコネ獲得
+		ELSEIF CFLAG:122 == 0 && RAND:12 == 0
+			HANTEI = 0
+			PRINTL 
+			PRINTW ・
+			PRINTW ・・
+			PRINTW ・・・
+			PRINTFORML 事件を調べていた%PRINT_TRANSCALLNAME(TARGET)%の前に報酬次第で情報提供をしてもいいと言う者が現れた。
+			IF CFLAG:1 > 0
+				SETBIT HANTEI, 1
+			ELSE
+				SETBIT HANTEI, 0
+			ENDIF
+			;小太りの男
+			IF RAND:7 == 0
+				PRINTFORML 小太りでいかにも下品な雰囲気が漂う男だが・・・
+				SETBIT HANTEI, 2
+			;上品な男
+			ELSEIF RAND:6 == 0
+				PRINTFORML 丁寧で上品な振る舞いの男だが、目つきに何か鋭いものを感じる・・・
+				SETBIT HANTEI, 3
+			;探偵風の男
+			ELSEIF RAND:5 == 0
+				PRINTFORML 本人は探偵を名乗っているが、微妙に胡散臭い・・・
+				SETBIT HANTEI, 4
+			;ゲス野郎
+			ELSEIF RAND:4 == 0
+				PRINTFORML 危険な気配を感じる。おそらくカタギの人間ではないだろう・・・
+				SETBIT HANTEI, 2
+				SETBIT HANTEI, 3
+			;シティハンター的なあいつ
+			ELSEIF RAND:3 == 0
+				PRINTFORML どうにも軽口の多いお調子者といった感じの男だが・・・
+				SETBIT HANTEI, 2
+				SETBIT HANTEI, 4
+			;老人
+			ELSEIF RAND:2 == 0
+				PRINTFORML 落ち付いた雰囲気の老紳士といった風情だが・・・
+				SETBIT HANTEI, 3
+				SETBIT HANTEI, 4
+			ENDIF
+			PRINTL [0]連絡先を聞く
+			PRINTL [1]無視する
+			$INPUT_LOOP_0_122
+			INPUT
+			IF RESULT == 0
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は『コネ：情報屋』を獲得した！
+				CFLAG:122 = HANTEI
+			ELSEIF RESULT == 1
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は協力の申し出を断った・・・
+			ELSE
+				GOTO INPUT_LOOP_0_122
+			ENDIF
+		ENDIF
+	;事件の捜査
+	CASE 1
+		PRINTL 事件の捜査
+		PRINTL 
+		;知性依存で達成度を判定
+		HANTEI = SQRT(BASE:知性 - 50) * 4 + RAND:(SQRT(BASE:知性) + 5)
+		;内向的
+		SIF TALENT:内向的 > 0
+			HANTEI -= 5
+		;社交的
+		SIF TALENT:社交的 > 0
+			HANTEI += 5
+		;FEAT効果による幸運補正
+		SIF TALENT:ラッキーチャーム > 0
+			HANTEI += 10
+
+		PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%は
+		IF CFLAG:121 > 0
+			PRINT コネを駆使して
+			HANTEI = HANTEI + CFLAG:121 * 20
+		ENDIF
+		IF RAND:3 == 0
+			LOCAL = RAND:3 + 1
+			SIF RAND:4 == 0
+				LOCAL += RAND:3 + 1
+			SIF RAND:4 == 0
+				LOCAL += RAND:3 + 1
+			IF RAND:2 == 0
+				LOCALS = 少女
+			ELSE
+				LOCALS = 女性
+			ENDIF
+			SIF LOCAL >= 3
+				PRINT 一晩に
+			PRINTFORM {LOCAL}人
+			SIF LOCAL >= 5
+				PRINT も
+			PRINTFORM の%LOCALS%が性的被害に遭ったという
+			LOCALS = 
+		ELSEIF RAND:2 == 0
+			LOCAL = RAND:3 + 1
+			IF LOCAL >= 2 && RAND:3 == 0
+				LOCALS = 若者たち
+			ELSEIF LOCAL >= 2 && RAND:2 == 0
+				LOCALS = 男女
+			ELSEIF RAND:2 == 0
+				LOCALS = 女性
+			ELSE
+				LOCALS = 男性
+			ENDIF
+			IF LOCAL >= 2
+				PRINTFORM {LOCAL}人の
+			ELSE
+				PRINTFORM とある
+			ENDIF
+			PRINTFORM %LOCALS%が行方不明になったという
+			LOCALS = 謎の失踪
+		ELSE
+			PRINTFORM {RAND:4 + 1}人の死者を出したという
+			LOCALS = 猟奇殺人
+		ENDIF
+		PRINTL 
+		IF RAND:4 == 0
+			PRINTFORML つい最近起きた%LOCALS%事件について調べてみることにした。
+		ELSEIF RAND:3 == 0
+			PRINTFORML 迷宮入り事件についてもう一度調べ直してみることにした。
+		ELSEIF RAND:2 == 0
+			PRINTFORML いま各種メディアを騒がせている%LOCALS%事件について調べてみることにした。
+		ELSE
+			PRINTFORML 世間には公表されていない%LOCALS%事件について調べてみることにした。
+		ENDIF
+
+		IF HANTEI < 40
+			PRINTFORML 残念ながら、まったく手がかりを掴むことができなかった・・・
+			GATHER = 0
+		ELSEIF HANTEI < 50
+			PRINTFORML 捜査の結果、僅かながら触手生物の手掛かりを発見することができた・・・
+			GATHER = 5 + RAND:5
+		ELSEIF HANTEI < 60
+			PRINTFORML 捜査の結果、触手生物の痕跡を見つけることができた！
+			GATHER = 10 + RAND:5
+		ELSEIF HANTEI < 70
+			PRINTFORML 捜査の結果、触手生物の足取りを掴むことに成功した！
+			GATHER = 15 + RAND:5
+		ELSE
+			PRINTFORML 捜査の結果、重大な手掛かりを発見することに成功した！
+			GATHER = 20 + RAND:5
+		ENDIF
+
+		;知性の上昇量
+		LOCAL:1 = 0
+		IF TALENT:変身能力 == -1 && RAND:4 == 0
+			LOCAL:1 = 3
+		ELSEIF RAND:3 == 0
+			LOCAL:1 = 2
+		ELSEIF RAND:3 < 2
+			LOCAL:1 = 1
+		ENDIF
+		IF GATHER > 0 || LOCAL:1 > 0
+			IF CONFIG_CHECK_SCREEN_F(3) == 0
+				PRINTW 
+			ELSE
+				PRINTL 
+			ENDIF
+			IF GATHER > 0
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%による調査の結果、探索度が{GATHER}上昇しました。
+				CALL RESEARCH_PROGRESS, GATHER
+			ENDIF
+			IF LOCAL:1 > 0
+				BASE:知性 += LOCAL:1
+				PRINTFORML 知性の基礎値が{LOCAL:1}上がった
+			ENDIF
+		ENDIF
+		;警察関係者とのコネ獲得
+		IF CFLAG:121 == 0 && HANTEI >= 40 && RAND:(MAX(10 - HANTEI / 10, 2)) == 0
+			PRINTL 
+			PRINTW ・
+			PRINTW ・・
+			PRINTW ・・・
+			PRINTFORML なんと、%PRINT_TRANSCALLNAME(TARGET)%は『コネ：警察関係者』を獲得した！
+			CFLAG:121 = 1
+		ELSEIF CFLAG:121 == 1 && HANTEI >= 70 && RAND:(MAX(10 - HANTEI / 12, 2)) == 0
+			PRINTL 
+			PRINTW ・
+			PRINTW ・・
+			PRINTW ・・・
+			PRINTFORML なんと、%PRINT_TRANSCALLNAME(TARGET)%は『コネ：警察上層部』を獲得した！
+			CFLAG:121 = 2
+		;情報屋とのコネ獲得
+		ELSEIF CFLAG:122 == 0 && RAND:6 == 0
+			HANTEI = 0
+			PRINTL 
+			PRINTW ・
+			PRINTW ・・
+			PRINTW ・・・
+			PRINTFORML 事件を調べていた%PRINT_TRANSCALLNAME(TARGET)%の前に報酬次第で情報提供をしてもいいと言う者が現れた。
+			IF CFLAG:1 > 0
+				SETBIT HANTEI, 1
+			ELSE
+				SETBIT HANTEI, 0
+			ENDIF
+			;小太りの男
+			IF RAND:7 == 0
+				PRINTFORML 小太りでいかにも下品な雰囲気が漂う男だが・・・
+				SETBIT HANTEI, 2
+			;上品な男
+			ELSEIF RAND:6 == 0
+				PRINTFORML 丁寧で上品な振る舞いの男だが、目つきに何か鋭いものを感じる・・・
+				SETBIT HANTEI, 3
+			;探偵風の男
+			ELSEIF RAND:5 == 0
+				PRINTFORML 本人は探偵を名乗っているが、微妙に胡散臭い・・・
+				SETBIT HANTEI, 4
+			;ゲス野郎
+			ELSEIF RAND:4 == 0
+				PRINTFORML 危険な気配を感じる。おそらくカタギの人間ではないだろう・・・
+				SETBIT HANTEI, 2
+				SETBIT HANTEI, 3
+			;シティハンター的なあいつ
+			ELSEIF RAND:3 == 0
+				PRINTFORML どうにも軽口の多いお調子者といった感じの男だが・・・
+				SETBIT HANTEI, 2
+				SETBIT HANTEI, 4
+			;老人
+			ELSEIF RAND:2 == 0
+				PRINTFORML 落ち付いた雰囲気の老紳士といった風情だが・・・
+				SETBIT HANTEI, 3
+				SETBIT HANTEI, 4
+			;特徴なし
+			ELSE
+				PRINTFORML 特に特徴のない普通の男に見えるが・・・
+			ENDIF
+			PRINTL [0]連絡先を聞く
+			PRINTL [1]無視する
+			$INPUT_LOOP_1_122
+			INPUT
+			IF RESULT == 0
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は『コネ：情報屋』を獲得した！
+				CFLAG:122 = HANTEI
+			ELSEIF RESULT == 1
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は協力の申し出を断った・・・
+			ELSE
+				GOTO INPUT_LOOP_1_122
+			ENDIF
+		ENDIF
+	;情報を買う
+	CASE 2
+		PRINTL 情報を買う
+		PRINTL 
+		HANTEI = 0
+		;情報屋とのコネを見る
+		IF GETBIT(CFLAG:122, 2) && GETBIT(CFLAG:122, 3)
+			LOCALS = 無法者
+		ELSEIF GETBIT(CFLAG:122, 2) && GETBIT(CFLAG:122, 4)
+			LOCALS = お調子者な男
+		ELSEIF GETBIT(CFLAG:122, 3) && GETBIT(CFLAG:122, 4)
+			LOCALS = 老紳士
+		ELSEIF GETBIT(CFLAG:122, 2)
+			LOCALS = 下品な男
+		ELSEIF GETBIT(CFLAG:122, 3)
+			LOCALS = 上品な男
+		ELSEIF GETBIT(CFLAG:122, 4)
+			LOCALS = 探偵風の男
+		ELSE
+			LOCALS = 特徴のない男
+		ENDIF
+		IF CFLAG:1 > 0 && GETBIT(CFLAG:122, 1)
+			LOCAL:99 = 1
+		ELSEIF GETBIT(CFLAG:122, 0)
+			LOCAL:99 = 1
+		ELSE
+			LOCAL:99 = 0
+		ENDIF
+		PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%は情報屋(%LOCALS%)と連絡を取った
+		;面識なし
+		IF LOCAL:99 == 0
+			PRINTFORML 。【所持金：{MONEY}】
+			PRINT 変身
+			IF CFLAG:1 > 0
+				PRINT した
+			ELSE
+				PRINT していない
+			ENDIF
+			PRINTFORML 状態では面識が無かったはずだが、おそらく商売できれば関係無いのだろう。
+			PRINTFORML 相手は深くは詮索せずに商談を開始した・・・
+		ELSE
+			PRINTFORML ・・・【所持金：{MONEY}】
+		ENDIF
+		IF CONFIG_CHECK_SCREEN_F(3) == 0
+			PRINTW 
+		ELSE
+			PRINTL 
+		ENDIF
+		CLEARLINE 1
+		;値段の決定
+		LOCAL = RAND:25 * 25 + 500
+		LOCAL:1 = RAND:50 * 50 + 5000
+		;相手が下品かつハードボイルドでない場合、こちらが女性だと値段を釣り上げる
+		IF GETBIT(CFLAG:122, 2) && GETBIT(CFLAG:122, 4) == 0 && TALENT:オトコ <= 0
+			LOCAL = LOCAL * 150 / 100
+			LOCAL:1 = LOCAL:1 * 150 / 100
+		ENDIF
+		;相手がシビアな性格だと値段と成果が高くなる
+		IF GETBIT(CFLAG:122, 3)
+			LOCAL = LOCAL * 150 / 100
+			LOCAL:1 = LOCAL:1 * 150 / 100
+		ENDIF
+		;相手がハードボイルドでなければ上客以外には本気を出さない
+		IF GETBIT(CFLAG:122, 4) > 0 || GETBIT(CFLAG:122, 5) == 0
+			LOCAL = LOCAL * 110 / 100
+			LOCAL:1 = LOCAL:1 * 110 / 100
+		ENDIF
+		;内向的かつ相手がハードボイルドでなければ足元を見られる
+		IF TALENT:内向的 > 0 && GETBIT(CFLAG:122, 3) == 0
+			LOCAL:2 = 110
+		;社交的かつ相手がシビアな性格でなければ値切る
+		ELSEIF TALENT:社交的 > 0 && GETBIT(CFLAG:122, 3) == 0
+			LOCAL:2 = 90
+		ELSE
+			LOCAL:2 = 100
+		ENDIF
+		SIF MONEY < LOCAL * LOCAL:2 / 100
+			SETCOLOR 96,96,96
+		PRINTFORML  [0]情報を買う({LOCAL * LOCAL:2 / 100})
+		RESETCOLOR
+		SIF (GETBIT(CFLAG:122, 4) == 0 && GETBIT(CFLAG:122, 5) == 0) || MONEY < LOCAL:1 * LOCAL:2 / 100
+			SETCOLOR 96,96,96
+		PRINTFORML  [1]とっておきの情報を買う({LOCAL:1 * LOCAL:2 / 100})
+		RESETCOLOR
+		SIF (TALENT:淫乱 > 0 || GETBIT(CFLAG:122, 6)) && (GETBIT(CFLAG:122, 2) || GETBIT(CFLAG:122, 4) == 0) && TALENT:オトコ <= 0
+			PRINTFORML  [2]カラダで情報を買う
+		PRINTL [99]情報を買わずに立ち去る
+		PRINTL [-1]縁を切る
+		$INPUT_2
+		INPUT
+		IF RESULT == 0 && MONEY >= LOCAL * LOCAL:2 / 100
+			MONEY -= LOCAL * LOCAL:2 / 100
+			SIF LOCAL >= 1000
+				HANTEI = 1
+			SIF GETBIT(CFLAG:122, 2) && GETBIT(CFLAG:122, 4) == 0 && TALENT:オトコ <= 0
+				LOCAL = LOCAL / 2
+			SIF GETBIT(CFLAG:122, 4) == 0 || GETBIT(CFLAG:122, 5) > 0
+				LOCAL = LOCAL * 100 / 120
+			GATHER = SQRT(LOCAL) / 3 + 5
+		ELSEIF RESULT == 1 && MONEY >= LOCAL:1 * LOCAL:2 / 100 && (GETBIT(CFLAG:122, 4) || GETBIT(CFLAG:122, 5))
+			MONEY -= LOCAL:1 * LOCAL:2 / 100
+			SIF GETBIT(CFLAG:122, 2) && GETBIT(CFLAG:122, 4) == 0 && TALENT:オトコ <= 0
+				LOCAL:1 = LOCAL:1 / 2
+			SIF GETBIT(CFLAG:122, 4) == 0 || GETBIT(CFLAG:122, 5) > 0
+				LOCAL:1 = LOCAL:1 * 100 / 120
+			GATHER = SQRT(LOCAL:1) / 4
+		ELSEIF RESULT == 2 && (TALENT:淫乱 > 0 || GETBIT(CFLAG:122, 6)) && (GETBIT(CFLAG:122, 2) || GETBIT(CFLAG:122, 4) == 0) && TALENT:オトコ <= 0
+			PRINTFORML どのような「交渉」を持ち掛けますか？
+			PRINTL  [0]口で奉仕する
+			PRINT  [1]本番
+			SIF TALENT:処女 > 0
+				PRINT (処女)
+			PRINTL 
+			$INPUT_2_2
+			INPUT
+			GATHER = 0
+			IF RESULT == 0
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は上目づかいで膝立ちになり、男に口で奉仕を始めた・・・
+				IF CONFIG_CHECK_SCREEN_F(3) == 0
+					PRINTW 
+				ELSE
+					PRINTL 
+				ENDIF
+				IF LOCALS == "下品な男"
+					PRINT ろくに洗ってもいない不潔な
+				ELSE
+					PRINT ガチガチに勃起した
+				ENDIF
+				PRINTFORML ペニスを頬張り、舌で刺激を与えていく。
+				IF TALENT:淫乱 > 0
+					PRINTFORML 積極的な奉仕に男がたまらず射精すると、
+					PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は蟲惑的な表情で精液を飲み下して見せた・・・
+				ELSE
+					PRINTFORML 男は%PRINT_TRANSCALLNAME(TARGET)%を見下ろし情報を小出しにしつつ、
+					PRINTFORML 肝心なところは伏せたまま口内に射精してしまった・・・
+				ENDIF
+				PRINTW 
+				GATHER += 6 + RAND:5 + EXP:魅了経験 / 100 + ABL:技巧 / 2
+				SIF GETBIT(CFLAG:122, 5)
+					GATHER += 2
+				;内向的
+				SIF TALENT:内向的 > 0
+					GATHER -= 2
+				;社交的
+				SIF TALENT:社交的 > 0
+					GATHER += 2
+				EXP:フェラ経験 += 1
+				EXP:精液経験 += 1
+			ELSEIF RESULT == 1
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は股を開き、男の挿入を受け入れた・・・
+				IF CONFIG_CHECK_SCREEN_F(3) == 0
+					PRINTW 
+				ELSE
+					PRINTL 
+				ENDIF
+				IF TALENT:処女 > 0
+					TALENT:処女 = -1
+					CFLAG:206 = 12
+					PRINTL 処女喪失
+					PRINTW 
+					GATHER += 5
+				ENDIF
+				IF LOCALS == "下品な男"
+					PRINTFORML 男は%PRINT_TRANSCALLNAME(TARGET)%を種付けするような姿勢で
+					PRINTFORML でっぷりとした腹を揺らしながらピストンしている。
+				ELSE
+					PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は自ら腰を振って男に奉仕している。
+				ENDIF
+				IF TALENT:淫乱 > 0
+					PRINTFORML やがて男が限界に近づくと%PRINT_TRANSCALLNAME(TARGET)%は無意識に相手の腰に脚を巻きつけ、
+					PRINTFORML 口づけを交わしながら膣内射精を受け入れた。
+				ELSE
+					PRINTFORML やがて男が限界に達すると%PRINT_TRANSCALLNAME(TARGET)%を押さえつけ、
+					PRINTFORML まるでそうするのが当然のように膣内に精液を注ぎ込んだ。
+				ENDIF
+				PRINTW 
+				PRINTL 行為を終えると、男は約束の情報を渡してきた・・・
+				GATHER += 10 + RAND:5 + EXP:魅了経験 / 50 + ABL:技巧 / 2
+				SIF GETBIT(CFLAG:122, 5)
+					GATHER += 5
+				;内向的
+				SIF TALENT:内向的 > 0
+					GATHER -= 4
+				;社交的
+				SIF TALENT:社交的 > 0
+					GATHER += 4
+				JUEL:習得 += 200
+				EXP:Ｖ経験 += 2
+				JUEL:快Ｖ += 10 * ABL:Ｖ感覚
+				EXP:精液経験 += 2
+				;アフターピル
+				CALL AFTER_PILL, TARGET, 35, 誰とも知れない相手
+				;妊娠判定
+				SIF TALENT:オトコ <= 0
+					CALL NINSIN_HANTEI, 2, 800, 誰とも知れない相手
+				HANTEI = 1
+				PRINTW 
+			ELSE
+				GOTO INPUT_2_2
+			ENDIF
+		ELSEIF RESULT == 99
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は情報を買わずに立ち去った・・・
+			GATHER = 0
+		ELSEIF RESULT == -1
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は情報屋(%LOCALS%)との縁を切って立ち去った・・・
+			GATHER = 0
+			CFLAG:122 = 0
+		ELSE
+			GOTO INPUT_2
+		ENDIF
+		IF GATHER > 0
+			IF GATHER > 0
+				PRINTFORML 情報提供の結果、探索度が{GATHER}上昇しました。
+				CALL RESEARCH_PROGRESS, GATHER
+			ENDIF
+		ENDIF
+		;上客
+		IF HANTEI > 0 && GETBIT(CFLAG:122, 4) == 0 && GETBIT(CFLAG:122, 5) == 0 && RAND:4 != 0
+			PRINTL 
+			PRINTW ・
+			PRINTW ・・
+			PRINTW ・・・
+			PRINTFORML 男は%PRINT_TRANSCALLNAME(TARGET)%を上客だと判断した様子だ。
+			PRINTFORML これからは出し惜しみせずに協力してくれることだろう・・・
+			SETBIT CFLAG:122, 5
+		ENDIF
+		;肉体関係
+		IF GATHER == 0 && GETBIT(CFLAG:122, 2) && GETBIT(CFLAG:122, 6) == 0 && TALENT:オトコ <= 0 && RAND:4 != 0
+			PRINTL 
+			PRINTW ・
+			PRINTW ・・
+			PRINTW ・・・
+			IF LOCALS == "お調子者の男"
+				PRINTFORML そのまま帰ろうとする%PRINT_TRANSCALLNAME(TARGET)%に男は冗談めかした態度で
+				PRINTFORML もし金が無いのなら別の方法で報酬を支払ってもらっても構わない、と言ってきた。
+				PRINTFORML 本気かどうかよく分からないが・・・
+			ELSE
+				PRINTFORML 男は%PRINT_TRANSCALLNAME(TARGET)%のカラダを見てニヤニヤしている。
+				PRINTFORML もし金が無いのなら別の方法で報酬を支払ってもらっても構わない、とのことだが・・・
+			ENDIF
+			SETBIT CFLAG:122, 6
+		ENDIF
+	;仲間の捜索
+	CASE 3
+		PRINTL 仲間の捜索
+		PRINTL 
+		PRINTFORML 行方を捜したい相手を選んでください
+		CALL CHARA_LIST, 3, 1, 1
+		HANTEI = RESULT
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は%CALLNAME:HANTEI%の行方について情報を集めた。
+		;達成度を判定
+		GATHER = RAND:30 + 1
+		;内向的
+		SIF TALENT:内向的 > 0
+			GATHER -= 5
+		;社交的
+		SIF TALENT:社交的 > 0
+			GATHER += 5
+		;FEAT効果による幸運補正
+		SIF TALENT:ラッキーチャーム > 0
+			GATHER += 10
+		SIF GATHER < 0
+			GATHER = 1
+
+		;幽閉
+		IF CFLAG:HANTEI:0 == 1
+			GATHER /= 2
+			IF GATHER < 5
+				PRINTFORML しかし、あまり情報は集まらなかった・・・
+			ELSE
+				PRINTFORML その結果、%CALLNAME:HANTEI%を幽閉している触手の居場所のヒントを得ることができた！
+				GATHER += 5
+			ENDIF
+			IF CONFIG_CHECK_SCREEN_F(3) == 0
+				PRINTW 
+			ELSE
+				PRINTL 
+			ENDIF
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%による調査の結果、探索度が{GATHER}上昇しました。
+			CALL RESEARCH_PROGRESS, GATHER
+		ELSEIF CFLAG:HANTEI:0 == 4
+			GATHER /= 2
+			IF GATHER < 5
+				PRINTFORML しかし、あまり情報は集まらなかった・・・
+			ELSE
+				PRINTFORML その結果、%CALLNAME:HANTEI%の居場所を突き止めた！
+				CFLAG:HANTEI:71 = 1
+				GATHER += 5
+			ENDIF
+		;洗脳、悪堕ち
+		ELSE
+			IF GATHER < 5
+				PRINTFORML しかし、あまり情報は集まらなかった・・・
+			ELSEIF GATHER < 15
+				PRINTFORML その結果、%CALLNAME:HANTEI%の行方を断片的に知ることができた・・・
+			ELSE
+				PRINTFORML その結果、%CALLNAME:HANTEI%らしき人物の目撃情報をキャッチすることに成功した！
+				GATHER += 5
+			ENDIF
+			IF CONFIG_CHECK_SCREEN_F(3) == 0
+				PRINTW 
+			ELSE
+				PRINTL 
+			ENDIF
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%による調査の結果、%CALLNAME:HANTEI%との遭遇率が{GATHER}上昇しました。
+			CFLAG:HANTEI:23 += GATHER
+			SIF CFLAG:HANTEI:23 >= 90
+				CFLAG:HANTEI:23 = 90
+		ENDIF
+ENDSELECT
+;行動結果表示のためのウェイト
+PRINTW 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

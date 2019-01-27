@@ -1,0 +1,1970 @@
+﻿;eraGVT口上テンプレ（汎用かるい性格用）
+;汎用キャラ（キャラ番号0のキャラ）用の口上テンプレです
+;性格によって口上ファイルを分ける目的でこのファイルは用意されています
+;
+;このファイルは汎用キャラ用に各関数の最後に_10などの形で性格ごとの番号をつけてます
+;サクラエディタ等の置換機能で_10を作成したい性格の素質番号に変換してお使いください
+;
+;例：性格「臆病」のキャラの口上を作成する場合（素質番号=10）
+;   KOJO_0_HITOKUTI_SHOP_10
+;
+;  ライセンス：本体への取り込み・流用・改変・加筆・修正・再配布等ご自由に。
+;            ：商業目的での使用・R18以外での公開は禁止とさせて頂きます。
+;--------------------------------------------------
+;口上の書き方
+;　基本的に条件分岐させた後に台詞と地の文の追加描写を行う形になります。
+;　IF文で条件文気を行ったあとにさらに口上をランダム表示にしたい場合はSELECTCASE文を使いましょう。
+;
+;分岐条件に使えそうなパラメータなど
+;---
+;　BASE:0			残り体力			戦闘系の口上で、疲弊した様子を表現したい場合などによく使う
+;　TALENT:150			触手の虜			完全に調教が進んだ状態を表現したい場合に
+;　MARK:0			快楽刻印			快楽に抗えない様子など
+;　MARK:1			苦痛刻印			苦痛に屈した場合など
+;　MARK:2			屈服刻印			自分から奉仕するようになる、など
+;　MARK:3			恐怖刻印			恐怖に屈した場合など
+;　TALENT:100~107		敏感、鈍感			性行為に対して感度で変化を付ける
+;　ABL:0~1			部位感覚			こちらは敏感、鈍感と違って部位の開発度を見る
+;　ABL:20~24			中毒系				だいぶ開発が進んだ様子を表現したい場合など
+;　IF FLAG:15 >= FLAG:14	触手が射精する場合		Ｖ強攻めやＡ強攻めなどと組み合わせて、「な、中に出すのだけは……！」などを表現できる
+;　IF FLAG:111 > 0		相手が洗脳/悪堕ちの場合		戦いながら正気に戻るように説得する、などが表現できる
+;　IF FLAG:13 <= 0		ボスの体力が０以下		とどめ演出用に。RETURN 999 を返すと触手への与ダメージ表示が１６倍になる
+;--------------------------------------------------
+
+;一口メッセージ
+;最終更新 2016/02/15
+
+;口上色一括設定用
+;--------------------------------------------------
+@KOJO_0_COLOR_25
+SETCOLOR 255,200,200
+
+
+;キャラ個別のオープニング
+;--------------------------------------------------
+@KOJO_0_FIRST_25
+;（特殊な処理用なので使わなくても良いです）
+
+;ターン終了時の処理
+;--------------------------------------------------
+@KOJO_0_TURNEND_25
+;（特殊な処理用なので使わなくても良いです）
+
+;ショップ画面
+;--------------------------------------------------
+@KOJO_0_HITOKUTI_SHOP_25
+;触手の虜取得後
+IF TALENT:触手の虜
+	SELECTCASE RAND:1
+		CASE 0
+			PRINTFORML 「%SELF_CALL()%は世界を救う…可憐な美少女で…」
+			PRINTFORML 「世界を救って…みんなに褒め称えられて…それから…」
+			PRINTFORML 「それから…　キモにょろ…に…おまんこ差し出して…」
+			PRINTFORML 「犯されて、犯されて犯されて、気持ちよくなってぇ…?」
+			
+			PRINTFORMDL 玩具としての悦びを教え込まれた%KOJO_NAME_ME_K25()%は
+			PRINTFORMDL 心の中の理想の姿さえも触手の性交奴隷に塗り替えられてしまったようだ…
+	ENDSELECT
+	PRINTFORML 
+	RETURN
+ENDIF
+;快楽刻印
+IF MARK:快楽刻印 > 2
+	IF CHECK_K25("触手拘束具")
+		SELECTCASE RAND:3
+			CASE 0
+				PRINTFORML 「はぁ…、はぁ…?　%SELF_CALL()%、後今日何回イけばいいんですか…??」
+				PRINTFORML 「んんっ…、だ、だれか…頭おかしくなる前にこれはずしてぇ…?」
+				PRINTFORMDL  %KOJO_NAME_ME_K25()%の懇願もむなしく、触手は柔肌の上を自由に這い続けている…。
+			CASE 1
+				PRINTFORML 「…っ/\//　はぁ…/\//こんな美少女の柔肌を、好き勝手出来るなんて…/\//」
+				PRINTFORML 「ほんとにあなたは幸せ者ですね、このヘンタイ下着…っ?」
+				PRINTFORMDL  必死に強がる%KOJO_NAME_ME_K25()%だが、その表情は快楽への期待に緩みきっている…。
+			CASE 2
+				PRINTFORML 「はぁ…/\//　ちょっとおとなしくなりました、か…？/\//」
+				PRINTFORML 「今の…うちに、何かしないと…っ/\//」
+				PRINTFORMDL  %KOJO_NAME_ME_K25()%が歩いた後には、こぼれた淫液が点々と続いている…。
+		ENDSELECT
+	ELSE
+		SELECTCASE RAND:3
+			CASE 0
+				PRINTFORML 「はぁ、はぁ/\//　我慢、我慢…っ/\//」
+				PRINTFORML 「うー…、また下着がべとべとじゃないですかぁ…/\//」
+				PRINTFORMDL  %KOJO_NAME_ME_K25()%は思考を苛む抗いがたい肉欲を必死に飲み下そうとしている…。
+			CASE 1
+				PRINTFORML 「…っ/\//　こんなところでオナニーは、我慢しないと…/\//」
+				PRINTFORML 「うー、うー…っ?　こんな戦い、長く続いたら…?」
+				PRINTFORMDL  %KOJO_NAME_ME_K25()%は下半身に伸ばしかけた手を必死に押しとどめている…。
+			CASE 2
+				PRINTFORML 「はぁ…/\//　少しだけ、火照りが落ち着いてきました…/\//」
+				PRINTFORML 「今のうちにできることを、し、しておかないと…っ/\//」
+				PRINTFORMDL  %KOJO_NAME_ME_K25()%は熱のこもった息を長く吐き出して、決意を固めて顔を上げた…。
+		ENDSELECT
+	ENDIF
+	PRINTFORML 
+	RETURN
+ENDIF
+;苦痛、恐怖刻印
+IF (MARK:1 + MARK:3)/2 > 4
+	IF CHECK_K25("触手拘束具")
+		SELECTCASE RAND:2
+			CASE 0
+				PRINTFORML 「ひっ…、ヘンタイ下着が、また動いてます…っ」
+				PRINTFORML 「お、お願いですから怖いことはしないでくださいよ…」
+				PRINTFORMDL  %KOJO_NAME_ME_K25()%は恐怖に身を縮め、身体をまさぐり始めた触手に耐えている…。
+			CASE 1
+				PRINTFORML 「…ん、くっ…っ/\//　も、もう触らないでくださいってば…っ/\//」
+				PRINTFORML 「…いっ！？　つねっていうこと聞かせようとするとか、サイテーですよ…っ」
+				PRINTFORMDL 触手への恐怖体験が頭をよぎり、触手拘束具のわずかな反抗にも
+				PRINTFORMDL %KOJO_NAME_ME_K25()%は身体をびくつかせ、なすがままにされてしまっている…。
+		ENDSELECT
+	ELSE
+		SELECTCASE RAND:2
+			CASE 0
+				PRINTFORML 「%SELF_CALL()%は、り、リーダーで、正義の美少女ですし…っ」
+				PRINTFORML 「キモにょろなんか、ぜ、ぜんぜん怖くないんですから…」
+				PRINTFORMDL  %KOJO_NAME_ME_K25()%は震える膝を叱咤しながら無理矢理口角を吊り上げている…。
+			CASE 1
+				PRINTFORML 「…っ、部屋から出る前に、足の震えを止めないとですねー…」
+				PRINTFORML 「…は、はは…。これ、いつごろ部屋から出られるでしょうか…」
+				PRINTFORMDL  %KOJO_NAME_ME_K25()%がまともに歩けるようになったのは暫く後のことだった…。
+		ENDSELECT
+	ENDIF
+	PRINTFORML 
+	RETURN
+ENDIF
+;体力が少ない場合
+IF BASE:0 <= 500
+	IF CHECK_K25("触手拘束具")
+		SELECTCASE RAND:1
+			CASE 0
+				PRINTFORML 「はぁ、はぁ…/\//　身体に力が、入りません…っ」
+				PRINTFORML 「うぅ…、こんなキモにょろパンツはいてたら、そりゃ疲れますよね…/\//」
+				PRINTFORMDL  %KOJO_NAME_ME_K25()%はよろよろと壁に手を尽き、荒い息を整えようとしている……。
+		ENDSELECT
+	ELSE
+		SELECTCASE RAND:1
+			CASE 0
+				PRINTFORML 「うぅ…まぶたがおもいですー…」
+				PRINTFORML 「こんなんじゃせっかくの美少女が台無しじゃないですかー…」
+				PRINTFORMDL  %KOJO_NAME_ME_K25()%は疲れで眠そうになる目を一生懸命開こうとしている……。
+		ENDSELECT
+	ENDIF
+	PRINTFORML 
+	RETURN
+ELSE
+	IF CHECK_K25("触手拘束具")
+		SELECTCASE RAND:3
+			CASE 0
+				PRINTFORML 「このパンツって、女の子の身体にくっつくためにこの形なの…？/\//」
+				PRINTFORML 「ど、どんだけヘンタイなんですか…っあ、あたまおかしいです…/\//」
+			CASE 1
+				PRINTFORML 「正義の美少女、ただいま参じょ…　ひぁ…っ！？/\//」
+				PRINTFORML 「ああもう、こんなキモにょろパンツじゃ%SELF_CALL()%の可愛さ半減ですよ…」
+			CASE 2
+				PRINTFORML 「あーもーっ！！脱げてくださいーっ！！！！」
+				PRINTFORML 「もっと可愛いパンツがいいんです！！はーなーれーてーっ！！/\//」
+		ENDSELECT
+	ELSE
+		SELECTCASE RAND:3
+			CASE 0
+				PRINTFORML 「やっぱり%SELF_CALL()%がリーダーって感じですよね～☆」
+				PRINTFORML 「世界だってぱぱぱーっと救ってあげちゃいます♪」
+			CASE 1
+				PRINTFORML 「ふふ。%SELF_CALL()%の魅力は世界だって虜にしちゃいます☆」
+				PRINTFORML 「この戦いがおわったら、次は何をしましょうか♪」
+			CASE 2
+				PRINTFORML 「この戦いにかったら、たっぷり報酬をもらって…」
+				PRINTFORML 「可愛い服においしいスイーツ♪　いまからとっても楽しみです?」
+		ENDSELECT
+	ENDIF
+	PRINTFORML 
+	RETURN
+ENDIF
+
+
+;鍛錬
+
+;鍛練開始
+;--------------------------------------------------
+@KOJO_0_TRAINING_BEGIN_25
+
+;鍛練終了
+;--------------------------------------------------
+@KOJO_0_TRAINING_END_25
+
+;走りこみ
+;--------------------------------------------------
+@KOJO_0_TRAINING_HASHIRI_25
+PRINTFORML 「はー、はー、この特訓のひとつひとつが…っ」
+PRINTFORML 「%SELF_CALL()%が歴史に語り継がれる美少女の伝説につながるわけですね…っ、ぜぇ、ぜぇ…」
+PRINTFORMDL  %KOJO_NAME_ME_K25()%はふらふらとよろめきながらも何とか鍛錬をこなしている…
+
+;精神鍛錬
+;--------------------------------------------------
+@KOJO_0_TRAINING_SEISHIN_25
+PRINTFORML 「しんとーめっきゃくすれば火もまたすずしっ！」
+PRINTFORML 「世界を救う美少女としては強い精神も得たいものですよね…♪」
+PRINTFORMDL  %KOJO_NAME_ME_K25()%は精神を鍛えた…
+
+;瞑想
+;--------------------------------------------------
+@KOJO_0_TRAINING_MEISOU_25
+PRINTFORML 「………。　……。」
+PRINTFORML 「……いま%SELF_CALL()%、すごい集中していません…？」
+PRINTFORMDL  %KOJO_NAME_ME_K25()%は眠そうな目をこすりながらも瞑想に取り組んだ…
+
+;筋トレ
+;--------------------------------------------------
+@KOJO_0_TRAINING_KINTORE_25
+PRINTFORML 「いーち、にー…、さーん！！」
+PRINTFORML 「うぅ…。腕とか太くなりすぎませんように…。よーん！！ごーっ！！」
+PRINTFORMDL  %KOJO_NAME_ME_K25()%は荒い息をつきながらも体を動かしている…
+
+
+;自衛訓練
+;--------------------------------------------------
+@KOJO_0_TRAINING_JIEI_25
+PRINTFORML 「世界一の美少女としては、かっこ悪いところをみせられないですからね♪」
+PRINTFORML 「相手がこうきたときはこう、可愛く攻撃をよけて…」
+PRINTFORMDL  %KOJO_NAME_ME_K25()%は自分を守る練習を積んでいる…
+
+;ダッシュ
+;--------------------------------------------------
+@KOJO_0_TRAINING_DASH_25
+PRINTFORML 「走る！走る！走る！」
+PRINTFORML 「はぁ、はぁ、%SELF_CALL()%ってば運動でも世界を狙っちゃえる…かもしれませんね☆」
+PRINTFORMDL  %KOJO_NAME_ME_K25()%は楽しそうに何度も走り込みをしている…
+
+;近距離戦闘訓練
+;--------------------------------------------------
+@KOJO_0_TRAINING_SHORT_25
+PRINTFORML 「選ばれし美少女ぱーんちっ！世界を救うリーダーきーっく！！」
+PRINTFORML 「…かわいい上に強いとか、%SELF_CALL()%ってば自分の才能が怖いです♪」
+PRINTFORMDL  %KOJO_NAME_ME_K25()%はわーわーと声を上げながら打撃の練習をしている…
+
+;中距離戦闘訓練
+;--------------------------------------------------
+@KOJO_0_TRAINING_MIDDLE_25
+PRINTFORML 「正義の美少女、スロー！！」
+PRINTFORML 「えっへん。やっぱり%SELF_CALL()%って何をしてもかわいい上にすごいです♪」
+PRINTFORMDL  %KOJO_NAME_ME_K25()%は何度もポーズをとりながら
+PRINTFORMDL 少し離れた場所への投擲攻撃を練習している…
+
+;遠距離戦闘訓練
+;--------------------------------------------------
+@KOJO_0_TRAINING_LONG_25
+PRINTFORML 「ねらってねらって…、撃ちまーっす！！」
+PRINTFORML 「命中！！ふふふ、この才能が世界を救っちゃうんですねー♪」
+PRINTFORMDL %KOJO_NAME_ME_K25()%は離れた場所への攻撃を練習しながら
+PRINTFORMDL にこにこと笑みをこぼしている…
+
+;戦術研究
+;--------------------------------------------------
+@KOJO_0_TRAINING_TACTICS_25
+PRINTFORML 「最初はばーん！！と登場して、びしっと可愛いポーズを決めて…♪」
+PRINTFORML 「%SELF_CALL()%ってば、なにしても決まっちゃうので困ってしまいますね☆」
+PRINTFORMDL %KOJO_NAME_ME_K25()%は可愛らしいノートに何かを一生懸命に書き込んでいる…
+
+;触手拘束具が鍛錬の邪魔をする
+;--------------------------------------------------
+@KOJO_0_TRAINING_TENTACLECLOTH_25
+PRINTFORML 「んんんっ！？や、ちょ、ちょっと…！？」
+PRINTFORML 「キモにょろパンツのせいで…かわいい格好もできないのに…んぁあぁっ?」
+PRINTFORML 「セクハラとかサイテーですっ…?こんなの反則ですよぉ??」
+PRINTFORMDL 触手に秘部をまさぐられ、時に手足を絡みとられる%KOJO_NAME_ME_K25()%に
+PRINTFORMDL まともな訓練などできるはずがなかった…
+
+
+;触手と遭遇
+
+;ザコ触手と戦闘
+;--------------------------------------------------
+@KOJO_0_ENCOUNT_MOB_25
+PRINTFORML 「%SELF_CALL()%の伝説の一ページにしてあげます♪」
+PRINTFORML 「こんなにかわいい美少女にやられるなら本望でしょ？」
+PRINTFORMDL  %KOJO_NAME_ME_K25()%は触手へ攻撃を開始した…
+
+
+;ボス触手と戦闘
+;--------------------------------------------------
+@KOJO_0_ENCOUNT_BOSS_25
+;最初のボス戦
+CALL TENTACLE_SURVIVE,"NUM"
+IF (FLAG:3 - RESULT) == 0
+		PRINTFORML 「これが%SELF_CALL()%の輝かしい初陣ってわけですか…♪」
+		PRINTFORML 「相手が%CALL_NAME_YOU_K25()%じゃ格好がつきませんが…」
+		PRINTFORML 「ふふ♪天才美少女である%SELF_CALL()%の勝利は確実ですね♪」
+		PRINTFORMDL  触手と対峙した%KOJO_NAME_ME_K25()%は戦闘の構えを取った…
+ELSE
+	SELECTCASE RAND:1
+		CASE 0
+		PRINTFORML 「可憐でかわいい正義の天才美少女の%SELF_CALL()%ＶＳ%KOJO_NAME_YOU_K25()%…」
+		PRINTFORML 「ふふ♪誰が見ても%SELF_CALL()%の勝利しかありえませんね♪」
+		PRINTFORMDL  触手と対峙した%KOJO_NAME_ME_K25()%は戦闘の構えを取った…
+	ENDSELECT
+ENDIF
+
+;ラスボス触手と戦闘
+;--------------------------------------------------
+@KOJO_0_ENCOUNT_LASTBOSS_25
+SELECTCASE RAND:1
+	CASE 0
+		PRINTFORML 「ふふ…、%SELF_CALL()%のこと、エッチな目で見てるんでしょ…♪」
+		PRINTFORML 「だめですよ。あなたをたおして%SELF_CALL()%はハッピーエンドを迎えるんですから☆」
+		PRINTFORMDL  %KOJO_NAME_ME_K25()%は前を見据えて戦闘の構えを取った…
+ENDSELECT
+
+;初めて洗脳キャラと対峙した
+;--------------------------------------------------
+@KOJO_0_ENCOUNT_SENNOU_FIRST_25
+PRINTFORML 「あらら…。正義の美少女にはこのくらいの苦難はつきも乗ってことでしょうか…」
+PRINTFORML 「でも大丈夫♪　%SELF_CALL()%の伝説に犠牲になった仲間なんて必要ないですからね♪」
+PRINTFORML  %KOJO_NAME_ME_K25()%はうつろな目をした仲間に微笑みかけると、
+PRINTFORMDL 取り戻すためにしっかりと戦いの構えを取った…
+
+;洗脳キャラと対峙
+;--------------------------------------------------
+@KOJO_0_ENCOUNT_SENNOU_25
+PRINTFORML 「まったく、目を覚まさせてあげます、%CALL_NAME_YOU_K25()%」
+PRINTFORML 「ちょっと痛いかもしれませんが、%SELF_CALL()%のお仕置きならうれしいですよね？」
+PRINTFORMDL  %KOJO_NAME_ME_K25()%は戦いの覚悟を決めて構えを取った…
+
+;始めて悪堕ちキャラと対峙した
+;--------------------------------------------------
+@KOJO_0_ENCOUNT_AKUOTI_FIRST_25
+PRINTFORML 「ふふ。仲間にまでエッチな目で見られるなんて、%SELF_CALL()%ってば罪な美少女です♪」
+PRINTFORML 「でも、ざんねん♪　%SELF_CALL()%とシたいなら、もう少しましな格好で来てください?」
+PRINTFORML  %KOJO_NAME_ME_K25()%は変わり果てた%KOJO_NAME_YOU_K25()%を取り戻すため、
+PRINTFORMDL  しっかりと戦いの構えを取った…
+
+;悪堕ちキャラと対峙
+;--------------------------------------------------
+@KOJO_0_ENCOUNT_AKUOTI_25
+PRINTFORML 「はぁ…ほんとに手間のかかる人ですね、%CALL_NAME_YOU_K25()%は…」
+PRINTFORML 「この借りは、駅前の特大スイーツにして返していただきますからね☆」
+PRINTFORMDL  %KOJO_NAME_ME_K25()%は覚悟を決めて戦いの構えを取った…
+
+
+
+;戦闘関連の口上
+
+;キャラの行動
+
+;変身前のかけ声
+;口上オリジナルのかけ声を使用する場合のみコメントアウトを外して記述してください
+;@KOJO_0_BATTLE_CHARA_TRANSFORMCALL_25
+
+;変身後の名乗り
+;口上オリジナルの名乗りを使用する場合のみコメントアウトを外して記述してください
+;@KOJO_0_BATTLE_CHARA_NANORI_25
+
+;SP変身時のかけ声
+@KOJO_0_BATTLE_CHARA_SP_TRANSFORMCALL_25
+PRINTL 「それじゃあ一気に決めますよー！」
+
+;衣装の損傷が酷くなった関連
+
+;アウターが破れ始めた
+;--------------------------------------------------
+@KOJO_0_BATTLE_CLOTH_OUTERDAMAGE_25
+PRINTFORML 「わ、ちょ、ちょっと、ちょっと待ってください！？」
+PRINTFORML 「%SELF_CALL()%の服！！！可愛いお気に入りなのにーっ！！/\//」
+PRINTFORMDL %KOJO_NAME_ME_K25()%は破れ始めた自分の服が気になるようだ…
+
+;アウターが破れた
+;--------------------------------------------------
+@KOJO_0_BATTLE_CLOTH_OUTERBREAK_25
+PRINTFORML 「あっ、うそうそ？！ヘンタイ！！ばかーっ！！」
+PRINTFORML 「もーっ！！お気にの下着が丸見えじゃないですかーーっ！！」
+PRINTFORMDL  %KOJO_NAME_ME_K25()%は自分の姿に顔を赤くしている…
+
+;インナーが破れ始めた
+;--------------------------------------------------
+@KOJO_0_BATTLE_CLOTH_INNERDAMAGE_25
+PRINTFORML 「だ、だめだめっ！！これ以上はほんとに駄目ですってば…っ！！」
+PRINTFORML 「%SELF_CALL()%の裸は見世物じゃないんです！！　世界一の秘宝ですよっ！！」
+PRINTFORMDL  %KOJO_NAME_ME_K25()%は涙目になりながらも必死に残った布切れを守ろうとしている…
+
+;インナーが破れた
+;--------------------------------------------------
+@KOJO_0_BATTLE_CLOTH_INNERBREAK_25
+PRINTFORML 「%SELF_CALL()%の服…%SELF_CALL()%の下着…　美少女の裸…」
+PRINTFORML 「命ひとつで償えるなんて、勘違いでも思わないでくださいね…っ/\//」
+PRINTFORMDL %KOJO_NAME_ME_K25()%は大事なところを隠そうとしながら
+PRINTFORMDL %KOJO_NAME_YOU_K25()%をにらみつけた…
+
+
+;気力が尽きて変身が強制的に解けた
+@KOJO_0_BATTLE_CHARA_TRANSRELEASE_25
+PRINTFORML 「…う、うそ…、天才美少女の、%SELF_CALL()%の、才能が…？」
+PRINTFORML 「%SELF_CALL()%、まだ負けてません、…まだ負けてない、ですよね…？」
+PRINTFORMDL %KOJO_NAME_ME_K25()%は決して負けてはならない敵を前にしながらも
+PRINTFORMDL 力を失ってしまった自分の姿に、顔を真っ青にして涙をにじませている…
+
+
+;撤退成功
+;--------------------------------------------------
+@KOJO_0_BATTLE_CHARA_TETTAI_SUCCESS_25
+PRINTFORML 「本当は正義の美少女が負けるはずがありませんが…」
+PRINTFORML 「今回だけは、今回だけは運がよかったと認めてあげます！！」
+PRINTFORML 「次は絶対%SELF_CALL()%の勝ちですから！！」
+PRINTFORMDL  %KOJO_NAME_ME_K25()%は%KOJO_NAME_YOU_K25()%の隙を突いてその場を離れることができた…
+
+;撤退失敗
+;--------------------------------------------------
+@KOJO_0_BATTLE_CHARA_TETTAI_FALSE_25
+PRINTFORML 「もーっ！どうして%SELF_CALL()%の邪魔ばっかりするんですか！！」
+PRINTFORML 「死んでください！！死ねないのならじっとしててください！！」
+PRINTFORML 「回りこまないでくださいーーっ！！！」
+PRINTFORMDL  行く手を阻まれた%KOJO_NAME_ME_K25()%は悔しそうに%KOJO_NAME_YOU_K25()%をにらんでいる…
+
+;近距離攻撃
+;--------------------------------------------------
+@KOJO_0_BATTLE_CHARA_ATTACK_RANGE_SHORT_25
+PRINTFORML 「いきますよーっ！！正義の美少女の一撃！！」
+PRINTFORML 「ひっさーーーーつ、美少女あたーっく！！！」
+PRINTFORMDL  %KOJO_NAME_ME_K25()%は叫びとともに力のこもった一撃を繰り出した…
+
+;中距離攻撃
+;--------------------------------------------------
+@KOJO_0_BATTLE_CHARA_ATTACK_RANGE_MIDDLE_25
+PRINTFORML 「ふっふーん、そこは%SELF_CALL()%の間合いです！！」
+PRINTFORML 「可憐な美少女の一撃、あなたにはちょっと贅沢すぎるかも知れませんね♪」
+PRINTFORMDL  %KOJO_NAME_ME_K25()%の放った攻撃が%KOJO_NAME_YOU_K25()%へと突き進む…
+
+;遠距離攻撃
+;--------------------------------------------------
+@KOJO_0_BATTLE_CHARA_ATTACK_RANGE_LONG_25
+PRINTFORML 「この距離でも当てて見せます！！」
+PRINTFORML 「天才美少女の一撃、あなたに避けらるはずがありませんからね…☆」
+PRINTFORMDL %KOJO_NAME_ME_K25()%の力が遠くはなれた%KOJO_NAME_YOU_K25()%へ放たれ、
+PRINTFORMDL 一直線に伸びてゆく…
+
+
+;防御
+;--------------------------------------------------
+@KOJO_0_BATTLE_CHARA_DEFENSE_25
+PRINTFORML 「おっと、なにかするつもりですね？」
+PRINTFORML 「正義の美少女の直感はすべてお見通しなんですから♪」
+PRINTFORMDL  %KOJO_NAME_ME_K25()%は%KOJO_NAME_YOU_K25()%の動きに攻撃の予兆を感じ、守りを固めた…
+
+;距離をとる
+;--------------------------------------------------
+@KOJO_0_BATTLE_CHARA_TAKEAWAY_25
+PRINTFORML 「可憐な乙女に触りたい気持ちはわかりますが…」
+PRINTFORML 「おさわりしたら☆死刑☆ですから♪」
+PRINTFORMDL  %KOJO_NAME_ME_K25()%は身を翻して距離をとった…
+
+
+;何もしない
+;--------------------------------------------------
+@KOJO_0_BATTLE_CHARA_NOACTION_25
+PRINTFORML 「な、なにか様子がおかしくないですか…？」
+PRINTFORML 「あ、えっ、何ですか、どうしたらいいんですか～～っ！？？」
+PRINTFORMDL %KOJO_NAME_ME_K25()%はめまぐるしい状況に対応できず、
+PRINTFORMDL 行動を決めることができなかった…
+
+
+;振り解く
+;--------------------------------------------------
+@KOJO_0_BATTLE_CHARA_HURIHODOKU_25
+PRINTFORML 「は・な・し・て・く・だ・さ・いっ！！このっ、このっ！！」
+PRINTFORML 「%SELF_CALL()%とえっちしたいんでしょうけど、%SELF_CALL()%はしたくなんかありませんからーっ！！」
+PRINTFORMDL  %KOJO_NAME_ME_K25()%は絡みつく触手を振り払おうと必死に体を動かした…
+
+;暴れる
+;--------------------------------------------------
+@KOJO_0_BATTLE_CHARA_ABARERU_25
+PRINTFORML 「やだ、やだやだっ！！こんなの絶対許さしませんからねっ！！」
+PRINTFORML 「あー、もーっ！！やだって言ってるじゃないですかぁーーーっ！！」
+PRINTFORMDL  %KOJO_NAME_ME_K25()%は必死にもがき、抵抗を試みている…
+
+
+;耐える
+;--------------------------------------------------
+@KOJO_0_BATTLE_CHARA_TAERU_25
+PRINTFORML 「く、くぅぅ…っ！！/\//　こんなの、なんてことありません…っ！」
+PRINTFORML 「かわいい美少女の%SELF_CALL()%が、絶対勝つに決まってるんですから…っ」
+PRINTFORMDL %KOJO_NAME_ME_K25()%は唇を強く引き結び、
+PRINTFORMDL %KOJO_NAME_YOU_K25()%の淫らな攻撃に耐えようとした…
+
+
+;なすがまま
+;--------------------------------------------------
+@KOJO_0_BATTLE_CHARA_NASUGAMAMA_25
+PRINTFORML 「こ、こんなの絶対、美少女の戦い方じゃない、ですけど…」
+PRINTFORML 「ほ、ほら…　世界一の美少女の身体ですよ……っ/\//」
+PRINTFORMDL  %KOJO_NAME_ME_K25()%は油断を誘うため、なすがままに体の力を抜いて見せた…
+
+;受け入れる
+;--------------------------------------------------
+@KOJO_0_BATTLE_CHARA_UKEIRERU_25
+PRINTFORML 「%SELF_CALL_SINGLE()%、%SELF_CALL()%は正義の美少女なのに…」
+PRINTFORML 「こ、こんなことされちゃって…なんで喜んでるんですか…ぁ?」
+PRINTFORML 「あはは、どーしましょう…?」
+PRINTFORMDL 蹂躙される悦びを教え込まれた%KOJO_NAME_ME_K25()%は、
+PRINTFORMDL 敵の与える快楽を受け入れてしまった…
+
+;奉仕する
+;--------------------------------------------------
+@KOJO_0_BATTLE_CHARA_HOUSI_25
+PRINTFORML 「天才美少女の%SELF_CALL()%が、こ、こんなことしちゃうなんて…っ/\//」
+PRINTFORML 「こうされるとうれしいんですよね…っ/\//　度し難いヘンタイです…/\//」
+PRINTFORMDL %KOJO_NAME_ME_K25()%は羞恥心に顔を真っ赤に染め
+PRINTFORMDL 敵である%KOJO_NAME_YOU_K25()%に淫らな奉仕をした…
+
+;Ｖ挿入防御
+;--------------------------------------------------
+@KOJO_0_BATTLE_CHARA_ANTI_V_25
+PRINTFORML 「キモい、キモいです！！意味わかんないです！ヘンタイですっっ！！」
+PRINTFORML 「%SELF_CALL()%とエッチしたいのは当たり前ですけど…絶対なんにもさせませんからね…っ」
+PRINTFORMDL  %KOJO_NAME_ME_K25()%は必死に秘部を庇い、自らの尊厳を守ろうと抵抗している…
+
+
+;SPバースト
+;--------------------------------------------------
+@KOJO_0_BATTLE_CHARA_SP_BURST_25
+PRINTL 「これ以上は事務所ＮＧですー！」
+
+
+
+;キャラの行動の結果
+
+;攻撃がクリティカルヒット
+;--------------------------------------------------
+@KOJO_0_BATTLE_CHARA_ATTACK_CRITICAL_HIT_25
+PRINTFORML 「さっすが天才美少女の%SELF_CALL()%です！！可憐！天才！！」
+PRINTFORML 「このまま一気に倒しちゃいますからね☆」
+PRINTFORMDL %KOJO_NAME_ME_K25()%は深々と命中した攻撃に確かな手ごたえを感じた…
+
+;攻撃が通常ヒット
+;--------------------------------------------------
+@KOJO_0_BATTLE_CHARA_ATTACK_HIT_25
+IF CHECK_K25("絡まれ")
+	PRINTFORML 「どうですか！！痛いですよね！？　でしたらさっさと離してください！！/\//」
+	PRINTFORMDL %KOJO_NAME_ME_K25()%は命中した攻撃に手ごたえを感じた…
+ELSE
+	PRINTFORML 「また一歩追い詰めましたよ…っ♪おとなしく倒されてくださいね」
+	PRINTFORMDL %KOJO_NAME_ME_K25()%は命中した攻撃に手ごたえを感じた…
+ENDIF
+
+;攻撃失敗
+;--------------------------------------------------
+@KOJO_0_BATTLE_CHARA_ATTACK_FALSE_25
+PRINTFORML 「あーもーっ！！避けないでおとなしく死んでくださいっ！！」
+PRINTFORML 「天才美少女の名に傷がつくじゃないですか！！」
+PRINTFORMDL %KOJO_NAME_ME_K25()%は悔しそうに%KOJO_NAME_YOU_K25()%をにらんでいる…
+
+;振り解く成功
+;--------------------------------------------------
+@KOJO_0_BATTLE_CHARA_HURIHODOKU_SUCCESS_25
+PRINTFORML 「…っ、いま、ですっ！！」
+PRINTFORML 「世界一の美少女をを辱めたお返し…千億万倍にして償わせてあげますっ！！！」
+PRINTFORMDL %KOJO_NAME_ME_K25()%は自由になった手を振り回し、%KOJO_NAME_YOU_K25()%をにらんだ…
+
+;振り解く失敗
+;--------------------------------------------------
+@KOJO_0_BATTLE_CHARA_HURIHODOKU_FALSE_25
+PRINTFORML 「ひぐぅ！？　う、ぁっっ！！　うぅ…～～～～っ！！」
+PRINTFORML 「%SELF_CALL_SINGLE()%、%SELF_CALL()%を触っていたいのは分かりますけど、%SELF_CALL()%は離れたいんですぅぅぅ～～！！/\//」
+PRINTFORMDL %KOJO_NAME_ME_K25()%は強固に体に絡みつく触手をきつくにらみつけている…
+
+
+
+;敵側の行動（攻撃など）
+
+;敵が攻撃
+;--------------------------------------------------
+@KOJO_0_BATTLE_TENTACLE_ATTACK_25
+
+;敵が絡みつく
+;--------------------------------------------------
+@KOJO_0_BATTLE_TENTACLE_KARAMITUKU_25
+
+;敵が体液を吐く
+;--------------------------------------------------
+@KOJO_0_BATTLE_TENTACLE_TAIEKI_25
+
+;敵が距離をとる
+;--------------------------------------------------
+@KOJO_0_BATTLE_TENTACLE_TAKEAWAY_25
+
+;敵が押し倒すを開始
+;--------------------------------------------------
+@KOJO_0_BATTLE_TENTACLE_OSHITAOSU_25
+
+
+;敵の行動の結果
+
+;敵の攻撃がクリティカルヒット
+;--------------------------------------------------
+@KOJO_0_BATTLE_TENTACLE_ATTACK_CRITICAL_HIT_25
+PRINTFORML 「っっきゃぁぁっ！？？？！」
+PRINTFORML 「こんな美少女を痛めつけるなんて…っ！！頭おかしいんじゃないですかっ！！」
+PRINTFORMDL %KOJO_NAME_ME_K25()%は体を襲う激痛に顔をゆがめて耐えている…
+
+;敵の攻撃が通常ヒット
+;--------------------------------------------------
+@KOJO_0_BATTLE_TENTACLE_ATTACK_HIT_25
+PRINTFORML 「しまっ…きゃあぁぁっっ！？」
+PRINTFORML 「い、いたいっ、なんてことしてくれるんですかっ！！」
+PRINTFORMDL %KOJO_NAME_ME_K25()%は痛みをこらえながらも体勢を立て直そうとしている…
+
+;敵の攻撃を回避
+;--------------------------------------------------
+@KOJO_0_BATTLE_TENTACLE_ATTACK_FALSE_25
+PRINTFORML 「わぁっ！？　　あ、危ないじゃないですかっ！！」
+PRINTFORML 「あなたは大人しく美少女の%SELF_CALL()%に倒されていればいいんです！」
+PRINTFORMDL %KOJO_NAME_ME_K25()%は敵の攻撃をかわし、次の行動に備えた…
+
+;敵の絡みつくが成功
+;--------------------------------------------------
+@KOJO_0_BATTLE_TENTACLE_KARAMITUKU_SUCCESS_25
+PRINTFORML 「わぁぁぁぁっ！？　なんか臭いしぬるぬるしてるし、ちょっとありあえなさすぎですよっ…！？」
+PRINTFORML 「ちょ、ちょっと！？　キモい！！キモいですーーーっ！！　いーーやーーっ！！」
+PRINTFORMDL 全身に絡みつき始めた触手の生ぬるい感触に%KOJO_NAME_ME_K25()%は顔を青ざめさせている…
+
+;敵の絡みつくを回避
+;--------------------------------------------------
+@KOJO_0_BATTLE_TENTACLE_KARAMITUKU_FALSE_25
+PRINTFORML 「いやぁぁ！！こっちこないでくださいよぉっ！！！」
+PRINTFORML 「%SELF_CALL()%とエッチしたいのはわかりますけど、あなたなんてお呼びじゃないですっ！！」
+PRINTFORMDL 絡み付こうとする触手をかわしながら%KOJO_NAME_ME_K25()%は肩を怒らせている…
+
+;敵の体液を吐くがヒット
+;--------------------------------------------------
+@KOJO_0_BATTLE_TENTACLE_TAIEKI_HIT_25
+PRINTFORML 「きゃっ…、くさい！！キモい！！かわいい%SELF_CALL()%が台無しじゃないですかーーっ！！」
+PRINTFORML 「ぬるぬるしてますし、なんか…ヘンな感じですし…、うぇぇぇ…」
+PRINTFORMDL 体中に粘液を浴びせられ、嫌悪感を感じているはずの%KOJO_NAME_ME_K25()%は
+PRINTFORMDL すこし顔を赤らめている…
+
+;敵の体液を吐くを回避
+;--------------------------------------------------
+@KOJO_0_BATTLE_TENTACLE_TAIEKI_FALSE_25
+PRINTFORML 「わ、わわわわっ！？　あぶないっ！！」
+PRINTFORML 「%SELF_CALL()%を孕ませたくなるのは当然ですけど、こういうのはちょっとご遠慮ですっ」
+PRINTFORMDL ぼとぼとと地面に落下していく粘液をみながら%KOJO_NAME_ME_K25()%は顔を青ざめている…
+
+;敵の押し倒すがヒット
+;--------------------------------------------------
+@KOJO_0_BATTLE_TENTACLE_OSHITAOSU_SUCCESS_25
+PRINTFORML 「ひぁ…！？え、あ、ああっ！？」
+PRINTFORML 「いやぁあ！！重いっ、キモい！ヘンなことしないでください…っ！！」
+PRINTFORML 「%SELF_CALL()%とえっちしたいなら、生まれ変わって出直してきてきてください…っ」
+PRINTFORMDL 自身をゆうに超える巨体に圧し掛かられ、
+PRINTFORMDL %KOJO_NAME_ME_K25()%の顔が悲壮感にゆがんでいく…
+
+;敵の押し倒すを回避
+;--------------------------------------------------
+@KOJO_0_BATTLE_TENTACLE_OSHITAOSU_FALSE_25
+PRINTFORML 「う、うわわわっ！？」
+PRINTFORML 「そんなキモい体で乙女に触ろうとするなんてっ！　絶滅させるべきヘンタイですっ！！」
+PRINTFORMDL %KOJO_NAME_ME_K25()%は先ほどまで自分のいた場所を押しつぶす
+PRINTFORMDL 触手に嫌悪のまなざしを向けている…
+
+
+;敵から受ける性コマンド関連
+
+;COM0：C攻め弱　クリトリスを撫でる
+;--------------------------------------------------
+@KOJO_0_SEX_COM0_25
+PRINTFORML 「ひゃふ！？んんんんっ！？どどどどっどこを触ってるんですかっ！！」
+PRINTFORML 「ばかっ！ヘンタイっ！！死んでくだ…　ひぁうぅぅっ/\//」
+PRINTFORMDL ぬめぬめとした触手の先端に敏感な突起を撫で回され、
+PRINTFORMDL 堪え切れずに%KOJO_NAME_ME_K25()%の身体はびくりびくり小刻みに震えている…
+
+
+;COM1：C攻め強　クリトリスに吸い付く
+;--------------------------------------------------
+@KOJO_0_SEX_COM1_25
+PRINTFORML 「んんんんっ?　うそうそっ！！だめだめっ%SELF_CALL()%、こんなので感じて…っ/\//」
+PRINTFORML 「じゃ、じゃなくて！　感じてなんか、い、いませんけど…/\//　んひゃぁぁ～～～～っ?」
+PRINTFORMDL じゅるじゅると音をたてながら充血した淫核を好き放題に吸いたてられ、
+PRINTFORMDL 堪え切れない快楽が%KOJO_NAME_ME_K25()%の口の端からよだれとなって滴っている…。
+
+;SPCOM0：C攻めSP　クリトリスに噛み付く
+;--------------------------------------------------
+@KOJO_0_SEX_SPCOM0_25
+PRINTFORML 「ん、いっ、ぃぃいっ～～っ?　ヘンタイっ！！噛むところじゃないですってば…っ！！」
+PRINTFORML 「…い、痛いのに、なんでこんな…?　いぐっ！？　あぁぁぁぁ～～～っ！？？」
+PRINTFORMDL %KOJO_NAME_ME_K25()%は敏感な淫核を触手に強く食いつかれ
+PRINTFORMDL 強すぎる快楽と被虐に涙をこぼしながら悲鳴のような喘ぎを漏れ出させている…
+
+;COM2：V攻め弱　膣口を愛撫（処女は奪いません）
+;--------------------------------------------------
+@KOJO_0_SEX_COM2_25
+PRINTFORML 「うひゃぁっ！？ど、どこ触ってるんですかっ！！！/\//」
+PRINTFORML 「いや、やめて、くださいっ…ほんとに冗談になってないですからぁ…っ」
+PRINTFORMDL %KOJO_NAME_ME_K25()%は敏感な性器の上を乱暴にのたうつ触手に愛撫され
+PRINTFORMDL 顔を青くしながらもわずかに熱い吐息を漏らした…
+
+
+;COM3：V攻め強　挿入
+;--------------------------------------------------
+@KOJO_0_SEX_COM3_25
+PRINTFORML 「う、うそ…ぉ、%SELF_CALL()%とえっちしたいのは、当然ですけど…っ/\//」
+PRINTFORML 「やめ、やめてっ！！　えっちなんかしたくないですからぁぁっ！！/\//」
+
+PRINTFORMDL %KOJO_NAME_ME_K25()%は自らの秘裂が触手に貫かれ
+PRINTFORMDL じっくりと悦びを教え込まれている様子を絶望的な顔で見つめている…
+
+
+;SPCOM1：V攻めSP　奥を突く
+;--------------------------------------------------
+@KOJO_0_SEX_SPCOM1_25
+PRINTFORML 「んいっ?はぐっ?あぁっ?んぅぅぅ?」
+PRINTFORML 「えっち強いのわかりました?　えっちは負けでいいですからぁっ?」
+PRINTFORML 「もうおしまいっ?　えっちおしまいぃぃぃっ??」
+PRINTFORMDL 膣奥をぐちゅぐちゅと掻き回される%KOJO_NAME_ME_K25()%の下には
+PRINTFORMDL 異形の体液と愛液の混じった淫らな水溜りが作られている…
+
+
+;COM4：A攻め弱　アナルを撫で回す
+;--------------------------------------------------
+@KOJO_0_SEX_COM4_25
+PRINTFORML 「…え？なに、なんですか…？　お尻、当たって、…触られて…ます？」
+PRINTFORML 「キモいキモいキモい！！キモ過ぎです！！　本当に死んでください！！！！」
+PRINTFORMDL ぬるぬるとした粘液をアナルに塗りこめられ、
+PRINTFORMDL 嫌悪感に体をゆする%KOJO_NAME_ME_K25()%の息にわずかな熱がこもり始めた…
+
+
+;COM5：A攻め強　アナルに挿入
+;--------------------------------------------------
+@KOJO_0_SEX_COM5_25
+PRINTFORML 「あ、あぁ！？そんなところに入りません！入らないですってば…っ/\//」
+PRINTFORML 「あ、あぁ、ぁ…/\//　何でわたしのおしり、入って来るんですかぁ…/\//」
+PRINTFORMDL 苦悶の声を漏らしながら涙を流す%KOJO_NAME_ME_K25()%など意に介さず、
+PRINTFORMDL 淫らな異形は少女の排泄の穴に性交の相手をさせ始めた…
+
+
+;SPCOM2：A攻めSP　激しくアナルを犯す
+;--------------------------------------------------
+@KOJO_0_SEX_SPCOM2_25
+PRINTFORML 「はへぇ…?いぎっ、うぐぅぅぅ…?　%SELF_CALL()%の、お、お尻は…ぁ?」
+PRINTFORML 「えっちする場所と、違うって言ってるじゃないですかぁぁ～…っ！！??」
+PRINTFORMDL 精一杯の抗議もむなしく、拘束された%KOJO_NAME_ME_K25()%は
+PRINTFORMDL 自らの尻穴が%KOJO_NAME_YOU_K25()%の乱暴な性交の相手を務める姿を
+PRINTFORMDL 涙ながらに見つめるほかなかった…
+
+
+
+;COM6：B攻め弱　胸を揉みしだく
+;--------------------------------------------------
+@KOJO_0_SEX_COM6_25
+PRINTFORML 「…っ/\//こ、こらぁっ！！どこさわってんですかっ！！」
+PRINTFORML 「キモい！！くさい！！乙女の胸を勝手に触らないでくださいぃっ！！/\//」
+PRINTFORMDL 浴びせられる怒声など意に介さず、
+PRINTFORMDL 淫靡な肉塊は胸の上を這い、%KOJO_NAME_ME_K25()%の性感を促し始めた…
+
+
+;COM7：B攻め強　乳首に吸い付く
+;--------------------------------------------------
+@KOJO_0_SEX_COM7_25
+PRINTFORML 「あ、ぅ、その口みたいなの…吸うやつ…おっぱい狙わないでぇ…/\//」
+PRINTFORML 「んんんんっ～～っ！！！/\//%SELF_CALL()%のおっぱい、勝手に吸っちゃだめですってばぁ…！！」
+PRINTFORMDL 汗の滲む敏感な胸の先端を異形の触手に食い付かれ、しゃぶられ、弄ばれる感触に
+PRINTFORMDL %KOJO_NAME_ME_K25()%の息に熱いものが混じり始めた…
+
+;SPCOM3：B攻めSP　乳首に噛み付く
+;--------------------------------------------------
+@KOJO_0_SEX_SPCOM3_25
+PRINTFORML 「んぎっ?…っ、くぅぅぅ?　ヘンタイっ…いぅぅぅっ?」
+PRINTFORML 「何で、%SELF_CALL()%、おっぱい噛まれてるのに…っ?　噛んじゃだめっ、だめぇぇっ?」
+PRINTFORMDL 知り尽くしたおもちゃを弄くるように何度も乳首を噛まれながら、
+PRINTFORMDL %KOJO_NAME_ME_K25()%は口の端にわずかな被虐の笑みが浮かび始めていた…。
+
+
+;COM8：スパンキング
+;--------------------------------------------------
+@KOJO_0_SEX_COM8_25
+PRINTFORML 「い、いや、やめ…やめて…っ！！！」
+PRINTFORML 「…っ！！、……いっ！！　い、いたぁっ…！！」
+PRINTFORML 高い位置から触手が振り下ろされる度、鋭い痛みが臀部に走り、
+PRINTFORML %KOJO_NAME_ME_K25()%の口から苦悶の声が漏れた…
+
+
+;COM9：針
+;--------------------------------------------------
+@KOJO_0_SEX_COM9_25
+PRINTFORML 「ちょちょっ、ま、まってくださいっ、針、針が当たってますっ！！」
+PRINTFORML 「いっ！？…まって…っ、刺さって、いやぁーっ！！」
+PRINTFORMDL 自由を奪われた%KOJO_NAME_ME_K25()%には痛みとともに
+PRINTFORMDL 自らの体に針が埋まっていく光景を見ていることしかできない…
+
+;SPCOM4：電流
+;--------------------------------------------------
+@KOJO_0_SEX_SPCOM4_25
+PRINTFORML 「な、なんですか…バチバチいって…」
+PRINTFORML 「あ、ぎ、あぁあぁぁぁああ！？　いひぃぃぃぃぃ！？」
+PRINTFORMDL 鋭い痛みとともに体が身勝手な痙攣を始め、
+PRINTFORMDL %KOJO_NAME_ME_K25()%は悲鳴を上げることしかできない。
+
+;COM10：手淫
+;--------------------------------------------------
+@KOJO_0_SEX_COM10_25
+PRINTFORML 「き、キモい～～っ！？　美少女がこんなの触れるわけないでしょ…っ！！」
+PRINTFORML 「うそうそ、手の中でびくびくしてるぅ…　擦り付けないでってばぁ…っ/\//」
+PRINTFORMDL 手指を使い強制的に奉仕させられている淫靡な肉塊の感触に
+PRINTFORMDL %KOJO_NAME_ME_K25()%は嫌悪の表情を浮かべながらも目を離せずにいるようだ…
+
+
+;COM11：フェラ
+;--------------------------------------------------
+@KOJO_0_SEX_COM11_25
+PRINTFORML 「く、くさ…っ！！世界一の美少女にそんなの近づけないで…っ」
+PRINTFORML 「んぐっ、ぐ、ぐぅぅ…っ！？んんんぅ、んん～～～～～っ/\//」
+PRINTFORMDL %KOJO_NAME_ME_K25()%の口は臭気を放つ肉塊に侵入され、
+PRINTFORMDL 淫靡な擬似性交の相手として弄ばれている…
+
+;COM12：イラマチオ
+;--------------------------------------------------
+@KOJO_0_SEX_COM12_25
+PRINTFORML 「ぐほ、げほ、げほ…、い、息、できな…、むぐぅっ…/\//」
+PRINTFORML 「おご、ごぼ、ごぼ、うぐ…げ、ぼ……ごぎゅ…げぼ…」
+PRINTFORMDL のど奥にまで突き入れられた肉塊に呼吸をコントロールされながら
+PRINTFORMDL %KOJO_NAME_ME_K25()%の喉は雄の肉に奉仕する術を無理矢理教育されている…
+
+;SPCOM5：パイズリ
+;--------------------------------------------------
+@KOJO_0_SEX_SPCOM5_25
+PRINTFORML 「ちょ、ちょっと！！美少女の谷間になに勝手に入ってるのよっ！！/\//」
+PRINTFORML 「ヘンタイ！スケベ！！ばか！！…ひぃっ…、恨み、ますからねぇ…っ」
+PRINTFORMDL 胸の間に潜り込んだ%KOJO_NAME_YOU_K25()%はその感触を楽しむかのように自身を蠢かせ
+PRINTFORMDL %KOJO_NAME_YOU_K25()%を前にした雌の役割を%KOJO_NAME_ME_K25()%に突きつけている…
+
+
+;SPCOM6：強制自慰
+;--------------------------------------------------
+@KOJO_0_SEX_SPCOM6_25
+PRINTFORML 「や、やだっ…%SELF_CALL()%の手、何で勝手に…っ！？」
+PRINTFORML 「自分で触ったって気持ちよくなるわけないでしょ！！　手を止めさせてってばぁっ/\//」
+PRINTFORMDL きつく%KOJO_NAME_YOU_K25()%を睨んでみせる%KOJO_NAME_ME_K25()%だが、
+PRINTFORMDL 自ら敏感な部分を苛めるたびに生み出される性感に驚きを隠しきれずにいる…
+
+
+;SPCOM7：羞恥プレイ
+;--------------------------------------------------
+@KOJO_0_SEX_SPCOM7_25
+PRINTFORML 「…あ、あぁ…あ、あっ」
+PRINTFORML 「いやぁぁぁ～～～～～っ！！/\//やめてっ、こんなの見せないでぇぇぇっ！！/\//」
+PRINTFORMDL %KOJO_NAME_ME_K25()%は顔を真っ赤に染め、目に涙を浮かべながら
+PRINTFORMDL 何の意味もない叫びを何度も繰り返した…
+
+
+;キャラが射精
+;--------------------------------------------------
+@KOJO_0_SEX_CHARA_SYASEI_25
+PRINTFORML 「う、ひぅぅっ?　%SELF_CALL_SINGLE()%、%SELF_CALL()%のおちんちん…　もっと我慢してぇぇ…っ?」
+PRINTFORML 「ふあっ、あぁぁぁぁっ！！！??　こんなの、こんなの知らない…ぃ！！！?」
+PRINTFORMDL びくびくと大きく震えて精子を吐き出した%KOJO_NAME_ME_K25()%のペニスは
+PRINTFORMDL 次の快楽を求めるように再びふくらみを取り戻し始めた…
+
+IF ABL:Ｃ感覚 > 3
+	PRINTL
+	PRINTFORML 「はぁ…はぁ…　おちんちん、もう触らないでよぉ…っ?」
+	PRINTFORMDL 少女の肉径など%KOJO_NAME_YOU_K25()%に弄ばれるためにある淫靡な玩具でしかない。
+	PRINTFORMDL それを教え込まれた証のように、%KOJO_NAME_ME_K25()%のペニスは
+	PRINTFORMDL %KOJO_NAME_YOU_K25()%に向かって媚びた律動を繰り返している…
+ENDIF
+
+
+;キャラが大量射精
+;--------------------------------------------------
+@KOJO_0_SEX_CHARA_SYASEI_HI_25
+PRINTFORML 「お、お願い、もうおちんちん許して…ぇ?お、おっきいのきちゃう、からぁ…?」
+PRINTFORML 「あぁぁ、くる、くるぅ…っ/\//　あぁぁぁぁああぁぁぁ～～～っ??」
+PRINTFORMDL 突き抜けるような快楽で理性を焼きながら、%KOJO_NAME_ME_K25()%のペニスは淫らに弄ばれる悦びに震え、大量の精液を吐き出した。
+PRINTL
+PRINTFORMDL あまりの射精に脱力する%KOJO_NAME_ME_K25()%だったが、快楽を教え込まれた少女のペニスは
+PRINTFORMDL 再び淫靡なふくらみを取り戻し、%KOJO_NAME_YOU_K25()%の眼前で無抵抗な姿を晒している…
+IF ABL:Ｃ感覚 > 3
+	PRINTL
+	PRINTFORML 「あ、あ…っ、違うの…っ?」
+	PRINTFORML 「これは違うから、本当におちんちんは許してくださいってばぁ…?」
+	PRINTFORMDL 否定の言葉を口にしながらも%KOJO_NAME_YOU_K25()%に弄ばれるための玩具へ成り下がった
+	PRINTFORMDL 敏感なペニスをますます膨らませているその姿は
+	PRINTFORMDL ある種の愛玩の感情はあれど、美少女などと言えるようなものではなかった…
+ENDIF
+
+
+;キャラが噴乳
+;--------------------------------------------------
+@KOJO_0_SEX_CHARA_HUNNYU_25
+PRINTFORML 「む、むね…っへん…っへんになってるぅ…っ/\//」
+PRINTFORML 「か、かれんなびしょうじょなのに…っ?　おっぱい、でちゃうぅぅぅ～～っ??」
+PRINTFORMDL 堪えきれない快楽に背中を震わせて%KOJO_NAME_ME_K25()%は絶頂し、
+PRINTFORMDL 快楽を貪る器官となった胸から白濁した液体を噴き出させた…
+
+
+;キャラが大量噴乳
+;--------------------------------------------------
+@KOJO_0_SEX_CHARA_HUNNYU_HI_25
+PRINTFORML 「ひぅっ、は、あぅぅっっ！！！?も、おっぱい、許してよぉ…っ??」
+PRINTFORML 「ゆるし、おっぱい…っ、おっぱい許してってばぁあぁぁぁ～～??」
+PRINTFORMDL 大量に母乳を噴出しながら果てる%KOJO_NAME_ME_K25()%の懇願は
+PRINTFORMDL 背徳の性を仕込まれる悦びによって淫らに捻じ曲げられ、
+PRINTFORMDL 更なる屈服を待ちわびる媚びた喘ぎとしてあたりに響き渡った…
+
+
+;絶頂関連
+
+;C絶頂
+;--------------------------------------------------
+@KOJO_0_SEX_ECSTASY_C_25
+PRINTFORML 「もういや、いやなんです！！　やめて、とまってぇ…！！！」
+PRINTFORML 「あ、あっ、あああっ　イ、くぅぅぅ！！！/\//」
+PRINTFORMDL 快楽から逃げようとする淫核を執拗に追い詰められ、
+PRINTFORMDL %KOJO_NAME_ME_K25()%は望まぬ絶頂をさせられるしかなかった…
+
+;C強絶頂
+;--------------------------------------------------
+@KOJO_0_SEX_ECSTASY_C_HI_25
+PRINTFORML 「はひ、はひ…、もうイく、またイくぅ…っ/\//」
+PRINTFORML 「あひ、あひぃぃ…、あひぃぃぃぃぃ??」
+PRINTFORMDL %KOJO_NAME_ME_K25()%は開発されきった淫核をなぶられ、
+PRINTFORMDL 股間の突端を突き出しながらがくがくと体を震わせている。
+
+;V絶頂
+;--------------------------------------------------
+@KOJO_0_SEX_ECSTASY_V_25
+PRINTFORML 「こんなのいや…っ！イくのいやですってばぁっ！？」
+PRINTFORML 「は、ひ、がまん…れきにゃい…?　あっ！！ああぁぁっぁっ！！/\//」」
+PRINTFORMDL %KOJO_NAME_YOU_K25()%に膣をなぶられて
+PRINTFORMDL %KOJO_NAME_ME_K25()%はなすすべもなく絶頂を迎えた…
+
+;V強絶頂
+;--------------------------------------------------
+@KOJO_0_SEX_ECSTASY_V_HI_25
+PRINTFORML 「こんなのだめ…/\//　ほんとに、えっちみたい…/\//」
+PRINTFORML 「えっち…?　えっち…?　ぅああ、あぁぁぁぁあぁぁ…??」
+PRINTFORMDL 容赦のない快楽の果てに追い詰められ、%KOJO_NAME_ME_K25()%は
+PRINTFORMDL 空ろな目をしながら性交絶頂の悦びを受け入れさせられている…
+
+;A絶頂
+;--------------------------------------------------
+@KOJO_0_SEX_ECSTASY_A_25
+PRINTFORML 「だめ、だめっ！！/\//　お尻、なんて、お尻…っ/\//」
+PRINTFORML 「正義の…美少女、なのにぃぃ/\//　ぅ～～～～～～～～っっ/\//」
+PRINTFORMDL %KOJO_NAME_ME_K25()%は羞恥に顔を真っ赤に染めながら
+PRINTFORMDL 忌むべき敵に教え込まれた尻穴での快楽で絶頂を迎えた…
+
+;A強絶頂
+;--------------------------------------------------
+@KOJO_0_SEX_ECSTASY_A_HI_25
+PRINTFORML 「い、ぁ…?　お尻、イく、またイく…?」
+PRINTFORML 「おしり?　%SELF_CALL()%のおしり??　おしりぃぃぃ??」
+PRINTFORMDL さんざんに弄ばれ、すっかり性器のひとつとなった%KOJO_NAME_ME_K25()%アナルは
+PRINTFORMDL 我慢もプライドも打ち砕き、深い絶頂を繰り返している…
+
+;B絶頂
+;--------------------------------------------------
+@KOJO_0_SEX_ECSTASY_B_25
+PRINTFORML 「ま、まってくださいっ！！　ほんとにもうおっぱい触っちゃだめ！！」
+PRINTFORML 「やだ、やだぁっ！！　ふぁ、あぁぁぁ～～っ！！！/\//」
+PRINTFORMDL 
+
+;B強絶頂
+;--------------------------------------------------
+@KOJO_0_SEX_ECSTASY_B_HI_25
+PRINTFORML 「ひ、ぅ、うぅぅ?…わたしのおっぱい、どうなってるんですかっ…?」
+PRINTFORML 「だめだめだめぇ?　おっぱいイくぅぅぅぅぅぅ…っ！！??」
+PRINTFORMDL 開発されきった胸に暴力的に押し付けられる快楽に
+PRINTFORMDL %KOJO_NAME_ME_K25()%は涙声で絶頂の喘ぎを上げている…
+
+
+;多重絶頂に関する口上
+
+;四重絶頂
+;--------------------------------------------------
+@KOJO_0_SEX_MULTIECSTASY_CVAB_25
+PRINTFORML 「はへ、はひぃぃ?　死んじゃう、きもちよくて死んじゃうぅぅ?」
+PRINTFORML 「ごめんなさいごめんなさいぃぃ?　もう謝りますから許してぇぇぇ??」
+PRINTFORMDL %KOJO_NAME_ME_K25()%がいくら喘ぎをあげ、涙ながらに許しを乞おうとも
+PRINTFORMDL 一切逃げ場のない全身絶頂拷問は終わる様子をみせない…
+
+;CVA三重絶頂
+;--------------------------------------------------
+@KOJO_0_SEX_MULTIECSTASY_CVA_25
+CALL KOJO_0_SEX_MULTIECSTASY_TRI_25
+
+;CVB三重絶頂
+;--------------------------------------------------
+@KOJO_0_SEX_MULTIECSTASY_CVB_25
+CALL KOJO_0_SEX_MULTIECSTASY_TRI_25
+
+;CAB三重絶頂
+;--------------------------------------------------
+@KOJO_0_SEX_MULTIECSTASY_CAB_25
+CALL KOJO_0_SEX_MULTIECSTASY_TRI_25
+
+;VAB三重絶頂
+;--------------------------------------------------
+@KOJO_0_SEX_MULTIECSTASY_VAB_25
+CALL KOJO_0_SEX_MULTIECSTASY_TRI_25
+
+;三十絶頂は共通にしておく…
+@KOJO_0_SEX_MULTIECSTASY_TRI_25
+PRINTFORML 「いいぃぃぃっ?　反則、反則ですからぁぁっ??」
+PRINTFORML 「気持ちよすぎぃぃ…っ/\//　もうこんな身体いやぁぁぁっ??」
+PRINTFORMDL 敏感な性器をすき放題になぶられ、%KOJO_NAME_ME_K25()%の全身が絶頂を繰り返す。
+PRINTFORMDL 否定の言葉は何の力もなく、意思とは無関係にさらに淫らに変わっていく…
+
+
+;CV二重絶頂
+;--------------------------------------------------
+@KOJO_0_SEX_MULTIECSTASY_CV_25
+PRINTFORML 「あ、あぁぁぁっっ！！　いじるのやめて！！うごかさないでぇ！！/\//」
+PRINTFORML 「あ、だめ、きちゃいますぅ…っ、おっきいのきちゃいますからぁぁぁぁ?」
+PRINTFORMDL 敏感な淫核と膣奥を弄りまわされ、%KOJO_NAME_ME_K25()%の全身ががくがくと震える。
+PRINTFORMDL 少女の叫びは誰にも聞き届けれられることなく、
+PRINTFORMDL 二つの性器での絶頂が%KOJO_NAME_ME_K25()%の記憶に刻まれていく…
+
+;CA二重絶頂
+;--------------------------------------------------
+@KOJO_0_SEX_MULTIECSTASY_CA_25
+PRINTFORML 「うそうそうそぉ…っ/\//　こんなイきかたイヤぁっ/\//」
+PRINTFORML 「お尻、ゆるし…っ！！　あぁあぁっ！？クリだめぇぇぇっ??」
+PRINTFORMDL 淫核と尻穴の快楽を教えられ、屈服させられた%KOJO_NAME_ME_K25()%は
+PRINTFORMDL %KOJO_NAME_YOU_K25()%によって淫靡な二重絶頂のコツを身体に刻み付けられていく…
+
+;CB二重絶頂
+;--------------------------------------------------
+@KOJO_0_SEX_MULTIECSTASY_CB_25
+PRINTFORML 「あぁぁあぁあぁっ！？/\//　おっぱい、おっぱいやめてぇえぇっ！！?」
+PRINTFORML 「いいいぃぃ～～～っ?　ど、同時なんてむりですぅぅぅぅ??」
+PRINTFORMDL 胸での絶頂の予感に気を取られ、油断していた淫核を責められた%KOJO_NAME_ME_K25()%は
+PRINTFORMDL 淫らな二重絶頂の記憶を刻み付けられてしまった…
+
+;VA二重絶頂
+;--------------------------------------------------
+@KOJO_0_SEX_MULTIECSTASY_VA_25
+PRINTFORML 「あっ?　あっ?　あっ?　あぁぁあぁぁぁぁっ?」
+PRINTFORML 「こんなのだめ…っ、ほんとうにだめ、だめになっちゃうぅぅぅ??」
+PRINTFORMDL 膣とアナル、二つの雌穴での絶頂を身体に刻み付けられ
+PRINTFORMDL %KOJO_NAME_ME_K25()%は淫靡な喘ぎを上げながら淫らに動く腰をとめられずにいる…
+
+;VB二重絶頂
+;--------------------------------------------------
+@KOJO_0_SEX_MULTIECSTASY_VB_25
+PRINTFORML 「胸とあそこなんて、恋人にでもなった、つもりですか…っ?」
+PRINTFORML 「こんなのでっ、絶対イったり、…イったりぃぃぃっっ～～～??」
+PRINTFORMDL 口先だけの抵抗など何の意味もなさず、胸と膣を責め立てられた%KOJO_NAME_ME_K25()%は
+PRINTFORMDL 二箇所で同時にイく激しい快楽に身をもだえさせている…
+
+;AB二重絶頂
+;--------------------------------------------------
+@KOJO_0_SEX_MULTIECSTASY_AB_25
+PRINTFORML 「やめて、やめてくださいってばぁぁ…/\//」
+PRINTFORML 「おっぱいとお尻なんて、イけるわけ…、イけ、るわけぇっ??」
+PRINTFORMDL 淫らなに変えられた%KOJO_NAME_ME_K25()%の乳首とアナルは
+PRINTFORMDL %KOJO_NAME_ME_K25()%の常識などあっさりと打ち破り、
+PRINTFORMDL 拭い去れない同時絶頂の快楽に震えている…
+
+
+;触手が射精したときの処理
+
+;膣に通常射精
+;--------------------------------------------------
+@KOJO_0_SEX_TENTACLE_SYASEI_VAGINA_25
+PRINTFORML 「なに、なに…、え…？え…　な、な…」
+PRINTFORML 「何してるんですかぁぁあ？！　なか、中にぃ！！」
+PRINTFORMDL 膣奥の精子を掻き出そうとする手は%KOJO_NAME_YOU_K25()%に押さえつけられ、
+PRINTFORMDL %KOJO_NAME_ME_K25()%は顔を青ざめさせながら受精しないことを祈り続けている…、
+
+
+;膣に大量射精
+;--------------------------------------------------
+@KOJO_0_SEX_TENTACLE_SYASEI_VAGINA_HI_25
+PRINTFORML 「も、もう出さないで…、精子、精子いらないですからぁ…/\//」
+PRINTFORML 「いやぁ…なんでこんなことに、なっちゃうんですかぁ…?」
+PRINTFORMDL 孕むまで幾らでも注ぎ続けるかのような大量の白濁液に
+PRINTFORMDL %KOJO_NAME_ME_K25()%の膣穴はすっかり手懐けられてしまい、
+PRINTFORMDL 精を吐きながらも動き続ける%KOJO_NAME_YOU_K25()%を受け入れきっている…
+
+;アナルに通常射精
+;--------------------------------------------------
+@KOJO_0_SEX_TENTACLE_SYASEI_ANAL_25
+PRINTFORML 「…あぁああぁっ　そこは出すところです！！入れないでくださいぃっ！！！」
+PRINTFORML 「あ、ああぁぁあぁ…、もう変なことしないでぇ…っ/\//」
+PRINTFORMDL %KOJO_NAME_ME_K25()%の尻穴の中に射精した%KOJO_NAME_YOU_K25()%は
+PRINTFORMDL まるで馴染ませるように腸内に精子を塗り広げている…
+
+
+;アナルに大量射精
+;--------------------------------------------------
+@KOJO_0_SEX_TENTACLE_SYASEI_ANAL_HI_25
+PRINTFORML 「うああぅうぅうぅ…　おしりに、そんなに、入らないですからぁぁ…?」
+PRINTFORML 「あ、あああぁ…/\//　でる…?　抜いたら…　%SELF_CALL()%、だしちゃうぅぅ…??」
+PRINTFORMDL 精を放ったペニスが引き抜かれると%KOJO_NAME_ME_K25()%のアナルから大量の白濁液が溢れ出す。
+PRINTFORMDL 排泄された精子が羞恥に涙を浮かべる%KOJO_NAME_ME_K25()%の下に大きな精液溜りが出来ていく…
+
+;手に通常射精
+;--------------------------------------------------
+@KOJO_0_SEX_TENTACLE_SYASEI_HAND_25
+PRINTFORML 「や、やだぁ…キモいぃぃ…っ　びくびく震えてますよぉ…」
+PRINTFORML 「ひゃっ！？　なんか、でて、でてます…っ　うぅぅぅ…」
+PRINTFORMDL 手の中の肉棒が震え、%KOJO_NAME_ME_K25()%の手を汚れた粘液で汚していく。
+PRINTFORMDL なすすべもない%KOJO_NAME_ME_K25()%はそれを奉仕の報酬として受け入れるしかなかった…。
+
+;手に大量射精
+;--------------------------------------------------
+@KOJO_0_SEX_TENTACLE_SYASEI_HAND_HI_25
+PRINTFORML 「%SELF_CALL_SINGLE()%、%SELF_CALL()%の手、捕まえて、どうするつもりなんですか…/\//」
+PRINTFORML 「う、うぅぅ…ほんとにキモいです、女の子に、精子受けさせるなんて…っ/\//」
+PRINTFORMDL 器のように合わせさせられた%KOJO_NAME_ME_K25()%の手の中に
+PRINTFORMDL あふれ出すほどの大量の精液が吐き出される。
+PRINTFORMDL なみなみと注がれた精子から%KOJO_NAME_ME_K25()%は目を離すことができない…
+
+
+;口内に通常射精
+;--------------------------------------------------
+@KOJO_0_SEX_TENTACLE_SYASEI_MOUTH_25
+PRINTFORML 「…ん、んぐぅぅ！！？　うええぇええぇ…っ！！」
+PRINTFORML 「まず、にが、キモいいぃぃ！！　んぐっ、んんんんっ～～～！！！」
+PRINTFORMDL 口を塞がれ、嚥下を促された%KOJO_NAME_ME_K25()%は、
+PRINTFORMDL 口いっぱいに広がる生臭さにえずきながら精液を飲み下す他なかった…
+
+;口内に大量射精
+;--------------------------------------------------
+@KOJO_0_SEX_TENTACLE_SYASEI_MOUTH_HI_25
+PRINTFORML 「ま、また、%SELF_CALL()%に飲ませるんですか…　キモい、最低ぇ…っ/\//」
+PRINTFORML 「んぐ…！？　…ん、ぐっ、ぐ、ごく…、ごく…/\//」
+PRINTFORMDL 口内に次々注がれる精液を%KOJO_NAME_ME_K25()%はためらいながらも喉奥へと送っていく。
+PRINTFORMDL 暴力的な口性交に窒息しないためにも、%KOJO_NAME_ME_K25()%は
+PRINTFORMDL %KOJO_NAME_YOU_K25()%の精子を受け入れ、飲み下すほかになかった…
+
+;胸に通常射精
+;--------------------------------------------------
+@KOJO_0_SEX_TENTACLE_SYASEI_BUST_25
+PRINTFORML 「き、キモいです…先っぽこっちに向けないでください…っ」
+PRINTFORML 「へっ！？　なんてもの人にかけてるんですか！！！　くさっ！！キモい～～っ！！」
+PRINTFORMDL 胸元に浴びせられた精液の生臭さに顔をしかめる%KOJO_NAME_ME_K25()%など意に介さず
+PRINTFORMDL %KOJO_NAME_YOU_K25()%は先端に残った精子すら%KOJO_NAME_ME_K25()%の身体に擦り付けている…
+
+;胸に大量射精
+;--------------------------------------------------
+@KOJO_0_SEX_TENTACLE_SYASEI_BUST_HI_25
+PRINTFORML 「ま、また…%SELF_CALL()%を汚すつもりですか…っ/\//　いい加減にしてください…っ/\//」
+PRINTFORML 「%SELF_CALL()%を、せ、精液漬けにでもする気ですか…、ムダなのに…/\//」
+PRINTFORMDL 顔を背ける%KOJO_NAME_ME_K25()%の胸元一面に大量の精液が浴びせられる。
+PRINTFORMDL 牝を発情させるその独特の異臭に
+PRINTFORMDL そらした筈の目が引き寄せられるのを止める事ができない…
+
+
+;戦闘終了関連
+
+;ボス触手・ラスボス触手に勝利
+;--------------------------------------------------
+@KOJO_0_BATTLE_END_WIN_25
+PRINTFORML 「はぁ、はぁ…、もっと正義のヒロインが戦うのにふさわしい敵はいないんですか…」
+PRINTFORML 「キモいし、えっちだし…、本当にサイテーです…」
+
+;敵キャラに勝利
+;--------------------------------------------------
+@KOJO_0_BATTLE_END_WIN_ENEMY_25
+
+
+;ラスボス触手出現
+;--------------------------------------------------
+@KOJO_0_BATTLE_END_LASTBOSSAPPEAR_25
+PRINTFORML 「こ、これが、キモにょろの一番のボスですか。本当に、最低最悪のキモさです」
+PRINTFORML 「%SELF_CALL()%みたいな美少女と同じ世界に存在することすら罪ですよ」
+PRINTFORML 「正義の乙女の裁きです。死んで世界中の女の子に詫びてください」
+
+
+;完全殲滅
+;--------------------------------------------------
+@KOJO_0_BATTLE_END_PERFECT_25
+PRINTFORML 「……おわった、んですか…？」
+PRINTFORML 「%SELF_CALL_SINGLE()%、%SELF_CALL()%…、ほんとに世界を救っちゃったんだ…」
+PRINTFORML 「……」
+PRINTFORML 「と、当然ですよね！%SELF_CALL()%ってば正義の乙女、可憐な美少女なんですから！！」
+PRINTFORML 「ほんとにほんとに当たり前のことです！！あたりまえの事ですけど…」
+PRINTFORML 「や、やってやりましたよ～～～～～っ！！！」
+
+
+
+;捕らわれキャラの救出
+;--------------------------------------------------
+@KOJO_0_BATTLE_END_RESCUED_25
+PRINTFORML 「%CALL_NAME_YOU_K25()%！？　早くつれて帰らないと…っ」
+PRINTFORML 「後はリーダーの%SELF_CALL()%に任せて、ゆっくり休んでください」
+
+;洗脳中キャラの救出
+;--------------------------------------------------
+@KOJO_0_BATTLE_END_RESCUE_SENNOU_25
+PRINTFORML 「天才美少女の%SELF_CALL()%が、こんな状態で負けるわけないじゃないですか…」
+PRINTFORML 「帰って治療して…元気になったら。今度はちゃんとお手合わせしましょう」
+
+;敵キャラの救出
+;--------------------------------------------------
+@KOJO_0_BATTLE_END_RESCUE_ENEMY_25
+PRINTFORML 「ほんっと、手間のかかる仲間達です」
+PRINTFORML 「まぁ、%SELF_CALL()%は天才リーダーなので、仲間を助けるのは当然ですけど」
+PRINTFORML 「…元気になったら、ちょっとだけお仕置きですからね…」
+
+;敗北
+;--------------------------------------------------
+@KOJO_0_BATTLE_END_LOSS_25
+PRINTFORML 「う、そ…　なんで、%SELF_CALL()%が…？　%SELF_CALL()%が…」
+PRINTFORML 「%SELF_CALL()%は、天才で、美少女で…正義の、正義の…？」
+PRINTFORMDL 何かをつかもうと伸ばした手が大量の触手に絡めとられる光景を見ながら
+PRINTFORMDL %KOJO_NAME_ME_K25()%の意識は徐々に薄れていった…
+
+
+;時間切れ
+;--------------------------------------------------
+@KOJO_0_BATTLE_END_TIMEUP_25
+PRINTFORML 「く…いくら天才美少女の%SELF_CALL()%でもこれ以上はきつい、ですね…」
+PRINTFORML 「…相手も逃げていく…？　もうちょっと、だったんでしょうか…」
+PRINTFORMDL 逃げていく%KOJO_NAME_YOU_K25()%を追いかけることもできず、
+PRINTFORMDL %KOJO_NAME_ME_K25()%は悔しさを食いしばって帰還を決意した…
+
+
+;素質関連
+
+;処女喪失
+;--------------------------------------------------
+@KOJO_0_SEX_LOSTVIRGIN_25
+PRINTFORML 「だめ！！だめだめだめ！！それだけはだめ！！」
+PRINTFORML 「%SELF_CALL()%は乙女なんです、美少女なんです！！こんなの絶対だめなんですっ！！！」
+PRINTFORML 「あ、あ、うそ…、冗談はやめてくださ、あ、あっ…」
+PRINTFORML 「い、いやぁぁああぁぁあっ！！！！！」
+PRINTFORMDL 乙女を自負し、純潔を守り続けていた少女の美しい膣口はこじ開けられ、
+PRINTFORMDL 初めてにも関わらず我が物顔で居座り、乱暴に暴れる肉欲の相手をさせられている…
+
+
+;触手の虜取得
+;--------------------------------------------------
+@KOJO_0_GETTALENT_TORIKO_25
+PRINTFORML 「%SELF_CALL()%がかわいいのって、%CALL_NAME_YOU_K25()%に可愛がって貰うためですか…？」
+PRINTFORML 「戦うのは、%CALL_NAME_YOU_K25()%に負けて犯されるためですか…？」
+PRINTFORML 「こんなにえっちな身体なのは%CALL_NAME_YOU_K25()%とえっちするために生まれてきたからですか…？」
+PRINTFORML 「ちがいます…。ちがうはずなんです…。　わたしは、正義の、美少女で…？」
+PRINTL
+PRINTFORML 「…あ、あはは…。ぜんぜん違わないじゃないですか…」
+PRINTFORML 「%SELF_CALL()%はもう、%CALL_NAME_YOU_K25()%の…?」
+PRINTFORMDL 明るく自信に満ちていた少女の顔は、絶望と悲壮に涙を零しながらも
+PRINTFORMDL 穢される運命を受け入れてしまった暗い悦びに満ちた笑みが浮かんでいた…
+
+
+;淫乱取得
+;--------------------------------------------------
+@KOJO_0_GETTALENT_INRAN_25
+PRINTFORML 「ほんとに%SELF_CALL()%の身体、なんでこんな…/\//」
+PRINTFORML 「はぁ…/\//　はぁ…/\//　またえっちなこと、したくなってきました…?」
+PRINTFORMDL 淫らに作り変えられた%KOJO_NAME_ME_K25()%の身体は
+PRINTFORMDL 焦がれる様な焦燥感を生み出しながら
+PRINTFORMDL 新たな快楽を得るよう%KOJO_NAME_ME_K25()%を苛み続けている…
+
+
+
+;淫核取得
+;--------------------------------------------------
+@KOJO_0_GETTALENT_INKAKU_25
+IF CHECK_K25("ふたなり")
+	PRINTFORML 「%SELF_CALL_SINGLE()%、%SELF_CALL()%のおちんぽ…は%CALL_NAME_YOU_K25()%のおもちゃれしゅ…??」
+	PRINTFORML 「いつれもぴゅっぴゅできる、とってもおりこうなおちんぽれしゅから」
+	PRINTFORML 「もっともっと、おちんぽれあしょんでくらはい…??」
+	PRINTFORMDL 淫らな教育を徹底的に施された%KOJO_NAME_ME_K25()%のペニスは
+	PRINTFORMDL どんなときでもすぐに膨らみ、敵にすら底なしの快楽をねだる
+	PRINTFORMDL 変態的な愛玩性具へと変えられてしまった…
+ELSE
+	PRINTFORML 「%SELF_CALL_SINGLE()%、%SELF_CALL()%のくりとりす…もう%CALL_NAME_YOU_K25()%のおもちゃれしゅ…??」
+	PRINTFORML 「いつでもどこでもかたくにゃって、%KOJO_NAME_YOU_K25()%にいじられるじゅんびしましゅ…?」
+	PRINTFORML 「だかりゃ…、くりイジメるの、やめないれくりゃしゃい…???」
+	PRINTFORMDL 淫らな教育を徹底的に施された%KOJO_NAME_ME_K25()%のペニスは
+	PRINTFORMDL どんなときでもすぐに膨らみ、敵にすら底なしの快楽をねだる
+	PRINTFORMDL 変態的な愛玩性具へと変えられてしまった…
+ENDIF
+
+
+;淫壷取得
+;--------------------------------------------------
+@KOJO_0_GETTALENT_INTUBO_25
+PRINTFORML 「はぁ…/\//　はぁ…/\//　精子、もっとほしいれしゅ…??」
+PRINTFORML 「%SELF_CALL()%のおまんこはもう%CALL_NAME_YOU_K25()%のおちんぽ入れしゅから…」
+PRINTFORML 「おちんぽぬかずに、ずっとずっとナカだししてくらしゃい…??」
+PRINTFORMDL 淫らな教育を徹底的に施された%KOJO_NAME_ME_K25()%の膣穴は
+PRINTFORMDL 常に発情し、性交相手を探して淫らに疼き続ける
+PRINTFORMDL 変態的な肉壺へと変えられてしまった…
+
+
+;淫尻取得
+;--------------------------------------------------
+@KOJO_0_GETTALENT_INJIRI_25
+PRINTFORML 「はぁ…/\//　はぁ…/\//　おしり、まだすきまありましゅよ…?」
+PRINTFORML 「%SELF_CALL()%のおしりは%CALL_NAME_YOU_K25()%のオナホなんれしゅから…」
+PRINTFORML 「もっともっと、お尻で%CALL_NAME_YOU_K25()%のお汁搾らせてくらしゃい…??」
+PRINTFORMDL 淫らな教育を徹底的に施された%KOJO_NAME_ME_K25()%のアナルは
+PRINTFORMDL 乱暴な肉塊に犯され、精を飲まされることを待ちわびる
+PRINTFORMDL 変態的な性交器官へと変えられてしまった…
+
+
+;淫乳取得
+;--------------------------------------------------
+@KOJO_0_GETTALENT_INNYUU_25
+PRINTFORML 「おっぱい…おっぱいあついれしゅよぉ…??」
+PRINTFORML 「しぼられてもイきましゅ…?さきっぽつねられてもイきましゅ…?」
+PRINTFORML 「何されてもイきましゅから、もっとおっぱいであそんでくらしゃい…??」
+PRINTFORMDL 淫らな教育を徹底的に施された%KOJO_NAME_ME_K25()%の乳房は
+PRINTFORMDL 新たな性感を求めて乳首を硬くし、淫らに生殖相手の劣情を誘い続ける
+PRINTFORMDL 変態的な性感部と変えられてしまった…
+
+
+
+
+;刻印関連
+
+;快楽刻印１取得
+;--------------------------------------------------
+@KOJO_0_SEX_MARK_KAIRAKU_1_25
+PRINTFORML 「なに、なにこれ…ぇ/\//　こんなのしらない、知りたくないですからぁ…っ/\//」
+PRINTFORML 「あっ、あっ、あっ??　もう、もうイヤです…ぅ?」
+PRINTFORMDL 体中を駆け巡る強い性感に%KOJO_NAME_ME_K25()%は頭を振ってかき消そうとするが、
+PRINTFORMDL ひとたび刻まれてしまった快楽の悦びは消えることはなかった…
+
+
+;快楽刻印２取得
+;--------------------------------------------------
+@KOJO_0_SEX_MARK_KAIRAKU_2_25
+PRINTFORML 「ひぃぃっ?　うそうそ！！こんなのおかしいですよぉっ??」
+PRINTFORML 「あぁぁああぁっ?　こんなの、こんなの我慢できないれすぅぅ…??」
+PRINTFORMDL 涙を流し、よだれをたらしながら必死に否定する%KOJO_NAME_ME_K25()%だが
+PRINTFORMDL 消すことのできない快楽の記憶が、はっきりと記憶に刻まれていく…
+
+
+;快楽刻印３取得
+;--------------------------------------------------
+@KOJO_0_SEX_MARK_KAIRAKU_3_25
+PRINTFORML 「あっ?　あっ?　あっ?　あへ、ふれ、に、へ…?」
+PRINTFORML 「あらひ、もう、らめれふ…、らめりらっひゃいまひらぁ…??」
+PRINTFORML 「あっ?　あ、ああっ?　あははは…?」
+PRINTFORMDL 二度と消えないと確信させられた快楽の記憶にぽろぽろと涙を零す%KOJO_NAME_ME_K25()%だったが
+PRINTFORMDL その顔には性の悦びに溶けきった淫靡な笑顔が浮かんでいた…
+
+
+;苦痛刻印１取得
+;--------------------------------------------------
+@KOJO_0_SEX_MARK_KUTUU_1_25
+PRINTFORML 「い、たい…、いたい…、いたいです…っ」
+PRINTFORML 「や、やめて…痛いのはイヤ、いやなんです…っ」
+PRINTFORMDL 体を裂くような激しい痛みに、逆らうことを諦めてしまうような
+PRINTFORMDL 本能的な恐怖が%KOJO_NAME_ME_K25()%の心に刻み付けられていく…
+
+
+;苦痛刻印２取得
+;--------------------------------------------------
+@KOJO_0_SEX_MARK_KUTUU_2_25
+PRINTFORML 「あ、ああぁああっ！！　いたい、いたいですってばぁ…っ」
+PRINTFORML 「やめて、やめてぇ…っ！！　だれかたすけてぇぇぇえっ！！！！」
+PRINTFORMDL 全身を引き裂かれるような激痛に、%KOJO_NAME_ME_K25()%は涙をながし絶叫する。
+PRINTFORMDL 刻み付けられた痛みの記憶は恐怖となり、少女の心を暗い影で覆っていく…
+
+
+;苦痛刻印３取得
+;--------------------------------------------------
+@KOJO_0_SEX_MARK_KUTUU_3_25
+PRINTFORML 「あ、あぁあぁあぁあぁ！！　い、いひぃぃぃっ！！！」
+PRINTFORML 「ごめ、ごめんなさいっ、許してくださいぃ！もう許してぇぇっ！！！」
+PRINTFORMDL 許しを請う少女の声など意に介さず、責め苦はさらに過激さを増す。
+PRINTFORMDL 一切の抵抗を許さない真の苦痛に%KOJO_NAME_ME_K25()%の心は粉々に砕けてしまった…
+
+
+;屈服刻印１取得
+;--------------------------------------------------
+@KOJO_0_SEX_MARK_KUPPUKU_1_25
+PRINTFORML 「こんなことさせられて…、どうして敵わないんですか…っ/\//」
+PRINTFORML 「正義は必ず勝つんです…、か、勝つ…はずなんです…/\//」
+PRINTFORMDL 強制的に従わされ、何度も弄ばれた%KOJO_NAME_ME_K25()%は
+PRINTFORMDL 刻まれた屈服の記憶によって自らの勝利に疑いが生まれてしまった…
+
+
+;屈服刻印２取得
+;--------------------------------------------------
+@KOJO_0_SEX_MARK_KUPPUKU_2_25
+PRINTFORML 「%SELF_CALL()%、こんなことばっかり、してさせられて…ます」
+PRINTFORML 「そういえば…上手なやりかたも、されることも、悦び方も…」
+PRINTFORML 「全部、ぜんぶ、もうしってますもんね…」
+PRINTFORMDL 屈服させられ、従わされ、快楽を刻まれ…
+PRINTFORMDL 暴虐の支配によって植え付けられた被虐者の自覚は
+PRINTFORMDL 少女の心を覆うほどに、一分一秒と育ち続けている…
+
+
+;屈服刻印３取得
+;--------------------------------------------------
+@KOJO_0_SEX_MARK_KUPPUKU_3_25
+PRINTFORML 「あひぃ…/\//　%SELF_CALL()%…、もう、らめぇ…?」
+PRINTFORML 「ごめんなさい、ごめんなさい…?　逆らったりしてごめんなさい…?」
+PRINTFORMDL %KOJO_NAME_YOU_K25()%が%KOJO_NAME_ME_K25()%を弄ぶたびに身体は悦びに震え、
+PRINTFORMDL 心は折れて%KOJO_NAME_YOU_K25()%に許しを乞い始める。
+PRINTFORMDL %KOJO_NAME_ME_K25()%と%KOJO_NAME_YOU_K25()%の間には明確な主従関係が出来上がっていた…
+
+
+;恐怖刻印１取得
+;--------------------------------------------------
+@KOJO_0_SEX_MARK_KYOUHU_1_25
+PRINTFORML 「…こ、こわくなんかないですっ、%SELF_CALL()%は…正義の乙女なんですから…っ」
+PRINTFORML 「だ、だからお願い、震え、とまって…っ」
+PRINTFORMDL %KOJO_NAME_YOU_K25()%に植えつけられた名状しがたい恐怖は
+PRINTFORMDL ただの少女に過ぎない%KOJO_NAME_ME_K25()%の心に
+PRINTFORMDL 消えることのない傷を刻みつけている…
+
+
+;恐怖刻印２取得
+;--------------------------------------------------
+@KOJO_0_SEX_MARK_KYOUHU_2_25
+PRINTFORML 「…ひっ…、ご、ごめ…、　っ！！　ち、ちがう、%SELF_CALL()%は、戦わなくちゃ…っ！」
+PRINTFORML 「か、からだ、動いて、%SELF_CALL()%の身体…っ」
+PRINTFORMDL 度重なる恐怖体験に心を砕かれ、%KOJO_NAME_YOU_K25()%の些細な動きにも過敏に反応して
+PRINTFORMDL 身を竦ませる%KOJO_NAME_ME_K25()%の姿は
+PRINTFORMDL 捕食者に狙われ怯える哀れな獲物のそれでしかなかった…
+
+
+;恐怖刻印３取得
+;--------------------------------------------------
+@KOJO_0_SEX_MARK_KYOUHU_3_25
+PRINTFORML 「もういや、ごめんなさい…っ、ゆるして、ゆるしてください…っ」
+PRINTFORML 「あ、ああぁあぁっ…ごめんなさい、ごめんなさいごめんなさい許してくださいぃぃ…」
+PRINTFORMDL 人間の許容限界をこえた異質の恐怖を心に刻み付けられ
+PRINTFORMDL 恐怖から逃れるためならどんなことでもするような
+PRINTFORMDL 哀れな被虐者としての表情を浮かべ、身を縮ませながら失禁してしまった…
+
+
+;恥辱刻印１取得
+;--------------------------------------------------
+@KOJO_0_SEX_MARK_TIJYOKU_1_25
+PRINTFORML 「い、いや…/\//　%SELF_CALL()%、%SELF_CALL()%乙女で、美少女…っ/\//」
+PRINTFORML 「こんなのイヤです！！最低！！変態…っ！！/\//」
+PRINTFORMDL 常識ではおよそ考えられない恥辱まみれの姿で弄ばれる自身の姿は
+PRINTFORMDL %KOJO_NAME_ME_K25()%の心に消えない恥辱の証を刻み付けていく…
+
+
+;恥辱刻印２取得
+;--------------------------------------------------
+@KOJO_0_SEX_MARK_TIJYOKU_2_25
+PRINTFORML 「こんな、こんなことばっかりさせられて…、%SELF_CALL()%、どうして…/\//」
+PRINTFORML 「ちがうの…、%SELF_CALL()%は正義の美少女、可憐なおとめ、なんだから…/\//」
+PRINTFORMDL 恥辱にまみれ、人としての尊厳すら辱められ続けた少女の心は
+PRINTFORMDL 自身を乙女という言葉など、羞恥の快楽を燃え上がらせる空虚な燃料でしかない…
+
+
+;恥辱刻印３取得
+;--------------------------------------------------
+@KOJO_0_SEX_MARK_TIJYOKU_3_25
+PRINTFORML 「あは、あはは…?　女の子のえっちなことって、こんなにたくさんあるんでしゅね…?」
+PRINTFORML 「%SELF_CALL()%のからだ、ぜんぶえっちで、何しても気持ちよくって…??」
+PRINTFORML 「えへへ…?　こんなにえっちにうまれて、ごめんなしゃい…??」
+PRINTFORMDL すべての尊厳を辱められ、ことごとく快楽を刻まれた%KOJO_NAME_ME_K25()%は
+PRINTFORMDL どんな状況でも羞恥の悦びを感じようとする
+PRINTFORMDL 変態少女となったことを受け入れるほか無かった…
+
+
+
+
+;心境変化関連
+
+;倒錯
+;--------------------------------------------------
+@KOJO_0_BATTLE_SHINKYOU_CHANGE_TOUSAKU_25
+
+;怒り
+;--------------------------------------------------
+@KOJO_0_BATTLE_SHINKYOU_CHANGE_IKARI_25
+
+;諦観
+;--------------------------------------------------
+@KOJO_0_BATTLE_SHINKYOU_CHANGE_TEIKAN_25
+
+;冷静
+;--------------------------------------------------
+@KOJO_0_BATTLE_SHINKYOU_CHANGE_REISEI_25
+
+;動揺
+;--------------------------------------------------
+@KOJO_0_BATTLE_SHINKYOU_CHANGE_DOUYOU_25
+
+;高揚
+;--------------------------------------------------
+@KOJO_0_BATTLE_SHINKYOU_CHANGE_KOUYOU_25
+
+;消沈
+;--------------------------------------------------
+@KOJO_0_BATTLE_SHINKYOU_CHANGE_SYOUTIN_25
+
+
+
+;体が竦んだ関連
+
+;触手の虜で体が竦む
+;--------------------------------------------------
+@KOJO_0_BATTLE_DISACTION_TORIKO_25
+PRINTFORML 「%SELF_CALL_SINGLE()%、%SELF_CALL()%…、%SELF_CALL()%…、た、戦う…？　%CALL_NAME_YOU_K25()%と…？」
+PRINTFORML 「%SELF_CALL()%は、%CALL_NAME_YOU_K25()%の…えっちの相手なのに…/\//」
+PRINTFORML 「あれ…、あれ？間違ってない、よね…？？??」
+PRINTFORMDL %KOJO_NAME_YOU_K25()%の虜となった%KOJO_NAME_ME_K25()%の脳には
+PRINTFORMDL 想像を絶する快楽の記憶がフラッシュバックし、
+PRINTFORMDL 淫液をたらしながらすっかり萎縮してしまっている。
+
+
+;快楽で体が竦む
+;--------------------------------------------------
+@KOJO_0_BATTLE_DISACTION_KAIRAKU_25
+PRINTFORML 「は、あ、う…/\//　う、動いて、%SELF_CALL()%のからだ…！？」
+PRINTFORML 「気持ちいいのイヤでしょう…っ、今動かないと、またあんな目に…っ/\//」
+PRINTFORML 「あ、あぁ…っ、このままじゃ、また気持ちよくされちゃう…?」
+
+PRINTFORMDL %KOJO_NAME_YOU_K25()%に植えつけられた快楽の記憶は少女の身体を支配し、
+PRINTFORMDL 期待に鼓動を早めたまま、身動きひとつ取れなくなってしまった…
+
+;苦痛で体が竦む
+;--------------------------------------------------
+@KOJO_0_BATTLE_DISACTION_KUTUU_25
+PRINTFORML 「あ、い…っ、怖くないです、怖くないです…！！絶対怖くないです…っ」
+PRINTFORML 「だから、お願い動いて%SELF_CALL()%の身体…っ、はやくはやく、はやくぅぅ…っ！！！」
+PRINTFORMDL 顔を蒼白にゆがめ、苦痛の記憶に怯える%KOJO_NAME_ME_K25()%の体はすっかり萎縮し、
+PRINTFORMDL 叫びもむなしく、一歩も動き出すことができずに震え続けている…
+
+;屈辱で体が竦む
+;--------------------------------------------------
+@KOJO_0_BATTLE_DISACTION_KUTUZYOKU_25
+PRINTFORML 「あ、ああ…、戦わなくちゃいけないのに、%SELF_CALL()%の敵なのに…」
+PRINTFORML 「抵抗したら、ひどいことされちゃう…/\//　許してもらうの、大変になっちゃう…っ/\//」
+PRINTFORMDL 記憶に刻み付けられた屈服の記憶は少女の心に深く影を落とし
+PRINTFORMDL 捕らえられた後の%KOJO_NAME_YOU_K25()%への媚び方ばかりが頭を占領してしまう…
+
+;恐怖で体が竦む
+;--------------------------------------------------
+@KOJO_0_BATTLE_DISACTION_KYOUHU_25
+PRINTFORML 「…ひっ、お、大きな音立てないでください…っ　あ、足が…」
+PRINTFORML 「あしが、動かない…動いてください、動いてくださいってばぁぁっ…！！」
+PRINTFORMDL ひとたび浮かび上がった恐怖はあっという間に全身に伝染し、
+PRINTFORMDL %KOJO_NAME_ME_K25()%の足はカタカタと震えて
+PRINTFORMDL その間に縫い付けられたように動かなくなってしまった…
+
+;恥辱で体が竦む
+;--------------------------------------------------
+@KOJO_0_BATTLE_DISACTION_TIZYOKU_25
+PRINTFORML 「あ、ああ…、また、%SELF_CALL()%、もうあんな目に会いたくない…です/\//」
+PRINTFORML 「どうしよう、どうしよう/\//　%SELF_CALL()%、どうしたらいいんですか、%SELF_CALL()%…っ/\//」
+PRINTFORMDL 記憶に刻み付けられた恥辱の思い出が%KOJO_NAME_ME_K25()%頭を埋めつくし
+PRINTFORMDL 戦いの最中にも関わらず、するべきはずだった行動すら追い出されてしまった…
+
+;寄生の影響で体が竦む
+;--------------------------------------------------
+@KOJO_0_BATTLE_DISACTION_PARASITE_25
+PRINTFORML 「…ん、んんっ/\//　あ、ああああぁあ…?　まって、戦いの最中は…っ?」
+PRINTFORML 「おねがい、負けちゃいます！　負けてひどいことされちゃいますからぁぁ…?」
+PRINTFORMDL 身体の奥でうごめき、全身に快楽を生み出す%KOJO_NAME_ME_K25()%の中の触手は
+PRINTFORMDL 戦いに苦しむ姿をあざ笑うかのように活発に活動して行動を阻害してしまう…
+
+
+
+;自慰関連
+
+;戦闘後自慰
+;--------------------------------------------------
+@KOJO_0_SELF_BATTLEEND_25
+PRINTFORML 「…は、はぁ…、%SELF_CALL()%の身体、こんなに火照って…っ/\//」
+PRINTFORML 「%SELF_CALL()%、%SELF_CALL()%…正義の乙女なのに…」
+PRINTFORMDL 敵になぶられ、発情しきったからだの疼きを抑えられず、
+PRINTFORMDL %KOJO_NAME_ME_K25()%は人目を避けた場所までたどり着くと
+PRINTFORMDL 硬く充血した股間の突起に手を伸ばし、自らの身体を愛おしそうに慰めた…
+
+;普通の自慰
+;--------------------------------------------------
+@KOJO_0_SELF_N_25
+IF CHECK_K25("ふたなり")
+	PRINTFORML 「…は、はぁ…、%SELF_CALL()%のおちんぽ、こんなにがちがちです…/\//」
+	PRINTFORML 「搾ってあげないと、あした、大変ですもんね…っ/\//」
+	PRINTFORML 「はぁ、はぁ…?　おちんぽもおまんこも…こんなのじゃ足りないですよぉ…?」
+	PRINTFORMDL 忘れられない快楽に発情を繰り返す体を抑えられず、
+	PRINTFORMDL %KOJO_NAME_ME_K25()%はすっかり勃起した自らのペニスをつかむと
+	PRINTFORMDL だれにともなく言い訳を口にしながら、夢中になってしごいている…
+ELSE
+	PRINTFORML 「…は、はぁ…、%SELF_CALL()%、一人でこんなえっちなことして…ぇ/\//」
+	PRINTFORML 「明日がんばるためですからっ、た、楽しんでなんかないんですから…っ/\//」
+	PRINTFORML 「ああ、どうしよう…っ/\//　一回でちゃんと満足しないと…っ?」
+	PRINTFORMDL 忘れられない快楽に発情を繰り返す体を抑えられず、
+	PRINTFORMDL %KOJO_NAME_ME_K25()%はすっかり硬くなった淫核をつまみ、
+	PRINTFORMDL だれにともなく言い訳を口にしながら、夢中になって弄りまわしている…
+ENDIF
+;胸自慰
+;--------------------------------------------------
+@KOJO_0_SELF_B_25
+	PRINTFORML 「…は、はぁ…、おっぱい、さきっぽ…きもちいいです…/\//」
+	PRINTFORML 「ちゃんと自分で発散しないと…、敵にさわられたらたいへんだから…?」
+	PRINTFORML 「はぁ…/\//はぁ…/\//　どうして一人じゃ、もっと上手にできないんですか…っ??」
+	PRINTFORMDL 忘れられない快楽に発情を繰り返す体を抑えられず、
+	PRINTFORMDL %KOJO_NAME_ME_K25()%は胸の先端を押しつぶしたりしながら、
+	PRINTFORMDL 触手に胸を搾られる妄想に取り付かれ、夢中になって弄りまわしている…
+;アナニー
+;--------------------------------------------------
+@KOJO_0_SELF_A_25
+	PRINTFORML 「あっ、あっ…/\//　こ、こんな変態オナニーしたくなるなんて…ぇ?」
+	PRINTFORML 「こんな性癖、だれにもいえませんから…っ/\//」
+	PRINTFORML 「ん、んんんぅぅぅ…っ?　ちゃんと自分でお尻、イけるようにならないと…?」
+	PRINTFORMDL 忘れられない快楽に発情を繰り返す体を抑えられず、
+	PRINTFORMDL %KOJO_NAME_ME_K25()%は自らのアナルに指を突き入れ、
+	PRINTFORMDL 忌むべきアナル絶頂に向けて夢中になって弄りまわしている…
+
+
+
+;幽閉関係
+
+;初めての幽閉
+;--------------------------------------------------
+@KOJO_0_PRISON_PRISENTENCE_FIRST_25
+PRINTFORML 「こ、ここは…%CALL_NAME_YOU_K25()%につかまってしまったんですね…」
+PRINTFORML 「正義の美少女には心強い仲間がいるんです！！　い、いまに助けがきて、あなたなんか…」
+PRINTFORML 「だ、だから…%SELF_CALL()%に、さわらないでください…っ」
+PRINTFORMDL きつく相手をにらみつけながら強気に言葉を放つ%KOJO_NAME_ME_K25()%だったが
+PRINTFORMDL その身体は%KOJO_NAME_YOU_K25()%の所有物にされてしまった恐怖で震え続けている…
+
+
+;二度目以降の幽閉後の初被姦
+;--------------------------------------------------
+@KOJO_0_PRISON_PRISENTENCE_START_25
+PRINTFORML 「あ、あぁ…どうして、また、こんな…っ/\//」
+PRINTFORML 「%SELF_CALL()%は正義の美少女…、ぜ、ぜったい、また助かるんですから…っ/\//」
+PRINTFORML 「だから耐えて、%SELF_CALL()%の身体…っ?」
+PRINTFORMDL 再び主賓として招かれてしまった肉欲の宴に、%KOJO_NAME_ME_K25()%の全身に汗がにじむ。
+PRINTFORMDL それが恐怖の冷や汗だったのか、発情のほてりだったのかは
+PRINTFORMDL %KOJO_NAME_ME_K25()%にはもうわからなくなっていた…
+
+
+;幽閉後の被姦開始文
+;--------------------------------------------------
+@KOJO_0_PRISON_PRISENTENCE_25
+IF CHECK_K25("触手の虜")
+	SELECTCASE RAND:4
+		CASE 0
+			PRINTFORML 「はへへへ…?　また%SELF_CALL()%とえっちしたいんですかぁ……？?」
+			PRINTFORML 「身体の相性ばっちりの即ハメ即イキくらいで調子にのらないでください…??」
+			PRINTFORML 「ほら、%SELF_CALL()%のおまんこ負かしていいれすよ?　このヘンタイ…?」
+			PRINTFORMDL 習慣から、無意識に口で抵抗する%KOJO_NAME_ME_K25()%だが
+			PRINTFORMDL その内容はひどく淫靡なもので顔も緩みきっている。
+			PRINTFORMDL ともすれば、手ひどく犯されたいがために挑発しているかのようだ…
+		CASE 1
+			PRINTFORML 「あ、あはは…??　はやくえっちで勝負しましょうよ…ぉ??」
+			PRINTFORML 「ぜったいぜったい即負けレイプですけど、もしかしたら勝てるかもしれないれすから…?」
+			PRINTFORML 「ほら、即負けレイプしようとしてくらさい?　勝負れすよしょうぶぅ…?」
+			PRINTFORMDL %KOJO_NAME_ME_K25()%はあくまで勝負だといって見せているが
+			PRINTFORMDL たらたらと蜜を垂らして%KOJO_NAME_YOU_K25()%を待ち受けるその姿は
+			PRINTFORMDL 陵辱を待ち望む淫乱な雌でしかなかった…
+		CASE 2
+			PRINTFORML 「えへへ…??　身体は%CALL_NAME_YOU_K25()%のおもちゃでも、せーぎのこころはまけないんれす…?」
+			PRINTFORML 「しょくしゅも、おちんぽも、ぜんぶぜんぶえっちで退治するんれす…ぇ?」
+			PRINTFORML 「%SELF_CALL()%の即負け即イキおまんこで、ぜーんぶたいじしてあげるんれす…??」			
+			PRINTFORMDL 全身を取り囲むように伸びてくる触手の群れをみて、%KOJO_NAME_ME_K25()%が熱い息をはく…
+			PRINTFORMDL %KOJO_NAME_ME_K25()%の行動は勝負ではなく奉仕でしかなかったが、
+			PRINTFORMDL それが理解できるほどの理性は%KOJO_NAME_ME_K25()%には残っていなかった…
+	ENDSELECT
+ELSE
+	SELECTCASE RAND:4
+		CASE 0
+			PRINTFORML 「こんなに可愛い美少女をお持ち帰りできたなんて、あなたは本当に幸運ですね…っ/\//」
+			PRINTFORML 「いま死んで謝ってくれるなら、許すかどうか考えてあげなくもないですよ…」
+			PRINTFORMDL 顔を赤くし、涙の後を顔中につけながらも%KOJO_NAME_ME_K25()%は%KOJO_NAME_YOU_K25()%をにらむ。
+			PRINTFORMDL しかしその言葉は虚勢でしかなく、足はカタカタと震え、
+			PRINTFORMDL 淫裂からは新たな蜜が垂れ始めている…。
+		CASE 1
+			PRINTFORML 「う、うぅ…。また、%SELF_CALL()%とえっちする気ですか…/\//」
+			PRINTFORML 「えっちでしか勝てないからって、サイテーです…」
+			PRINTFORML 「せ、せいぜいえっちで負かして、いい気になっていればいいんです…っ」
+			PRINTFORMDL %KOJO_NAME_ME_K25()%の目の前で淫靡な形をした肉の棒が揺らめいてみせる。
+			PRINTFORMDL その動きは%KOJO_NAME_ME_K25()%の経験させられた悦楽の記憶を掘り起こし
+			PRINTFORMDL 陰部を緩ませ、新しい蜜をあふれさせていく…
+		CASE 2
+			PRINTFORML 「まだ、%SELF_CALL()%はまけてません…負けてないはずなんです…っ」
+			PRINTFORML 「ひっ…！？　あ、あぁあ…/\//　また、えっちしたくなったんですね…」
+			PRINTFORMDL 肉の鎖につながれたままの%KOJO_NAME_ME_K25()%に%KOJO_NAME_YOU_K25()%が近づいてくる。
+			PRINTFORMDL にらむように見上げる%KOJO_NAME_ME_K25()%の息には
+			PRINTFORMDL 自分でも気がつかないうちに淫靡な熱がこもり始めている…
+	ENDSELECT
+ENDIF
+
+
+;洗脳になった
+;--------------------------------------------------
+@KOJO_0_PRISON_SENNOU_25
+PRINTFORML 「あ…、%SELF_CALL()%は…%SELF_CALL()%は…　せいぎ…びしょうじょ…」
+PRINTFORML 「えー…　あー…　う…。あっ?　あーっ?　あははは…/\//」
+PRINTFORMDL 自らの言葉の意味もわからなくなった%KOJO_NAME_ME_K25()%は茫然とした目を中空にむけ
+PRINTFORMDL 意味不明の呟きを繰り返しながら快楽に反応する肉人形になり果てた…
+
+;悪堕ちになった
+;--------------------------------------------------
+@KOJO_0_PRISON_AKUOTI_25
+PRINTFORML 「そっかぁ…、%SELF_CALL()%、正義の、美少女じゃなかったんですね…?」
+PRINTFORML 「%SELF_CALL()%は%CALL_NAME_YOU_K25()%の繁殖奴隷…悪の美少女…/\//」
+PRINTFORML 「え、えへへ…/\//　いっぱいいっぱい、エッチな悪いことしちゃいます…??」
+PRINTFORMDL %KOJO_NAME_ME_K25()%の理性と常識はすべてすり潰され、肉欲の悦楽が注ぎ込まれた。
+PRINTFORMDL 悪しき存在に囲まれながら笑い声を上げる少女の目には
+PRINTFORMDL 深遠を思わせる深い闇が広がっている…
+
+;取り込まれ
+;--------------------------------------------------
+@KOJO_0_PRISON_DEAD_25
+PRINTFORML 「…あ、なに…なに…？%SELF_CALL()%、これ…何されて…？」
+PRINTFORML 「あ、あ…。　%SELF_CALL()%、いなくなるの…？　あはは…やっと、おしまい…」
+PRINTFORMDL %KOJO_NAME_ME_K25()%の身体は触手の中に埋もれ、
+PRINTFORMDL 精神も肉体も蠢く肉塊との境界線があいまいになっていく…
+
+;ふたなり化
+;--------------------------------------------------
+@KOJO_0_PRISON_HUTANARI_25
+PRINTFORML 「あ、あああ…？　なに、なに…、なんなんですかコレ？」
+PRINTFORML 「どうして美少女の%SELF_CALL()%に、おちんぽが…？」
+PRINTFORML 「あ、ああぁ…っ/\//　うそうそ…なんでこんな、勃起して…っ/\//」
+PRINTFORMDL %KOJO_NAME_ME_K25()%の股間に生やされてしまったペニスは
+PRINTFORMDL 興奮を隠そうともせず、硬くしこって刺激を待ちわびている…
+
+;母乳体質化
+;--------------------------------------------------
+@KOJO_0_PRISON_BONYU_25
+PRINTFORML 「あ、え、う、そ…？　%SELF_CALL()%、おっぱいでてる…？？/\//」
+PRINTFORML 「ありえないですっ！！　ヘンタイ！！　ばかっ！！」
+PRINTFORML 「こ、こんなことして、どう責任とってくれるんですか…んんっ…/\//」
+PRINTFORMDL %KOJO_NAME_YOU_K25()%の乳房の先端から母乳が淫らな疼きを伴いながら滲み出し、
+PRINTFORMDL 筋となって身体を伝い滴り落ちていく…
+
+;苗床化
+;--------------------------------------------------
+@KOJO_0_PRISON_NAEDOKO_25
+PRINTFORML 「なに？、何をしたんですか%SELF_CALL()%の身体に…っ！！なにしてくれてるんですか！！/\//」
+PRINTFORML 「はぁ…/\//　お腹熱い、熱いのに…っ、おまんこ…もっと熱く、なりたくて…っ?」
+PRINTFORML 「これ、絶対されちゃいけないヘンタイなことされちゃいましたよね…??」
+PRINTFORMDL %KOJO_NAME_YOU_K25()%の子宮はきゅんきゅんと収縮し、精液を搾り取り
+PRINTFORMDL それを一滴残らず卵子へ送ろうと淫らな準備を始めている…
+
+
+
+;C中心攻め
+;--------------------------------------------------
+@KOJO_0_PRISON_COM_0_25
+IF CHECK_K25("ふたなり")
+	PRINTFORML 「こんな美少女を捕まえてえっちばっかりして…ほんとキモいです…っ」
+	PRINTFORML 「ひぅっ/\//　ま、またおちんぽ、するんですか…??」
+	PRINTFORML 「美少女に射精させて悦んでるなんて、本当にサイテーです…っ?　んひぃぃ?」
+	PRINTFORMDL %KOJO_NAME_ME_K25()%のペニスは触手が絡み付こうと近づくと
+	PRINTFORMDL すぐに反応してぴんと勃ち上がり、先端から先走りをたらしはじめてしまう。
+	PRINTFORMDL その姿は%KOJO_NAME_YOU_K25()%の到着を待ちわび、射精をねだっているかのようだった…
+
+ELSE
+	PRINTFORML 「こんな美少女を捕まえてえっちばっかりして…ほんとキモいです…っ」
+	PRINTFORML 「…ああぁあ！？/\//　またクリ？！　もうクリだめですってばぁ…っ??」
+	PRINTFORML 「ああぁひぅぅぅうっ??　イくっ?　クリイきしちゃうぅぅ…っ??」
+	PRINTFORMDL 執拗にクリトリスを責める触手に抵抗することも出来ず、%KOJO_NAME_ME_K25()%の腰が何度も跳ね上がる。
+	PRINTFORMDL 囚われの少女の絶頂地獄はまだ始まったばかりだ…。
+ENDIF
+
+;V中心攻め
+;--------------------------------------------------
+@KOJO_0_PRISON_COM_1_25
+PRINTFORML 「ま、またえっちですか…。飽きもしないで、このヘンタイ…っ/\//」
+PRINTFORML 「ちょっとえっちが上手なぐらいで…%SELF_CALL()%が思い通りになるとおもったら…ぁ??」
+PRINTFORML 「んぃぃぃっ！？??　またえっちで負けるっ、えっちで抵抗できなくされちゃうぅ…っ?」
+PRINTFORMDL 強気な言葉をぶつけようとする%KOJO_NAME_ME_K25()%だが
+PRINTFORMDL 我が物顔で膣内に侵入した%KOJO_NAME_YOU_K25()%が性交を始めると
+PRINTFORMDL すぐにろれつの回らない喘ぎにかわり、新しい愛液を溢れ出させている…。
+
+;A中心攻め
+;--------------------------------------------------
+@KOJO_0_PRISON_COM_2_25
+PRINTFORML 「んひぃぃっ?　えっち出来るならどこでもいいんですか、このヘンタイ…っ/\//」
+PRINTFORML 「あ、あぁあぁあぁ～～～??　ひぅ、うっ、うぅぅぅ～～～っ/\//」
+PRINTFORML 「お、お尻のえっちも上手なんて、こんなの反則じゃないですかぁぁ…っ?」
+PRINTFORMDL %KOJO_NAME_ME_K25()%の尻穴に突き立てられた生殖器が休むまもなくうごめき続ける…
+PRINTFORMDL %KOJO_NAME_YOU_K25()%が望むままに行われる背徳の擬似性交は
+PRINTFORMDL 少女のアナルを悦楽に目覚めさせ、奉仕用の肉壺へと作り変えていくのだった…
+
+;B中心攻め
+;--------------------------------------------------
+@KOJO_0_PRISON_COM_3_25
+PRINTFORML 「ああぁぁ…っ！/\//　おっぱい変になるっ/\//　ちくびだめぇ…！！?」
+PRINTFORML 「おっぱい弄り上手なのわかったから！！　おっぱいもう何回もイってますからぁ…??」
+PRINTFORMDL 触手の粘液にまみれた胸が感じるたびに敏感になっていくような感覚に
+PRINTFORMDL %KOJO_NAME_ME_K25()%は恐怖にも似た焦りを感じながらそれを見ていることしかできない…
+
+;Sな攻め
+;--------------------------------------------------
+@KOJO_0_PRISON_COM_4_25
+PRINTFORML 「あが、ぎぃぃぃいいっ！！！　う、ぐ、ぅぅぅぅ…っ！！」
+PRINTFORML 「お願い、もうお腹なぐらないで…。　ごほ、ごほ…っ、げぼ、げぼぼぼ、おげぇ…っ」
+PRINTFORMDL %KOJO_NAME_ME_K25()%の口から白濁した嘔吐物が吐き出される。
+PRINTFORMDL 懇願もむなしく再び鎌首をもたげる%KOJO_NAME_YOU_K25()%をみて、
+PRINTFORMDL %KOJO_NAME_ME_K25()%の身体は条件反射で縮みあがり、かくかくと震え続けている…
+
+
+;強制奉仕
+;--------------------------------------------------
+@KOJO_0_PRISON_COM_5_25
+PRINTFORML 「%SELF_CALL_SINGLE()%、%SELF_CALL()%の身体で気持ちよくなりたいと思うのは当然ですけど…/\//」
+PRINTFORML 「%SELF_CALL()%は%CALL_NAME_YOU_K25()%のオナニー用のおもちゃじゃありませんから…っ/\//」
+PRINTFORML 「…うぁ、いやらしいお汁をかけないでください…/\//　こんなお礼なんていりませんから…っ?」
+PRINTFORMDL 少女の身体を乱暴に弄びながら欲望を発散する%KOJO_NAME_YOU_K25()%。
+PRINTFORMDL そのご褒美として中毒性のある淫液を何度も浴びせられた%KOJO_NAME_ME_K25()%は
+PRINTFORMDL %KOJO_NAME_YOU_K25()%の玩具となることに暗い悦びを感じ始めている…
+
+
+;羞恥な攻め
+;--------------------------------------------------
+@KOJO_0_PRISON_COM_6_25
+PRINTFORML 「おねがい、もうやめて、もうやめて…。　頭がおかしくなんです…」
+PRINTFORML 「どんどん、何も感じなくなってきて…おかしいはずなのに、ダメなことなのに…」
+PRINTFORML 「あ、ああぁあ…っ/\//　おねがい、します…。こんなのもうやめて…っ/\//」
+PRINTFORMDL %KOJO_NAME_YOU_K25()%によってもたらされる異様な状況は%KOJO_NAME_ME_K25()%の羞恥心をえぐり、
+PRINTFORMDL 常識や理性を麻痺させていく…
+PRINTFORMDL 長い狂乱の後には、裸にされる「程度」ならまだマシだという
+PRINTFORMDL 敗北者の思考が頭の中で繰り返され続けていた…
+
+
+;子触手に犯される
+;--------------------------------------------------
+@KOJO_0_PRISON_COM_7_25
+PRINTFORML 「は、はぁ…っ/\//　ママとはエッチしちゃだめなんですよ…っ」
+PRINTFORML 「んんっ！？?　お、教えてあげたんですから、ママの言うこと、聞きいてくださいっ/\//」
+PRINTFORML 「んぁ、あぁっ、エッチが上手なのは、　う、生まれつき…ですかっ??」
+PRINTFORMDL 母である%KOJO_NAME_ME_K25()%の膣口に潜り込んだ子触手は
+PRINTFORMDL 淫らに出入りを繰り返しながら母乳を得ようとする子のように淫蜜を啜っている。
+PRINTFORMDL 許されざる異種近親相姦の宴はまだ始まったばかりだ…。
+
+
+;種付け
+;--------------------------------------------------
+@KOJO_0_PRISON_COM_104_25
+PRINTFORML 「あ、あひぃぃ…っ/\//　これ普通のえっちじゃないぃ…??」
+PRINTFORML 「じぇったい妊娠させる気の本気えっちですよね…っ?」
+PRINTFORML 「やめ、らへぇぇぇ??　%SELF_CALL()%のおまんこは%CALL_NAME_YOU_K25()%のお嫁さんにはならなれしゅ…?」
+PRINTFORML 「やめへぇ…?　おまんこ口説くの禁止ぃ??　もう%SELF_CALL()%にょおまんこ口説かにゃいれぇぇ??」
+PRINTFORMDL 妊娠を目的とした本当の性交に、%KOJO_NAME_ME_K25()%のなかの雌が目を覚まし、
+PRINTFORMDL %KOJO_NAME_YOU_K25()%の生殖器から精を搾り取ろうと収縮を繰り返す。
+PRINTFORMDL %KOJO_NAME_ME_K25()%の意思とは関係なく少女と%KOJO_NAME_YOU_K25()%の身体は
+PRINTFORMDL 繁殖に向けての悦楽を貪り合い、互いの体液を混ぜ合わせ続けている…
+
+
+
+;ふたなり攻め
+;--------------------------------------------------
+@KOJO_0_PRISON_COM_100_25
+PRINTFORML 「あ、あ…っ/\//　%SELF_CALL()%のおちんぽ、狙わないで…っ/\//」
+PRINTFORML 「んんああぁぁっ！！?　おちんぽ捕まえちゃだめです、だめなんですぅ…っ?」
+PRINTFORML 「はひぃ…っ?　ばかになるぅっ！！　おちんぽでばかになりましゅぅ…っ??」
+PRINTFORMDL %KOJO_NAME_ME_K25()%のペニスは%KOJO_NAME_YOU_K25()%に捕らえられ、
+PRINTFORMDL 萎えることも許されずに精液を吐き出す玩具として弄ばれている…
+
+;V拡張
+;--------------------------------------------------
+@KOJO_0_PRISON_COM_101_25
+PRINTFORML 「ば、ばかですか、あたまおかしいです、そんな太いのが入るわけ…/\//」
+PRINTFORML 「う、うそうそうそ…っ！？　ヘンタイ！！やめて！！やめてってばぁ！！！」
+PRINTFORML 「あ、ああああ…、あぁぁああっぁ！！　あーっ！あーっ！！/\//」
+PRINTFORMDL %KOJO_NAME_ME_K25()%の膣口は野太い触手を押し付けられ、無理矢理押し広げられていく。
+PRINTFORMDL みちみちと膣口を押し広げられる感覚に%KOJO_NAME_ME_K25()%は絶叫しながら
+PRINTFORMDL 涙を流し続けるしかなかった…
+
+;A拡張
+;--------------------------------------------------
+@KOJO_0_PRISON_COM_102_25
+PRINTFORML 「そ、そんな太いの、入る分けないですよ…っ/\//　ひとのお尻をなんだと思って…っ/\//」
+PRINTFORML 「う、うそうそ…、無理矢理、無理矢理、はいって…ぇ、あ、お、えぇえぇ…」
+PRINTFORML 「あ、あああぁああぁ…っ、入ってる、はいっちゃってまひゅぅぅ…っ??」
+PRINTFORMDL %KOJO_NAME_ME_K25()%のアナルは限界まで広がり、みっちりと触手を詰め込まれえている。
+PRINTFORMDL だが当然それで許す%KOJO_NAME_YOU_K25()%ではなく、さらに太い根元を押し込もうと
+PRINTFORMDL 蠢動を繰り返しながら奥へ奥へと入り込んでいく…
+
+
+;搾乳攻め
+;--------------------------------------------------
+@KOJO_0_PRISON_COM_103_25
+PRINTFORML 「おっぱい張ってますけど、搾らなくていいです…っ/\//　搾らないでぇぇっ/\//」
+PRINTFORML 「あ、あーっ??　ミルク、ミルクでますぅっ?　ミルク出るきもちいいれしゅ…?」
+PRINTFORML 「んんぁぁあぁっ??　もうやらぁ…?　%SELF_CALL()%のみるくのまないれぇ…??」
+PRINTFORMDL 明らかに張った%KOJO_NAME_ME_K25()%の乳房は吸引されるたびに乳首からびゅうびゅうと母乳を噴き出す。
+PRINTFORMDL 通常の授乳ではありえない異様な快楽が背筋を駆けめぐり、
+PRINTFORMDL こぼれた母乳めがけて周囲の触手たちが押し寄せてくる。
+PRINTFORMDL %KOJO_NAME_ME_K25()%の乳房は淫靡な肉塊達の餌場となっていた…
+
+
+;Vに産卵
+;--------------------------------------------------
+@KOJO_0_PRISON_COM_200_25
+
+;Aに産卵
+;--------------------------------------------------
+@KOJO_0_PRISON_COM_201_25
+
+
+
+;注射
+;--------------------------------------------------
+@KOJO_0_PRISON_COM_300_25
+PRINTFORML 「あ…?　なんですかそれ、%SELF_CALL()%になに入れる気なんですか…っ/\//」
+PRINTFORML 「そんなの入れられたって、%SELF_CALL()%は、%SELF_CALL()%は…っ」
+PRINTFORML 「…ん、ん…っ　あ…　あはは、あは…?　えへ、へ…ぇ??」
+PRINTFORMDL 異質な液体が体内をめぐるたびに心拍数があがり、思考がまとまらずに
+PRINTFORMDL 次々と意味不明の言葉が駆け巡り始める。
+PRINTFORMDL 脳を直接犯す薬物調教を拒む思考すら少女の意識から失われていく…
+
+;触手の寄生
+;--------------------------------------------------
+@KOJO_0_PRISON_COM_301_25
+PRINTFORML 「あ、あぁああああぁああぁあぁっ！？」
+PRINTFORML 「なに、もうへんなことしないでください！！もう許してぇぇぇっ！！」
+PRINTFORMDL %KOJO_NAME_ME_K25()%は身体の奥の異物感に悲壮な声を上げる。
+PRINTFORMDL しかし、体内の触手はそんなことで活動をやめるはずもなく
+PRINTFORMDL 少女の体内に癒着し、細胞一つ一つを淫らに作り変える器官として活動を始めた…
+
+
+
+;サブイベント関連
+
+;戦闘のサブイベント
+
+;悪堕ちキャラに敗北して犯される
+;--------------------------------------------------
+@KOJO_0_SUBEVENT_BATTLE_RAPED_ENEMY_25
+
+;触手拘束具を着せられた
+;--------------------------------------------------
+@KOJO_0_SUBEVENT_BATTLE_SETTENTACLECLOTH_25
+
+;触手拘束具による被姦
+;--------------------------------------------------
+@KOJO_0_SUBEVENT_BATTLE_ACTTENTACLECLOTH_25
+
+
+
+@KOJO_NAME_YOU_K25()
+#FUNCTIONS
+	SIF FLAG:110
+		RETURNF CALLNAME:(FLAG:111)
+	RETURNF "触手"
+
+@KOJO_NAME_ME_K25()
+#FUNCTIONS
+	RETURNF CALLNAME
+	
+	
+@CALL_NAME_YOU_K25()
+#FUNCTIONS
+	SIF FLAG:110
+		RETURNF CALLNAME:(FLAG:111)+"ちゃん"
+	RETURNF "キモにょろ"
+	
+@CHECK_K25(ARGS)
+#FUNCTION
+	SELECTCASE ARGS
+		CASE "触手拘束具"
+			RETURNF (CFLAG:42 == 400)
+		CASE "絡まれ"
+			RETURNF (TCVAR:0 == 0)
+		CASE "ふたなり","フタナリ"
+			RETURNF TALENT:ふたなり
+		CASE "触手の虜"
+			RETURNF TALENT:触手の虜
+	ENDSELECT
+RETURNF 0

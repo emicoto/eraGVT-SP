@@ -1,0 +1,427 @@
+@EVENTEND
+#DIM LCOUNT
+VARSET LOCAL
+
+;戦闘中フラグを折る
+FLAG:700 = 0
+;避妊効果中に受けた射精量をリセット
+TFLAG:6 = 0
+
+;戦闘終了後の刻印取得
+;快楽刻印　一定量の欲情累積
+LOCAL = 0
+SIF PALAM:欲情 >= (40000 + MARK:快楽刻印防止 * 1000)
+	LOCAL = 1
+SIF PALAM:欲情 >= (80000 + MARK:快楽刻印防止 * 2000) && MARK:快楽刻印 == 1
+	LOCAL = 2
+SIF PALAM:欲情 >= (160000 + MARK:快楽刻印防止 * 4000) && MARK:快楽刻印 == 2
+	LOCAL = 3
+SIF PALAM:欲情 >= (320000 + MARK:快楽刻印防止 * 8000) && MARK:快楽刻印 == 3
+	LOCAL = 4
+SIF PALAM:欲情 >= (640000 + MARK:快楽刻印防止 * 16000) && MARK:快楽刻印 == 4
+	LOCAL = 5
+IF LOCAL > MARK:快楽刻印
+	MARK:快楽刻印 = LOCAL
+	PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%は
+	FONTBOLD
+	PRINTFORM %MARKNAME:0%{LOCAL}
+	FONTREGULAR
+	PRINTFORML を取得した
+	PRINTL 
+ENDIF
+
+;苦痛刻印　一定量の苦痛累積
+LOCAL = 0
+SIF PALAM:苦痛 >= (30000 + MARK:苦痛刻印防止 * 750)
+	LOCAL = 1
+SIF PALAM:苦痛 >= (60000 + MARK:苦痛刻印防止 * 1500) && MARK:苦痛刻印 == 1
+	LOCAL = 2
+SIF PALAM:苦痛 >= (120000 + MARK:苦痛刻印防止 * 3000) && MARK:苦痛刻印 == 2
+	LOCAL = 3
+SIF PALAM:苦痛 >= (240000 + MARK:苦痛刻印防止 * 6000) && MARK:苦痛刻印 == 3
+	LOCAL = 4
+SIF PALAM:苦痛 >= (480000 + MARK:苦痛刻印防止 * 12000) && MARK:苦痛刻印 == 4
+	LOCAL = 5
+IF LOCAL > MARK:苦痛刻印
+	MARK:苦痛刻印 = LOCAL
+	PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%は
+	FONTBOLD
+	PRINTFORM %MARKNAME:1%{LOCAL}
+	FONTREGULAR
+	PRINTFORML を取得した
+	PRINTL 
+ENDIF
+
+;屈服刻印　一定量の屈服累積
+LOCAL = 0
+SIF PALAM:屈服 >= (20000 + MARK:屈服刻印防止 * 500)
+	LOCAL = 1
+SIF PALAM:屈服 >= (40000 + MARK:屈服刻印防止 * 1000) && MARK:屈服刻印 == 1
+	LOCAL = 2
+SIF PALAM:屈服 >= (80000 + MARK:屈服刻印防止 * 2000) && MARK:屈服刻印 == 2
+	LOCAL = 3
+SIF PALAM:屈服 >= (160000 + MARK:屈服刻印防止 * 4000) && MARK:屈服刻印 == 3
+	LOCAL = 4
+SIF PALAM:屈服 >= (320000 + MARK:屈服刻印防止 * 8000) && MARK:屈服刻印 == 4
+	LOCAL = 5
+IF LOCAL > MARK:屈服刻印
+	MARK:屈服刻印 = LOCAL
+	PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%は
+	FONTBOLD
+	PRINTFORM %MARKNAME:2%{LOCAL}
+	FONTREGULAR
+	PRINTFORML を取得した
+	PRINTL 
+ENDIF
+
+;恐怖刻印　一定量の恐怖累積
+LOCAL = 0
+SIF PALAM:恐怖 >= (20000 + MARK:恐怖刻印防止 * 500)
+	LOCAL = 1
+SIF PALAM:恐怖 >= (40000 + MARK:恐怖刻印防止 * 1000) && MARK:恐怖刻印 == 1
+	LOCAL = 2
+SIF PALAM:恐怖 >= (80000 + MARK:恐怖刻印防止 * 2000) && MARK:恐怖刻印 == 2
+	LOCAL = 3
+SIF PALAM:恐怖 >= (160000 + MARK:恐怖刻印防止 * 4000) && MARK:恐怖刻印 == 3
+	LOCAL = 4
+SIF PALAM:恐怖 >= (320000 + MARK:恐怖刻印防止 * 8000) && MARK:恐怖刻印 == 4
+	LOCAL = 5
+IF LOCAL > MARK:恐怖刻印
+	MARK:恐怖刻印 = LOCAL
+	PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%は
+	FONTBOLD
+	PRINTFORM %MARKNAME:3%{LOCAL}
+	FONTREGULAR
+	PRINTFORML を取得した
+	PRINTL 
+ENDIF
+
+;恥辱刻印　一定量の恥情累積
+LOCAL = 0
+SIF PALAM:恥情 >= (20000 + MARK:恥辱刻印防止 * 500)
+	LOCAL = 1
+SIF PALAM:恥情 >= (40000 + MARK:恥辱刻印防止 * 1000) && MARK:恥辱刻印 == 1
+	LOCAL = 2
+SIF PALAM:恥情 >= (80000 + MARK:恥辱刻印防止 * 2000) && MARK:恥辱刻印 == 2
+	LOCAL = 3
+SIF PALAM:恥情 >= (160000 + MARK:恥辱刻印防止 * 4000) && MARK:恥辱刻印 == 3
+	LOCAL = 4
+SIF PALAM:恥情 >= (320000 + MARK:恥辱刻印防止 * 8000) && MARK:恥辱刻印 == 4
+	LOCAL = 5
+IF LOCAL > MARK:恥辱刻印
+	MARK:恥辱刻印 = LOCAL
+	PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%は
+	FONTBOLD
+	PRINTFORM %MARKNAME:4%{LOCAL}
+	FONTREGULAR
+	PRINTFORML を取得した
+	PRINTL 
+ENDIF
+
+;PALAM最大値を戻す
+FOR LCOUNT, 0, PALAM終点
+	PALAM:LCOUNT = LIMIT(MAX_PALAM:LCOUNT, PALAM:LCOUNT, MAX_PALAM:LCOUNT)
+NEXT
+
+;PALAM補正をリセットする
+VARSET COMMON_PALAM
+
+;能力の上昇へ
+IF CFLAG:0 != 1
+	;通常の能力上昇
+	CALL _ABLUP, 0
+ELSE
+	;珠のみ獲得し、上昇処理をスキップする
+	CALL _ABLUP, 2
+ENDIF
+
+;追加パッチここから（空撮ドローン）
+;時間切れ/撤退時の処理
+IF TFLAG:98 ==0
+	;行動ポイントが1以上の場合、修練Pが少しだけ入る
+	SIF EX:行動ポイント > 0
+		CALL GET_SYUREN, EX:行動ポイント
+	;消耗が激しいほど経験値が入る
+	LOCAL = 100 - PERCENT_CAL_F(BASE:体力 + BASE:気力 + BASE:性耐性 * 10, MAXBASE:体力 + MAXBASE:気力 + MAXBASE:性耐性 * 10)
+	CALL TENTACLE_LEVEL
+	LOCAL = (RESULT - 2) / ABL:レベル * LOCAL / 2 + RAND:10
+	;空撮ドローンによる上昇#####
+	SIF CFLAG:TARGET:43 == 505
+		LOCAL = LOCAL * 5 / 4
+	CALL GET_EXP,min(LOCAL,150)
+	;防衛力
+	CALL TENTACLE_LEVEL
+	LOCAL:1 = POWER(MIN(TFLAG:0 - 10, 0), 2)
+	LOCAL:1 = LOCAL:1 * (8 + RESULT) + RAND:101 + MAX(300 - EX:行動ポイント * 20, 100)
+	SIF FLAG:10 == 2
+		LOCAL:1 /= 10
+	SIF LOCAL:1 == 0
+		LOCAL:1 = 1
+	IF FLAG:852 > 0
+		FLAG:852 -= LOCAL:1
+		SIF FLAG:852 < 0
+			FLAG:852 = 0
+		ABS LOCAL:1
+		PRINTFORML 防衛力が{RESULT}低下した
+	;防衛力が0なら確率で人気度が低下
+	ELSEIF RAND:100 < LOCAL:1 / 50
+		FLAG:853 -= 1
+		SIF FLAG:853 < -100
+			FLAG:853 = -100
+		PRINTFORML 人気度が1低下した
+	ENDIF
+
+	;救出イベント成功
+	SIF FLAG:45 > 1
+		CALL RAID_RESCUE_SUCCESS
+
+	;変身している場合、変身を解除する
+	CALL TRANSFORM, 0
+	SIF TALENT:(FLAG:111):変身能力 > 0 && CFLAG:(FLAG:111):1 > 0
+		CALL TRANSFORM, 0, FLAG:111
+
+	;ボスと遭遇して未撃破なら確率をリセット
+	IF FLAG:110 == 0 && FLAG:10 != 2
+		IF FLAG:47 > FLAG:46
+			FLAG:47 = (FLAG:47 - FLAG:46) / 4 + FLAG:46
+		ELSE
+			;探索度上昇
+			LOCAL = 6 + RAND:4
+			PRINTFORML 探索度が{LOCAL}上昇した
+			CALL RESEARCH_PROGRESS, LOCAL
+			PRINTL 
+		ENDIF
+	ENDIF
+;勝理時の処理
+ELSEIF SAVESTR:13 == "MOB" && TFLAG:98 == 1
+	;雑魚敵（戦闘あり）の場合
+	CALL GET_EXP_BATTLE
+
+	CALL TENTACLE_SURVIVE, "NUM"
+	LOCAL = RESULT
+	CALL GET_SYUREN, 10 + (EX:行動ポイント * 2)
+	CALL GET_MONEY, (25 + RAND:11) * (5 + RAND:5)
+	;防衛力
+	CALL TENTACLE_LEVEL
+	LOCAL = RAND:50 + RESULT / 2 + 50
+	FLAG:852 += LOCAL
+	SIF FLAG:852 < 0
+		FLAG:852 = 0
+	ABS LOCAL
+	PRINTFORM 防衛力が{RESULT}
+	IF LOCAL < 0
+		PRINTL 低下した
+	ELSE
+		PRINTL 上昇した
+	ENDIF
+	PRINTL 
+
+	;変身している場合、変身を解除する
+	CALL TRANSFORM, 0
+	SIF TALENT:(FLAG:111):変身能力 > 0 && CFLAG:(FLAG:111):1 > 0
+		CALL TRANSFORM, 0, FLAG:111
+ELSEIF TFLAG:98 == 1
+	;ボスの場合
+	CALL GET_EXP_BATTLE
+	
+	CALL TENTACLE_SURVIVE, "NUM"
+	LOCAL = RESULT
+	CALL GET_SYUREN, 100 + (EX:行動ポイント * 2)
+	CALL GET_MONEY, (25 + RAND:8) * (100 + (FLAG:3 - LOCAL) * (25 + RAND:8))
+	CALL GET_KAKERA, 3
+	;防衛力
+	CALL TENTACLE_LEVEL
+	LOCAL = (RESULT + 4) * 50 + 400 + RAND:101
+	FLAG:852 += LOCAL
+	SIF FLAG:852 < 0
+		FLAG:852 = 0
+	ABS LOCAL
+	PRINTFORML 防衛力が{RESULT}上昇した
+	PRINTL 
+	;人気度
+	LOCAL = 3
+	FLAG:853 += LOCAL
+	PRINTFORML 人気度が{LOCAL}上昇した！
+
+	;救出イベント成功
+	SIF FLAG:45 > 1
+		CALL RAID_RESCUE_SUCCESS
+
+	;変身している場合、変身を解除する
+	CALL TRANSFORM, 0
+	SIF TALENT:(FLAG:111):変身能力 > 0 && CFLAG:(FLAG:111):1 > 0
+		CALL TRANSFORM, 0, FLAG:111
+
+	;エンドレスモードの場合、撃破数と日数経過で期日が短くなる
+	IF FLAG:0 == 10
+		CALL TENTACLE_SURVIVE, "NUM"
+		LOCAL = RESULT
+		LOCAL:1 = DAY / 14 + (FLAG:3 - LOCAL) / 10
+		SIF DAY >= 90 || FLAG:3 - LOCAL >= 20
+			LOCAL:1 += 1
+		SIF DAY >= 135 || FLAG:3 - LOCAL >= 40
+			LOCAL:1 += 1
+		SIF DAY >= 180 || FLAG:3 - LOCAL >= 60
+			LOCAL:1 += 1
+		SIF LOCAL:1 >= FLAG:2
+			LOCAL:1 = FLAG:2
+		DAY:1 -= LOCAL:1
+		$LOOP_ENDLESSMODE
+		IF (FLAG:3 - RESULT + 1) * FLAG:2 - DAY + DAY:1 < -1000
+			DAY:1 += 100
+		ELSEIF (FLAG:3 - RESULT + 1) * FLAG:2 - DAY + DAY:1 < -100
+			DAY:1 += 10
+		ELSEIF (FLAG:3 - RESULT + 1) * FLAG:2 - DAY + DAY:1 < 0
+			DAY:1 += 1
+			GOTO LOOP_ENDLESSMODE
+		ENDIF
+	ENDIF
+;敗北時の処理
+ELSEIF TFLAG:98 == 2
+	;敗北したキャラは大量の修練Pと経験値が入る
+	CALL GET_SYUREN, 40 + (EX:行動ポイント * 4)
+	CALL TENTACLE_LEVEL
+	LOCAL = 250 * RESULT/(ABL:レベル + 2) + RAND:10
+	CALL GET_EXP,min(LOCAL,750)
+	;防衛力
+	CALL TENTACLE_LEVEL
+	LOCAL = (RESULT + 65 - FLAG:52 * 5) * (TFLAG:0 - 50) - 200 - RAND:51
+	FLAG:852 += LOCAL
+	SIF FLAG:852 < 0
+		FLAG:852 = 0
+	ABS LOCAL
+	PRINTFORM 防衛力が{RESULT}
+	IF LOCAL < 0
+		PRINTL 低下した
+	ELSE
+		PRINTL 上昇した
+	ENDIF
+	PRINTL 
+	;人気度
+	LOCAL = 3
+	FLAG:853 -= LOCAL
+	PRINTFORML 人気度が{LOCAL}低下した
+
+	;救出イベント失敗
+	SIF FLAG:45 > 1
+		CALL RAID_RESCUE_FAILURE
+
+	;ＴＳするキャラは変身解除しない
+	IF TALENT:変身時ＴＳ > 0 && CONFIG_CHECK_OTHER_F(1) > 0
+	;力尽きても変身解除しないフラグがoffの場合、変身を解除する
+	ELSEIF CONFIG_CHECK_BALANCE_F(6) == 0
+		CALL TRANSFORM, 0
+	ENDIF
+	SIF TALENT:(FLAG:111):変身能力 > 0 && CFLAG:(FLAG:111):1 > 0
+		CALL TRANSFORM, 0, FLAG:111
+
+	;ボスと遭遇して未撃破なら確率をリセット
+	SIF FLAG:110 == 0 && FLAG:10 != 2 && FLAG:47 > FLAG:46
+		FLAG:47 = (FLAG:47 - FLAG:46) / 4 + FLAG:46
+	;遭遇率アップ効果をリセット
+	CFLAG:23 = 0
+ENDIF
+
+;雑魚戦闘以外で勝利以外の場合はボスの蓄積ダメージと解析度の情報を保持
+IF FLAG:110 == 0 && FLAG:10 != 2
+	RESULT = (FLAG:13 * 1000000 / FLAG:12)
+	IF FLAG:10 == 0 && TFLAG:98 != 1
+		FLAG:(300 + FLAG:11) = 1000000 - RESULT
+		FLAG:(300 + FLAG:11) *= 100
+		SIF FLAG:13 * 1000000 % FLAG:12
+			FLAG:(300 + FLAG:11) += 1
+		FLAG:(500 + FLAG:11) = FLAG:20
+	ELSEIF FLAG:10 == 1 && TFLAG:98 != 1
+		FLAG:(400 + FLAG:11) = 1000000 - RESULT
+		FLAG:(400 + FLAG:11) = 1000000 - RESULT
+		FLAG:(400 + FLAG:11) *= 100
+		SIF FLAG:13 * 1000000 % FLAG:12
+			FLAG:(400 + FLAG:11) += 1
+		FLAG:(600 + FLAG:11) = FLAG:20
+	ENDIF
+ENDIF
+
+;戦闘支援効果で回復
+IF FLAG:43 && (CFLAG:100 == 101 || CFLAG:100 == 105) && TFLAG:98 != 2
+	LOCAL:1 = FLAG:43 * 8
+	;衣装による補正
+	LOCAL = TARGET
+	FOR LOCAL:2,0,CHARANUM
+		SIF LOCAL:2 == MASTER || CFLAG:(LOCAL:2):999 == 0
+			CONTINUE
+		TARGET = LOCAL:2
+		CALL CLOTH_BATTLE_HOSEI, "HEALUP"
+		SIF CFLAG:(LOCAL:2):100 == 106 && RESULT > 0
+			LOCAL:1 = LOCAL:1 * (100 + RESULT) / 100
+	NEXT
+	TARGET = LOCAL
+	LOCAL = MAXBASE:体力
+	LOCAL = LOCAL * LOCAL:1 / 100
+	BASE:体力 = LIMIT(LOCAL + BASE:体力, 0, MAXBASE:体力)
+	LOCAL = MAXBASE:気力
+	LOCAL = LOCAL * LOCAL:1 / 100
+	BASE:気力 = LIMIT(LOCAL + BASE:気力, 0, MAXBASE:気力)
+	PRINTL 
+	PRINTFORML 戦闘支援効果で%PRINT_CALLNAME(TARGET)%の体力と気力が回復した！
+ENDIF
+
+;疲労増加量が残っていれば処理する
+IF TFLAG:99 > 0
+	CFLAG:99 += TFLAG:99
+	RESULTS = {TFLAG:99}
+	TOFULL RESULTS
+	PRINTFORML %PRINT_CALLNAME(TARGET)%の身体の底に疲労が蓄積した……（＋%RESULTS%）
+	TFLAG:99 = 0
+ENDIF
+
+;戦闘終了後のサブイベントへ
+CALL SUBEVENT_BATTLEEND
+
+;射精ゲージ、噴乳ゲージのリセット
+BASE:射精 = 0
+BASE:噴乳 = 0
+;戦闘後の妊娠チェック
+CALL NINSIN_CHECK_AFTER
+
+;空中ゲージの最大値を元に戻す
+;重複してゲージを減少させてしまわないよう、この処理は変身解除処理の後に行う必要があるので注意
+CALL CLOTH_BATTLE_HOSEI, "AIRPLUS",TARGET
+SIF RESULT > 0
+	MAXBASE:空中ダッシュ -= 1
+;立体機動装置の効果###
+SIF CFLAG:TARGET:43 == 510
+	MAXBASE:空中ダッシュ -= 1
+;FEATによる空中ダッシュ増加
+SIF TALENT:有翼 > 0
+	MAXBASE:空中ダッシュ -= 1
+
+SIF FLAG:45 == 0
+	PRINTW 
+
+IF CONFIG_CHECK_EVENT_F(3) > 0 && FLAG:45 == 0
+	;戦闘終了後のレイプ
+	CALL AFTER_TRAIN_RAPE,TFLAG:98
+	;動画流出
+	CALL DOUGA_RYUSUTU,RESULT
+ENDIF
+
+;雑魚戦終了時の処理
+IF FLAG:10 == 2
+	IF FLAG:100
+		FLAG:10 = 0
+	ELSE
+		FLAG:10 = 1
+	ENDIF
+ENDIF
+
+;その他のフラグを初期化
+VARSET TCVAR
+;追加責め関係のフラグを折る
+VARSET EX_COM
+VARSET SH_COM
+VARSET INSERT
+;拡張度関係のフラグを折る
+VARSET TENTACLE_SIZE
+VARSET TENTACLE_NUM
+
+BEGIN TURNEND

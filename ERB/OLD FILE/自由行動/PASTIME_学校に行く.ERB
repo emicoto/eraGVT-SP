@@ -1,0 +1,675 @@
+@PASTIME_学校に行く, ARG
+#DIM 経過時間
+#DIM 調教
+#DIMS 目的地
+経過時間 = 0
+
+;小学生の場合
+IF TALENT:学生 == 1
+	目的地 = 小学校
+;中学生の場合
+ELSEIF TALENT:学生 == 2
+	目的地 = 中学校
+;高校生の場合
+ELSEIF TALENT:学生 == 3
+	目的地 = 高校
+;大学生の場合
+ELSEIF TALENT:学生 == 4
+	目的地 = 大学
+ENDIF
+
+PRINTFORML 学校に行く
+PRINTL 
+;中学・高校は制服、小学校・大学は私服
+IF TALENT:オトコ <= 0 && TALENT:変身時ＴＳ > 0 && CFLAG:1 > 0
+	IF TALENT:淫乱 > 0
+		PRINTFORML 女性の姿に変身した%PRINT_TRANSCALLNAME(TARGET)%は、身綺麗にして%目的地%に登校した。
+		PRINTW 
+		IF TALENT:学生 == 2 || TALENT:学生 == 3
+			PRINTFORML 制服を露出の多くなるように着こなし、スカート丈も下着が見えそうなマイクロミニ。
+			PRINTFORML 校則違反になる派手な色のソックスを身に付けた姿はいかにも腰の軽そうなギャル風だ。
+		ELSE
+			PRINTFORML 露出の多い服装に下着が見えそうなマイクロミニスカート。
+			PRINTFORML とどめに派手な色のサイハイソックスを身に付けた姿はいかにも腰の軽そうなギャル風だ。
+		ENDIF
+		PRINTW 
+	ELSEIF TALENT:女体受容 > 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は女性化した状態で%目的地%に行くことにした。
+		PRINTW 
+		PRINTFORML 以前に感じていた違和感を今は全く感じなくなり
+		PRINTFORML すっかり変身中のカラダに慣れた事を実感する。
+		PRINTW 
+	ELSE
+		IF TALENT:学生 == 2 || TALENT:学生 == 3
+			PRINTFORML 少しでも変身中のカラダに慣れておこうと考え
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は女性化した状態で%目的地%に行くことにした。
+			PRINTW 
+			PRINTFORML 着慣れない女子用の制服に身を包み身嗜みもしっかり整えたつもりだが
+			PRINTFORML 不慣れな為か変な目で見られていないかと気になってしまう。
+		ELSE
+			PRINTFORML 少しでも変身中のカラダに慣れておこうと考え
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は女性化した状態で%目的地%に行くことにした。
+			PRINTW 
+			PRINTFORML ネットや雑誌を参考に服装はしっかり整えたつもりだが
+			PRINTFORML 不慣れな為か変な目で見られていないかと気になってしまう。
+		ENDIF
+		PRINTW 
+	ENDIF
+ELSEIF TALENT:淫乱 > 0
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は、身綺麗にして%目的地%に登校した。
+	PRINTW 
+	IF TALENT:学生 == 2 || TALENT:学生 == 3
+		PRINTFORML 制服を露出の多くなるように着こなし、スカート丈も下着が見えそうなマイクロミニ。
+		PRINTFORML とどめに派手な色のサイハイソックスを身に付けた姿はいかにも腰の軽そうなギャル風だ。
+	ELSE
+		PRINTFORML 露出の多い服装に下着が見えそうなマイクロミニスカート。
+		PRINTFORML とどめに派手な色のサイハイソックスを身に付けた姿はいかにも腰の軽そうなギャル風だ。
+	ENDIF
+ELSE
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は、%目的地%に行くことにした。
+	PRINTW 
+ENDIF
+PRINTW 
+PRINTW ・・
+PRINTW ・・・・
+PRINTW ・・・・・・
+PRINTL 
+CALL PASTIME_CHIKAN, ARG
+IF RESULT == 0
+	;変身して初登校した時の処理
+	IF TALENT:学生 == 4 && TALENT:変身時ＴＳ > 0 && CFLAG:1 > 0 && CFLAG:351 < 1
+		;大学の方は人一人増えようが特に誰も気にしないだろうし部外者でも普通に入れたりするし特にないです
+		PRINTFORML 変身した姿で大学へと訪れた%PRINT_TRANSCALLNAME(TARGET)%だったが、案の定というべきか
+		PRINTFORML 部外者も多数訪れる大学では見慣れない顔が一つ増えた程度では気にも留められないようだ。
+		PRINTL 
+		PRINTFORML かくして、%PRINT_TRANSCALLNAME(TARGET)%の第二の大学生活が始まったのだった…
+		PRINTW 
+	ELSEIF TALENT:学生 < 4 && TALENT:学生 > 0 && TALENT:変身時ＴＳ > 0 && CFLAG:1 > 0 && CFLAG:351 < 1
+		;変身した姿で学校に通う理由はなんか都合がいいとかそんなんでいいんじゃないですかね？
+		;とりあえず学籍やら編入試験やらは組織が裏から手を回したってことで
+		PRINTFORML 変身した姿で登校した%PRINT_TRANSCALLNAME(TARGET)%は、職員室に立ち寄り挨拶を済ませた。
+		PRINTFORML さっそく担任の教師に案内され教室の前まで来ると、廊下で待つように告げられ担任だけが教室に入っていった。
+		PRINTFORML 扉の前で暫く待っていると教室の中からざわめきと歓声が聞こえてくる。
+		PRINTW 
+		PRINTFORML 扉が開かれ、担任が%PRINT_TRANSCALLNAME(TARGET)%に入ってくるよう促した。
+		PRINTFORML 言われるがままに教室に入った%PRINT_TRANSCALLNAME(TARGET)%は教壇の側に立つと
+		PRINTFORML クラスメイトに初めましての挨拶と自己紹介をした。
+		PRINTL 
+		IF TALENT:オトコ > 0
+			PRINTFORML 顔を上げた%PRINT_TRANSCALLNAME(TARGET)%に対して
+			PRINTFORML 女生徒達が黄色い悲鳴にも似た声で質問攻めを始め
+			PRINTFORML 教師が静かにするように注意をする。
+		ELSE
+			PRINTFORML 顔を上げた%PRINT_TRANSCALLNAME(TARGET)%に対して
+			PRINTFORML 男子生徒達が荒ぶりだし、矢継ぎ早にやれ彼氏はいるのかだのタイプの男はだの質問攻めを始める。
+			IF TALENT:巨乳 > 2
+				PRINTFORML その視線がダイナミックな大きさのバストに集中しているのが気にならないではないが…
+			ELSEIF TALENT:巨乳 > 0
+				PRINTFORML その視線が豊満な大きさのバストにささっているのが気にならないではないが…
+			ENDIF
+			IF TALENT:長身 > 0
+				PRINTFORML 一方で、女生徒達もスタイルの良さに対し黄色い悲鳴を上げ出しちょっとした騒ぎとなっている。
+			ELSEIF TALENT:小柄 > 0
+				PRINTFORML 一方で、女生徒達も小さくて可愛いなど小動物に対する様な声を上げ出しちょっとした騒ぎとなっている。
+			ELSE
+				PRINTFORML 一方で、女生徒達も恋愛関係の話題に便乗しだしたり
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%を見て可愛いなど声を上げたりとちょっとした騒ぎとなっている。
+			ENDIF
+			PRINTW 
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%が周囲への対応に困っていると、
+			PRINTFORML 助け舟を出すように担任が静かにするように何度も注意するが、騒ぎはなかなか収まらない。
+			PRINTFORML 朝礼の時間を使い果たし授業が始まる頃になってようやく、教室は静けさを取り戻したのだった。
+		ENDIF
+		PRINTW 
+		PRINTFORML 普段の自分を見る目とは異なる視線に晒され緊張したものの
+		PRINTFORML 無事に挨拶を終えた%PRINT_TRANSCALLNAME(TARGET)%は指定された席に着席した。
+		PRINTL 
+		PRINTFORML かくして、%PRINT_TRANSCALLNAME(TARGET)%の第二の学校生活が始まったのだった…
+		PRINTW 
+	ELSE
+		IF TALENT:学生 == 4
+			PRINTFORML 大学に訪れた%PRINT_TRANSCALLNAME(TARGET)%は講義の予定を確認した。
+			PRINTFORML ついでに連絡事項の確認をするが…
+			IF RAND:10 == 0
+				PRINTFORML どうやら同じ大学の学生が触手の被害にあったようで
+				PRINTFORML 警戒を呼び掛けるお知らせが届いている。
+			ELSE
+				PRINTFORML 特にこれと言った連絡事項はないようだ。
+			ENDIF
+		ELSE
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は始業時間までに登校した。
+			PRINTFORML ホームルームにて連絡事項を告げられるが…
+			IF RAND:10 == 0
+				PRINTFORML どうやら同じ学校の生徒が触手の被害にあったようだ。
+				PRINTFORML 教師が沈痛な面持ちで注意を呼びかけ、微妙な雰囲気の中で授業が始まった…
+			ELSE
+				PRINTFORML 特にこれと言った連絡事項はないようだ。
+			ENDIF
+		ENDIF
+		PRINTW 
+	ENDIF
+
+	;午前中授業
+	PRINTL 
+	PRINTL 午前
+	CALL Message_School_Classwork
+	
+	;昼休み
+	PRINTL 
+	PRINTL 昼休み
+	CALL Message_School_Lunchbreak
+	
+	;午後授業
+	PRINTL 
+	PRINTL 午後
+	CALL Message_School_Classwork
+	
+	;放課後
+	PRINTL 
+	PRINTL 放課後
+	CALL Message_School_Afterschool
+
+	IF RESULT > 0
+		;教師とか不良とかに脅されて系のイベント予定地
+		PRINTFORML 教師とか不良とかに脅されて系のイベント予定地
+		PRINTW 
+	ELSE
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は、学業を果たしてきたようだ。
+		PRINTW 
+	ENDIF
+	
+	;登校回数を増加
+	;回数が一定以上で目をつけられて脅迫とかストーカーとかイベント発生させてみたりとか？
+	IF TALENT:変身時ＴＳ > 0 && CFLAG:1 > 0
+		CFLAG:351 += 1
+	ELSE
+		CFLAG:350 += 1
+	ENDIF
+ENDIF
+
+;----------------------------------------------------------------------------------------------------------------------------
+;授業メッセージ
+@Message_School_Classwork
+IF TALENT:学生 == 4
+	;大学生
+	IF RAND:5 == 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は講義を受講している教授の元に赴き
+		PRINTFORML 以前受けた講義の内容についての疑問点などを尋ねたようだ。
+	ELSEIF RAND:3 == 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は次の講義まで時間が開いた為
+		PRINTFORML 大学敷地内のカフェでレポートの作成をしたようだ。
+	ELSE
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は講義を受けるようだ。
+		CALL Message_School_Classwork_CL
+	ENDIF
+ELSEIF TALENT:学生 == 1
+	;小学生
+	IF RAND:6 == 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は体育の授業を受けるようだ。
+		CALL Message_School_Classwork_PE
+	ELSEIF RAND:5 == 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は国語の授業を受けるようだ。
+		CALL Message_School_Classwork_CL
+	ELSEIF RAND:4 == 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は算数の授業を受けるようだ。
+		CALL Message_School_Classwork_CL
+	ELSEIF RAND:3 == 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は理科の授業を受けるようだ。
+		CALL Message_School_Classwork_CL
+	ELSEIF RAND:2 == 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は社会科の授業を受けるようだ。
+		CALL Message_School_Classwork_CL
+	ELSE
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は英語の授業を受けるようだ。
+		CALL Message_School_Classwork_CL
+	ENDIF
+ELSE
+	;中・高校生
+	IF RAND:6 == 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は体育の授業を受けるようだ。
+		CALL Message_School_Classwork_PE
+	ELSEIF RAND:5 == 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は国語の授業を受けるようだ。
+		CALL Message_School_Classwork_CL
+	ELSEIF RAND:4 == 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は数学の授業を受けるようだ。
+		CALL Message_School_Classwork_CL
+	ELSEIF RAND:3 == 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は理科の授業を受けるようだ。
+		CALL Message_School_Classwork_CL
+	ELSEIF RAND:2 == 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は社会科の授業を受けるようだ。
+		CALL Message_School_Classwork_CL
+	ELSE
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は英語の授業を受けるようだ。
+		CALL Message_School_Classwork_CL
+	ENDIF
+ENDIF
+PRINTW 
+
+
+;----------------------------------------------------------------------------------------------------------------------------
+;授業態度(座学)
+@Message_School_Classwork_CL
+#DIM 自慰
+
+LOCAL = 5 + RAND:10
+SIF TALENT:濡れやすい
+	LOCAL += 2
+SIF TALENT:触手の虜
+	LOCAL += 2
+SIF TALENT:淫乱
+	LOCAL += 2
+SIF TALENT:淫核
+	LOCAL += 2
+SIF TALENT:淫壷
+	LOCAL += 2
+SIF TALENT:淫尻
+	LOCAL += 2
+SIF TALENT:淫乳
+	LOCAL += 2
+SIF TALENT:寄生
+	LOCAL += 2
+SIF TALENT:苗床化
+	LOCAL += 2
+SIF TALENT:マゾ気質
+	LOCAL += 2
+SIF TALENT:快楽に弱い
+	LOCAL += 2
+
+SIF ABL:欲望 > 0
+	LOCAL += ABL:欲望 * 2
+SIF ABL:露出癖 > 0
+	LOCAL += ABL:露出癖 * 2
+SIF ABL:マゾっ気 > 0
+	LOCAL += ABL:マゾっ気 * 2
+SIF ABL:触手中毒 > 0
+	LOCAL += ABL:触手中毒 * 2
+SIF ABL:自慰中毒 > 0
+	LOCAL += ABL:自慰中毒 * 5
+
+IF TALENT:学生 == 4
+	;大学生
+	PRINTL 
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は講義を受けている・・・
+	IF RAND:100 < LOCAL && ABL:欲望 > 0
+		IF TALENT:触手の虜 == 1
+			PRINTFORML 席に着いてはいるものの%PRINT_CALLNAME(TARGET)%はうわの空で、
+			PRINTFORML 頭の中は次に触手に犯されるときのことでいっぱいになっており、
+		ELSE
+			PRINTFORML 最初のうちは講義に集中していた%PRINT_CALLNAME(TARGET)%であったが、
+			IF CFLAG:42 == 400
+				PRINTFORML %ITEMNAME:(CFLAG:42)%に責められていると否応なしに気持ちが昂ってしまい、
+			ELSE
+				PRINTFORML なんとなくムラムラした気分になってきて、
+			ENDIF
+			PRINTFORML いけないこととは思いながらも、つい股間に手が伸びてしまう。
+		ENDIF
+		;(口上)
+		PRINTFORML 周囲からひそひそ声が聞こえるたびに、%PRINT_CALLNAME(TARGET)%は
+		PRINTFORML 自分のオナニーが噂されているかもしれないと想像してゾクゾクと背筋を震わせる。
+		IF RAND:3 == 0
+			PRINTFORML 事実その通りであり、%PRINT_CALLNAME(TARGET)%の講義中オナニーは
+			PRINTFORML その日のうちに受講者中の噂になっていたが、
+			PRINTFORML 幸か不幸か%PRINT_CALLNAME(TARGET)%本人にその話題を振るものはいなかった……
+		ENDIF
+	ELSE
+		;通常の授業内容
+		IF RAND:5 == 0
+			PRINTFORML 講義に集中してしっかり内容を理解した。
+		ELSEIF RAND:4 == 0
+			PRINTFORML 真面目に講義の内容をノートに書き写した。
+		ELSEIF RAND:3 == 0
+			PRINTFORML 講義の内容に着いていくので精一杯だ。
+		ELSEIF RAND:2 == 0
+			PRINTFORML しかし内容を全然理解できなかった。
+		ELSE
+			PRINTFORML しかし普段の戦いによる疲れからかうっかり居眠りしてしまった。
+		ENDIF
+	ENDIF
+ELSE
+	;大学生以外
+	PRINTL 
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は授業を受けている・・・
+	IF RAND:100 < LOCAL && ABL:欲望 > 0
+		IF TALENT:触手の虜 == 1
+			PRINTFORML 席に着いてはいるものの%PRINT_CALLNAME(TARGET)%はうわの空で、
+			PRINTFORML 頭の中は次に触手に犯されるときのことでいっぱいになっており、
+		ELSE
+			PRINTFORML 最初のうちは授業に集中していた%PRINT_CALLNAME(TARGET)%であったが、
+			IF CFLAG:42 == 400
+				PRINTFORML %ITEMNAME:(CFLAG:42)%に責められていると否応なしに気持ちが昂ってしまい、
+			ELSE
+				PRINTFORML なんとなくムラムラした気分になってきて、
+			ENDIF
+			PRINTFORML いけないこととは思いながらも、つい股間に手が伸びてしまう。
+		ENDIF
+		;(口上)
+		PRINTFORML 周囲からひそひそ声が聞こえるたびに、%PRINT_CALLNAME(TARGET)%は
+		PRINTFORML 自分のオナニーが噂されているかもしれないと想像してゾクゾクと背筋を震わせる。
+		IF RAND:3 == 0
+			PRINTFORML 事実その通りであり、%PRINT_CALLNAME(TARGET)%の授業中オナニーは
+			PRINTFORML その日のうちにクラス中の噂になっていたが、
+			PRINTFORML 幸か不幸か%PRINT_CALLNAME(TARGET)%本人にその話題を振るものはいなかった……
+		ENDIF
+	ELSE
+		;通常の授業内容
+		IF RAND:5 == 0
+			PRINTFORML 授業に集中してしっかり内容を理解した。
+		ELSEIF RAND:4 == 0
+			PRINTFORML 真面目に黒板に書かれた内容をノートに書き写した。
+		ELSEIF RAND:3 == 0
+			PRINTFORML 授業の内容に着いていくので精一杯だ。
+		ELSEIF RAND:2 == 0
+			PRINTFORML しかし内容を全然理解できなかった。
+		ELSE
+			PRINTFORML しかし普段の戦いによる疲れからかうっかり居眠りしてしまった。
+		ENDIF
+	ENDIF
+ENDIF
+
+
+;----------------------------------------------------------------------------------------------------------------------------
+;授業態度(体育)
+@Message_School_Classwork_PE
+#DIM HIPSIZE
+PRINTL 
+;PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は授業を受けている・・・
+PRINTFORM どうやら%PRINT_TRANSCALLNAME(TARGET)%は
+IF TALENT:学生 == 1
+	IF RAND:5 == 0
+		PRINTFORML マラソンをする様だ。
+	ELSEIF RAND:4 == 0
+		PRINTFORML 飛び箱をする様だ。
+	ELSEIF RAND:3 == 0
+		PRINTFORML マット運動をする様だ。
+	ELSEIF RAND:2 == 0
+		PRINTFORML 球技をする様だ。
+	ELSE
+		PRINTFORML ダンスをする様だ。
+	ENDIF
+ELSE
+	IF RAND:5 == 0
+		PRINTFORML マラソンをする様だ。
+	ELSEIF RAND:4 == 0
+		PRINTFORML 機械運動をする様だ。
+	ELSEIF RAND:3 == 0
+		PRINTFORML マット運動をする様だ。
+	ELSEIF RAND:2 == 0
+		PRINTFORML 球技をする様だ。
+	ELSE
+		PRINTFORML ダンスをする様だ。
+	ENDIF
+ENDIF
+
+IF TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0
+	SIF CFLAG:1 == 0
+		HIPSIZE = TALENT:外見
+	SIF CFLAG:1 >= 1
+		HIPSIZE = TALENT:変身時外見
+
+	IF RAND:5 == 0
+		PRINTFORML 戦闘に比べれば軽い物だったので軽々とこなした。
+	ELSEIF RAND:3 == 0
+		PRINTFORML 無難に乗り切れたようだ。
+	ELSE
+		IF RAND:2 == 0 && TALENT:巨乳 > 0
+			PRINTFORML しかし男子達の視線が%PRINT_TRANSCALLNAME(TARGET)%の体操服で強調された上に激しく動くと揺れる
+			IF TALENT:巨乳 > 2
+				PRINT ダイナミックな大きさの
+			ELSEIF TALENT:巨乳 > 0
+				PRINT 豊満な
+			ENDIF
+			PRINTFORML バストに釘付けになっているのを感じ集中できなかった。
+		ELSE
+			PRINTFORML しかし男子達の視線が%PRINT_TRANSCALLNAME(TARGET)%の体操服で強調された
+			IF LOCAL == 2
+				PRINT むちむちとした
+			ELSEIF LOCAL == 1
+				PRINT 豊満な
+			ELSEIF LOCAL == 0
+				PRINT 整った
+			ELSE
+				PRINT 小振りな
+			ENDIF
+			PRINTFORML ヒップに集中しているのを感じ、集中できなかった。
+		ENDIF
+	ENDIF
+ELSE
+	IF RAND:5 == 0
+		PRINTFORML 戦闘に比べれば軽い物だったようで軽々とこなした。
+	ELSEIF RAND:3 == 0
+		PRINTFORML 無難に乗り切れたようだ。
+	ELSE
+		PRINTFORML 調子が悪かったのが散々だったようだ。
+	ENDIF
+ENDIF
+
+;----------------------------------------------------------------------------------------------------------------------------
+;昼休みメッセージ
+;脅され中だと調教イベントいれてみたりとか
+;友人との会話で諜報効果とか
+@Message_School_Lunchbreak
+IF TALENT:学生 == 4
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は学友と談笑しながら昼食を食べている・・・
+ELSEIF TALENT:学生 == 1
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は学友と談笑しながら給食を食べている・・・
+ELSE
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は学友と談笑しながら昼食を食べている・・・
+ENDIF
+PRINTW 
+
+
+;----------------------------------------------------------------------------------------------------------------------------
+;放課後メッセージ
+@Message_School_Afterschool
+
+;部活動
+IF (CFLAG:352 != 0 && CFLAG:352 != 10 && CFLAG:352 != 20) && CFLAG:1 < 1
+	CALL Message_School_Clubactivities
+ELSEIF (CFLAG:353 != 0 && CFLAG:353 != 10 && CFLAG:353 != 20) && CFLAG:1 > 0
+	CALL Message_School_Clubactivities
+ELSEIF (TALENT:変身時ＴＳ > 0 && CFLAG:351 == 0 && CFLAG:1 > 0)
+	;ＴＳ転校生の場合初日に所属するか確認
+	IF TALENT:学生 == 4
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%が敷地内を歩いているとサークルメンバー募集と書かれたポスターが目に入った。
+		PRINTFORML 大学としては特にサークルに参加することを強制している訳ではないが・・・
+	ELSEIF TALENT:学生 == 1
+		PRINTFORML 担任教師に呼び止められた%PRINT_TRANSCALLNAME(TARGET)%はクラブ活動をどうするか尋ねられた。
+		PRINTFORML 学校としては特にクラブに参加することを強制している訳ではないが・・・
+	ELSE
+		PRINTFORML 担任教師に呼び止められた%PRINT_TRANSCALLNAME(TARGET)%は部活動をどうするか尋ねられた。
+		PRINTFORML 学校としては特に部活に参加することを強制している訳ではないが・・・
+	ENDIF
+	PRINTW 
+	CALL Message_School_SelectClub
+	PRINTW 
+ELSEIF (CFLAG:350 == 0 && CFLAG:1 < 1) || (CFLAG:350 % 10 == 0 && CFLAG:1 < 1) || (CFLAG:351 % 10 == 0 && CFLAG:1 > 0)
+	;帰宅部なら登校30日毎に改めて所属するか確認
+	IF TALENT:学生 == 4
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%が敷地内を歩いているとサークルメンバー募集と書かれたポスターが目に入った。
+	ELSEIF TALENT:学生 == 1
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%が校内を歩いているとメンバー募集と書かれたポスターが目に入った。
+	ELSE
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%が校内を歩いていると部員募集と書かれたポスターが目に入った。
+	ENDIF
+	PRINTFORML 折角の学生生活だ、そろそろどこかに所属してみても良いのではないだろうか・・・
+	PRINTW 
+	CALL Message_School_SelectClub
+	PRINTW 
+ENDIF
+
+IF TALENT:学生 == 4
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は大学を後にするようだ・・・
+ELSEIF TALENT:学生 == 1
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は友人と別れて帰路に着くようだ・・・
+ELSE
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は友人と別れて帰路に着くようだ・・・
+ENDIF
+PRINTW 
+RETURN 0
+
+;----------------------------------------------------------------------------------------------------------------------------
+;部活動選択
+@Message_School_SelectClub
+PRINTL 
+IF TALENT:学生 == 4
+	PRINTFORML [0]所属しない
+	PRINTFORML [1]体育系サークル
+	PRINTFORML [2]文系サークル
+	PRINTFORML [3]アニメサークル
+ELSEIF TALENT:学生 == 1
+	PRINTFORML [0]所属しない
+	PRINTFORML [1]スポーツクラブ
+	PRINTFORML [2]図書委員
+	PRINTFORML [3]新聞委員
+ELSE
+	PRINTFORML [0]帰宅部
+	PRINTFORML [1]運動部
+	PRINTFORML [2]文系部
+	PRINTFORML [3]風紀委員
+ENDIF
+
+PRINTL 
+DRAWLINE
+$INPUT_LOOP
+INPUT
+PRINTL 
+DRAWLINE
+IF RESULT <= 3 && RESULT >= 0
+	IF RESULT == 0
+		IF TALENT:学生 == 4
+			PRINTL 所属しない
+		ELSEIF TALENT:学生 == 1
+			PRINTL 所属しない
+		ELSE
+			PRINTL 帰宅部
+		ENDIF
+	ELSEIF RESULT == 1
+		IF TALENT:学生 == 4
+			PRINTL 体育系サークル
+		ELSEIF TALENT:学生 == 1
+			PRINTL スポーツクラブ
+		ELSE
+			PRINTL 運動部
+		ENDIF
+	ELSEIF RESULT == 2
+		IF TALENT:学生 == 4
+			PRINTL 文系サークル
+		ELSEIF TALENT:学生 == 1
+			PRINTL 図書委員
+		ELSE
+			PRINTL 文系部
+		ENDIF
+	ELSEIF RESULT == 3
+		IF TALENT:学生 == 4
+			PRINTL アニメサークル
+		ELSEIF TALENT:学生 == 1
+			PRINTL 新聞委員
+		ELSE
+			PRINTL 風紀委員
+		ENDIF
+	ENDIF
+	PRINTL 
+ELSE
+	PRINTL 正しい値を入力してください
+	GOTO INPUT_LOOP
+ENDIF
+
+LOCAL = 0
+IF TALENT:学生 == 4
+	LOCAL = 20 + RESULT
+ELSEIF TALENT:学生 == 1
+	LOCAL = RESULT
+ELSE
+	LOCAL = 10 + RESULT
+ENDIF
+
+;部活決定
+IF CFLAG:1 > 0
+	CFLAG:353 = LOCAL
+ELSE
+	CFLAG:352 = LOCAL
+ENDIF
+
+PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%は
+IF RESULT == 0 || RESULT == 10 || RESULT == 20
+	IF CFLAG:1 > 0
+		IF CFLAG:351 > 0
+			PRINTFORML 帰宅部のままでいることにした。
+		ELSE
+			PRINTFORML どこにも入部しないことにした。
+		ENDIF
+	ELSE
+		IF CFLAG:350 > 0
+			PRINTFORML 帰宅部のままでいることにした。
+		ELSE
+			PRINTFORML どこにも入部しないことにした。
+		ENDIF
+	ENDIF
+ELSE
+	CALL School_ClubString
+	PRINTFORML に所属することにすると、入部届を提出した。
+ENDIF
+
+;----------------------------------------------------------------------------------------------------------------------------
+;部活動表示
+@School_ClubString, ARG
+IF CFLAG:1 > 0
+	LOCAL = CFLAG:353
+ELSE
+	LOCAL = CFLAG:352
+ENDIF
+
+SIF LOCAL == 0
+	PRINT 無所属
+SIF LOCAL == 1
+	PRINT スポーツクラブ
+SIF LOCAL == 2
+	PRINT 図書委員
+SIF LOCAL == 3
+	PRINT 新聞委員
+SIF LOCAL == 10
+	PRINT 帰宅部
+SIF LOCAL == 11
+	PRINT 運動部
+SIF LOCAL == 12
+	PRINT 文系部
+SIF LOCAL == 13
+	PRINT 風紀委員
+SIF LOCAL == 20
+	PRINT 無所属
+SIF LOCAL == 21
+	PRINT 体育系サークル
+SIF LOCAL == 22
+	PRINT 文系サークル
+SIF LOCAL == 23
+	PRINT アニメサークル
+
+
+;----------------------------------------------------------------------------------------------------------------------------
+;部活動メッセージ
+@Message_School_Clubactivities
+
+;IF TALENT:学生 == 4
+;	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はサークル活動に励んでいる・・・
+;ELSEIF TALENT:学生 == 1
+;	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はクラブ活動に励んでいる・・・
+;ELSE
+;	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は部活動に励んでいる・・・
+;ENDIF
+PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%は
+CALL School_ClubString
+PRINTFORML の活動に励んでいる・・・
+
+;活動回数を増加
+;回数を参照して部活系のエロに繋げて見たり部活動による効果アップとか
+IF CFLAG:1 > 0
+	CFLAG:355 += 1
+ELSE
+	CFLAG:354 += 1
+ENDIF
+PRINTW 
+
+
+

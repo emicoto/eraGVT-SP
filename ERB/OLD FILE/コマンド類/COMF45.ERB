@@ -1,0 +1,80 @@
+;罵倒する
+@COM45
+
+;距離表示
+CALL PRINT_DISTANCE
+PRINTL 
+
+;ゲージが増加
+TCVAR:6 += 25
+
+;油断度の上昇
+TFLAG:3 += 5
+
+;防御フラグ：罵倒するにする
+TCVAR:2 = 体勢：罵倒する
+
+;気力が60%回復　ただし疲労しているほど回復量が大きく低下
+;回復早いなら+6%
+;回復遅いなら-6%
+;最大値と衣装と防御力による補正から回復量を計算
+CALL CLOTH_BATTLE_HOSEI, "BOUGYO"
+LOCAL:1 = MAXBASE:気力 + BASE:防御 * RESULT * 4 / 200
+;FEATによる回復量ボーナス
+SIF TALENT:溢れる生命力 > 0
+	TIMES LOCAL:1, 1.25
+IF TALENT:回復早い == 1
+	TIMES LOCAL:1, 0.66
+ELSEIF TALENT:回復遅い == 1
+	TIMES LOCAL:1, 0.54
+ELSE
+	TIMES LOCAL:1, 0.60
+ENDIF
+SIF BASE:気力 + LOCAL:1 >= MAXBASE:気力
+	LOCAL:1 = MAXBASE:気力 - BASE:気力
+;気力が尽きている場合、気力が回復しない
+SIF BASE:気力 == 0
+	LOCAL:1 = 0
+;疲労により回復量が減少
+REPEAT CFLAG:99
+	SIF LOCAL:1 <= 1
+		BREAK
+	;FEAT効果による回復量維持
+	IF TALENT:スタミナ > 0
+		TIMES LOCAL:0, 0.96
+	ELSE
+		TIMES LOCAL:0, 0.92
+	ENDIF
+REND
+BASE:気力 += LOCAL:1
+;疲労が少し蓄積
+TFLAG:99 += 1
+
+;地の文：罵倒する
+CALL MESSAGE_BATTLE_CHARA_BATOU
+;地の文：洗脳/悪堕ちキャラが操作キャラの罵倒するを見た
+SIF FLAG:110 == 1
+	CALL MESSAGE_OTHER_BATTLE_CHARA_BATOU
+
+;行動ポイントを+1
+EX:行動ポイント += 1
+
+IF BASE:気力
+	PRINTFORML %BASENAME:1%が{LOCAL:1}回復した
+ELSE
+	PRINTFORML %BASENAME:1%は既に尽きてしまっている……
+ENDIF
+
+;心境が怒りになりやすいが、快楽に屈するか絶望していると動揺してしまう
+IF RAND:100 < (TCVAR:11 * 20) || TCVAR:1 == 0
+	IF (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け) || (MESSAGE_BRANCH_F(TARGET) & 絶望)
+		CALL SHINKYOU_CHANGE, "DOUYOU"
+	ELSE
+		CALL SHINKYOU_CHANGE, "IKARI"
+	ENDIF
+ELSE
+	TCVAR:11 ++
+ENDIF
+PRINTL 
+RETURN 1
+

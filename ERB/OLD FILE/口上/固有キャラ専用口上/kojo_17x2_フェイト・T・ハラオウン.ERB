@@ -1,0 +1,4952 @@
+;2018/01/21  4:10:26.23
+
+;=========================================================================================================================================================
+;【注意書き】
+;テンポの遅くなるAA付きです。
+;貧乳や巨乳など、素質による分岐などを入れて、なるべく流用できるように素体で作る予定です。
+;喘ぎ声や地の文以外は、このダミー子にセリフを入れる予定はありません
+;
+;=========================================================================================================================================================
+;eraGVT口上テンプレver0.360
+;各関数のKOJO_0_の0をcsvのキャラ番号に置換して使用します
+;汎用キャラ（キャラ番号0のキャラ）の口上を作成する場合は末尾に性格番号を付けてください
+;
+;例：汎用キャラ(キャラ番号0)で元気っ子(性格番号13)の口上を作成する場合
+;    KOJO_0_HITOKUTI_SHOP_13
+;
+;例：キャラ番号1のキャラで口上を作成する場合
+;    KOJO_1_HITOKUTI_SHOP
+;
+;--------------------------------------------------
+;キャラクターの性成長で分岐させる際のガイダンス
+;分岐フラグの詳細については、資料フォルダの「地の文と口上：分岐条件」をご覧ください。
+;
+;　IF (MESSAGE_BRANCH_F(TARGET) & 堕落)			自分から触手に犯されたいと感じている、ほぼ陥落している状態です。
+;　IF (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)		快楽に身体が屈して理性が働かなくなっている状態です。
+;　IF (MESSAGE_BRANCH_F(TARGET) & 性抵抗)		快楽に流されないよう必死に抗っている状態です。
+;　IF (MESSAGE_BRANCH_F(TARGET) & 絶望)			心が折れて戦意を失っている状態です。
+;　IF (MESSAGE_BRANCH_F(TARGET) & 苦戦)			余裕が無くなってきている状態です。
+;
+;　BASE:Ｃ結界耐久力	結界の耐久力が残っていると、該当する部位に触手は触れません。
+;　BASE:Ｖ結界耐久力	触れられていないため快楽も感じませんが、目の前に触手があるので嫌悪感や恐怖は感じます。
+;　BASE:Ａ結界耐久力	
+;　BASE:Ｂ結界耐久力	
+;
+;　TCVAR:2 == 体勢：奉仕する		奉仕フラグが立っている状態です。望むと望まざるとに関わらず、積極的に奉仕している状態です。
+;　TCVAR:2 == 体勢：Ｖ防御		Ｖ挿入防御フラグが立っている状態です。Ｖに挿入できませんが、触れられているので快楽は感じます。
+;
+;　IF CHECK_PREGNANT_F(TARGET) > 0	妊娠しているかどうかを判定します。正の値であれば妊娠中です。
+;
+;  絶頂状態の参照	NOWEXでそれぞれの「このターンに絶頂した回数」を参照することができます。
+;			0=Ｃ絶頂、1=Ｖ絶頂、2=Ａ絶頂、3=Ｂ絶頂です。例えばＶ絶頂した回数を参照したければ、NOWEX:1を参照してください。
+;
+;　挿入状態の参照	TFLAG:4に触手の射精個所≒現在挿入している個所が記録されています。
+;			なので、SIF (TFLAG:4 & 膣)などのように表記することで挿入中かどうかを判定することができます。
+;			ただしDIMで定義している定数の関係上、GETBITを使いたい場合には GETBIT (TFLAG:4, 膣-1)と表記する必要があります。
+;
+;--------------------------------------------------------------------------------------------------------------------------------------------------------
+;================================================================================
+;================================================================================
+;【一口メッセージ】
+
+;キャラ口上色
+;--------------------------------------------------
+@KOJO_1702_COLOR
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_COLOR
+
+@KOJO_1712_COLOR
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_COLOR
+
+@KOJO_フェイト_COLOR
+IF CFLAG:1 == 2
+	SETCOLOR 0xFFFF00
+ELSEIF CFLAG:1 == 1
+	SETCOLOR 0xFFFF33
+ELSE
+	SETCOLOR 0xFFFF66
+ENDIF
+
+
+
+;キャラ個別のオープニング
+;--------------------------------------------------
+@KOJO_1702_FIRST
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_FIRST
+@KOJO_1712_FIRST
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_FIRST
+
+
+@KOJO_フェイト_FIRST
+;ゲーム開始時に表示されるテキストを設定します
+;キャラが戦うに至った動機の説明など
+
+
+
+;ターン終了時の処理
+;--------------------------------------------------
+@KOJO_1702_TURNEND
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_TURNEND
+@KOJO_1712_TURNEND
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_TURNEND
+
+@KOJO_フェイト_TURNEND
+;ターン終了時に呼び出されるキャラ専用の処理です
+
+
+;================================================================================
+; 【"ショップ画面"】
+;--------------------------------------------------
+@KOJO_7xx_HITOKUTI_SHOP
+;ショップ画面で選択されているときに一言しゃべります
+;普段の様子や体調、今の心情など
+;================================================================================
+; 【"鍛錬_基本"】
+;================================================================================
+;【鍛錬_鍛練開始】
+;--------------------------------------------------
+@KOJO_1702_TRAINING_BEGIN
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_TRAINING_BEGIN
+
+@KOJO_1712_TRAINING_BEGIN
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_TRAINING_BEGIN
+
+@KOJO_フェイト_TRAINING_BEGIN
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_TRAINING_BEGIN
+ENDSELECT
+
+
+
+;================================================================================
+;【鍛錬_鍛練終了】
+;--------------------------------------------------
+@KOJO_1702_TRAINING_END
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_TRAINING_END
+
+@KOJO_1712_TRAINING_END
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_TRAINING_END
+
+@KOJO_フェイト_TRAINING_END
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_TRAINING_END
+ENDSELECT
+
+
+
+;================================================================================
+;【鍛錬_走りこみ】
+;--------------------------------------------------
+@KOJO_1702_TRAINING_HASHIRI
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_TRAINING_HASHIRI
+
+@KOJO_1712_TRAINING_HASHIRI
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_TRAINING_HASHIRI
+
+@KOJO_フェイト_TRAINING_HASHIRI
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_TRAINING_HASHIRI
+ENDSELECT
+
+
+
+;================================================================================
+;【鍛錬_精神鍛錬】
+;--------------------------------------------------
+@KOJO_1702_TRAINING_SEISHIN
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_TRAINING_SEISHIN
+
+@KOJO_1712_TRAINING_SEISHIN
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_TRAINING_SEISHIN
+
+@KOJO_フェイト_TRAINING_SEISHIN
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_TRAINING_SEISHIN
+ENDSELECT
+
+
+
+;================================================================================
+;【鍛錬_瞑想】
+;--------------------------------------------------
+@KOJO_1702_TRAINING_MEISOU
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_TRAINING_MEISOU
+
+@KOJO_1712_TRAINING_MEISOU
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_TRAINING_MEISOU
+
+@KOJO_フェイト_TRAINING_MEISOU
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_TRAINING_MEISOU
+ENDSELECT
+
+
+
+;================================================================================
+;【鍛錬_筋トレ】
+;--------------------------------------------------
+@KOJO_1702_TRAINING_KINTORE
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_TRAINING_KINTORE
+
+@KOJO_1712_TRAINING_KINTORE
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_TRAINING_KINTORE
+
+@KOJO_フェイト_TRAINING_KINTORE
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_TRAINING_KINTORE
+ENDSELECT
+
+
+
+;================================================================================
+;【鍛錬_自衛訓練】
+;--------------------------------------------------
+@KOJO_1702_TRAINING_JIEI
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_TRAINING_JIEI
+
+@KOJO_1712_TRAINING_JIEI
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_TRAINING_JIEI
+
+@KOJO_フェイト_TRAINING_JIEI
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_TRAINING_JIEI
+ENDSELECT
+
+
+
+;================================================================================
+;【鍛錬_ダッシュ】
+;--------------------------------------------------
+@KOJO_1702_TRAINING_DASH
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_TRAINING_DASH
+
+@KOJO_1712_TRAINING_DASH
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_TRAINING_DASH
+
+@KOJO_フェイト_TRAINING_DASH
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_TRAINING_DASH
+ENDSELECT
+
+
+
+;================================================================================
+;【鍛錬_近距離戦闘訓練】
+;--------------------------------------------------
+@KOJO_1702_TRAINING_SHORT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_TRAINING_SHORT
+
+@KOJO_1712_TRAINING_SHORT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_TRAINING_SHORT
+
+@KOJO_フェイト_TRAINING_SHORT
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_TRAINING_SHORT
+ENDSELECT
+
+
+
+;================================================================================
+;【鍛錬_中距離戦闘訓練】
+;--------------------------------------------------
+@KOJO_1702_TRAINING_MIDDLE
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_TRAINING_MIDDLE
+
+@KOJO_1712_TRAINING_MIDDLE
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_TRAINING_MIDDLE
+
+@KOJO_フェイト_TRAINING_MIDDLE
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_TRAINING_MIDDLE
+ENDSELECT
+
+
+
+;================================================================================
+;【鍛錬_遠距離戦闘訓練】
+;--------------------------------------------------
+@KOJO_1702_TRAINING_LONG
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_TRAINING_LONG
+
+@KOJO_1712_TRAINING_LONG
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_TRAINING_LONG
+
+@KOJO_フェイト_TRAINING_LONG
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_TRAINING_LONG
+ENDSELECT
+
+
+
+;================================================================================
+;【鍛錬_戦術研究】
+;--------------------------------------------------
+@KOJO_1702_TRAINING_TACTICS
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_TRAINING_TACTICS
+
+@KOJO_1712_TRAINING_TACTICS
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_TRAINING_TACTICS
+
+@KOJO_フェイト_TRAINING_TACTICS
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_TRAINING_TACTICS
+ENDSELECT
+
+
+
+;================================================================================
+;【鍛錬_触手拘束具が鍛錬の邪魔をする】
+;--------------------------------------------------
+@KOJO_1702_TRAINING_TENTACLECLOTH
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_TRAINING_TENTACLECLOTH
+
+@KOJO_1712_TRAINING_TENTACLECLOTH
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_TRAINING_TENTACLECLOTH
+
+@KOJO_フェイト_TRAINING_TENTACLECLOTH
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_TRAINING_TENTACLECLOTH
+ENDSELECT
+
+
+
+;================================================================================
+; 【"戦闘終了関連_基本"】
+;================================================================================
+;【戦闘終了関連_ボス触手・ラスボス触手に勝利】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_END_WIN
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_END_WIN
+
+@KOJO_1712_BATTLE_END_WIN
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_END_WIN
+
+@KOJO_フェイト_BATTLE_END_WIN
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_END_WIN
+ENDSELECT
+
+
+
+;================================================================================
+;【戦闘終了関連_敵キャラに勝利】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_END_WIN_ENEMY
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_END_WIN_ENEMY
+
+@KOJO_1712_BATTLE_END_WIN_ENEMY
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_END_WIN_ENEMY
+
+@KOJO_フェイト_BATTLE_END_WIN_ENEMY
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_END_WIN_ENEMY
+ENDSELECT
+
+
+
+;================================================================================
+;【戦闘終了関連_ラスボス触手出現】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_END_LASTBOSSAPPEAR
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_END_LASTBOSSAPPEAR
+
+@KOJO_1712_BATTLE_END_LASTBOSSAPPEAR
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_END_LASTBOSSAPPEAR
+
+@KOJO_フェイト_BATTLE_END_LASTBOSSAPPEAR
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_END_LASTBOSSAPPEAR
+ENDSELECT
+
+
+
+;================================================================================
+;【戦闘終了関連_完全殲滅】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_END_PERFECT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_END_PERFECT
+
+@KOJO_1712_BATTLE_END_PERFECT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_END_PERFECT
+
+@KOJO_フェイト_BATTLE_END_PERFECT
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_END_PERFECT
+ENDSELECT
+
+
+
+;================================================================================
+;【戦闘終了関連_捕らわれキャラの救出】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_END_RESCUED
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_END_RESCUED
+
+@KOJO_1712_BATTLE_END_RESCUED
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_END_RESCUED
+
+@KOJO_フェイト_BATTLE_END_RESCUED
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_END_RESCUED
+ENDSELECT
+
+
+
+;================================================================================
+;【戦闘終了関連_洗脳中キャラの救出】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_END_RESCUE_SENNOU
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_END_RESCUE_SENNOU
+
+@KOJO_1712_BATTLE_END_RESCUE_SENNOU
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_END_RESCUE_SENNOU
+
+@KOJO_フェイト_BATTLE_END_RESCUE_SENNOU
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_END_RESCUE_SENNOU
+ENDSELECT
+
+
+
+;================================================================================
+;【戦闘終了関連_敵キャラの救出】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_END_RESCUE_ENEMY
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_END_RESCUE_ENEMY
+
+@KOJO_1712_BATTLE_END_RESCUE_ENEMY
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_END_RESCUE_ENEMY
+
+@KOJO_フェイト_BATTLE_END_RESCUE_ENEMY
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_END_RESCUE_ENEMY
+ENDSELECT
+
+
+
+;================================================================================
+;【戦闘終了関連_敗北】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_END_LOSS
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_END_LOSS
+
+@KOJO_1712_BATTLE_END_LOSS
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_END_LOSS
+
+@KOJO_フェイト_BATTLE_END_LOSS
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_END_LOSS
+ENDSELECT
+
+
+
+;================================================================================
+;【戦闘終了関連_時間切れ】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_END_TIMEUP
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_END_TIMEUP
+
+@KOJO_1712_BATTLE_END_TIMEUP
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_END_TIMEUP
+
+@KOJO_フェイト_BATTLE_END_TIMEUP
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_END_TIMEUP
+ENDSELECT
+
+
+
+;================================================================================
+; 【"敵と遭遇_基本"】
+;================================================================================
+;【敵と遭遇_ザコ触手と戦闘】
+;--------------------------------------------------
+@KOJO_1702_ENCOUNT_MOB
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_ENCOUNT_MOB
+
+@KOJO_1712_ENCOUNT_MOB
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_ENCOUNT_MOB
+
+@KOJO_フェイト_ENCOUNT_MOB
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_ENCOUNT_MOB
+ENDSELECT
+
+
+
+;================================================================================
+;【敵と遭遇_ボス触手と戦闘】
+;--------------------------------------------------
+@KOJO_1702_ENCOUNT_BOSS
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_ENCOUNT_BOSS
+
+@KOJO_1712_ENCOUNT_BOSS
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_ENCOUNT_BOSS
+
+@KOJO_フェイト_ENCOUNT_BOSS
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_ENCOUNT_BOSS
+ENDSELECT
+
+
+
+;================================================================================
+;【敵と遭遇_ラスボス触手と戦闘】
+;--------------------------------------------------
+@KOJO_1702_ENCOUNT_LASTBOSS
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_ENCOUNT_LASTBOSS
+
+@KOJO_1712_ENCOUNT_LASTBOSS
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_ENCOUNT_LASTBOSS
+
+@KOJO_フェイト_ENCOUNT_LASTBOSS
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_ENCOUNT_LASTBOSS
+ENDSELECT
+
+
+
+;================================================================================
+;【敵と遭遇_初めて洗脳キャラと対峙した】
+;--------------------------------------------------
+@KOJO_1702_ENCOUNT_SENNOU_FIRST
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_ENCOUNT_SENNOU_FIRST
+
+@KOJO_1712_ENCOUNT_SENNOU_FIRST
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_ENCOUNT_SENNOU_FIRST
+
+@KOJO_フェイト_ENCOUNT_SENNOU_FIRST
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_ENCOUNT_SENNOU_FIRST
+ENDSELECT
+
+
+
+;================================================================================
+;【敵と遭遇_始めて悪堕ちキャラと対峙した】
+;--------------------------------------------------
+@KOJO_1702_ENCOUNT_AKUOTI_FIRST
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_ENCOUNT_AKUOTI_FIRST
+
+@KOJO_1712_ENCOUNT_AKUOTI_FIRST
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_ENCOUNT_AKUOTI_FIRST
+
+@KOJO_フェイト_ENCOUNT_AKUOTI_FIRST
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_ENCOUNT_AKUOTI_FIRST
+ENDSELECT
+
+
+
+;================================================================================
+;【敵と遭遇_洗脳キャラと対峙】
+;--------------------------------------------------
+@KOJO_1702_ENCOUNT_SENNOU
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_ENCOUNT_SENNOU
+
+@KOJO_1712_ENCOUNT_SENNOU
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_ENCOUNT_SENNOU
+
+@KOJO_フェイト_ENCOUNT_SENNOU
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_ENCOUNT_SENNOU
+ENDSELECT
+
+
+
+;================================================================================
+;【敵と遭遇_悪堕ちキャラと対峙】
+;--------------------------------------------------
+@KOJO_1702_ENCOUNT_AKUOTI
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_ENCOUNT_AKUOTI
+
+@KOJO_1712_ENCOUNT_AKUOTI
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_ENCOUNT_AKUOTI
+
+@KOJO_フェイト_ENCOUNT_AKUOTI
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_ENCOUNT_AKUOTI
+ENDSELECT
+
+
+
+;================================================================================
+; 【"キャラの行動_基本"】
+;================================================================================
+;【キャラの行動_変身前のかけ声】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_CHARA_TRANSFORMCALL
+SELECTCASE RAND:1 
+	CASE 0 
+		SETFONT "ＭＳ Ｐゴシック"
+		PRINTL 　　　　　　　　　　　　　　　　　　　　 　 　 　 　 　 ＼ｰ─　　､ /{／__
+		PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　　　, 　　￣￣｀　　 / ＜⌒
+		PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　 ／　ア´￣　 　 　 　￣ 　､　 　 　 　 　 　 　 /{
+		PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　　 ／/ ／=ミ /　} !　　　 　 ＼ 　 　 　 　 　 / i{
+		PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　　　 ／ﾊ{ ィ /　/ 从} 　φ　　　　　　 　 　 /≧{
+		PRINTL 　　　　　　　　　　　　　　　　　　　　　　 　 　 　 /　,ﾒｿ　ィ:芹ﾐ｀ヽ /　　ﾉ 　iﾚ'　　､ 　/ﾆﾆ/
+		PRINTL 　　　　　　　　　　　　　　　　　　　 　 　 　 　 '"　 / ' 　 　 r勿ﾉ　.′∠.. 　 i}___ 　 ∨ﾆﾆ/
+		PRINTL 　　　　　　　　　　　　　　　　 　 　 　 　 ／,.　 rｧ::{　、　"" ___彡ﾍ／≧=彡/::::::{　 /ﾆﾆ/
+		PRINTL 　　　　　　　　　　　　　　　　　　 　 　 / (　　 /:: ∧　｀　　r {　　/⌒}　　kく{::::::ﾊ /ﾆﾆ/
+		PRINTL 　　　　　　　　　　　　　　　　　 　 　 　 　 ＼/:／　 〉｡ 　__ﾟ｡{ 　｛-‐=≦ :|::::{ ::::: /ﾆﾆ/
+		PRINTL 　　　　　　　　　　　 　 　 　 　 　 　 　 ≧=‐-ミメ､/::/ハ　　‰｡乂___ 　 |::::{ ヽ〈ﾆﾆ/
+		PRINTL 　　　　　　　　　　　　　　　　　　　　　 　 　 __,ノ}　}:/.′ }　´　 ｀ヽ　　 ＼ ::r　 / /:::::＼
+		PRINTL 　　　　　　　　　　　　　　　　　　　　 　 　 　 __彡ﾍ /　／′　　　 ﾟ　⌒)　v{　/ / ⌒ｰ一
+		PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　　　　 ‰. ﾟ　.　　 　 　 ；__彡ﾍ } }/ /　　　 ＼
+		PRINTL 　　　　　　　　　　　　　　　　　　 　 　 　 　 　 ,.　"　　　;　　　　/∧　__彡∨ /　 　 　 　 ＼
+		PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　　/} 　 　 　 　 　 　 / 　 　 　 / /　　 丶
+		PRINTL 　　　　　　　　　　　　　　　　　　　　　　 　 ‰,:　　　 　 　 　 / ′　 ,　　/ ∧　　 　 {＼
+		PRINTL 　　　　　　　　　　　　　 　 　 　 　 　 　 　 　 ；　　　　，　　 rﾍ　 　 ‘　/ /　 '/　　 ∧　丶
+		PRINTL 　　　　　　　　　　　　　　　　　 　 　 　 /　 , ‘　 　 　‘　　 ∧.　 　 　 〉 /　　 ∨　　 /,　　 ＼
+		PRINTL 　　　　　　　　　　　　　　　　　　　　　 ′ /　　　 　 , 　 { .′{　　ヽ. / /　　　　'/ 　　∧
+		PRINTL 　　　　　　　　　　　　　　　　　　 　 　 ,　/ ！ 　 　 ′ 　 {:.　{　 　 / /　ヽ　 　 ∨　　 /,
+		PRINTL 　　　　　　　　　　　　　　　　　　　 % ∧　　‘　　 　{ 　 　 }:..　{ 　 / /　　　:,　　　'/　　 ∧
+		PRINTL 　　　　　　　　　　　　　　　　　　 φ/　{　　ﾊ　 　 ！　　 ； ＼{　/ /　丶　　　　　∨　　 /,
+		PRINTL 　　　　　　　 　 　 　 　 　 　 　 　 ∧　　　{　,　　　 ,　　 　 　 ∨ /　　　 ＼　＼　　/　　 ∧
+		PRINTL 　　　　　　　　　　　　　　 　 　 　 ′　 |　 {　′　　 ′　 {: 　 / /、　 　 　 　 　 ＼ ∨　　 /,
+		PRINTL 　　　　　　　　　　　　　　　　　　 φ/　{　　ﾊ　 　 ！　　 ； ＼{　/ /　丶　　　　　∨　　 /,
+		PRINTL 　　　　　　　 　 　 　 　 　 　 　 　 ∧　　　{　,　　　 ,　　 　 　 ∨ /　　　 ＼　＼　　/　　 ∧
+		PRINTL 　　　　　　　　　　　　　　 　 　 　 ′　 |　 {　′　　 ′　 {: 　 / /、　 　 　 　 　 ＼ ∨　　 /,
+		PRINTL 　　　　　　　　　　　　　　　 　 　 l　　 ､ｌ　　　 ／　　‘　　{ 　/ /　　 　 　 　 } r‐‐　＼
+		PRINTL 　　　　　　　　　　　　　　　 　 　 |　　　ｉ 　{／　　　　　　　 / /　,　}　　　 　 }ﾉ　 　 ＼＼
+		PRINTL 　　　　　　　　　　　　　　　 　 　 ｉ　　　|　"　　　　　　}　└ V　/　ﾊ　　　　　　　　　 } ｀¨
+		PRINTL 　　　　　　　　　　　　　　　 　 　 ト 　 ，　 　 　 　 　 {　　 　 v'｀ 仏 ＼　　　 　 　 　 }
+		PRINTL 　　　　　　　　　　　　　　　　　 　 　 〉　　　　　 　 　 ヽr:､ヽ/ 　 :{　 ＼丶　 　 　 　 /
+		PRINTL 　　　　　　　　　　　　　　　　　　　∨　　　 　 　 　 ,rく/ /^'′　　{　 　 ＼＼　 　 .,　 　 　 .′
+		PRINTL 　　　　　　　　　　　　　　　　　　　　 　 　 　 　 　 　 / /　　　　　　　　　　丶＼／／}
+		PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　／　　　/ ∧　　 　 　 {　　　　　 ／／　　　 /
+		PRINTL 　　　　　　　　　　　　　　　 　 /　　.　-‐≦　 ., 　 / /　‘,　　　　　{　　　___彡　＼{∨　.′
+		PRINTL 　　　 　 　 　 　 　 　 　 　 　 ′　 　 　 　 　 　 ７ /‐- /　__ ,,..　　 ¨ヽ⌒¨´　___彡ﾍ　{
+		PRINTL 　　　　　　　　　　　　　　　 　 ､　　 　 　 　　 __/ / 　 /_{　　　　　　　 　 ､　　⌒¨´}八{
+		PRINTL 　　　　　　　　　　　　　　　　　　　─ -　　-/ﾆ// ─/ ={-　　_　　　 　 　 丶
+		PRINTL 　　　　　　　　　　　　　 　 　 　 　 　 　 　 /ﾆ〈ﾆ〉　〈 -={ 　 ‘,　≧=-　 　 　 ＼
+		PRINTL 　　　　　　　　　　　　　　　　　　　　　 　 /ニﾆV 　 ∧-∧　　′　　　 ヽ≧=- ､〉
+		PRINTL 　　　　　　　　　　　　　 　 　 　 　 　 　 /ニﾆニ〉　〈ﾆ∨,∧　　 ヽ　　　　 ,
+		PRINTL 　　　　　　 　 　 　 　 　 　 　 　 ＼ 　 /ニﾆニ/ 　 /ニ}-=∧　　　　　　　 ′
+		PRINTL 　　 　 　 　 　 ＼≧=-　_ 　　＼ }ﾆ　/ニﾆニ/ 　 /ニ/ﾆlx=∧　　　 ,　　　 ‘,
+		PRINTL 　　　　　　　　 　 ＼二二二≧}ﾆ}ﾆl/ニﾆニ/ 　 /ニ/ﾆ :lx‐=∧　 　 ′　 　 {
+		PRINTL 　 　 　 　 　 　 　 　 ヽ二二二二∨ニニﾆ/_＿/ニ,仁 ﾆ}　-==|　　　　　　　‘,
+		PRINTL 　　　　　　　　　　　　　 ⌒≦二 γ 　 ヽr≦ニニニﾆニ/　-==| 　 　 　 ,
+		PRINTL 　　　　　　 　 　 　 　 　 　 　 ＞ 乂___ノ〉ニニニニニ /　--==|　　　　　′　　 ,
+		PRINTL 　　　　　　 　 　 　 　 　 r≦ニニ≧==≦ニニニニニ/ --===/ 　 　 　 　 　 　 ′
+		PRINTL 　　　　　　　　　　　　　　､ﾆﾉ／ /ニﾆ〉ﾞ⌒ヽニニニ/ --===/　　　　　　 　 ,　　　丶
+		PRINTL 　 　 　 　 　 　 　 　 　 　 ￣　 /ニ／　　 　 }二二/ --===/　　　　 　 　 　 ′　　　}
+		SETFONT
+ENDSELECT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_TRANSFORMCALL
+
+
+
+@KOJO_1712_BATTLE_CHARA_TRANSFORMCALL
+SELECTCASE RAND:1 
+	CASE 0 
+ENDSELECT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_TRANSFORMCALL
+
+
+
+@KOJO_フェイト_BATTLE_CHARA_TRANSFORMCALL
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		PRINTL
+		PRINTFORML 「いくよ、バルディッシュ……セットアップ」
+		PRINTL
+ENDSELECT
+
+
+
+;================================================================================
+;【キャラの行動_変身後の名乗り】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_CHARA_NANORI
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_NANORI
+
+@KOJO_1712_BATTLE_CHARA_NANORI
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_NANORI
+
+@KOJO_フェイト_BATTLE_CHARA_NANORI
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_CHARA_NANORI
+ENDSELECT
+
+
+
+;================================================================================
+;【キャラの行動_撤退成功】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_CHARA_TETTAI_SUCCESS
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_TETTAI_SUCCESS
+
+@KOJO_1712_BATTLE_CHARA_TETTAI_SUCCESS
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_TETTAI_SUCCESS
+
+@KOJO_フェイト_BATTLE_CHARA_TETTAI_SUCCESS
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_CHARA_TETTAI_SUCCESS
+ENDSELECT
+
+
+
+;================================================================================
+;【キャラの行動_撤退失敗】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_CHARA_TETTAI_FALSE
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_TETTAI_FALSE
+
+@KOJO_1712_BATTLE_CHARA_TETTAI_FALSE
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_TETTAI_FALSE
+
+@KOJO_フェイト_BATTLE_CHARA_TETTAI_FALSE
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_CHARA_TETTAI_FALSE
+ENDSELECT
+
+
+
+;================================================================================
+;【キャラの行動_攻撃スタイル変更】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_CHARA_BATTLE_STYLE_CHANGE
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_BATTLE_STYLE_CHANGE
+
+
+@KOJO_1712_BATTLE_CHARA_BATTLE_STYLE_CHANGE
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_BATTLE_STYLE_CHANGE
+
+
+@KOJO_フェイト_BATTLE_CHARA_BATTLE_STYLE_CHANGE
+IF FLAG:10 == 2
+	SELECTCASE RAND:2
+		CASE 0
+		CDFLAG:TARGET:近距離:戦闘スタイル=2;装甲
+		CDFLAG:TARGET:中距離:戦闘スタイル=2;装甲
+		CDFLAG:TARGET:遠距離:戦闘スタイル=2;装甲
+		CASE 2
+		CDFLAG:TARGET:近距離:戦闘スタイル=8;設置
+		CDFLAG:TARGET:中距離:戦闘スタイル=8;設置
+		CDFLAG:TARGET:遠距離:戦闘スタイル=8;設置
+		CASEELSE
+		CDFLAG:TARGET:近距離:戦闘スタイル=7;知略
+		CDFLAG:TARGET:中距離:戦闘スタイル=7;知略
+		CDFLAG:TARGET:遠距離:戦闘スタイル=7;知略
+	ENDSELECT
+ELSE
+	;敵のHPが1/30かつ3000以下
+	IF (FLAG:13 < FLAG:12 /30) && (FLAG:13 <3000)
+		CDFLAG:TARGET:近距離:戦闘スタイル=6;全力
+		CDFLAG:TARGET:中距離:戦闘スタイル=6;全力
+		CDFLAG:TARGET:遠距離:戦闘スタイル=6;全力
+	;敵のHPが半分以上
+	ELSEIF (FLAG:13 > FLAG:12 /2)
+		CDFLAG:TARGET:近距離:戦闘スタイル=1;連続
+		CDFLAG:TARGET:中距離:戦闘スタイル=1;連続
+		CDFLAG:TARGET:遠距離:戦闘スタイル=1;連続
+	;敵のHPが半分以上で、通常攻撃
+	ELSE
+		CDFLAG:TARGET:近距離:戦闘スタイル=0;通常
+		CDFLAG:TARGET:中距離:戦闘スタイル=0;通常
+		CDFLAG:TARGET:遠距離:戦闘スタイル=3;撹乱
+	ENDIF
+ENDIF
+
+
+;================================================================================
+;【キャラの行動_近距離攻撃】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_CHARA_ATTACK_RANGE_SHORT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_ATTACK_RANGE_SHORT
+
+@KOJO_1712_BATTLE_CHARA_ATTACK_RANGE_SHORT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_ATTACK_RANGE_SHORT
+
+@KOJO_フェイト_BATTLE_CHARA_ATTACK_RANGE_SHORT
+PRINTFORM 「
+SELECTCASE CDFLAG:TARGET:近距離:戦闘スタイル
+	CASE 0;通常
+		PRINTFORM ジェットザンバー
+	CASE 1;連続
+		PRINTFORM ライオットザンバー・スティンガー
+	CASE 2;装甲
+		PRINTFORM ディフェンサープラス
+	CASE 3;撹乱
+		PRINTFORM ブリッツアクション
+	CASE 4;重撃
+		PRINTFORM プラズマスマッシャー
+	CASE 5;広範
+		PRINTFORM サンターブレイド
+	CASE 6;全力
+		PRINTFORM ライオットザンバー・カラミティ
+	CASE 7;知略
+		PRINTFORM ハーケンセイバー
+	CASE 8;設置
+		PRINTFORM ライトニングバインド
+	CASEELSE
+		PRINTFORM 
+ENDSELECT
+PRINTFORML 」
+
+
+;================================================================================
+;【キャラの行動_中距離攻撃】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_CHARA_ATTACK_RANGE_MIDDLE
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_ATTACK_RANGE_MIDDLE
+
+@KOJO_1712_BATTLE_CHARA_ATTACK_RANGE_MIDDLE
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_ATTACK_RANGE_MIDDLE
+
+@KOJO_フェイト_BATTLE_CHARA_ATTACK_RANGE_MIDDLE
+PRINTFORM 「
+SELECTCASE CDFLAG:TARGET:中距離:戦闘スタイル
+	CASE 0;通常
+		PRINTFORM フォトンランサー
+	CASE 1;連続
+		PRINTFORM プラズマスマッシャー
+	CASE 2;装甲
+		PRINTFORM ラウンドシールド
+	CASE 3;撹乱
+		PRINTFORM ディフェンサー
+	CASE 4;重撃
+		PRINTFORM トライデントスマッシャー
+	CASE 5;広範
+		PRINTFORM サンダーレイジ
+	CASE 6;全力
+		PRINTFORM 雷光一閃……プラズマザンバーブレイカー
+	CASE 7;知略
+		PRINTFORM アークセイバー
+	CASE 8;設置
+		PRINTFORM ライトニングバインド
+	CASEELSE
+		PRINTFORM 
+ENDSELECT
+PRINTFORML 」
+
+
+;================================================================================
+;【キャラの行動_遠距離攻撃】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_CHARA_ATTACK_RANGE_LONG
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_ATTACK_RANGE_LONG
+
+@KOJO_1712_BATTLE_CHARA_ATTACK_RANGE_LONG
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_ATTACK_RANGE_LONG
+
+@KOJO_フェイト_BATTLE_CHARA_ATTACK_RANGE_LONG
+
+PRINTFORM 「
+SELECTCASE CDFLAG:TARGET:遠距離:戦闘スタイル
+	CASE 0;通常
+		PRINTFORM フォトンランサー
+	CASE 1;連続
+		PRINTFORM フォトンランサー・マルチショット
+	CASE 2;装甲
+		PRINTFORM ラウンドシールド
+	CASE 3;撹乱
+		PRINTFORM アークセイバー
+	CASE 4;重撃
+		PRINTFORM サンダースマッシャー
+	CASE 5;広範
+		PRINTFORM サンダーレイジ
+	CASE 6;全力
+		PRINTFORML アルカス・クルタス・エイギアス。
+		PRINTFORML 疾風なりし天神、今導きのもと撃ちかかれ。
+		PRINTFORML バルエル・ザルエル・ブラウゼル。
+
+		PRINTFORML フォトンランサー・ファランクスシフト
+		PRINTFORM 撃ち砕け、ファイアー
+	CASE 7;知略
+		PRINTFORM プラズマランサー
+	CASE 8;設置
+		PRINTFORM ライトニングバインド
+	CASEELSE
+		PRINTFORM 
+ENDSELECT
+PRINTFORML 」
+
+
+;================================================================================
+;【キャラの行動_防御】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_CHARA_DEFENSE
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_DEFENSE
+
+@KOJO_1712_BATTLE_CHARA_DEFENSE
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_DEFENSE
+
+@KOJO_フェイト_BATTLE_CHARA_DEFENSE
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_CHARA_DEFENSE
+ENDSELECT
+
+
+
+;================================================================================
+;【キャラの行動_距離をとる】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_CHARA_TAKEAWAY
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_TAKEAWAY
+
+@KOJO_1712_BATTLE_CHARA_TAKEAWAY
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_TAKEAWAY
+
+@KOJO_フェイト_BATTLE_CHARA_TAKEAWAY
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_CHARA_TAKEAWAY
+ENDSELECT
+
+
+
+;================================================================================
+;【キャラの行動_何もしない】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_CHARA_NOACTION
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_NOACTION
+
+@KOJO_1712_BATTLE_CHARA_NOACTION
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_NOACTION
+
+@KOJO_フェイト_BATTLE_CHARA_NOACTION
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_CHARA_NOACTION
+ENDSELECT
+
+
+
+;================================================================================
+;【キャラの行動_振り解く】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_CHARA_HURIHODOKU
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_HURIHODOKU
+
+@KOJO_1712_BATTLE_CHARA_HURIHODOKU
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_HURIHODOKU
+
+@KOJO_フェイト_BATTLE_CHARA_HURIHODOKU
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_CHARA_HURIHODOKU
+ENDSELECT
+
+
+
+;================================================================================
+;【キャラの行動_暴れる】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_CHARA_ABARERU
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_ABARERU
+
+@KOJO_1712_BATTLE_CHARA_ABARERU
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_ABARERU
+
+@KOJO_フェイト_BATTLE_CHARA_ABARERU
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_CHARA_ABARERU
+ENDSELECT
+
+
+
+;================================================================================
+;【キャラの行動_耐える】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_CHARA_TAERU
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_TAERU
+
+@KOJO_1712_BATTLE_CHARA_TAERU
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_TAERU
+
+@KOJO_フェイト_BATTLE_CHARA_TAERU
+;あまり調教が進んでおらず、闘志が残っている状態です  
+;情報を集めるため、油断を誘うためなど、まだ諦めていないような口上が相応しいでしょう  
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_CHARA_TAERU
+ENDSELECT
+
+
+
+;================================================================================
+;【キャラの行動_なすがまま】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_CHARA_NASUGAMAMA
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_NASUGAMAMA
+
+@KOJO_1712_BATTLE_CHARA_NASUGAMAMA
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_NASUGAMAMA
+
+@KOJO_フェイト_BATTLE_CHARA_NASUGAMAMA
+;苦痛や恐怖が高くなって翻弄されている状態です  
+;余裕がなくなった様子を描写するのが良いでしょう  
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_CHARA_NASUGAMAMA
+ENDSELECT
+
+
+
+;================================================================================
+;【キャラの行動_受け入れる】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_CHARA_UKEIRERU
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_UKEIRERU
+
+@KOJO_1712_BATTLE_CHARA_UKEIRERU
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_UKEIRERU
+
+@KOJO_フェイト_BATTLE_CHARA_UKEIRERU
+;屈服で心が折れたか、快楽に流されている状態です  
+;普段よりも快楽に素直になっている様子を描写するのが良いでしょう  
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_CHARA_UKEIRERU
+ENDSELECT
+
+
+
+;================================================================================
+;【キャラの行動_奉仕する】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_CHARA_HOUSI
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_HOUSI
+
+@KOJO_1712_BATTLE_CHARA_HOUSI
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_HOUSI
+
+@KOJO_フェイト_BATTLE_CHARA_HOUSI
+;恭順する気持ちから触手を満足させようとしている状態です  
+;口では言い訳しつつ、心の底では触手のことが大好きです  
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_CHARA_HOUSI
+ENDSELECT
+
+
+
+;================================================================================
+;【キャラの行動_Ｖ挿入防御】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_CHARA_ANTI_V
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_ANTI_V
+
+@KOJO_1712_BATTLE_CHARA_ANTI_V
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_ANTI_V
+
+@KOJO_フェイト_BATTLE_CHARA_ANTI_V
+;なりふり構わず処女だけを守り通す構えです  
+;調教が進むと使えなくなるのであまり調教が進んでいない状況を想定しましょう  
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_CHARA_ANTI_V
+ENDSELECT
+
+
+
+;================================================================================
+;【キャラの行動_引き剥がす】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_CHARA_HIKIHAGASU
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_HIKIHAGASU
+
+@KOJO_1712_BATTLE_CHARA_HIKIHAGASU
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_HIKIHAGASU
+
+@KOJO_フェイト_BATTLE_CHARA_HIKIHAGASU
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_CHARA_HIKIHAGASU
+ENDSELECT
+
+
+
+;================================================================================
+;【キャラの行動_睨みつける】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_CHARA_NIRAMI
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_NIRAMI
+
+@KOJO_1712_BATTLE_CHARA_NIRAMI
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_NIRAMI
+
+@KOJO_フェイト_BATTLE_CHARA_NIRAMI
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_CHARA_NIRAMI
+ENDSELECT
+
+
+
+;================================================================================
+;【キャラの行動_罵倒する】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_CHARA_BATOU
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_BATOU
+
+@KOJO_1712_BATTLE_CHARA_BATOU
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_BATOU
+
+@KOJO_フェイト_BATTLE_CHARA_BATOU
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_CHARA_BATOU
+ENDSELECT
+
+
+
+;================================================================================
+;【キャラの行動_反抗する】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_CHARA_RESISTANCE
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_RESISTANCE
+
+@KOJO_1712_BATTLE_CHARA_RESISTANCE
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_RESISTANCE
+
+@KOJO_フェイト_BATTLE_CHARA_RESISTANCE
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_CHARA_RESISTANCE
+ENDSELECT
+
+
+
+;================================================================================
+; 【"キャラの行動の結果_基本"】
+;================================================================================
+;【キャラの行動の結果_攻撃がクリティカルヒット】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_CHARA_ATTACK_CRITICAL_HIT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_ATTACK_CRITICAL_HIT
+
+@KOJO_1712_BATTLE_CHARA_ATTACK_CRITICAL_HIT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_ATTACK_CRITICAL_HIT
+
+@KOJO_フェイト_BATTLE_CHARA_ATTACK_CRITICAL_HIT
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_CHARA_ATTACK_CRITICAL_HIT
+ENDSELECT
+
+
+
+;================================================================================
+;【キャラの行動の結果_攻撃が通常ヒット】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_CHARA_ATTACK_HIT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_ATTACK_HIT
+
+@KOJO_1712_BATTLE_CHARA_ATTACK_HIT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_ATTACK_HIT
+
+@KOJO_フェイト_BATTLE_CHARA_ATTACK_HIT
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_CHARA_ATTACK_HIT
+ENDSELECT
+
+
+
+;================================================================================
+;【キャラの行動の結果_攻撃失敗】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_CHARA_ATTACK_FALSE
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_ATTACK_FALSE
+
+@KOJO_1712_BATTLE_CHARA_ATTACK_FALSE
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_ATTACK_FALSE
+
+@KOJO_フェイト_BATTLE_CHARA_ATTACK_FALSE
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_CHARA_ATTACK_FALSE
+ENDSELECT
+
+
+
+;================================================================================
+;【キャラの行動の結果_振り解く成功】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_CHARA_HURIHODOKU_SUCCESS
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_HURIHODOKU_SUCCESS
+
+@KOJO_1712_BATTLE_CHARA_HURIHODOKU_SUCCESS
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_HURIHODOKU_SUCCESS
+
+@KOJO_フェイト_BATTLE_CHARA_HURIHODOKU_SUCCESS
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_CHARA_HURIHODOKU_SUCCESS
+ENDSELECT
+
+
+
+;================================================================================
+;【キャラの行動の結果_振り解く失敗】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_CHARA_HURIHODOKU_FALSE
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_HURIHODOKU_FALSE
+
+@KOJO_1712_BATTLE_CHARA_HURIHODOKU_FALSE
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_HURIHODOKU_FALSE
+
+@KOJO_フェイト_BATTLE_CHARA_HURIHODOKU_FALSE
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_CHARA_HURIHODOKU_FALSE
+ENDSELECT
+
+
+
+;================================================================================
+;【キャラの行動の結果_引き剥がす成功】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_CHARA_HIKIHAGASU_SUCCESS
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_HIKIHAGASU_SUCCESS
+
+@KOJO_1712_BATTLE_CHARA_HIKIHAGASU_SUCCESS
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_HIKIHAGASU_SUCCESS
+
+@KOJO_フェイト_BATTLE_CHARA_HIKIHAGASU_SUCCESS
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_CHARA_HIKIHAGASU_SUCCESS
+ENDSELECT
+
+
+
+;================================================================================
+;【キャラの行動の結果_引き剥がす失敗】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_CHARA_HIKIHAGASU_FALSE
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_HIKIHAGASU_FALSE
+
+@KOJO_1712_BATTLE_CHARA_HIKIHAGASU_FALSE
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_HIKIHAGASU_FALSE
+
+@KOJO_フェイト_BATTLE_CHARA_HIKIHAGASU_FALSE
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_CHARA_HIKIHAGASU_FALSE
+ENDSELECT
+
+
+
+;================================================================================
+; 【"敵側の行動_基本"】
+;================================================================================
+;【敵側の行動_敵が攻撃】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_TENTACLE_ATTACK
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_TENTACLE_ATTACK
+
+@KOJO_1712_BATTLE_TENTACLE_ATTACK
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_TENTACLE_ATTACK
+
+@KOJO_フェイト_BATTLE_TENTACLE_ATTACK
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_TENTACLE_ATTACK
+ENDSELECT
+
+
+
+;================================================================================
+;【敵側の行動_敵が絡みつく】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_TENTACLE_KARAMITUKU
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_TENTACLE_KARAMITUKU
+
+@KOJO_1712_BATTLE_TENTACLE_KARAMITUKU
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_TENTACLE_KARAMITUKU
+
+@KOJO_フェイト_BATTLE_TENTACLE_KARAMITUKU
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_TENTACLE_KARAMITUKU
+ENDSELECT
+
+
+
+;================================================================================
+;【敵側の行動_敵が体液を吐く】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_TENTACLE_TAIEKI
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_TENTACLE_TAIEKI
+
+@KOJO_1712_BATTLE_TENTACLE_TAIEKI
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_TENTACLE_TAIEKI
+
+@KOJO_フェイト_BATTLE_TENTACLE_TAIEKI
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_TENTACLE_TAIEKI
+ENDSELECT
+
+
+
+;================================================================================
+;【敵側の行動_敵が距離をとる】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_TENTACLE_TAKEAWAY
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_TENTACLE_TAKEAWAY
+
+@KOJO_1712_BATTLE_TENTACLE_TAKEAWAY
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_TENTACLE_TAKEAWAY
+
+@KOJO_フェイト_BATTLE_TENTACLE_TAKEAWAY
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_TENTACLE_TAKEAWAY
+ENDSELECT
+
+
+
+;================================================================================
+;【敵側の行動_敵が押し倒すを開始】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_TENTACLE_OSHITAOSU
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_TENTACLE_OSHITAOSU
+
+@KOJO_1712_BATTLE_TENTACLE_OSHITAOSU
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_TENTACLE_OSHITAOSU
+
+@KOJO_フェイト_BATTLE_TENTACLE_OSHITAOSU
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_TENTACLE_OSHITAOSU
+ENDSELECT
+
+
+
+;================================================================================
+; 【"敵側の行動の結果_基本"】
+;================================================================================
+;【敵側の行動の結果_敵の攻撃がクリティカルヒット】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_TENTACLE_ATTACK_CRITICAL_HIT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_TENTACLE_ATTACK_CRITICAL_HIT
+
+@KOJO_1712_BATTLE_TENTACLE_ATTACK_CRITICAL_HIT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_TENTACLE_ATTACK_CRITICAL_HIT
+
+@KOJO_フェイト_BATTLE_TENTACLE_ATTACK_CRITICAL_HIT
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_TENTACLE_ATTACK_CRITICAL_HIT
+ENDSELECT
+
+
+
+;================================================================================
+;【敵側の行動の結果_敵の攻撃が通常ヒット】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_TENTACLE_ATTACK_HIT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_TENTACLE_ATTACK_HIT
+
+@KOJO_1712_BATTLE_TENTACLE_ATTACK_HIT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_TENTACLE_ATTACK_HIT
+
+@KOJO_フェイト_BATTLE_TENTACLE_ATTACK_HIT
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_TENTACLE_ATTACK_HIT
+ENDSELECT
+
+
+
+;================================================================================
+;【敵側の行動の結果_敵の攻撃を回避】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_TENTACLE_ATTACK_FALSE
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_TENTACLE_ATTACK_FALSE
+
+@KOJO_1712_BATTLE_TENTACLE_ATTACK_FALSE
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_TENTACLE_ATTACK_FALSE
+
+@KOJO_フェイト_BATTLE_TENTACLE_ATTACK_FALSE
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_TENTACLE_ATTACK_FALSE
+ENDSELECT
+
+
+
+;================================================================================
+;【敵側の行動の結果_敵の絡みつくが成功】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_TENTACLE_KARAMITUKU_SUCCESS
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_TENTACLE_KARAMITUKU_SUCCESS
+
+@KOJO_1712_BATTLE_TENTACLE_KARAMITUKU_SUCCESS
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_TENTACLE_KARAMITUKU_SUCCESS
+
+@KOJO_フェイト_BATTLE_TENTACLE_KARAMITUKU_SUCCESS
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_TENTACLE_KARAMITUKU_SUCCESS
+ENDSELECT
+
+
+
+;================================================================================
+;【敵側の行動の結果_敵の絡みつくを回避】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_TENTACLE_KARAMITUKU_FALSE
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_TENTACLE_KARAMITUKU_FALSE
+
+@KOJO_1712_BATTLE_TENTACLE_KARAMITUKU_FALSE
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_TENTACLE_KARAMITUKU_FALSE
+
+@KOJO_フェイト_BATTLE_TENTACLE_KARAMITUKU_FALSE
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_TENTACLE_KARAMITUKU_FALSE
+ENDSELECT
+
+
+
+;================================================================================
+;【敵側の行動の結果_敵の体液を吐くがヒット】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_TENTACLE_TAIEKI_HIT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_TENTACLE_TAIEKI_HIT
+
+@KOJO_1712_BATTLE_TENTACLE_TAIEKI_HIT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_TENTACLE_TAIEKI_HIT
+
+@KOJO_フェイト_BATTLE_TENTACLE_TAIEKI_HIT
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_TENTACLE_TAIEKI_HIT
+ENDSELECT
+
+
+
+;================================================================================
+;【敵側の行動の結果_敵の体液を吐くを回避】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_TENTACLE_TAIEKI_FALSE
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_TENTACLE_TAIEKI_FALSE
+
+@KOJO_1712_BATTLE_TENTACLE_TAIEKI_FALSE
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_TENTACLE_TAIEKI_FALSE
+
+@KOJO_フェイト_BATTLE_TENTACLE_TAIEKI_FALSE
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_TENTACLE_TAIEKI_FALSE
+ENDSELECT
+
+
+
+;================================================================================
+;【敵側の行動の結果_敵の押し倒すがヒット】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_TENTACLE_OSHITAOSU_SUCCESS
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_TENTACLE_OSHITAOSU_SUCCESS
+
+@KOJO_1712_BATTLE_TENTACLE_OSHITAOSU_SUCCESS
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_TENTACLE_OSHITAOSU_SUCCESS
+
+@KOJO_フェイト_BATTLE_TENTACLE_OSHITAOSU_SUCCESS
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_TENTACLE_OSHITAOSU_SUCCESS
+ENDSELECT
+
+
+
+;================================================================================
+;【敵側の行動の結果_敵の押し倒すを回避】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_TENTACLE_OSHITAOSU_FALSE
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_TENTACLE_OSHITAOSU_FALSE
+
+@KOJO_1712_BATTLE_TENTACLE_OSHITAOSU_FALSE
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_TENTACLE_OSHITAOSU_FALSE
+
+@KOJO_フェイト_BATTLE_TENTACLE_OSHITAOSU_FALSE
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_TENTACLE_OSHITAOSU_FALSE
+ENDSELECT
+
+
+
+;================================================================================
+; 【"素質関連_基本"】
+;================================================================================
+;【"素質関連_処女喪失"】
+;--------------------------------------------------
+@KOJO_1702_SEX_LOSTVIRGIN
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_LOSTVIRGIN
+
+@KOJO_1712_GETTALENT_TORIKO
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_LOSTVIRGIN
+
+@KOJO_フェイト_SEX_LOSTVIRGIN
+
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_LOSTVIRGIN
+ENDSELECT
+
+
+
+;処女喪失_子触手襲撃
+IF GETBIT (CFLAG:TARGET:206,0)
+;処女喪失_恋人との夜の営み
+ELSEIF GETBIT (CFLAG:TARGET:206,1)
+;処女喪失_通常戦闘中
+ELSEIF GETBIT (CFLAG:TARGET:206,2)
+;処女喪失_SPダメージ（敵触手)
+ELSEIF GETBIT (CFLAG:TARGET:206,3)
+;処女喪失_SPダメージ（敵触手)
+ELSEIF GETBIT (CFLAG:TARGET:206,4)
+;処女喪失_SPダメージ（敵触手)
+ELSEIF GETBIT (CFLAG:TARGET:206,5)
+;処女喪失_SPダメージ（敵触手)
+ELSEIF GETBIT (CFLAG:TARGET:206,6)
+;処女喪失_SPダメージ（敵触手)
+ELSEIF GETBIT (CFLAG:TARGET:206,7)
+;処女喪失_SPダメージ（敵触手)
+ELSEIF GETBIT (CFLAG:TARGET:206,8)
+ENDIF
+;================================================================================
+;【素質関連_触手の虜取得】
+;--------------------------------------------------
+@KOJO_1702_GETTALENT_TORIKO
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_GETTALENT_TORIKO
+
+@KOJO_1712_GETTALENT_TORIKO
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_GETTALENT_TORIKO
+
+@KOJO_フェイト_GETTALENT_TORIKO
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_GETTALENT_TORIKO
+ENDSELECT
+
+
+
+;================================================================================
+;【素質関連_淫乱取得】
+;--------------------------------------------------
+@KOJO_1702_GETTALENT_INRAN
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_GETTALENT_INRAN
+
+@KOJO_1712_GETTALENT_INRAN
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_GETTALENT_INRAN
+
+@KOJO_フェイト_GETTALENT_INRAN
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_GETTALENT_INRAN
+ENDSELECT
+
+
+
+;================================================================================
+;【素質関連_淫核取得】
+;--------------------------------------------------
+@KOJO_1702_GETTALENT_INKAKU
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_GETTALENT_INKAKU
+
+@KOJO_1712_GETTALENT_INKAKU
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_GETTALENT_INKAKU
+
+@KOJO_フェイト_GETTALENT_INKAKU
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_GETTALENT_INKAKU
+ENDSELECT
+
+
+
+;================================================================================
+;【素質関連_淫壷取得】
+;--------------------------------------------------
+@KOJO_1702_GETTALENT_INTUBO
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_GETTALENT_INTUBO
+
+@KOJO_1712_GETTALENT_INTUBO
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_GETTALENT_INTUBO
+
+@KOJO_フェイト_GETTALENT_INTUBO
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_GETTALENT_INTUBO
+ENDSELECT
+
+
+
+;================================================================================
+;【素質関連_淫尻取得】
+;--------------------------------------------------
+@KOJO_1702_GETTALENT_INJIRI
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_GETTALENT_INJIRI
+
+@KOJO_1712_GETTALENT_INJIRI
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_GETTALENT_INJIRI
+
+@KOJO_フェイト_GETTALENT_INJIRI
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_GETTALENT_INJIRI
+ENDSELECT
+
+
+
+;================================================================================
+;【素質関連_淫乳取得】
+;--------------------------------------------------
+@KOJO_1702_GETTALENT_INNYUU
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_GETTALENT_INNYUU
+
+@KOJO_1712_GETTALENT_INNYUU
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_GETTALENT_INNYUU
+
+@KOJO_フェイト_GETTALENT_INNYUU
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_GETTALENT_INNYUU
+ENDSELECT
+
+
+
+;================================================================================
+; 【"刻印_基本"】
+;================================================================================
+;【刻印_快楽刻印1取得】
+;--------------------------------------------------
+@KOJO_1702_SEX_MARK_KAIRAKU_1
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MARK_KAIRAKU_1
+
+@KOJO_1712_SEX_MARK_KAIRAKU_1
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MARK_KAIRAKU_1
+
+@KOJO_フェイト_SEX_MARK_KAIRAKU_1
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_MARK_KAIRAKU_1
+ENDSELECT
+
+
+
+;================================================================================
+;【刻印_快楽刻印2取得】
+;--------------------------------------------------
+@KOJO_1702_SEX_MARK_KAIRAKU_2
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MARK_KAIRAKU_2
+
+@KOJO_1712_SEX_MARK_KAIRAKU_2
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MARK_KAIRAKU_2
+
+@KOJO_フェイト_SEX_MARK_KAIRAKU_2
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_MARK_KAIRAKU_2
+ENDSELECT
+
+
+
+;================================================================================
+;【刻印_快楽刻印3取得】
+;--------------------------------------------------
+@KOJO_1702_SEX_MARK_KAIRAKU_3
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MARK_KAIRAKU_3
+
+@KOJO_1712_SEX_MARK_KAIRAKU_3
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MARK_KAIRAKU_3
+
+@KOJO_フェイト_SEX_MARK_KAIRAKU_3
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_MARK_KAIRAKU_3
+ENDSELECT
+
+
+
+;================================================================================
+;【刻印_苦痛刻印1取得】
+;--------------------------------------------------
+@KOJO_1702_SEX_MARK_KUTUU_1
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MARK_KUTUU_1
+
+@KOJO_1712_SEX_MARK_KUTUU_1
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MARK_KUTUU_1
+
+@KOJO_フェイト_SEX_MARK_KUTUU_1
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_MARK_KUTUU_1
+ENDSELECT
+
+
+
+;================================================================================
+;【刻印_苦痛刻印2取得】
+;--------------------------------------------------
+@KOJO_1702_SEX_MARK_KUTUU_2
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MARK_KUTUU_2
+
+@KOJO_1712_SEX_MARK_KUTUU_2
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MARK_KUTUU_2
+
+@KOJO_フェイト_SEX_MARK_KUTUU_2
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_MARK_KUTUU_2
+ENDSELECT
+
+
+
+;================================================================================
+;【刻印_苦痛刻印3取得】
+;--------------------------------------------------
+@KOJO_1702_SEX_MARK_KUTUU_3
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MARK_KUTUU_3
+
+@KOJO_1712_SEX_MARK_KUTUU_3
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MARK_KUTUU_3
+
+@KOJO_フェイト_SEX_MARK_KUTUU_3
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_MARK_KUTUU_3
+ENDSELECT
+
+
+
+;================================================================================
+;【刻印_屈服刻印1取得】
+;--------------------------------------------------
+@KOJO_1702_SEX_MARK_KUPPUKU_1
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MARK_KUPPUKU_1
+
+@KOJO_1712_SEX_MARK_KUPPUKU_1
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MARK_KUPPUKU_1
+
+@KOJO_フェイト_SEX_MARK_KUPPUKU_1
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_MARK_KUPPUKU_1
+ENDSELECT
+
+
+
+;================================================================================
+;【刻印_屈服刻印2取得】
+;--------------------------------------------------
+@KOJO_1702_SEX_MARK_KUPPUKU_2
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MARK_KUPPUKU_2
+
+@KOJO_1712_SEX_MARK_KUPPUKU_2
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MARK_KUPPUKU_2
+
+@KOJO_フェイト_SEX_MARK_KUPPUKU_2
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_MARK_KUPPUKU_2
+ENDSELECT
+
+
+
+;================================================================================
+;【刻印_屈服刻印3取得】
+;--------------------------------------------------
+@KOJO_1702_SEX_MARK_KUPPUKU_3
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MARK_KUPPUKU_3
+
+@KOJO_1712_SEX_MARK_KUPPUKU_3
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MARK_KUPPUKU_3
+
+@KOJO_フェイト_SEX_MARK_KUPPUKU_3
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_MARK_KUPPUKU_3
+ENDSELECT
+
+
+
+;================================================================================
+;【刻印_恐怖刻印1取得】
+;--------------------------------------------------
+@KOJO_1702_SEX_MARK_KYOUHU_1
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MARK_KYOUHU_1
+
+@KOJO_1712_SEX_MARK_KYOUHU_1
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MARK_KYOUHU_1
+
+@KOJO_フェイト_SEX_MARK_KYOUHU_1
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_MARK_KYOUHU_1
+ENDSELECT
+
+
+
+;================================================================================
+;【刻印_恐怖刻印2取得】
+;--------------------------------------------------
+@KOJO_1702_SEX_MARK_KYOUHU_2
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MARK_KYOUHU_2
+
+@KOJO_1712_SEX_MARK_KYOUHU_2
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MARK_KYOUHU_2
+
+@KOJO_フェイト_SEX_MARK_KYOUHU_2
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_MARK_KYOUHU_2
+ENDSELECT
+
+
+
+;================================================================================
+;【刻印_恐怖刻印3取得】
+;--------------------------------------------------
+@KOJO_1702_SEX_MARK_KYOUHU_3
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MARK_KYOUHU_3
+
+@KOJO_1712_SEX_MARK_KYOUHU_3
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MARK_KYOUHU_3
+
+@KOJO_フェイト_SEX_MARK_KYOUHU_3
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_MARK_KYOUHU_3
+ENDSELECT
+
+
+
+;================================================================================
+;【刻印_恥辱刻印取得】
+;--------------------------------------------------
+@KOJO_1702_SEX_MARK_TIJYOKU_1
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MARK_TIJYOKU_1
+
+@KOJO_1712_SEX_MARK_TIJYOKU_1
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MARK_TIJYOKU_1
+
+@KOJO_フェイト_SEX_MARK_TIJYOKU_1
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_MARK_TIJYOKU_1
+ENDSELECT
+
+
+
+;================================================================================
+;【刻印_恥辱刻印取得】
+;--------------------------------------------------
+@KOJO_1702_SEX_MARK_TIJYOKU_2
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MARK_TIJYOKU_2
+
+@KOJO_1712_SEX_MARK_TIJYOKU_2
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MARK_TIJYOKU_2
+
+@KOJO_フェイト_SEX_MARK_TIJYOKU_2
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_MARK_TIJYOKU_2
+ENDSELECT
+
+
+
+;================================================================================
+;【刻印_恥辱刻印取得】
+;--------------------------------------------------
+@KOJO_1702_SEX_MARK_TIJYOKU_3
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MARK_TIJYOKU_3
+
+@KOJO_1712_SEX_MARK_TIJYOKU_3
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MARK_TIJYOKU_3
+
+@KOJO_フェイト_SEX_MARK_TIJYOKU_3
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_MARK_TIJYOKU_3
+ENDSELECT
+
+
+
+;================================================================================
+; 【"絶頂関連_基本"】
+;================================================================================
+;【絶頂関連_C絶頂】
+;--------------------------------------------------
+@KOJO_1702_SEX_ECSTASY_C
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_ECSTASY_C
+
+@KOJO_1712_SEX_ECSTASY_C
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_ECSTASY_C
+
+@KOJO_フェイト_SEX_ECSTASY_C
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_ECSTASY_C
+ENDSELECT
+
+
+
+;================================================================================
+;【絶頂関連_C強絶頂】
+;--------------------------------------------------
+@KOJO_1702_SEX_ECSTASY_C_HI
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_ECSTASY_C_HI
+
+@KOJO_1712_SEX_ECSTASY_C_HI
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_ECSTASY_C_HI
+
+@KOJO_フェイト_SEX_ECSTASY_C_HI
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_ECSTASY_C_HI
+ENDSELECT
+
+
+
+;================================================================================
+;【絶頂関連_V絶頂】
+;--------------------------------------------------
+@KOJO_1702_SEX_ECSTASY_V
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_ECSTASY_V
+
+@KOJO_1712_SEX_ECSTASY_V
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_ECSTASY_V
+
+@KOJO_フェイト_SEX_ECSTASY_V
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_ECSTASY_V
+ENDSELECT
+
+
+
+;================================================================================
+;【絶頂関連_V強絶頂】
+;--------------------------------------------------
+@KOJO_1702_SEX_ECSTASY_V_HI
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_ECSTASY_V_HI
+
+@KOJO_1712_SEX_ECSTASY_V_HI
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_ECSTASY_V_HI
+
+@KOJO_フェイト_SEX_ECSTASY_V_HI
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_ECSTASY_V_HI
+ENDSELECT
+
+
+
+;================================================================================
+;【絶頂関連_A絶頂】
+;--------------------------------------------------
+@KOJO_1702_SEX_ECSTASY_A
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_ECSTASY_A
+
+@KOJO_1712_SEX_ECSTASY_A
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_ECSTASY_A
+
+@KOJO_フェイト_SEX_ECSTASY_A
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_ECSTASY_A
+ENDSELECT
+
+
+
+;================================================================================
+;【絶頂関連_A強絶頂】
+;--------------------------------------------------
+@KOJO_1702_SEX_ECSTASY_A_HI
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_ECSTASY_A_HI
+
+@KOJO_1712_SEX_ECSTASY_A_HI
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_ECSTASY_A_HI
+
+@KOJO_フェイト_SEX_ECSTASY_A_HI
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_ECSTASY_A_HI
+ENDSELECT
+
+
+
+;================================================================================
+;【絶頂関連_B絶頂】
+;--------------------------------------------------
+@KOJO_1702_SEX_ECSTASY_B
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_ECSTASY_B
+
+@KOJO_1712_SEX_ECSTASY_B
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_ECSTASY_B
+
+@KOJO_フェイト_SEX_ECSTASY_B
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_ECSTASY_B
+ENDSELECT
+
+
+
+;================================================================================
+;【絶頂関連_B強絶頂】
+;--------------------------------------------------
+@KOJO_1702_SEX_ECSTASY_B_HI
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_ECSTASY_B_HI
+
+@KOJO_1712_SEX_ECSTASY_B_HI
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_ECSTASY_B_HI
+
+@KOJO_フェイト_SEX_ECSTASY_B_HI
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_ECSTASY_B_HI
+ENDSELECT
+
+
+
+;================================================================================
+;【絶頂関連_二重絶頂_CV】
+;--------------------------------------------------
+@KOJO_1702_SEX_MULTIECSTASY_CV
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MULTIECSTASY_CV
+
+@KOJO_1712_SEX_MULTIECSTASY_CV
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MULTIECSTASY_CV
+
+@KOJO_フェイト_SEX_MULTIECSTASY_CV
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_MULTIECSTASY_CV
+ENDSELECT
+
+
+
+;================================================================================
+;【絶頂関連_二重絶頂_CA】
+;--------------------------------------------------
+@KOJO_1702_SEX_MULTIECSTASY_CA
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MULTIECSTASY_CA
+
+@KOJO_1712_SEX_MULTIECSTASY_CA
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MULTIECSTASY_CA
+
+@KOJO_フェイト_SEX_MULTIECSTASY_CA
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_MULTIECSTASY_CA
+ENDSELECT
+
+
+
+;================================================================================
+;【絶頂関連_二重絶頂_CB】
+;--------------------------------------------------
+@KOJO_1702_SEX_MULTIECSTASY_CB
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MULTIECSTASY_CB
+
+@KOJO_1712_SEX_MULTIECSTASY_CB
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MULTIECSTASY_CB
+
+@KOJO_フェイト_SEX_MULTIECSTASY_CB
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_MULTIECSTASY_CB
+ENDSELECT
+
+
+
+;================================================================================
+;【絶頂関連_二重絶頂_VA】
+;--------------------------------------------------
+@KOJO_1702_SEX_MULTIECSTASY_VA
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MULTIECSTASY_VA
+
+@KOJO_1712_SEX_MULTIECSTASY_VA
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MULTIECSTASY_VA
+
+@KOJO_フェイト_SEX_MULTIECSTASY_VA
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_MULTIECSTASY_VA
+ENDSELECT
+
+
+
+;================================================================================
+;【絶頂関連_二重絶頂_VB】
+;--------------------------------------------------
+@KOJO_1702_SEX_MULTIECSTASY_VB
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MULTIECSTASY_VB
+
+@KOJO_1712_SEX_MULTIECSTASY_VB
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MULTIECSTASY_VB
+
+@KOJO_フェイト_SEX_MULTIECSTASY_VB
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_MULTIECSTASY_VB
+ENDSELECT
+
+
+
+;================================================================================
+;【絶頂関連_二重絶頂_AB】
+;--------------------------------------------------
+@KOJO_1702_SEX_MULTIECSTASY_AB
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MULTIECSTASY_AB
+
+@KOJO_1712_SEX_MULTIECSTASY_AB
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MULTIECSTASY_AB
+
+@KOJO_フェイト_SEX_MULTIECSTASY_AB
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_MULTIECSTASY_AB
+ENDSELECT
+
+
+
+;================================================================================
+;【絶頂関連_三重絶頂_CVA】
+;--------------------------------------------------
+@KOJO_1702_SEX_MULTIECSTASY_CVA
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MULTIECSTASY_CVA
+
+@KOJO_1712_SEX_MULTIECSTASY_CVA
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MULTIECSTASY_CVA
+
+@KOJO_フェイト_SEX_MULTIECSTASY_CVA
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_MULTIECSTASY_CVA
+ENDSELECT
+
+
+
+;================================================================================
+;【絶頂関連_三重絶頂_CVB】
+;--------------------------------------------------
+@KOJO_1702_SEX_MULTIECSTASY_CVB
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MULTIECSTASY_CVB
+
+@KOJO_1712_SEX_MULTIECSTASY_CVB
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MULTIECSTASY_CVB
+
+@KOJO_フェイト_SEX_MULTIECSTASY_CVB
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_MULTIECSTASY_CVB
+ENDSELECT
+
+
+
+;================================================================================
+;【絶頂関連_三重絶頂_CAB】
+;--------------------------------------------------
+@KOJO_1702_SEX_MULTIECSTASY_CAB
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MULTIECSTASY_CAB
+
+@KOJO_1712_SEX_MULTIECSTASY_CAB
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MULTIECSTASY_CAB
+
+@KOJO_フェイト_SEX_MULTIECSTASY_CAB
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_MULTIECSTASY_CAB
+ENDSELECT
+
+
+
+;================================================================================
+;【絶頂関連_三重絶頂_VAB】
+;--------------------------------------------------
+@KOJO_1702_SEX_MULTIECSTASY_VAB
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MULTIECSTASY_VAB
+
+@KOJO_1712_SEX_MULTIECSTASY_VAB
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MULTIECSTASY_VAB
+
+@KOJO_フェイト_SEX_MULTIECSTASY_VAB
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_MULTIECSTASY_VAB
+ENDSELECT
+
+
+
+;================================================================================
+;【絶頂関連_四重絶頂】
+;--------------------------------------------------
+@KOJO_1702_SEX_MULTIECSTASY_CVAB
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MULTIECSTASY_CVAB
+
+@KOJO_1712_SEX_MULTIECSTASY_CVAB
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_MULTIECSTASY_CVAB
+
+@KOJO_フェイト_SEX_MULTIECSTASY_CVAB
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_MULTIECSTASY_CVAB
+ENDSELECT
+
+
+
+;================================================================================
+; 【"戦闘衣装_基本"】
+;================================================================================
+;【戦闘衣装_アウターが破れ始めた】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_CLOTH_OUTERDAMAGE
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CLOTH_OUTERDAMAGE
+
+@KOJO_1712_BATTLE_CLOTH_OUTERDAMAGE
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CLOTH_OUTERDAMAGE
+
+@KOJO_フェイト_BATTLE_CLOTH_OUTERDAMAGE
+;衣装が損傷した場合に呼び出される口上です  
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_CLOTH_OUTERDAMAGE
+ENDSELECT
+
+
+
+;================================================================================
+;【戦闘衣装_アウターが破れた】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_CLOTH_OUTERBREAK
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CLOTH_OUTERBREAK
+
+@KOJO_1712_BATTLE_CLOTH_OUTERBREAK
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CLOTH_OUTERBREAK
+
+@KOJO_フェイト_BATTLE_CLOTH_OUTERBREAK
+;衣装が完全に破壊された場合に呼び出される口上です  
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_CLOTH_OUTERBREAK
+ENDSELECT
+
+
+
+;================================================================================
+;【戦闘衣装_インナーが破れ始めた】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_CLOTH_INNERDAMAGE
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CLOTH_INNERDAMAGE
+
+@KOJO_1712_BATTLE_CLOTH_INNERDAMAGE
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CLOTH_INNERDAMAGE
+
+@KOJO_フェイト_BATTLE_CLOTH_INNERDAMAGE
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_CLOTH_INNERDAMAGE
+ENDSELECT
+
+
+
+;================================================================================
+;【戦闘衣装_インナーが破れた】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_CLOTH_INNERBREAK
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:4
+	CASE 3
+		PRINTL 　　　 　 　 　 　 　 ,. -- ､_ﾋ^ｰ∩
+		PRINTL 　　　　　　　　　／　　 ⌒ ｰ_つ |
+		PRINTL 　　　　　　　 ／　　, ‐-　. ＿_ ノ
+		PRINTL 　 　 　 　 ／　 　,r くヽ￣｀丶 ､
+		PRINTL .　　　　／　 - ､/(_ヽ '｀ `ｰ 　　 ｀ 丶 、
+		PRINTL 　 　 , ',.．-‐‐-ハ > ニ. __ノ＾丶 .　　　 ｀丶､
+		PRINTL ＿__f ´￣ｱ⌒　 ′　　 　 　 　 　 丶、　 　 　 丶
+		PRINTL ＼::::l　／　 ／〃　 /　 /　　l l:. ヽ　 ﾊヽ　 ,.　 　 }
+		PRINTL ｰ-｀イ 　／　 /　 ' l　 ハ 　 ﾊ|::.　 l　 :|::::;′　　,:::＼
+		PRINTL ｀¨ 7:ｌ／ / 　.　 //斗ﾞ　从仆廴L　l　 :!:/　　　 ﾊｰ -`
+		PRINTL .／::/ / / 　 l　ﾁ´_」.j_ / ノ ,.zj.ﾘ_ ｀　 :/　　　 ∧l
+		PRINTL ｀￣{ ﾊ l　ﾊ八 l〈 らﾊ}　　 　{::fﾊ} 〉 /:′　　 /､:::＼
+		PRINTL .　 λ! ,ヽ乂/|｀ﾄ､ゞ-" 　 , 　 ｰ 'ｲ / ;　　　 /　 「「´
+		PRINTL 　 //j　,　メ　!　ﾍ "" 　 ,-､　""//　l　　　/.:l　 | |
+		PRINTL . // ; 　 ,　　 j　 lﾊ >.､　｀´　 イ, 　 ﾉ　 　.'.:.:.l 　l∧
+		PRINTL //　l l　 l 　 ﾉ　ﾉ :j￣:. ｀　´ノ '　／:.　 　,'.:. .:|　ハ:ﾍ
+		PRINTL /　 从　 レ' 　 彡' 　 ヽ　〃　／　 ::.　　'.:.:　:| /　 vﾊ
+		PRINTL 　 / 才´, r‐ '７　　　　　/　／　 　 :::.　/.:.　 :l/　　 V }
+		PRINTL .イ 　 ／.:λ:　　　　　｀/　/　　　　　::./.:.: 　./　　　 Ⅵ
+		PRINTL ./　 /　.:./　Ｙ　 :,,: 　 /　/　 　 :,,:　　/.:.:　 / 　 　 　 !:j
+		PRINTL {　从　.:/ 　 ﾔ　　　　{ ｌ {　　　　　　 ｌ.:.:.　 l　　　 　 //
+		PRINTL l｀ トミ_/　　　!　　　　　从　 　 　 　 从::　 l　 　 　 //
+		PRINTL |　　l ｲ!　　　 l 　 　 　 　 )）　　 　 .'ハ: :.　|　　　 //
+		PRINTL |　　l' |l　　 　 !　　　　　 ´ 　 　 　 '{ﾊ:l:　　l　 　 //
+		PRINTL ｌ　　l. |l　　 　 l 　 　 　 　 　 　 　 ′ |ﾍ.　 l　　//
+		PRINTL ∨　ヾ:j.　　 　l　　　　 　 　 　 　 { 　 l l ∨ﾍ. //
+		PRINTL ｰ＼　 ヽ　 　 ;　　 　 　 }　　　　　'.　 | l　ヽ. ∨
+		PRINTL 　　 〉 　 ヽ　/　　　　　 　 　 　 　 ∨从 　/,＼ ､
+		PRINTL .　 / ,ﾊ 　 ∨　　　　　　　　　　　　 ∨ ﾍ//　　＼ ､
+		PRINTL 　/ /　} 　 f　　　　　　　　　　　　　　∨ {.{ヽ　　　∨ヽ
+		PRINTL ./ /　ｲ /ﾉ,　　　　　　　　　　　　　　　ｉ　ﾍ.＼ ＝彡! ｌﾊ
+		PRINTL . /／_ノ'　;　　　ヽ　　　　　　,　'　　 　 '　　＼ ￣　 } jノ
+		PRINTL 　　　　　 l　　　　 ＼　　　, '　　　　　　l　　　　　 ノノ
+		PRINTL 　　 　 　 ｌ　　　　 　 ヽ　./　　　　　　　i
+		PRINTL 　　　　　 ｌ　　　　　　　∨　　　　 　 　 ;
+		PRINTL .　　 　 　 l　 　 　 　 　 ′　　　 　 　 /
+	CASE 2
+		PRINTL ＿_　　　　　 　 　 　　 　 　　 　 　,ｨ _＿＿_,.r‐ｧ
+		PRINTL ヽ、￣¨¨ヽ、　　 ,.. 　- …―- ､_/／,. -一'¨／
+		PRINTL 　 ＼　　 　｀ヌ´　　　　　　　　　　 ´￣｀ーく
+		PRINTL 　 /´＼　 ｖ′　／　　　 　 　 　 　 　-―-､ ＼＿_
+		PRINTL . /　　,..＞ﾊ　 /　　/　　　　　　　　 ｀ヽ　、 ＼ー'´
+		PRINTL /　 　i 　ｲ　ヾ|　　,' / // ,　 ﾊ　　 　ヽ.|　ヽ　 ヽ
+		PRINTL 　　　|　　! 　 | 　 l ,' //斗 '/　i.乂_ !　ﾘ　　ト、 !
+		PRINTL 　　 / 　∧　 |　 'T「「∧ﾊ/　 //ﾑL}|　|　　ｌ ',ﾚ′
+		PRINTL .　 /　／　 Y´!　 ｨfひ弓ﾄ 　//ｆ元ﾄﾘ,.ｲ ! | ﾄ､＼
+		PRINTL 　/ , '　　　∧ !　 ﾄとz::ｿ　　　 ﾋzっリ/ｲ ,'人}￣
+		PRINTL 　ﾚ′ 　　/　｀|　 | :.:.:.:.　 　 ,　:.:.: ,' / /イ
+		PRINTL 　　　　　/　　 i　ハ　　　　=　 　,ｲ∧　　|
+		PRINTL 　　　 　,'　　　 |,'　 } 丶、 _,.　＜ 　 　 　 |
+		PRINTL 　 　 　 !　　 ,-ｧ　/ 　 　 ト､__,.⊥、　　　｜
+		PRINTL 　　　　|.　／ /　∧ ー-　 ,r 　 　 ＞-､　 ',
+		PRINTL 　　　　| /　 /　 !　　　　　　 ⊂ﾆ´ｧ'"　＼ ＼
+		PRINTL 　　　　|,'　 ,'　 |ﾘ　　　 　 　 　 ／_,.ニ、 　ヽ ＼
+		PRINTL 　 　 　ｌl　 ヽﾄ､{ /　 　 　 　 　 ｀^ー‐ｔ､_　　 ',　 ',
+		PRINTL 　 　 　||　　　　,'　　　　;ｯ: 　 　 　 　 ':ｮ }"　 | 　 ',
+		PRINTL 　 　 　||　　　　!　　　　 　 　 　 　 　 ！|　　 | 　！
+		PRINTL 　 　 　!ｌ　 　 　ﾄ、　　　　　 　 　 　 　 | !　　 |　　|
+		PRINTL 　 　　ｌ｜　　　|　',　　　　　 　 　 　 　 }{　　　!　　|
+		PRINTL 　 　　|｜　　　! 　 ,　　　　　　　 　 　 ハ　　/　　 !
+		PRINTL 　 　　| ｌ　　　 |　　 ',　　　　　 　 　 　 ト､_ ノ　　　|
+		PRINTL 　 　　| ! 　 　 !　　　',　　　　　　　　　｜ヽ、 　 　｜
+		PRINTL .　 　　,' 　 　 ,' 　 　/　　　　　　i: 　 　 ',　 i　　 　｜
+		PRINTL .　 　 ,'　　 　,　 　 / 　 　 　 　 　 　 　　',　|　　 　｜
+		PRINTL 　　　ｌ 　 　 ,'　　./　　 　 　 　 　 　 　 　 ', |　　　　|
+		PRINTL 　　　| 　 　,'　　,'　　　　　　　　　　　　　　',.!　　 　 !
+		PRINTL 　　　|　　 ,'　　i　　　 　 　 　 　 　 　 　 　 ',|　　　｜
+		PRINTL 　 　 ,'　　,　 　|　　　　 ＼　　　 　 　, 　 　 || 　 　｜
+		PRINTL 　 ／ 　 /　 　|　　　　　 　ヽ、　.:　/　　 　 i! 　 　 |
+	CASE 1
+		PRINTL 　　　　　　　　　　　　　　　　 __＿
+		PRINTL 　　　　　　　　　　　　　　　　 ⌒ヽ　＼　　 ＿＿
+		PRINTL 　　　　　　　　　　　　　 ＞ -―--＼　',´　　　　　 ｀ ＜　　＿
+		PRINTL 　　　　　　　　　　　　／　 ＞ ´　　　　　　　　　　 ヽ　　ヾ:.､ 　 ｀ヽ
+		PRINTL 　　　　　　　　　　　 '⌒／　／　　　　　　　　　ヽ　　',　　 ∨:.,
+		PRINTL 　　　　　　 　 　 　 　 /　／　 /　　　　　　　　　 ', 　 i　　　';::::',　　 i
+		PRINTL 　　　　　　　　　　　　i ./ }　,　}　i i　ハ　 }　i　 i　.}　 |// 　 }:::::', 　 }
+		PRINTL 　　　　　　　　　　　　j/　j /　.| _!_|_.{　} /　_|__ | !i|　 |/ 　　,::::::::',　 |
+		PRINTL 　　　　　　　　　　　　　 / { 　 ! .ﾄ{ヽ!｀j/} ´ハ! j从｀　! 　　∧::::::::',　!
+		PRINTL 　　　　　 　 　 　 　 　 /　ﾊ　 | i{ ｨfﾐ､　.j/ ,ィf 弐ﾐ､ .ﾄ､　 八:＼:::::; |
+		PRINTL 　　　　　　　　　　　　/／　ﾊ .{从 ﾋｿ　　　　Vzﾂ }　 |　}. '| ';::::::{＼}
+		PRINTL 　　　　　　　　　　　　　　　　ヽ!| ﾊ// j 　 ／/／,:　 jィ　 .! ヽ::::!
+		PRINTL 　　　　　　　　　　　　　　　　　 | 八　　 ,__､　u. /　 /　　 :|　 .ゞ　　|
+		PRINTL 　　　　　　　　　　　　　　　　　 |　　＞ 　__　 .ィ.　 /　　　 | 　 　 　 !
+		PRINTL 　　　　　　　　　　　　　　　　　 |　i　 |　＿. } ./　 /{__　 　 !
+		PRINTL 　　　　　　　　　　　　　　　　　 |　| 　/ ,ｨ　　;　 /´ 　 ｀ヽ |　　　　 |
+		PRINTL 　　　　　　　　　　　　　　　　　 |　|　j /　 　 {　.′　　　　 |　　　　 |
+		PRINTL 　　　　　　　　　　　　　　　　　 |　| ／ 　 　 .ヽ{　 .　　　　}| 　 i
+		PRINTL 　　　　　　　　　　　　　　　　　 |.／　　　　　　　　i　　　　|| 　 |
+		PRINTL 　　　　　　　　　　　　　　　　r,.:'　　′ 　....　　 　 }　　 　 || 　 |　　i
+		PRINTL 　　　　　　　 　 　 　 　 　 　 Y　　 i　　.:r,ｫ.:;　 　 |＿＿__!|　　| 　 {
+		PRINTL 　　　　.＞-‐-＜　　　　　　　{　 　,:..　 ｀　 ´　 　 |--{{--}}　＿ _ _.|
+		PRINTL 　　　 /r-＜_,///≧ｬ--､　　ﾘ　　　　　　 　 　 　 }--||--||/r.､/}/}ﾊ-､
+		PRINTL 　　　乂ゝ---､///ﾉ/　　}￣,　　　 　 　 　 　 　 :/ｰt.ﾏ=ｧi//ｨ///!!ﾉィ{
+		PRINTL 　　　　 ｀''ｰ､　 ＼ヽ __ ノ　 i!　　　　　　　 　 　 ′　',　´ j/ノ ｰﾍｲ''⌒i
+		PRINTL 　　　　　　　 ＼　 ＼　　￣ }　　　　　 　 　 　 .{==≦ ´￣　　／　　　 |
+		PRINTL 　　　　　　　　　＼ 　 ー―-!　　　　 　 　 　 　 V　 ＿_ 彡 ´ i　 　 　 !
+		PRINTL 　　　　　　　　　 　 ｰt― --.}　　　　　　　　　 　 ∨　　　　　 .|　　　　.|
+		PRINTL 　　　　　　　　　　　　}　　　 | 　 i　　　　　　　　 　 ',　 　 　　 .|　　　　 !
+		PRINTL 　　　　　　　　　　　 ,　　　　i　　j　　　　　　　　　　 ヽ　 　 　 ﾉ　　　 /|
+		PRINTL 　　　 　 　 　 　 　 /　　　　′　　　　 　 　 　 　 　 　 ∨　　 {　　　 / .{
+		PRINTL 　　　　　　　　　　/　 |　　 .|　　　　　　 　 　 　 　 　 　 ∨　 _乙⌒/⌒
+		PRINTL 　 　 　 　 　 　 ∠__　j　 　 !　　　　　　　　 　 　 　 　 　 :,- ´
+		PRINTL 　　　　　　　　　　　乙,,＿ノ　　　　　　　　　　　　　 　 　 }
+		PRINTL 　　　　 　 　 　 　 　 　 ／　　　､　　　 　 .,′　 　　　　　,
+		PRINTL 　　　　　　　　　　　　,　　　　　　＼　､ 　/　　　 　 　 　 ′
+		PRINTL 　　　　　　　　　　　　　　 　 　 　 　 ｰ｀ｰi　　　　　　　　i
+		PRINTL 　　 　 　 　 　 　 ,ｨ 　 　 　 　 　 　 　 /´|　　　 　 　 　 .|
+		PRINTL 　　　　　　　　　/ 　 　 　 　 　 　 　 .ｲ　 !　　　　　　 　 |
+		PRINTL 　　 　 　 　 　 /　　　　　　　　　 ／　 　 |　　　　　　　　!
+	CASE 0
+		PRINTL 　　　　　　　　　　　　　　　 　 　 　 __＿
+		PRINTL 　　　　　　　　　　　　　　　 　 　 　 ⌒ヽ　＼　　 ＿＿
+		PRINTL 　　　　　　　　　　　　 　 　 　 ＞ -―--＼　',´　　　　　 ｀ ＜　　＿
+		PRINTL 　　　　　　　　　　　　 　 　 ／　 ＞ ´　　　　　　　　　　 ヽ　　ヾ:.､ 　 ｀ヽ
+		PRINTL 　　　　　　　　　　 　 　 　 '⌒／　／　　　　　　　　　ヽ　　',　　 ∨:.,
+		PRINTL 　　　　　 　 　 　 　 　 　 　 /　／　 /　　　　　　　　　 ', 　 i　　　';::::',　　 i
+		PRINTL 　　　　　　　　　　　　 　 　 i ./ }　,　}　i i　ハ　 }　i　 i　.}　 |// 　 }:::::', 　 }
+		PRINTL 　　　　　　　　　　　　 　 　 j/　j /　.| _!_|_.{　} /　_|__ | !i|　 |/ 　　,::::::::',　 |
+		PRINTL 　　　　　　　　　　　　 　 　 　 / { 　 ! .ﾄ{ヽ!｀j/} ´ハ! j从｀　! 　　∧::::::::',　!
+		PRINTL 　　　　 　 　 　 　 　 　 　 　 /　ﾊ　 | i{ ｨfﾐ､　.j/ ,ィf 弐ﾐ､ .ﾄ､　 八:＼:::::; |
+		PRINTL 　　　　　　　　　　　　 　 　 /／　ﾊ .{从 ﾋｿ　　　　Vzﾂ }　 |　}. '| ';::::::{＼}
+		PRINTL 　　　　　　　　　　　　　　　　 　 　 ヽ!| ﾊ// j 　 ／/／,:　 jィ　 .! ヽ::::!
+		PRINTL 　　　　　　　　　　　　　　　　 　 　 　 | 八 u　,__､　__／　 /W　 |　 .ゞ　　|
+		PRINTL 　　　　　　　　　　　　　　　　 　 　 　 |.　／ ￣　｀ヽ.___／ 　.i　 | 　 　 　 !
+		PRINTL 　　　　　　　　　　　　　　　　 　 　 　 |.,　　　　　　　 　 　 　 | 　!
+		PRINTL 　　　　　　　　　　　　　　　　　　　 　 ,　　　　　　　　 　 　 　 ',　|　　　　 |
+		PRINTL 　　　　　　　　　　　　　　　　　 　 　 ,　　　i　　　　　　i　 　 　 ',..|　　　　 |
+		PRINTL 　　　　　　　　　　　　　　 　 　 　 　 i　　　i 　 　 　 　 }　 　 　 .`| ､　 i　 |
+		PRINTL 　　　　　　　　　　　　　　　　　　 　 ,　　　ﾊ　　 　 　 /　　 　 　 .|　ヽ |　 |
+		PRINTL 　　　　　　　　　　　　　　　　　　　 ,　　／ .j　　　　　　　　　　/　|　　',.　 i
+		PRINTL 　　　　　　　　　　　　　　　　　　　,　　′　　　　　 　 　 　 　 {　 .|　　 i　 |
+		PRINTL 　　　　　　　　　　　　 　 　 　 　 /　　{　　　　　　　　　　　　　',　 V: 　}　 !
+		PRINTL 　　　　　　　　　　 　 　 　 　 　 , 　 　 ゝ　　　　　　 　 　 　 　 　 ∧　从　',
+		PRINTL 　　　　　　　　 　 　 　 　 　 　 /　 　 ′　　　　　　 /　　　　　　,　　ﾊ　　　',
+		PRINTL 　　　　　　　　 　 　 　 　 　 ,ィ　　　/　　　　　　　 .′　　　　　/　 ,　 }　 　 |
+		PRINTL 　　　　　　　　　　　　　　　/　　　 /　　　　 　 　 /　　　　　　/　　　　|　　　|
+		PRINTL 　　　　　 　 　 　 　 　 　 /　　 ＞ ´　　　　　　 /　　　　　　/　　'　　 | 　 　.!
+		PRINTL 　　　　　　　　　　　　　 / ＞ ´　　　　　　　　 /　　　　　　.'　　/　　　|　　 /
+		PRINTL 　　　　　　　　　　　　＞ ´　　　　　　　　　　　　　　　　　/　 ./　　 　 ,
+		PRINTL 　　　　　　　　　 ,　 ´　　　　　　 　 　 　 　 　 　 　 　 　 {　 /　　　　/　／
+		PRINTL 　　　　　　 　 ／　　　　　　　　 　 　 ',　　　　　　　　　　 , /　　　　/／
+		PRINTL 　　　　　　 ,　　　　　　　　　　　 　 　 !　　　　　　　　　　 ',
+		PRINTL 　 　 　 　 /　　　　　　　　　　　　　　　　　　　　　　　　　　,
+		PRINTL 　　　　　 '　　　　　　　　　　　　　　　　　　 　 　 　 　 　 　 ，
+		PRINTL 　　　　　i　　　　　　 　 　 　 　 　 　 /　　　　　　　　　　　　',
+		PRINTL 　　　　　{　　　　　　　　　　　　　　 /　　　　　　　　　　　　　',
+		PRINTL 　　　　　　　　 　 　 　 　 　 　 　 ノ!　　　　　　　　　 　 　 　 i
+		PRINTL 　　　　　i　　　　　　　　 ＿　 .ィ　　',　　　　　　　　　　　　　 }
+		PRINTL 　　　　　|　　　　　　　　　　 / ｀ー -ト　　　　　 　 　 　 　 　 !
+		PRINTL 　　　　　　　　　　　　 　 　 ,　　　 　 i　　　　　　　　　　　　　,
+		PRINTL 　　　　　 !　　　　　 　 　 ./　　　　　 |　　　　　　　　　 　 　 ，
+		PRINTL 　　　　　 i　　　　　　　　/　　　　　　 ，　　　　　　　　　　　,
+		PRINTL .　　 　 　 |　　　　　　　/　　　　　　　 ',　　　　　　　　　　 /
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CLOTH_INNERBREAK
+
+
+@KOJO_1712_BATTLE_CLOTH_INNERBREAK
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:4
+	CASE 3
+	CASE 2
+	CASE 1
+	CASE 0
+ENDSELECT
+SETFONT
+
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CLOTH_INNERBREAK
+
+@KOJO_フェイト_BATTLE_CLOTH_INNERBREAK
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_CLOTH_INNERBREAK
+ENDSELECT
+
+
+
+;================================================================================
+;【戦闘衣装_気力が尽きて変身が強制的に解けた】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_CHARA_TRANSRELEASE
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_TRANSRELEASE
+
+@KOJO_1712_BATTLE_CHARA_TRANSRELEASE
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_CHARA_TRANSRELEASE
+
+@KOJO_フェイト_BATTLE_CHARA_TRANSRELEASE
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_CHARA_TRANSRELEASE
+ENDSELECT
+
+
+
+;================================================================================
+;【戦闘衣装_触手拘束具を着せられた】
+;--------------------------------------------------
+@KOJO_1702_SUBEVENT_BATTLE_SETTENTACLECLOTH
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SUBEVENT_BATTLE_SETTENTACLECLOTH
+
+@KOJO_1712_SUBEVENT_BATTLE_SETTENTACLECLOTH
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SUBEVENT_BATTLE_SETTENTACLECLOTH
+
+@KOJO_フェイト_SUBEVENT_BATTLE_SETTENTACLECLOTH
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SUBEVENT_BATTLE_SETTENTACLECLOTH
+ENDSELECT
+
+
+
+;================================================================================
+;【戦闘衣装_触手拘束具による被姦】
+;--------------------------------------------------
+@KOJO_1702_SUBEVENT_BATTLE_ACTTENTACLECLOTH
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SUBEVENT_BATTLE_ACTTENTACLECLOTH
+
+@KOJO_1712_SUBEVENT_BATTLE_ACTTENTACLECLOTH
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SUBEVENT_BATTLE_ACTTENTACLECLOTH
+
+@KOJO_フェイト_SUBEVENT_BATTLE_ACTTENTACLECLOTH
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SUBEVENT_BATTLE_ACTTENTACLECLOTH
+ENDSELECT
+
+
+
+;================================================================================
+; 【"自慰_基本"】
+;================================================================================
+;【自慰_戦闘後自慰】
+;--------------------------------------------------
+@KOJO_1702_SELF_BATTLEEND
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SELF_BATTLEEND
+
+
+
+@KOJO_1712_SELF_BATTLEEND
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SELF_BATTLEEND
+
+
+
+@KOJO_フェイト_SELF_BATTLEEND
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SELF_BATTLEEND
+ENDSELECT
+
+
+
+;================================================================================
+;【自慰_普通の自慰】
+;--------------------------------------------------
+@KOJO_1702_SELF_N
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+		PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　　 ----　　 、
+		PRINTL 　　　　　 　 　 　 　 　 　 　 　 　 ___　／　　　　　　　　　＼
+		PRINTL 　　　　　　　　　　　　　　 　／｀/　　｀　　　　　　 　 　 　 　 -､＿／￣ ヽ
+		PRINTL 　　　　　　　　　　　　 　 ／　 /　　／　　　 　 　 　 　 　 　 　 V∧　　　 ‘，
+		PRINTL 　　　　　　　　　　　 　 /　　 //　/　/　/ // /　 ､ ｜ |　｜ヽ　V∧
+		PRINTL 　　　　　　　　 　 　 　 |　 ／/　/　 | l ｌ ｜l　!l |｀´|｜ |　｜ ｜ |//＼　　 |
+		PRINTL 　　　　　　　　 　 　 　 l／ ./　 .i　　| l ｌ ｜l　!l |　 |｜ |　｜ ｜ |////＼　|
+		PRINTL 　　　　　 　 　 　 -=≦ ___/　　 | 　 | l ｌ ∧l　!l |　 l､|_∧　|　｜ |＼////＼
+		PRINTL 　　　　　　 　 　 　 　 ／/l　 　l.| 　 |_l_l_l 斗'从|　 l// ｀l 7ー/　|//∧ー―‐
+		PRINTL .ヽ 　 　 　 　 　 　 ／///,|　　从　 .|从ｘ===ｘ 　 　ｘ====ｘl/　 .|///∧　 .|
+		PRINTL .　 ＼.　　　　　 ／ ＞イ　l　 /∧＼.!く 乂zソ　　　 乂zソノi　　 |////∧　|
+		PRINTL .　　　＼.　　　 　 　 　 |　.l .///∧从　｡ﾟ.:.:.:.:.:.:.:.:ｉ:.:.:.:.:.:.:ﾟ｡ /　　 |＼///∧.|　　　　　　　　　　　　　 　　＞
+		PRINTL 　　　 　 ＼　　　　　　 |　.l////| ﾍ　i_ﾍ　　　　　　　　　 /|　 　 |　 l＼//,＼　　　　　　　　　　＞　 ´
+		PRINTL . 　 　 　 　 ＼ 　 　 　 | .//／ //　＼.　｀ヽ　　´｀　 　イ./ 　 / |　 |　　￣￣　　　　　　 　 ／
+		PRINTL .　　　　　　 　 ＼　　 .//／　.//　　　　　　‘，≧≦　 / i 　 /　.|　 |　　　 |　　　　　　　 ／
+		PRINTL 　　 　 　 　 　 　 ＼ / 　 　 / .i　 　 　 　 　 } ￣ ＼ // l　∧　 |　 |　　　 |　 　 　 　 ／
+		PRINTL 　　　　　　　　 　 　 ＼ 　 ./　 ﾄ､　}　　　 　 ヽ　　　　　 l　i　l ./ ＼ 　 　 .|　　　　.／
+		PRINTL 　　　　　　　　　　　　　＼ i. 　 ', ヽ{　 　 　 　 ‘，　　 　 l /　l/　 　 ＼　　l　　 .／
+		PRINTL 　　　　 　 　 　 　 　 　 　 ＼ 　 ',　{　　　 　 　 ‘， 　　 ﾉ'　 　 ヽ　　　 ＼.|　／
+		PRINTL 　　　　　　　　　　 　 　 　 　 ＼. ',八　　　　　　 ‘，　ヽ　 　 　 　.:Y　　　 ／
+		PRINTL 　　　　　　　　　　　　　 　 　 　 ＼　‘，} 　 　 　 V　　 i　　　 　 (:ﾂ 　 ／
+		PRINTL 　　　　　　　　　　　　　　　　　　　‘，　'{　　　　　 ＼　,　　　　 　 / ／
+		PRINTL 　　　　　　　　　 　 　 　 　 　 　 　 ‘， .{　　　　　　　〈　　　ｰ　イ /
+		PRINTL 　　　　　　　　　　　　　　　　　 　 　 ‘，{　　　　　　　 ‘， 　 　 〈./
+		PRINTL 　　　　　　　　　　　　　　　　　　　　　‘，､　 　 　 　 　 ‘，　 　 /
+		PRINTL 　　　　　　　　　　　 　 　 　 　 　 　 　 ‘，ﾍ 　 /　　 　 ｀　､　./
+		PRINTL 　　　　　　　　　　　　　　　 　 　 　 　 　 ヽ　V　　　　　　　 ＼
+		PRINTL ∧　　　　　　　　　　　　　　　　　　　 　 　 　 {　　　　　　　＼ ‘，　　　　　　　　　　　　　　　　　　　　　_／
+		PRINTL ..∧　　　　　　　　　　　　　　　　　　　　　　 /　/ |　 |　 /＼　ヽ }　　　　　　　　　　　　　　　　　　　__(___ ﾉ
+		PRINTL / ∧　　　　　　　　　　　　　　　　　　　　　〈　〈　.|　 |　.{ {i }.ヽ　}　　　　　　　　　　　　　　　　　　 (＿_ ﾉ
+		PRINTL ../ ∧　　　　　　　　　　　　 　 　 　 　 　 　 ＼ ヽ|　 |　.{':八ヽi　}　　　　　　　　　　　　　　　　　 (￣ヽ}
+		PRINTL 　/　 ＼　　　　　　　　　　　　　　　　　　 　 　 ヽ」､ ‘， }::i!.:ヽｌノ　|　　　　　　　　　　　　　　 (￣＼ー'
+		PRINTL .　　　 　＼　　　　　　　　　　　　　　　　 　 　 　 　 ＼〉_}:.:.:.:.}:.:.}　,　　　　　　 　 　 　 　 　 　 ＼_ ﾉ
+		PRINTL .　　　　　　＼　　　　　　　　　　　　 　 　 　 　 　 {　 乂(.:kっ;:.:/ /　　　　　　　　　　　　　 　 /
+		PRINTL 　　　　　　 　 ＼　　　　　　　　　　　　　　　　 　 ‘，　 ヽ:.:.::// /　　 　 　 　 　 　 　 　 　 ／
+		PRINTL 　　　　　　　　　 ＼　　　　　 　 　 　 　 　 　 　 　 ‘，　　V_/ /　　　　　　　　　　 　 　 ／
+		PRINTL 　　　　　　　　　　　＼ 　　　　　　　　　　　　　　　 　 　 　 ／　　 　 　 　 　 　 　 　 ／
+		PRINTL .　　　　　　 　 　 　 　 ＼　　　　　　　　　 　 　 　 　 )ｋ　 　 　 　 　 　 　 　 　 　 ／
+		PRINTL 　　　　　　　　　　　　　　≧=---------------=≦＼　　　　　 　 　 　 　　　＜
+		PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　　　 　 　 　 ≧=--------=≦
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SELF_N
+
+
+
+@KOJO_1712_SELF_N
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+
+		PRINTL 　　　　　　　　　　　　　　　　　 　 　 　 　 　 　 _ ,　 ......　 、_
+		PRINTL 　　　　　　　 　 　 　 　 　 _,..　 -- 　、　, イ ´　　　　　 ／_　 '.,ミ、
+		PRINTL 　　　 　 　 　 　 　 　 ／´　　_ ..　__＿｀ヽ　　　　　　　´　´　 ', ',　｀ヽ
+		PRINTL .　　　　　　　 　 　 ／, ィ ´≧´　　　　 , -　　　 　 　 、　　　　! i　　 ｀i
+		PRINTL 　　 　 　 　 　 　 〃´　　}´　　／/　 /　　.i　 ヽ　 　 ﾑ　　 　 .! i　 　 .ｌ
+		PRINTL 　　　　　 　 　 　 　 　 　 ｌ　 /　 { 　 ｌ　 　.ｌ　　 ',　　　.}、　　　! i　　　.ｌ
+		PRINTL 　　　　　　　　　　　 　 　 } /　　,i 　 i　 　 i　　.∧　　 .l ヽ　　 ! i　　　 l,
+		PRINTL 　　　　　 　 　 　 　 　 　 ｊ.,'　　,' i 　 i i、　i、　.{　'.,} i　l　ヽ 　 ﾘl　　　 ｌi
+		PRINTL 　　 　 　 　 　 　 　 　 　 ｌ.l　　.ｌ　i 　 iヾ, .i_ヽ　l　 ﾉﾉ,　!'´￣.} ﾉ　　　　ｌ!
+		PRINTL 　　　　　　　　　　　　　 / ｌ 　 ﾊ .ﾄ,　 i ヾﾘ __ヾ　 /　}/ 　　/／ / /.　 l.i
+		PRINTL 　　　　　　　　　　 　 ／ .ﾊ　 .l .i .ﾊ　 l.,ｨ行::心ゝ　 /　 .ｨ云ミx/ /　　.ｌ.i
+		PRINTL 　　 　 　 　 　 　 　 彡イ　',　.{　i i. ヽ .{　込:::ｼ..　　　　　::::::: ゞイ　i　 ｌ i
+		PRINTL 　　　　　　　　　 　 　 　 　 ',　ﾊ ヾ　 ﾄ,.iミｔ-:::::::　　 '　　　　　 ./l　i　 ｌ. ﾑ
+		PRINTL `　 ､　 　 　 　 　 　 　 　 　 ', { i＼　 ﾑヾ∧　　　　 _　,　　 .／i l　i　 ｌ　 ﾑ
+		PRINTL 　　　 `　､　　　　　　　　　,.､_,.　-――――-　、 　 　 　 イlマi.l　ｌ..ﾞ,.　-――― - ､　　　_
+		PRINTL 　　　　 　 `　､　　　　　 〈: :ﾉ: : :　　　　　　　　　＞――-､. ｌ..ﾞ,.　 '´　　　　　　　　　　｀`´: 〉
+		PRINTL 　　　　　　　　 `　､　　　冫: : :　　 　 　 　 　 ／　　　　　 　＜ ＿＿　　　　　　 　 　 : : :`〈／
+		PRINTL 　　　　　　　　　　　`　､/　　　　　　　　　 ／　　　　　　 　 　　 ＼　 `ー ､　　　　 　 　 ／
+		PRINTL 　　　　　　　　　　 　 　 `　､　　　　 　 ／/　/　 　 /　　　　　　　　Ｌ＿＿_）　　　 　 ／
+		PRINTL 　　　　　　　　　　　 　 　 　 ＼　　 ／　/　i　　　 /　　　　　　　 〈　　 　 　 `ー―‐ '
+		PRINTL 　　　　　　　　　　　　　　　　　 `＜＿__|　 |　　　/　　 /⌒ヽ.　　　､
+		PRINTL 　　　　　　　　　　　　　 　 　 　 　 　 　 |　 |　　/　　 /　八　ヽ　　 ＼
+		PRINTL 　　　　　　　　　 　 　 　 　 　 　 　 　 　 |　 |　/　　 /　/ : ＼　＼　　 ＼
+		PRINTL 　　　　　　　　　　　　　　　　　　　　　　　￣|./　　 /　/,. 公､:＼　＼　　 ＼-､
+		PRINTL 　　　　　　　　　　　　　　　　　　　　　 　 ,.-/　　 /　／,.(⌒)､＼＼　＼　　 ＼＼　　 　 　 　 　 ／
+		PRINTL 　　　　　　　　　　　　　 　 　 　 　 　 　 / /　　 /／／: :`ーﾞ :＼＼＼　＼　　 ヽ.＼　　　　　／
+		PRINTL 　　　　　　　　　　　　　　　　　　　　 　 { 〈　　 //／: : :,:-(:o)- ､: ＼: : ＼　＼＿ﾉ　}　　　／
+		PRINTL 　　　　　　　　　　 　 　 　 　 　 　 　 　 ヽ　ーく {: : : :/: : : : : : : ヽ: : ヽ: : :} 　　 /　/ 　 /
+		PRINTL 　　　　　　　　　　　　　 　 　 ＼　 　 　 　 ＼　 八: : :{: :/´⌒ヽ: : }: : : }: :/　 ／／　　/
+		PRINTL 　　　　　　　　　　　　　　　　　　＼　 　 　 　 ＼　 ヽ: :`{{:::::::::::::}}/: :／／ ／／　 　 /
+		PRINTL 　　　　　　　　　　　　　　　　　　　 ＼　　　　　　＼　＼:＞―＜ ／／ ／　　 　 　 /
+		PRINTL 　　　　　　　　　　　　　　　　　　　　　＼　　　　　　＼　＼　　　　　 ／　　　　　　/
+		PRINTL 　　　　　　　　　　　　　　　　　　 　 　 　 ` ､ 　 　 　 　 　 ＼　　 ／
+		PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　　　 　 　 　 　 　 `､ /
+		PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　 ヽ ノ
+		PRINTL 　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　フﾊく
+		PRINTL 　　　　　　　　 `ー ´　　　　　　　　　　　　　　　　　　　　　　　 人
+		PRINTL 　　　　　　.、　　　　　　　　　　　　　　　　　　　　　　ﾉ　　　　 ,"　 ヽ　　　　　　　　　　　　　　　　　_ .. －´
+		PRINTL 　　　　　　.　｀－ ... _　　　　　　　　　　　　　　　　 J　　 　／　　 　 ｀ ｰ ..　_　　　　　　_　..　－ ´
+		PRINTL 　　　　　　.　　　　　　｀ ｰ ...　　　　　　　　　　　　 　 .. ‐ ´　　　　　　　　　　　 ｀ ￣ ´
+		PRINTL 　　　　　　　　　　　　　　　　 ｀ ｰ　..　_ ＿ ..... －‐ ´
+
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SELF_N
+
+
+
+@KOJO_フェイト_SELF_N
+
+
+
+
+;================================================================================
+;【自慰_胸自慰】
+;--------------------------------------------------
+@KOJO_1702_SELF_B
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SELF_B
+
+
+
+@KOJO_1712_SELF_B
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SELF_B
+
+
+
+@KOJO_フェイト_SELF_B
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SELF_B
+ENDSELECT
+
+
+
+;================================================================================
+;【自慰_アナニー】
+;--------------------------------------------------
+@KOJO_1702_SELF_A
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SELF_A
+ENDSELECT
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SELF_A
+
+
+
+@KOJO_1712_SELF_A
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+		PRINTL 　　　　　　　　　　　　　　　　　 _ ,.z =.-,、 _　　　 ＿
+		PRINTL 　　　　　　　　　　　　　　 ＞=´　　　　' ' : : ミi<=-＿~:＼
+		PRINTL 　　 　 　 　 　 　 　 　 v´　　　　　　　 　 　 ヾlヾ; :　　`=、
+		PRINTL 　　　　　　　　,.／=ミ´　　　ヽ　ヾ　ヾ　ヾ　 　 :l:l::ヾ,ヾ.,_　　＼
+		PRINTL 　　　 　 　 　 　 ノ　,.　. ;　 i:ヾﾍ　ヾ　ヾヾ: : 　 :l: l::::ヾ:、:_`　　＼
+		PRINTL 　　　　　　　_ ,〆'~∧:| :| : .:l:　ヾ,'}~V川;_}: j:}: . :}:l: ヾ,.=- =..,_. 、 ＼
+		PRINTL 　　　　　　　　　 ,;´:i.| :l :i_:ｻl,　 '}; ﾁi主ﾋ}"j:|:|: :|::.f´　　　　　｀ ─-: :＿＿
+		PRINTL 　　　　　　　　　　{:,' :l :ﾍ:lj:r≧,　　 弋汐' |:j: :j:j}ﾞi　　 　　　　　　　　　　　　￣￣＝- ...,,＿
+		PRINTL 　　　　　　　　　　!'!; :.:ヾ∧l.ﾔﾑ,　　　/|/|/j:': //i　　　　　　　　　　　　　　　,.｡・'´￣
+		PRINTL 　 　 　 　 　 　 　 '`ﾍミヾﾐﾍ`/|/`　　 　 . :/:..f´　`　　　　　　＿　　　　　／
+		PRINTL 　　　　　　　　　　　　 `!`j:};:ヾ,、　　` 　. :._´_ﾘ　　　　　＞'´::::::::i,￣＝／
+		PRINTL 　　　　　　　　　　　　 　 　 |　:l'`ヾ; _..ﾞ,｡･´　　　　　　 .:.:.:.:.:.:.::::::::ｨ‐''´　　　　　　　　　_,.｡・´
+		PRINTL 　　　　　　　　　　　　 　 　 |　:.i......／´　　　　　　　　 :.:.:.:.:.:.:.:.:.Ⅴ　　　　　　,, =-‐ ''´
+		PRINTL 　　　　　　　　　　　 　 　 x ' ﾂ..ﾞ/　　＿　　　　　　　 .:.:.:.:.:.:.:.:.::,’　　　　　l'´: /
+		PRINTL 　　　　　　　　　　 　 ／:i':　＞' ´￣　　 ￣｀`'・ ､　　ﾘ:.:.:.:.:::::.::::i　　　　　　i: /
+		PRINTL 　 　 　 　 　 　 　 　 i:....,｡・´　　　　　　　　　　　　｀ヽ、:.:.:.:::::::::,’　　　　　 l: :l
+		PRINTL 　　　　 　 　 　 　 　 ／　　　　　　 　 　 　 　 　 　 　 ｀､:.:_::::::ｲ　　　　　　!: : i
+		PRINTL 　　　　　　　　　　／　　　　　　 　 　 　 　 　 　 　 　 　 `　 `7　　　　　　/: : ﾄゝ_,
+		PRINTL 　　　　　　　　　,ｲ　　　　　　　　　　　　　　　　　 　 　 　 　 〈　　、　　、 ｀` ´r〃´
+		PRINTL 　　　　　　　　/　　　　　　　　　　　　　　　　　　　　　　 .;　　ヽ',　 ヽ、 `vーr='.l:,:、
+		PRINTL 　　　　　　　/:　　　　　　　　　　　　　　 　 　 　 　 　 ノ;:'　_,=''i ',　　 >､_i|_/＼....l:`、
+		PRINTL 　　　　　　/:.:　　　　　　　　　　　　　　　　　　　　　rfﾐ}='"´　 ‘ｰ´‐'’　 ||　　 `､..: |:.:`x:
+		PRINTL 　　　　　 /:.:.　　　　　　　　　　　　　　　　　　　 ...::{uノ　　 　 　 　 　 　 ||　　 　‘,l: |' : :|＼
+		PRINTL 　　　　　 i:.:.　　　　　　　　　　　　　　　　　　..:.:.:.:./;i:.:.　　　　　 　 　 ,.-=i|=,､　　 ',
+		PRINTL 　　　　　 l:.:.:　　　　　　　　　　　　　　　　..:.:.:.:._ノilki:.:.:..　 　 　 　 　 f/////ﾊ.　　 i
+		PRINTL .　　　　　l:.:.:.:..　　　　　　 　 　 　 　 　 　 :.:.r: :.:ilkﾘi;l:.:.:.:...　　　　　　ﾏ/////ﾘ　 　 l
+		PRINTL .　　　　　l:.:.:.:.:.:　　　　　　　　　　　　　　..:.:..i;i;:,;likﾘ/:.:.:.:.:.:... 　　　　　｀ｰ=-'’　　　 .l
+		PRINTL .　　　　　l:.:.:.:.:.:.:. 　 　 　 　 　 　 　 　 ...:.:.:.:.ilk|ikli/:.:.:.:.:.:.:.:.:..　　　　　　　　　　　　 i
+		PRINTL 　　　　　 l:.:.:.:.:.:.:.　　　　　　　　　　 ...:.:.:.:.:.:.:.i￣7::.:.:.:.:.:.:.:.:.:.:..　　　　 　 　 　 　 　 ,’
+		PRINTL 　　　　　 l:.:.:.:.:.:.:'　　　　　　　　　　　　｀:.:.:.:.:.i /::.:.:.:.:.:.:.:.:.:.:.:.:.:　　　　　　　　　　　,’
+		PRINTL 　　　　　 l:.:.:.:.:.:'　　　　　　　　　　　　　 ｀:.:.:.:.l´:.:.:.:.:.:.:.:.:.:.:.:.:.:　　　　　　 　 　 　 ,’
+		PRINTL .　　　　　 l:.:.:.:.'　　　　　　　　　　　　　　 .:.:.:.:.:i:.:.:.:.:.:.:.:.:.:.:.:.:.::'　　　　　　　　　　,'
+		PRINTL 　　　　　　l:.:.:.'　　　　　　　　　　　　　　 .:.:.:.:.:.l:.:.:.:.:.:.:.:.:.:.:.:.:.'　　 　 　 　 　 　 /
+		PRINTL .　　　　 　 l:.:.:.:　　　　　　　　　　　　　 .:.:.:.:.:.:.:i:.:.:.:.:.:.:.:.:.:.:.'　　　　　 　 　 　 /
+		PRINTL 　　　　　　 l:.:.:..　　　　　　　　　　　　..:.:.:.:.:.:.:.:.l:.:.:.:.:.:.:.:.:.:'　　　　　　　　　 ,｡'
+		PRINTL 　　　　　　　　　　　　　　 　 　 　 　 :.:.:.:.:.:.:.:.:.:i:.:.:.:.:.:.:.:'　　　 　 　 　 　 ,｡'
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SELF_A
+
+
+
+@KOJO_フェイト_SELF_A
+
+
+
+
+;================================================================================
+; 【"心境_基本"】
+;================================================================================
+;【心境_倒錯】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_SHINKYOU_CHANGE_TOUSAKU
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_SHINKYOU_CHANGE_TOUSAKU
+
+@KOJO_1712_BATTLE_SHINKYOU_CHANGE_TOUSAKU
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_SHINKYOU_CHANGE_TOUSAKU
+
+@KOJO_フェイト_BATTLE_SHINKYOU_CHANGE_TOUSAKU
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_SHINKYOU_CHANGE_TOUSAKU
+ENDSELECT
+
+
+
+;================================================================================
+;【心境_怒り】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_SHINKYOU_CHANGE_IKARI
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_SHINKYOU_CHANGE_IKARI
+
+@KOJO_1712_BATTLE_SHINKYOU_CHANGE_IKARI
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_SHINKYOU_CHANGE_IKARI
+
+@KOJO_フェイト_BATTLE_SHINKYOU_CHANGE_IKARI
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_SHINKYOU_CHANGE_IKARI
+ENDSELECT
+
+
+
+;================================================================================
+;【心境_諦観】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_SHINKYOU_CHANGE_TEIKAN
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_SHINKYOU_CHANGE_TEIKAN
+
+@KOJO_1712_BATTLE_SHINKYOU_CHANGE_TEIKAN
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_SHINKYOU_CHANGE_TEIKAN
+
+@KOJO_フェイト_BATTLE_SHINKYOU_CHANGE_TEIKAN
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_SHINKYOU_CHANGE_TEIKAN
+ENDSELECT
+
+
+
+;================================================================================
+;【心境_冷静】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_SHINKYOU_CHANGE_REISEI
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_SHINKYOU_CHANGE_REISEI
+
+@KOJO_1712_BATTLE_SHINKYOU_CHANGE_REISEI
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_SHINKYOU_CHANGE_REISEI
+
+@KOJO_フェイト_BATTLE_SHINKYOU_CHANGE_REISEI
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_SHINKYOU_CHANGE_REISEI
+ENDSELECT
+
+
+
+;================================================================================
+;【心境_動揺】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_SHINKYOU_CHANGE_DOUYOU
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_SHINKYOU_CHANGE_DOUYOU
+
+@KOJO_1712_BATTLE_SHINKYOU_CHANGE_DOUYOU
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_SHINKYOU_CHANGE_DOUYOU
+
+@KOJO_フェイト_BATTLE_SHINKYOU_CHANGE_DOUYOU
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_SHINKYOU_CHANGE_DOUYOU
+ENDSELECT
+
+
+
+;================================================================================
+;【心境_高揚】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_SHINKYOU_CHANGE_KOUYOU
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_SHINKYOU_CHANGE_KOUYOU
+
+@KOJO_1712_BATTLE_SHINKYOU_CHANGE_KOUYOU
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_SHINKYOU_CHANGE_KOUYOU
+
+@KOJO_フェイト_BATTLE_SHINKYOU_CHANGE_KOUYOU
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_SHINKYOU_CHANGE_KOUYOU
+ENDSELECT
+
+
+
+;================================================================================
+;【心境_消沈】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_SHINKYOU_CHANGE_SYOUTIN
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_SHINKYOU_CHANGE_SYOUTIN
+
+@KOJO_1712_BATTLE_SHINKYOU_CHANGE_SYOUTIN
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_SHINKYOU_CHANGE_SYOUTIN
+
+@KOJO_フェイト_BATTLE_SHINKYOU_CHANGE_SYOUTIN
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_SHINKYOU_CHANGE_SYOUTIN
+ENDSELECT
+
+
+
+;================================================================================
+; 【"怯み_基本"】
+;================================================================================
+;【怯み_触手の虜で体が竦む】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_DISACTION_TORIKO
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_DISACTION_TORIKO
+
+@KOJO_1712_BATTLE_DISACTION_TORIKO
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_DISACTION_TORIKO
+
+@KOJO_フェイト_BATTLE_DISACTION_TORIKO
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_DISACTION_TORIKO
+ENDSELECT
+
+
+
+;================================================================================
+;【怯み_快楽で体が竦む】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_DISACTION_KAIRAKU
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_DISACTION_KAIRAKU
+
+@KOJO_1712_BATTLE_DISACTION_KAIRAKU
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_DISACTION_KAIRAKU
+
+@KOJO_フェイト_BATTLE_DISACTION_KAIRAKU
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_DISACTION_KAIRAKU
+ENDSELECT
+
+
+
+;================================================================================
+;【怯み_苦痛で体が竦む】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_DISACTION_KUTUU
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_DISACTION_KUTUU
+
+@KOJO_1712_BATTLE_DISACTION_KUTUU
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_DISACTION_KUTUU
+
+@KOJO_フェイト_BATTLE_DISACTION_KUTUU
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_DISACTION_KUTUU
+ENDSELECT
+
+
+
+;================================================================================
+;【怯み_屈辱で体が竦む】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_DISACTION_KUTUZYOKU
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_DISACTION_KUTUZYOKU
+
+@KOJO_1712_BATTLE_DISACTION_KUTUZYOKU
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_DISACTION_KUTUZYOKU
+
+@KOJO_フェイト_BATTLE_DISACTION_KUTUZYOKU
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_DISACTION_KUTUZYOKU
+ENDSELECT
+
+
+
+;================================================================================
+;【怯み_恐怖で体が竦む】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_DISACTION_KYOUHU
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_DISACTION_KYOUHU
+
+@KOJO_1712_BATTLE_DISACTION_KYOUHU
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_DISACTION_KYOUHU
+
+@KOJO_フェイト_BATTLE_DISACTION_KYOUHU
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_DISACTION_KYOUHU
+ENDSELECT
+
+
+
+;================================================================================
+;【怯み_恥辱で体が竦む】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_DISACTION_TIZYOKU
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_DISACTION_TIZYOKU
+
+@KOJO_1712_BATTLE_DISACTION_TIZYOKU
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_DISACTION_TIZYOKU
+
+@KOJO_フェイト_BATTLE_DISACTION_TIZYOKU
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_DISACTION_TIZYOKU
+ENDSELECT
+
+
+
+;================================================================================
+;【怯み_寄生の影響で体が竦む】
+;--------------------------------------------------
+@KOJO_1702_BATTLE_DISACTION_PARASITE
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_DISACTION_PARASITE
+
+@KOJO_1712_BATTLE_DISACTION_PARASITE
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_BATTLE_DISACTION_PARASITE
+
+@KOJO_フェイト_BATTLE_DISACTION_PARASITE
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_BATTLE_DISACTION_PARASITE
+ENDSELECT
+
+
+
+;================================================================================
+; 【"キャラの射精・噴乳_基本"】
+;================================================================================
+;【キャラの射精・噴乳_キャラが射精】
+;--------------------------------------------------
+@KOJO_1702_SEX_CHARA_SYASEI
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_CHARA_SYASEI
+
+@KOJO_1712_SEX_CHARA_SYASEI
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_CHARA_SYASEI
+
+@KOJO_フェイト_SEX_CHARA_SYASEI
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_CHARA_SYASEI
+ENDSELECT
+
+
+
+;================================================================================
+;【キャラの射精・噴乳_キャラが大量射精】
+;--------------------------------------------------
+@KOJO_1702_SEX_CHARA_SYASEI_HI
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_CHARA_SYASEI_HI
+
+@KOJO_1712_SEX_CHARA_SYASEI_HI
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_CHARA_SYASEI_HI
+
+@KOJO_フェイト_SEX_CHARA_SYASEI_HI
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_CHARA_SYASEI_HI
+ENDSELECT
+
+
+
+;================================================================================
+;【キャラの射精・噴乳_キャラが噴乳】
+;--------------------------------------------------
+@KOJO_1702_SEX_CHARA_HUNNYU
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_CHARA_HUNNYU
+
+@KOJO_1712_SEX_CHARA_HUNNYU
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_CHARA_HUNNYU
+
+@KOJO_フェイト_SEX_CHARA_HUNNYU
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_CHARA_HUNNYU
+ENDSELECT
+
+
+
+;================================================================================
+;【キャラの射精・噴乳_キャラが大量噴乳】
+;--------------------------------------------------
+@KOJO_1702_SEX_CHARA_HUNNYU_HI
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_CHARA_HUNNYU_HI
+
+@KOJO_1712_SEX_CHARA_HUNNYU_HI
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_CHARA_HUNNYU_HI
+
+@KOJO_フェイト_SEX_CHARA_HUNNYU_HI
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_CHARA_HUNNYU_HI
+ENDSELECT
+
+
+
+;================================================================================
+; 【"触手射精_基本"】
+;================================================================================
+;【触手射精_膣に通常射精】
+;--------------------------------------------------
+@KOJO_1702_SEX_TENTACLE_SYASEI_VAGINA
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_TENTACLE_SYASEI_VAGINA
+
+@KOJO_1712_SEX_TENTACLE_SYASEI_VAGINA
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_TENTACLE_SYASEI_VAGINA
+
+@KOJO_フェイト_SEX_TENTACLE_SYASEI_VAGINA
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_TENTACLE_SYASEI_VAGINA
+ENDSELECT
+
+
+
+;================================================================================
+;【触手射精_膣に大量射精】
+;--------------------------------------------------
+@KOJO_1702_SEX_TENTACLE_SYASEI_VAGINA_HI
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_TENTACLE_SYASEI_VAGINA_HI
+
+@KOJO_1712_SEX_TENTACLE_SYASEI_VAGINA_HI
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_TENTACLE_SYASEI_VAGINA_HI
+
+@KOJO_フェイト_SEX_TENTACLE_SYASEI_VAGINA_HI
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_TENTACLE_SYASEI_VAGINA_HI
+ENDSELECT
+
+
+
+;================================================================================
+;【触手射精_アナルに通常射精】
+;--------------------------------------------------
+@KOJO_1702_SEX_TENTACLE_SYASEI_ANAL
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_TENTACLE_SYASEI_ANAL
+
+@KOJO_1712_SEX_TENTACLE_SYASEI_ANAL
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_TENTACLE_SYASEI_ANAL
+
+@KOJO_フェイト_SEX_TENTACLE_SYASEI_ANAL
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_TENTACLE_SYASEI_ANAL
+ENDSELECT
+
+
+
+;================================================================================
+;【触手射精_アナルに大量射精】
+;--------------------------------------------------
+@KOJO_1702_SEX_TENTACLE_SYASEI_ANAL_HI
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_TENTACLE_SYASEI_ANAL_HI
+
+@KOJO_1712_SEX_TENTACLE_SYASEI_ANAL_HI
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_TENTACLE_SYASEI_ANAL_HI
+
+@KOJO_フェイト_SEX_TENTACLE_SYASEI_ANAL_HI
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_TENTACLE_SYASEI_ANAL_HI
+ENDSELECT
+
+
+
+;================================================================================
+;【触手射精_手に通常射精】
+;--------------------------------------------------
+@KOJO_1702_SEX_TENTACLE_SYASEI_HAND
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_TENTACLE_SYASEI_HAND
+
+@KOJO_1712_SEX_TENTACLE_SYASEI_HAND
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_TENTACLE_SYASEI_HAND
+
+@KOJO_フェイト_SEX_TENTACLE_SYASEI_HAND
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_TENTACLE_SYASEI_HAND
+ENDSELECT
+
+
+
+;================================================================================
+;【触手射精_手に大量射精】
+;--------------------------------------------------
+@KOJO_1702_SEX_TENTACLE_SYASEI_HAND_HI
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_TENTACLE_SYASEI_HAND_HI
+
+@KOJO_1712_SEX_TENTACLE_SYASEI_HAND_HI
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_TENTACLE_SYASEI_HAND_HI
+
+@KOJO_フェイト_SEX_TENTACLE_SYASEI_HAND_HI
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_TENTACLE_SYASEI_HAND_HI
+ENDSELECT
+
+
+
+;================================================================================
+;【触手射精_口内に通常射精】
+;--------------------------------------------------
+@KOJO_1702_SEX_TENTACLE_SYASEI_MOUTH
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_TENTACLE_SYASEI_MOUTH
+
+@KOJO_1712_SEX_TENTACLE_SYASEI_MOUTH
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_TENTACLE_SYASEI_MOUTH
+
+@KOJO_フェイト_SEX_TENTACLE_SYASEI_MOUTH
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_TENTACLE_SYASEI_MOUTH
+ENDSELECT
+
+
+
+;================================================================================
+;【触手射精_口内に大量射精】
+;--------------------------------------------------
+@KOJO_1702_SEX_TENTACLE_SYASEI_MOUTH_HI
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_TENTACLE_SYASEI_MOUTH_HI
+
+@KOJO_1712_SEX_TENTACLE_SYASEI_MOUTH_HI
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_TENTACLE_SYASEI_MOUTH_HI
+
+@KOJO_フェイト_SEX_TENTACLE_SYASEI_MOUTH_HI
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_TENTACLE_SYASEI_MOUTH_HI
+ENDSELECT
+
+
+
+;================================================================================
+;【触手射精_胸に通常射精】
+;--------------------------------------------------
+@KOJO_1702_SEX_TENTACLE_SYASEI_BUST
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_TENTACLE_SYASEI_BUST
+
+@KOJO_1712_SEX_TENTACLE_SYASEI_BUST
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_TENTACLE_SYASEI_BUST
+
+@KOJO_フェイト_SEX_TENTACLE_SYASEI_BUST
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_TENTACLE_SYASEI_BUST
+ENDSELECT
+
+
+
+;================================================================================
+;【触手射精_胸に大量射精】
+;--------------------------------------------------
+@KOJO_1702_SEX_TENTACLE_SYASEI_BUST_HI
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_TENTACLE_SYASEI_BUST_HI
+
+@KOJO_1712_SEX_TENTACLE_SYASEI_BUST_HI
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_TENTACLE_SYASEI_BUST_HI
+
+@KOJO_フェイト_SEX_TENTACLE_SYASEI_BUST_HI
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_TENTACLE_SYASEI_BUST_HI
+ENDSELECT
+
+
+
+;================================================================================
+; 【"戦闘の性コマンド_基本"】
+;================================================================================
+;【戦闘の性コマンド_C攻め弱】
+;--------------------------------------------------
+@KOJO_1702_SEX_COM0
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_COM0
+
+@KOJO_1712_SEX_COM0
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_COM0
+
+@KOJO_フェイト_SEX_COM0
+;ふたなりの場合はペニスを弄られている扱いになります。
+IF TALENT:ふたなり > 0 
+	SELECTCASE RAND:1 
+		;デフォルトAA口上呼び出し
+		CASE 0 
+			CALLFORM KOJO_998_SEX_COM0
+	ENDSELECT
+;ふたなりではない場合、クリトリスを弄られている
+ELSE
+	SELECTCASE RAND:1 
+		;デフォルトAA口上呼び出し
+		CASE 0 
+			CALLFORM KOJO_998_SEX_COM0
+	ENDSELECT
+ENDIF
+
+
+
+;================================================================================
+;【戦闘の性コマンド_C攻め強】
+;--------------------------------------------------
+@KOJO_1702_SEX_COM1
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_COM1
+
+@KOJO_1712_SEX_COM1
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_COM1
+
+@KOJO_フェイト_SEX_COM1
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_COM1
+ENDSELECT
+
+
+
+;================================================================================
+;【戦闘の性コマンド_C攻めSP】
+;--------------------------------------------------
+@KOJO_1702_SEX_SPCOM0
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_SPCOM0
+
+@KOJO_1712_SEX_SPCOM0
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_SPCOM0
+
+@KOJO_フェイト_SEX_SPCOM0
+;媚薬を注入されて、感度を高められたまま放置されたタイミングで表示されます。  
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_SPCOM0
+ENDSELECT
+
+
+
+;================================================================================
+;【戦闘の性コマンド_C触手専用SP】
+;--------------------------------------------------
+@KOJO_1702_SEX_SPCOM8
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_SPCOM8
+
+@KOJO_1712_SEX_SPCOM8
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_SPCOM8
+
+@KOJO_フェイト_SEX_SPCOM8
+;公開排尿なので、羞恥心を煽られる  
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_SPCOM8
+ENDSELECT
+
+
+
+;================================================================================
+;【戦闘の性コマンド_V攻め弱】
+;--------------------------------------------------
+@KOJO_1702_SEX_COM2
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_COM2
+
+@KOJO_1712_SEX_COM2
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_COM2
+
+@KOJO_フェイト_SEX_COM2
+;今にも犯されそうな状態です。  
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_COM2
+ENDSELECT
+
+
+
+;================================================================================
+;【戦闘の性コマンド_V攻め強】
+;--------------------------------------------------
+@KOJO_1702_SEX_COM3
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_COM3
+
+@KOJO_1712_SEX_COM3
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_COM3
+
+@KOJO_フェイト_SEX_COM3
+;TCVAR:2 == 体勢：Ｖ防御のときはＶに挿入されません。  
+;Ｖ感覚が0のときは苦痛が強く、Ｖ感覚が4以上なら強烈な快感を感じます。  
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_COM3
+ENDSELECT
+
+
+
+;================================================================================
+;【戦闘の性コマンド_V攻めSP】
+;--------------------------------------------------
+@KOJO_1702_SEX_SPCOM1
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_SPCOM1
+
+@KOJO_1712_SEX_SPCOM1
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_SPCOM1
+
+@KOJO_フェイト_SEX_SPCOM1
+;激しいピストンで子宮口を責められている場面です。  
+;「少女に似合わぬ獣のような喘ぎ声を上げ続けている・・・」に続く形になるため、  
+;快楽に翻弄されているような文にするのが良いでしょう。  
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_SPCOM1
+ENDSELECT
+
+
+
+;================================================================================
+;【戦闘の性コマンド_V触手専用SP】
+;--------------------------------------------------
+@KOJO_1702_SEX_SPCOM9
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_SPCOM9
+
+@KOJO_1712_SEX_SPCOM9
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_SPCOM9
+
+@KOJO_フェイト_SEX_SPCOM9
+;通常なら入らない極太性器による拡張責め、V拡張経験によって地の文変化  
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_SPCOM9
+ENDSELECT
+
+
+
+;================================================================================
+;【戦闘の性コマンド_A攻め弱】
+;--------------------------------------------------
+@KOJO_1702_SEX_COM4
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_COM4
+
+@KOJO_1712_SEX_COM4
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_COM4
+
+@KOJO_フェイト_SEX_COM4
+;軽いちょっかいを出されている段階なので、それほど危機感は感じていない場面です。  
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_COM4
+ENDSELECT
+
+
+
+;================================================================================
+;【戦闘の性コマンド_A攻め強】
+;--------------------------------------------------
+@KOJO_1702_SEX_COM5
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_COM5
+
+@KOJO_1712_SEX_COM5
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_COM5
+
+@KOJO_フェイト_SEX_COM5
+;A攻め弱とは一転して激しく犯されます。  
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_COM5
+ENDSELECT
+
+
+
+;================================================================================
+;【戦闘の性コマンド_A攻めSP】
+;--------------------------------------------------
+@KOJO_1702_SEX_SPCOM2
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_SPCOM2
+
+@KOJO_1712_SEX_SPCOM2
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_SPCOM2
+
+@KOJO_フェイト_SEX_SPCOM2
+;かなりハードなプレイで、アナルから入った触手が口から出て"貫通"します。  
+;地の文でもアヘ顔だったり白目を剥いて泡を吹いているので、相応の描写が必要です。  
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_SPCOM2
+ENDSELECT
+
+
+
+;================================================================================
+;【戦闘の性コマンド_A触手専用SP】
+;--------------------------------------------------
+@KOJO_1702_SEX_SPCOM10
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_SPCOM10
+
+@KOJO_1712_SEX_SPCOM10
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_SPCOM10
+
+@KOJO_フェイト_SEX_SPCOM10
+;不定形触手による疑似浣腸による拡張　拡張経験によって地の文変化  
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_SPCOM10
+ENDSELECT
+
+
+
+;================================================================================
+;【戦闘の性コマンド_B攻め弱】
+;--------------------------------------------------
+@KOJO_1702_SEX_COM6
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_COM6
+
+@KOJO_1712_SEX_COM6
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_COM6
+
+@KOJO_フェイト_SEX_COM6
+;胸を撫でられたり、乳首を引っ張られたりします。  
+;鬼畜度の低い愛撫です。  
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_COM6
+ENDSELECT
+
+
+
+;================================================================================
+;【戦闘の性コマンド_B攻め強】
+;--------------------------------------------------
+@KOJO_1702_SEX_COM7
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_COM7
+
+@KOJO_1712_SEX_COM7
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_COM7
+
+@KOJO_フェイト_SEX_COM7
+;ややハードですが苦痛成分がないプレイです。母乳体質のアピールポイントです。  
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_COM7
+ENDSELECT
+
+
+
+;================================================================================
+;【戦闘の性コマンド_B攻めSP】
+;--------------------------------------------------
+@KOJO_1702_SEX_SPCOM3
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_SPCOM3
+
+@KOJO_1712_SEX_SPCOM3
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_SPCOM3
+
+@KOJO_フェイト_SEX_SPCOM3
+;胸の感度を高められてニプルファックで責められます。  
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_SPCOM3
+ENDSELECT
+
+
+
+;================================================================================
+;【戦闘の性コマンド_パイズリ】
+;--------------------------------------------------
+@KOJO_1702_SEX_SPCOM5
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_SPCOM5
+
+@KOJO_1712_SEX_SPCOM5
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_SPCOM5
+
+@KOJO_フェイト_SEX_SPCOM5
+;ごく普通のパイズリ…というわけではなく、無理やり奉仕させられる感が強いです。  
+;触手の虜や「奉仕する」を選択している場合は普通のパイズリをしている感じになります。  
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_SPCOM5
+ENDSELECT
+
+
+
+;================================================================================
+;【戦闘の性コマンド_B触手専用SP】
+;--------------------------------------------------
+@KOJO_1702_SEX_SPCOM11
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_SPCOM11
+
+@KOJO_1712_SEX_SPCOM11
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_SPCOM11
+
+@KOJO_フェイト_SEX_SPCOM11
+;触手の虜or欲望3以上なら受け入れ・前記条件未取得かつ従順3以上無抵抗・前記条件未取得抵抗  
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_SPCOM11
+ENDSELECT
+
+
+
+;================================================================================
+;【戦闘の性コマンド_強制自慰】
+;--------------------------------------------------
+@KOJO_1702_SEX_SPCOM6
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_SPCOM6
+
+@KOJO_1712_SEX_SPCOM6
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_SPCOM6
+
+@KOJO_フェイト_SEX_SPCOM6
+;このあと普通の自慰の口上も表示されるので、クドくならないように。  
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_SPCOM6
+ENDSELECT
+
+
+
+;================================================================================
+;【戦闘の性コマンド_羞恥プレイ】
+;--------------------------------------------------
+@KOJO_1702_SEX_SPCOM7
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_SPCOM7
+
+@KOJO_1712_SEX_SPCOM7
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_SPCOM7
+
+@KOJO_フェイト_SEX_SPCOM7
+;それぞれのキャラで反応が違うと思うので、性格ごとに描写を変化させるのが良さそうです。  
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_SPCOM7
+ENDSELECT
+
+
+
+;================================================================================
+;【戦闘の性コマンド_スパンキング】
+;--------------------------------------------------
+@KOJO_1702_SEX_COM8
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_COM8
+
+@KOJO_1712_SEX_COM8
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_COM8
+
+@KOJO_フェイト_SEX_COM8
+;割とハードに暴行されるので、痛い！というよりは叫び声が出ると思います。  
+;マゾっ気Lv2以上なら喜びます。  
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_COM8
+ENDSELECT
+
+
+
+;================================================================================
+;【戦闘の性コマンド_針】
+;--------------------------------------------------
+@KOJO_1702_SEX_COM9
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_COM9
+
+@KOJO_1712_SEX_COM9
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_COM9
+
+@KOJO_フェイト_SEX_COM9
+;これもハード。殴られるより痛いはず。マゾっ気がLv3以上で欲情します。  
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_COM9
+ENDSELECT
+
+
+
+;================================================================================
+;【戦闘の性コマンド_電流】
+;--------------------------------------------------
+@KOJO_1702_SEX_SPCOM4
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_SPCOM4
+
+@KOJO_1712_SEX_SPCOM4
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_SPCOM4
+
+@KOJO_フェイト_SEX_SPCOM4
+;このゲーム内で最も苦痛が入るコマンドなので、たとえマゾでも絶叫しか聞かれないでしょう。  
+;マゾっ気Lv4以上で欲情します。  
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_SPCOM4
+ENDSELECT
+
+
+
+;================================================================================
+;【戦闘の性コマンド_手淫】
+;--------------------------------------------------
+@KOJO_1702_SEX_COM10
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_COM10
+
+@KOJO_1712_SEX_COM10
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_COM10
+
+@KOJO_フェイト_SEX_COM10
+;調教が進んでいたり「奉仕する」を選んでいる場合は素直に手淫しますが、  
+;それ以外では普通に抵抗している文が良いでしょう。  
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_COM10
+ENDSELECT
+
+
+
+;================================================================================
+;【戦闘の性コマンド_フェラ】
+;--------------------------------------------------
+@KOJO_1702_SEX_COM11
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_COM11
+
+@KOJO_1712_SEX_COM11
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_COM11
+
+@KOJO_フェイト_SEX_COM11
+;基本的に無理やり口を犯されます。  
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_COM11
+ENDSELECT
+
+
+
+;================================================================================
+;【戦闘の性コマンド_イラマチオ】
+;--------------------------------------------------
+@KOJO_1702_SEX_COM12
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_COM12
+
+@KOJO_1712_SEX_COM12
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_COM12
+
+@KOJO_フェイト_SEX_COM12
+;フェラをさらにハードにしたバージョン。  
+;地の文では息ができなくて気絶しかけるので、口上のほうも息も絶え絶えという感じが良いでしょう。  
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_COM12
+ENDSELECT
+
+
+
+;================================================================================
+;【戦闘の性コマンド_絶頂禁止】
+;--------------------------------------------------
+@KOJO_1702_SEX_COM13
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_COM13
+
+@KOJO_1712_SEX_COM13
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_COM13
+
+@KOJO_フェイト_SEX_COM13
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_COM13
+ENDSELECT
+
+
+
+;================================================================================
+;【戦闘の性コマンド_衣装を破く】
+;--------------------------------------------------
+@KOJO_1702_SEX_COM14
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_COM14
+
+@KOJO_1712_SEX_COM14
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_COM14
+
+@KOJO_フェイト_SEX_COM14
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_COM14
+ENDSELECT
+
+
+
+;================================================================================
+;【戦闘の性コマンド_S触手専用SP】
+;--------------------------------------------------
+@KOJO_1702_SEX_SPCOM12
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_SPCOM12
+
+@KOJO_1712_SEX_SPCOM12
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_SPCOM12
+
+@KOJO_フェイト_SEX_SPCOM12
+;コンフィグでグロ表現がオフの場合、ヘソ挿入は無し  
+;コンフィグオンオフにかかわらず、快感で限界気絶確定  
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_SPCOM12
+ENDSELECT
+
+
+
+;================================================================================
+;【戦闘の性コマンド_P触手専用SP】
+;--------------------------------------------------
+@KOJO_1702_SEX_SPCOM13
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_SPCOM13
+
+@KOJO_1712_SEX_SPCOM13
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_SPCOM13
+
+@KOJO_フェイト_SEX_SPCOM13
+;触手の虜or欲望3以上or精液中毒2以上なら受け入れ、前記条件未取得なら抵抗  
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_SPCOM13
+ENDSELECT
+
+
+
+;================================================================================
+;【戦闘の性コマンド_H触手専用SP】
+;--------------------------------------------------
+@KOJO_1702_SEX_SPCOM14
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_SPCOM14
+
+@KOJO_1712_SEX_SPCOM14
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_SPCOM14
+
+@KOJO_フェイト_SEX_SPCOM14
+;触手の虜or欲望3以上なら受け入れ、前記条件未取得なら屈辱＆羞恥  
+;被姦後なので、されてる最中の描写は不可  
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_SPCOM14
+ENDSELECT
+
+
+
+;================================================================================
+;【戦闘の性コマンド_K触手専用SP】
+;--------------------------------------------------
+@KOJO_1702_SEX_SPCOM15
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_SPCOM15
+
+@KOJO_1712_SEX_SPCOM15
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SEX_SPCOM15
+
+@KOJO_フェイト_SEX_SPCOM15
+;基本激痛で泣きわめいているような状態  
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SEX_SPCOM15
+ENDSELECT
+
+
+
+;================================================================================
+; 【"戦闘サブイベント_基本"】
+;================================================================================
+;【戦闘サブイベント_悪堕ちキャラに敗北して犯される】
+;--------------------------------------------------
+@KOJO_1702_SUBEVENT_BATTLE_RAPED_ENEMY
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SUBEVENT_BATTLE_RAPED_ENEMY
+
+@KOJO_1712_SUBEVENT_BATTLE_RAPED_ENEMY
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_SUBEVENT_BATTLE_RAPED_ENEMY
+
+@KOJO_フェイト_SUBEVENT_BATTLE_RAPED_ENEMY
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_SUBEVENT_BATTLE_RAPED_ENEMY
+ENDSELECT
+
+
+
+;================================================================================
+; 【"幽閉_基本"】
+;================================================================================
+;【幽閉_初めての幽閉】
+;--------------------------------------------------
+@KOJO_1702_PRISON_PRISENTENCE_FIRST
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_PRISENTENCE_FIRST
+
+
+
+@KOJO_1712_PRISON_PRISENTENCE_FIRST
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_PRISENTENCE_FIRST
+
+
+
+@KOJO_フェイト_PRISON_PRISENTENCE_FIRST
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_PRISON_PRISENTENCE_FIRST
+ENDSELECT
+
+
+
+;================================================================================
+;【幽閉_二度目以降の幽閉後の初被姦】
+;--------------------------------------------------
+@KOJO_1702_PRISON_PRISENTENCE_START
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_PRISENTENCE_START
+
+
+
+@KOJO_1712_PRISON_PRISENTENCE_START
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_PRISENTENCE_START
+
+
+
+@KOJO_フェイト_PRISON_PRISENTENCE_START
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_PRISON_PRISENTENCE_START
+ENDSELECT
+
+
+
+;================================================================================
+;【幽閉_幽閉後の被姦開始文】
+;--------------------------------------------------
+@KOJO_1702_PRISON_PRISENTENCE
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_PRISENTENCE
+
+
+
+@KOJO_1712_PRISON_PRISENTENCE
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_PRISENTENCE
+
+
+
+@KOJO_フェイト_PRISON_PRISENTENCE
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_PRISON_PRISENTENCE
+ENDSELECT
+
+
+
+;================================================================================
+;【幽閉_洗脳になった】
+;--------------------------------------------------
+@KOJO_1702_PRISON_SENNOU
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_SENNOU
+
+
+
+@KOJO_1712_PRISON_SENNOU
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_SENNOU
+
+
+
+@KOJO_フェイト_PRISON_SENNOU
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_PRISON_SENNOU
+ENDSELECT
+
+
+
+;================================================================================
+;【幽閉_悪堕ちになった】
+;--------------------------------------------------
+@KOJO_1702_PRISON_AKUOTI
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_AKUOTI
+
+
+
+@KOJO_1712_PRISON_AKUOTI
+SETFONT "ＭＳ Ｐゴシック"
+SELECTCASE RAND:1 
+	CASE 0
+ENDSELECT
+SETFONT
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_AKUOTI
+
+
+
+@KOJO_フェイト_PRISON_AKUOTI
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_PRISON_AKUOTI
+ENDSELECT
+
+
+
+;================================================================================
+;【幽閉_取り込まれ】
+;--------------------------------------------------
+@KOJO_1702_PRISON_DEAD
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_DEAD
+
+@KOJO_1712_PRISON_DEAD
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_DEAD
+
+@KOJO_フェイト_PRISON_DEAD
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_PRISON_DEAD
+ENDSELECT
+
+
+
+;================================================================================
+;【幽閉_ふたなり化】
+;--------------------------------------------------
+@KOJO_1702_PRISON_HUTANARI
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_HUTANARI
+
+@KOJO_1712_PRISON_HUTANARI
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_HUTANARI
+
+@KOJO_フェイト_PRISON_HUTANARI
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_PRISON_HUTANARI
+ENDSELECT
+
+
+
+;================================================================================
+;【幽閉_母乳体質化】
+;--------------------------------------------------
+@KOJO_1702_PRISON_BONYU
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_BONYU
+
+@KOJO_1712_PRISON_BONYU
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_BONYU
+
+@KOJO_フェイト_PRISON_BONYU
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_PRISON_BONYU
+ENDSELECT
+
+
+
+;================================================================================
+;【幽閉_C中心攻め】
+;--------------------------------------------------
+@KOJO_1702_PRISON_COM_0
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_COM_0
+
+@KOJO_1712_PRISON_COM_0
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_COM_0
+
+@KOJO_フェイト_PRISON_COM_0
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_PRISON_COM_0
+ENDSELECT
+
+
+
+;================================================================================
+;【幽閉_V中心攻め】
+;--------------------------------------------------
+@KOJO_1702_PRISON_COM_1
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_COM_1
+
+@KOJO_1712_PRISON_COM_1
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_COM_1
+
+@KOJO_フェイト_PRISON_COM_1
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_PRISON_COM_1
+ENDSELECT
+
+
+
+;================================================================================
+;【幽閉_A中心攻め】
+;--------------------------------------------------
+@KOJO_1702_PRISON_COM_2
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_COM_2
+
+@KOJO_1712_PRISON_COM_2
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_COM_2
+
+@KOJO_フェイト_PRISON_COM_2
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_PRISON_COM_2
+ENDSELECT
+
+
+
+;================================================================================
+;【幽閉_B中心攻め】
+;--------------------------------------------------
+@KOJO_1702_PRISON_COM_3
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_COM_3
+
+@KOJO_1712_PRISON_COM_3
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_COM_3
+
+@KOJO_フェイト_PRISON_COM_3
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_PRISON_COM_3
+ENDSELECT
+
+
+
+;================================================================================
+;【幽閉_Sな攻め】
+;--------------------------------------------------
+@KOJO_1702_PRISON_COM_4
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_COM_4
+
+@KOJO_1712_PRISON_COM_4
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_COM_4
+
+@KOJO_フェイト_PRISON_COM_4
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_PRISON_COM_4
+ENDSELECT
+
+
+
+;================================================================================
+;【幽閉_強制奉】
+;--------------------------------------------------
+@KOJO_1702_PRISON_COM_5
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_COM_5
+
+@KOJO_1712_PRISON_COM_5
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_COM_5
+
+@KOJO_フェイト_PRISON_COM_5
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_PRISON_COM_5
+ENDSELECT
+
+
+
+;================================================================================
+;【幽閉_羞恥な攻め】
+;--------------------------------------------------
+@KOJO_1702_PRISON_COM_6
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_COM_6
+
+@KOJO_1712_PRISON_COM_6
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_COM_6
+
+@KOJO_フェイト_PRISON_COM_6
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_PRISON_COM_6
+ENDSELECT
+
+
+
+;================================================================================
+;【幽閉_子触手に犯される】
+;--------------------------------------------------
+@KOJO_1702_PRISON_COM_7
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_COM_7
+
+@KOJO_1712_PRISON_COM_7
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_COM_7
+
+@KOJO_フェイト_PRISON_COM_7
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_PRISON_COM_7
+ENDSELECT
+
+
+
+;================================================================================
+;【幽閉_ふたなり攻め】
+;--------------------------------------------------
+@KOJO_1702_PRISON_COM_100
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_COM_100
+
+@KOJO_1712_PRISON_COM_100
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_COM_100
+
+@KOJO_フェイト_PRISON_COM_100
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_PRISON_COM_100
+ENDSELECT
+
+
+
+;================================================================================
+;【幽閉_V拡張】
+;--------------------------------------------------
+@KOJO_1702_PRISON_COM_101
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_COM_101
+
+@KOJO_1712_PRISON_COM_101
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_COM_101
+
+@KOJO_フェイト_PRISON_COM_101
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_PRISON_COM_101
+ENDSELECT
+
+
+
+;================================================================================
+;【幽閉_A拡張】
+;--------------------------------------------------
+@KOJO_1702_PRISON_COM_102
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_COM_102
+
+@KOJO_1712_PRISON_COM_102
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_COM_102
+
+@KOJO_フェイト_PRISON_COM_102
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_PRISON_COM_102
+ENDSELECT
+
+
+
+;================================================================================
+;【幽閉_搾乳攻め】
+;--------------------------------------------------
+@KOJO_1702_PRISON_COM_103
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_COM_103
+
+@KOJO_1712_PRISON_COM_103
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_COM_103
+
+@KOJO_フェイト_PRISON_COM_103
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_PRISON_COM_103
+ENDSELECT
+
+
+
+;================================================================================
+;【幽閉_Vに産卵】
+;--------------------------------------------------
+@KOJO_1702_PRISON_COM_200
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_COM_200
+
+@KOJO_1712_PRISON_COM_200
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_COM_200
+
+@KOJO_フェイト_PRISON_COM_200
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_PRISON_COM_200
+ENDSELECT
+
+
+
+;================================================================================
+;【幽閉_Aに産卵】
+;--------------------------------------------------
+@KOJO_1702_PRISON_COM_201
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_COM_201
+
+@KOJO_1712_PRISON_COM_201
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_COM_201
+
+@KOJO_フェイト_PRISON_COM_201
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_PRISON_COM_201
+ENDSELECT
+
+
+
+;================================================================================
+;【幽閉_注射】
+;--------------------------------------------------
+@KOJO_1702_PRISON_COM_300
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_COM_300
+
+@KOJO_1712_PRISON_COM_300
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_COM_300
+
+@KOJO_フェイト_PRISON_COM_300
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_PRISON_COM_300
+ENDSELECT
+
+
+
+;================================================================================
+;【幽閉_触手の寄生】
+;--------------------------------------------------
+@KOJO_1702_PRISON_COM_301
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_COM_301
+
+@KOJO_1712_PRISON_COM_301
+SIF CALLNAME:TARGET == "フェイト"
+	CALLFORM KOJO_フェイト_PRISON_COM_301
+
+@KOJO_フェイト_PRISON_COM_301
+SELECTCASE RAND:1 
+	;デフォルトAA口上呼び出し
+	CASE 0 
+		CALLFORM KOJO_998_PRISON_COM_301
+ENDSELECT
+
+
+

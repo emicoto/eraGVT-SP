@@ -1,0 +1,158 @@
+
+;********************************************************************************************************************
+;CLOTH200 オリジナルスーツ
+;----------------------------------------------------------
+@CLOTH_DESCRIPTION_200
+PRINTL  比較的健全なデザインの全身を包むタイプのスーツ。
+PRINTL  耐久力が高めで挿入への抵抗力が高いが、カスタマイズ性は低い。
+PRINTL 【 補正 】改造スロット：3　下着へのダメージ軽減
+PRINTL 【耐久度】120
+
+;----------------------------------------------------------
+;衣装の耐久度
+@CLOTH_HP_200
+LOCAL = 120
+RETURN LOCAL
+
+;----------------------------------------------------------
+;補正
+@CLOTH_DEF_200
+LOCAL = DEFAULT_OUTER_DEF - 25
+RETURN LOCAL
+@CLOTH_CUSTOMIZE_200
+LOCAL = 3
+RETURN LOCAL
+@CLOTH_HOSEI_TAIRYOKU_200
+LOCAL = 90
+RETURN LOCAL
+@CLOTH_HOSEI_KIRYOKU_200
+LOCAL = 90
+RETURN LOCAL
+
+;********************************************************************************************************************
+;CLOTH201 プリティスカート
+;----------------------------------------------------------
+@CLOTH_DESCRIPTION_201
+PRINTL  フリルなどで装飾された魔法少女のスカート衣装。
+PRINTL  魔法の力で守られているため見た目より頑丈で、汎用性も高い。
+PRINTL 【 補正 】改造スロット：4
+PRINTL 【耐久度】100
+
+;----------------------------------------------------------
+;衣装の耐久度
+@CLOTH_HP_201
+LOCAL = 100
+RETURN LOCAL
+;----------------------------------------------------------
+;補正
+@CLOTH_CUSTOMIZE_201
+LOCAL = 4
+RETURN LOCAL
+@CLOTH_HOSEI_TAIRYOKU_201
+LOCAL = 90
+RETURN LOCAL
+@CLOTH_HOSEI_KIRYOKU_201
+LOCAL = 90
+RETURN LOCAL
+
+;********************************************************************************************************************
+;CLOTH202 バトルレオタード
+;----------------------------------------------------------
+@CLOTH_DESCRIPTION_202
+PRINTL  身動きしやすいレオタードタイプの衣装。
+PRINTL  露出度は高めだがカスタマイズの自由度はピカイチ。
+PRINTL 【 補正 】改造スロット：5　インナー兼用
+PRINTL 【耐久度】80
+
+;----------------------------------------------------------
+;衣装の耐久度
+@CLOTH_HP_202
+LOCAL = 80
+RETURN LOCAL
+;----------------------------------------------------------
+;補正
+@CLOTH_DEF_202
+LOCAL = DEFAULT_OUTER_DEF - 50
+RETURN LOCAL
+@CLOTH_CUSTOMIZE_202
+LOCAL = 5
+RETURN LOCAL
+@CLOTH_HOSEI_TAIRYOKU_202
+LOCAL = 90
+RETURN LOCAL
+@CLOTH_HOSEI_KIRYOKU_202
+LOCAL = 90
+RETURN LOCAL
+@CLOTH_NO_INNER_202
+LOCAL = 1
+RETURN LOCAL
+
+;********************************************************************************************************************
+;CLOTH299 ソフトボディスーツ
+;----------------------------------------------------------
+@CLOTH_DESCRIPTION_299
+PRINTL  全身を保護する薄いゴム状の隠密用スーツ。
+PRINTL  丈夫な特殊素材で出来ており戦闘中に破壊されることはないが、
+PRINTL  挿入を防ぐことはできない。
+PRINTL 【 補正 】改造スロット：2　避妊効果　インナー兼用
+PRINTL 【耐久度】─
+
+;----------------------------------------------------------
+;衣装の耐久度
+@CLOTH_HP_299
+LOCAL = -1
+RETURN LOCAL
+;----------------------------------------------------------
+;補正
+@CLOTH_DEF_299
+LOCAL = 100
+RETURN LOCAL
+@CLOTH_CUSTOMIZE_299
+LOCAL = 2
+RETURN LOCAL
+@CLOTH_HOSEI_TAIRYOKU_299
+LOCAL = 90
+RETURN LOCAL
+@CLOTH_HOSEI_KIRYOKU_299
+LOCAL = 90
+RETURN LOCAL
+@CLOTH_NO_INNER_299
+LOCAL = 1
+RETURN LOCAL
+
+;********************************************************************************************************************
+;CLOTH401 邪悪なる魔装
+;----------------------------------------------------------
+@CLOTH_DESCRIPTION_401
+PRINTL  瘴気を浴びて形状と色が変質した禍々しいスーツ。
+PRINTL  攻撃的なフォルムと共に露出度が増してより煽情的になっており、
+PRINTL  股間は薄布で隠されているだけで挿入を防ぐことはできない。
+PRINTL 【 補正 】改造スロット：1　攻撃1.2倍　気力減少量1.2倍　インナー兼用
+PRINTL 【耐久度】─
+
+;----------------------------------------------------------
+;衣装の耐久度
+@CLOTH_HP_401
+LOCAL = -1
+RETURN LOCAL
+;----------------------------------------------------------
+;補正
+@CLOTH_DEF_401
+LOCAL = 100
+RETURN LOCAL
+@CLOTH_CUSTOMIZE_401
+LOCAL = 1
+RETURN LOCAL
+@CLOTH_HOSEI_KOUGEKI_401
+LOCAL = 120
+RETURN LOCAL
+@CLOTH_HOSEI_TAIRYOKU_401
+LOCAL = 90
+RETURN LOCAL
+@CLOTH_HOSEI_KIRYOKU_401
+LOCAL = 110
+RETURN LOCAL
+@CLOTH_NO_INNER_401
+LOCAL = 1
+RETURN LOCAL
+

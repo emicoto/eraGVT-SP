@@ -1,0 +1,104 @@
+;羞恥プレイ
+
+;性コマンド分類
+@SEX_TYPE_COM1007
+RETURN 通常
+
+@SEX_SPCOM7
+;取得パラメータ計算
+
+;ベース値の明示的初期化
+REPEAT 12
+	LOCAL:COUNT = 0
+REND
+
+;油断度の上昇
+TFLAG:3 += 50
+
+;射精値 100
+CALL TENTACLE_SYASEI_UP, 100
+
+;触手サイズの設定
+CALL SET_TENTACLE_SIZE, FLAG:10, FLAG:11, FLAG:110, FLAG:111, 1007
+
+;地の文：洗脳/悪堕ちキャラが操作キャラに羞恥プレイをした
+SIF FLAG:110 == 1
+	CALL MESSAGE_OTHER_SEX_SPCOM7
+	
+;地の文：SPCOM7
+CALL MESSAGE_SEX_SPCOM7
+
+;結界による触手本数の変動
+CALL SET_TENTACLE_POOL
+;服へのダメージ
+CALL CLOTH_BATTLE_DAMAGE, 4
+
+;ベース
+EXP:露出快楽経験 += 1
+
+;欲情　露出癖が高くなると多くなる
+IF ABL:露出癖 == 0
+	LOCAL:7 = 50
+ELSEIF ABL:露出癖 == 1
+	LOCAL:7 = 100
+ELSEIF ABL:露出癖 == 2
+	LOCAL:7 = 200
+ELSEIF ABL:露出癖 == 3
+	LOCAL:7 = 500
+ELSEIF ABL:露出癖 == 4
+	LOCAL:7 = 1000
+ELSEIF ABL:露出癖 >= 5
+	LOCAL:7 = 2000
+ENDIF
+
+;恥情　露出癖が高くなると多くなる
+IF ABL:露出癖 == 0
+	LOCAL:9 = 2000
+ELSEIF ABL:露出癖 == 1
+	LOCAL:9 = 2500
+ELSEIF ABL:露出癖 == 2
+	LOCAL:9 = 3500
+ELSEIF ABL:露出癖 == 3
+	LOCAL:9 = 4500
+ELSEIF ABL:露出癖 == 4
+	LOCAL:9 = 5000
+ELSEIF ABL:露出癖 >= 5
+	LOCAL:9 = 5500
+ENDIF
+
+;恐怖　露出癖が高くなると少なくなる
+IF ABL:露出癖 == 0
+	LOCAL:11 = 2000
+ELSEIF ABL:露出癖 == 1
+	LOCAL:11 = 1000
+ELSEIF ABL:露出癖 == 2
+	LOCAL:11 = 500
+ELSEIF ABL:露出癖 == 3
+	LOCAL:11 = 200
+ELSEIF ABL:露出癖 == 4
+	LOCAL:11 = 100
+ELSEIF ABL:露出癖 >= 5
+	LOCAL:11 = 50
+ENDIF
+
+;露出癖が高いと欲情にボーナス
+IF ABL:露出癖 == 2
+	LOCAL:7 = 500
+ELSEIF ABL:露出癖 == 3
+	LOCAL:7 = 1000
+ELSEIF ABL:露出癖 == 4
+	LOCAL:7 = 2000
+ELSEIF ABL:露出癖 >= 5
+	LOCAL:7 = 5000
+ENDIF
+
+;行動予約なし
+TFLAG:17 = -1
+;触手の行動を記録
+TFLAG:20 = 1007
+
+;体力消費基本値
+LOCAL:12 += 150
+
+;計算へ
+CALL PALAM_CAL, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, LOCAL:12

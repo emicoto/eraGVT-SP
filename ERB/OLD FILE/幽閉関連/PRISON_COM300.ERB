@@ -1,0 +1,204 @@
+;**********************************************************
+;幽閉コマンド
+;PRISON_COM300
+;注射
+;**********************************************************
+@PRISON_COM300
+#DIM CCOUNT
+VARSET LOCAL
+
+;取得する珠
+;LOCAL:0 快Ｃ
+;LOCAL:1 快Ｖ
+;LOCAL:2 快Ａ
+;LOCAL:3 快Ｂ
+;LOCAL:4 潤滑 潤滑は未使用
+;LOCAL:5 恭順
+;LOCAL:6 習得
+;LOCAL:7 欲情
+;LOCAL:8 屈服
+;LOCAL:9 恥情
+;LOCAL:10 苦痛
+;LOCAL:11 恐怖
+
+;経験数の上量値記録用
+;LOCAL:120 V経験
+;LOCAL:121 A経験
+;LOCAL:123 精液経験
+;LOCAL:124 フェラ経験
+;LOCAL:130 露出快楽経験,
+;LOCAL:131 奉仕快楽経験,
+;LOCAL:132 苦痛快楽経験,
+;LOCAL:140 自慰経験,
+;LOCAL:150 異常経験
+;LOCAL:151 Ｖ拡張経験
+;LOCAL:152 Ａ拡張経験
+;LOCAL:153 射精経験
+;LOCAL:154 噴乳経験
+;LOCAL:155 放尿経験
+;LOCAL:156 寄生経験
+;LOCAL:157 出産経験
+
+;汚染度
+CFLAG:30 += 20 + RAND:10
+
+;近親交配経験
+SIF INCEST_F(TARGET, CFLAG:20 * 100 + CFLAG:21, 1) > 0
+	LOCAL:141 += 1
+
+;快C
+IF ABL:Ｃ感覚 == 0
+	LOCAL:0 = 500
+ELSEIF ABL:Ｃ感覚 == 1
+	LOCAL:0 = 700
+ELSEIF ABL:Ｃ感覚 == 2
+	LOCAL:0 = 900
+ELSEIF ABL:Ｃ感覚 == 3
+	LOCAL:0 = 1100
+ELSEIF ABL:Ｃ感覚 == 4
+	LOCAL:0 = 1300
+ELSE
+	LOCAL:0 = 1500
+ENDIF
+
+;快V
+IF TALENT:オトコ <= 0
+	IF ABL:Ｖ感覚 == 0
+		LOCAL:120 = 2
+		LOCAL:1 = 500
+	ELSEIF ABL:Ｖ感覚 == 1
+		LOCAL:120 = 5
+		LOCAL:1 = 700
+	ELSEIF ABL:Ｖ感覚 == 2
+		LOCAL:120 = 8
+		LOCAL:1 = 900
+	ELSEIF ABL:Ｖ感覚 == 3
+		LOCAL:120 = 11
+		LOCAL:1 = 1100
+	ELSEIF ABL:Ｖ感覚 == 4
+		LOCAL:120 = 15
+		LOCAL:1 = 1300
+	ELSEIF ABL:Ｖ感覚 >= 5
+		LOCAL:120 = 20
+		LOCAL:1 = 1500
+	ENDIF
+ENDIF
+
+;快A
+;A経験がないならAには入れない
+IF EXP:Ａ経験 > 0
+	IF ABL:Ａ感覚 == 0
+		LOCAL:121 = 2
+		LOCAL:2 = 500
+	ELSEIF ABL:Ａ感覚 == 1
+		LOCAL:121 = 5
+		LOCAL:2 = 700
+	ELSEIF ABL:Ａ感覚 == 2
+		LOCAL:121 = 8
+		LOCAL:2 = 900
+	ELSEIF ABL:Ａ感覚 == 3
+		LOCAL:121 = 11
+		LOCAL:2 = 1100
+	ELSEIF ABL:Ａ感覚 == 4
+		LOCAL:121 = 15
+		LOCAL:2 = 1300
+	ELSEIF ABL:Ａ感覚 >= 5
+		LOCAL:121 = 20
+		LOCAL:2 = 1500
+	ENDIF
+ENDIF
+
+;快B
+IF ABL:Ｂ感覚 == 0
+	LOCAL:3 = 500
+ELSEIF ABL:Ｂ感覚 == 1
+	LOCAL:3 = 700
+ELSEIF ABL:Ｂ感覚 == 2
+	LOCAL:3 = 900
+ELSEIF ABL:Ｂ感覚 == 3
+	LOCAL:3 = 1100
+ELSEIF ABL:Ｂ感覚 == 4
+	LOCAL:3 = 1300
+ELSEIF ABL:Ｂ感覚 >= 5
+	LOCAL:3 = 1500
+ENDIF
+
+;地の文：悪堕ちキャラが幽閉中の操作キャラに注射をした
+SIF CFLAG:20 == 2
+	CALL MESSAGE_OTHER_PRISON_COM_300
+;地の文：注射
+CALL MESSAGE_PRISON_COM_300
+
+;習得基本値
+LOCAL:6 += 0
+
+;欲情基本値
+LOCAL:7 += 1000
+
+;屈服基本値
+LOCAL:8 += 500
+
+;恥情基本値
+LOCAL:9 += 0
+
+;苦痛基本値
+LOCAL:10 += 500
+
+;恐怖基本値
+LOCAL:11 += 500
+
+;幽閉中パラメータ変動共通処理へ
+CALL COMMON_PRISON, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11
+
+;拡張度による拡張経験
+CALL PRISON_GAPING, LOCAL:120, LOCAL:121, LOCAL:151, LOCAL:152
+LOCAL:151 += RESULT:0
+LOCAL:152 += RESULT:1
+
+;経験数の増加
+CALL COMMON_PRISON_EXP_SH, LOCAL:120, LOCAL:121, LOCAL:151, LOCAL:152
+LOCAL:120 = RESULT:0
+LOCAL:121 = RESULT:1
+LOCAL:151 = RESULT:2
+LOCAL:152 = RESULT:3
+
+;表示と増加の処理
+FOR CCOUNT, 100, 200
+	CALL COMMON_PRISON_EXP, CCOUNT, LOCAL:CCOUNT
+NEXT
+
+PRINTL 
+
+;注射による淫乱系素質の取得
+;淫核
+;C感覚が5
+IF TALENT:淫核 == 0 && ABL:Ｃ感覚 >= 5
+	TALENT:淫核 = 1
+	;地の文：淫核
+	CALL MESSAGE_GETTALENT_INKAKU
+ENDIF
+;淫壷
+;V感覚が5、V経験が200以上
+IF TALENT:淫壷 == 0 && ABL:Ｖ感覚 >= 5 && EXP:Ｖ経験 >= 200
+	TALENT:淫壷 = 1
+	;地の文：淫壷
+	CALL MESSAGE_GETTALENT_INTUBO
+ENDIF
+;淫尻
+;A感覚が5、A経験が200以上
+IF TALENT:淫尻 == 0 && ABL:Ａ感覚 >= 5 && EXP:Ａ経験 >= 200
+	TALENT:淫尻 = 1
+	;地の文：淫尻
+	CALL MESSAGE_GETTALENT_INJIRI
+ENDIF
+;淫乳
+;B感覚が5
+IF TALENT:淫乳 == 0 && ABL:Ｂ感覚 >= 5
+	TALENT:淫乳 = 1
+	;地の文：淫乳
+	CALL MESSAGE_GETTALENT_INNYUU
+ENDIF
+
+
+;珠の取得へ
+CALL _ABLUP, 1

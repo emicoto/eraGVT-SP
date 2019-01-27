@@ -1,0 +1,103 @@
+;**********************************************************
+;基本ルール
+;加筆修正は、自由に行ってください
+;ただし、前の方が書いた文章は出来る限り消さないでください
+;
+;口述での「乳房」なので、吐息や詰まった表現などはありです
+;体力や発情など、ステータスでどもったりする様にしましょう
+;この変数を呼び出すときは、吃ることも含めてお使いください
+;
+;Nipple(乳首)は別に表現する物があります
+;乳輪や乳首は成るべく表現しないで、地の文で補ってください
+;
+;増やして欲しい隠語は、アウトプットしてリクエストなりしましょう
+;未登録の中に放り込むなり、掲示板にアップするなりすれば、
+;実装される可能性があります
+;
+;by 雑魚の人 2018/02/11
+;**********************************************************
+;Bust(バスト)の淫語
+;**********************************************************
+@S_SLANG_B(ARG)
+#DIMS S_SLANGWORD_B
+#FUNCTIONS
+
+;初期化
+S_SLANGWORD_B=
+
+
+
+
+;部位呼称
+IF TALENT:淫乳 > 0
+	IF TALENT:貧乳 > 0
+		SELECTCASE RAND:3
+			CASE 2
+				S_SLANGWORD_B += "快楽に蕩けるちいさな胸"
+			CASE 1
+				S_SLANGWORD_B += "快楽に蕩ける淫乱な貧乳"
+			CASEELSE
+				S_SLANGWORD_B += "快楽に焼き焦げたちっぱい"
+		ENDSELECT
+	ELSEIF TALENT:巨乳 > 0
+		SELECTCASE RAND:3
+			CASE 2
+				S_SLANGWORD_B += "快楽に蕩ける豊満な胸"
+			CASE 1
+				S_SLANGWORD_B += "快楽が弾ける淫乱な鞠乳"
+			CASEELSE
+				S_SLANGWORD_B += "快楽に焦げるでっぱい"
+		ENDSELECT
+	ELSE
+		SELECTCASE RAND:4
+			CASE 3
+				S_SLANGWORD_B += "快楽に燃え上がる胸"
+			CASE 2
+				S_SLANGWORD_B += "快楽に焦がされたバスト"
+			CASE 1
+				S_SLANGWORD_B += "快楽に蕩ける淫乱な胸"
+			CASEELSE
+				S_SLANGWORD_B += "快楽に蕩ける淫乱なおっぱい"
+		ENDSELECT
+	ENDIF
+ELSE
+	IF TALENT:貧乳 > 0
+		S_SLANGWORD_B += "ちっぱい"
+	ELSEIF TALENT:巨乳 > 0
+		SELECTCASE RAND:3
+			CASE 2
+				S_SLANGWORD_B += "バスト"
+			CASE 1
+				S_SLANGWORD_B += "でっぱい"
+			CASEELSE
+				S_SLANGWORD_B += "巨乳"
+		ENDSELECT
+	ELSE
+		SELECTCASE RAND:4
+			CASE 3
+				S_SLANGWORD_B += "胸"
+			CASE 2
+				S_SLANGWORD_B += "バスト"
+			CASE 1
+				S_SLANGWORD_B += "おっぱい"
+			CASEELSE
+				S_SLANGWORD_B += "普乳"
+		ENDSELECT
+	ENDIF
+ENDIF
+
+RETURNF S_SLANGWORD_B
+
+
+;*************【淫語覚書（未登録）】***********************
+;双乳
+;乳輪
+;乳風船
+;豊乳
+;乳鞠
+;乳塊
+;乳房
+;*************【淫語覚書（未登録）】***********************
+
+
+

@@ -1,0 +1,38 @@
+@SHOKISET_NAME_9
+PRINTL [ 9]５人：人妻戦隊アイサイガー5
+;-----------------------------
+;アイサイガー５に対する説明
+;------------------------------
+@SHOKISET_SETUMEI_9
+PRINTL
+PRINTL
+PRINTL 　　　5人の戦隊物がベース
+PRINTL 　　　変身前後で性能が違う
+PRINTL 　　　人数が多いので、性感帯など感度を上げたりしてバランス調整を予定
+PRINTL
+PRINTL 　　　多分中級者向け※バランス未調整
+PRINTL
+;-------------------------------
+;グループの選択-人妻戦隊アイサイガー５
+;-------------------------------
+@SHOKISET_SELECT_9
+
+FLAG:5 = 1
+SAVESTR:10=人妻戦隊
+FLAG:7 = 1
+SAVESTR:12=サイガーイン！
+
+ADDCHARA 1501
+FLAG:8 ++
+ADDCHARA 1502
+FLAG:8 ++
+ADDCHARA 1503
+FLAG:8 ++
+ADDCHARA 1504
+FLAG:8 ++
+ADDCHARA 1505
+FLAG:8 ++
+
+CALL SHOKISET_CSVFIX
+JUMP CHARA_MAKE_MAIN, 0
+

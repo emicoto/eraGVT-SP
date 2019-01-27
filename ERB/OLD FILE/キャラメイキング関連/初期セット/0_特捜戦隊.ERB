@@ -1,0 +1,34 @@
+@SHOKISET_NAME_0
+PRINTL [ 0]３人：特装戦隊
+;-----------------------------
+;特捜戦隊に対する説明
+;------------------------------
+@SHOKISET_SETUMEI_0
+PRINTL
+PRINTL 　　　戦隊モノらしく全員が人間&変身能力持ち
+PRINTL 　　　全体的に能力は近~中寄りに
+PRINTL 　　　変身前は大した能力を持たないが変身後は大幅にパワーアップ
+PRINTL
+PRINTL 　　　たぶん初心者向け
+PRINTL
+;--------------------
+;グループの選択-特装戦隊
+;--------------------
+@SHOKISET_SELECT_0
+
+FLAG:5 = 1
+SAVESTR:10=特装戦隊
+FLAG:7 = 1
+SAVESTR:12=特命特捜!
+
+ADDCHARA 301
+FLAG:8 ++
+ADDCHARA 302
+FLAG:8 ++
+ADDCHARA 303
+FLAG:8 ++
+
+CALL SHOKISET_CSVFIX
+JUMP CHARA_MAKE_MAIN, 0
+
+

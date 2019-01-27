@@ -1,0 +1,780 @@
+;**********************************************************
+;ゲームクリア後のスコア表示
+@SCORE
+#DIM CCOUNT
+VARSET LOCAL
+;キャラの生存状況による評価
+;ソロモードは幽閉経験で分岐
+IF FLAG:0 == 2 && CHARANUM < 3
+	LOCAL = EXP:1:幽閉経験
+	IF LOCAL >= 5
+		LOCAL:1 = 1
+		LOCALS:1 = E
+	ELSEIF LOCAL >= 4
+		LOCAL:1 = 2
+		LOCALS:1 = D
+	ELSEIF LOCAL >= 3
+		LOCAL:1 = 3
+		LOCALS:1 = C
+	ELSEIF LOCAL >= 2
+		LOCAL:1 = 4
+		LOCALS:1 = B
+	ELSEIF LOCAL >= 1
+		LOCAL:1 = 5
+		LOCALS:1 = A
+	ELSE
+		LOCAL:1 = 6
+		LOCALS:1 = S
+	ENDIF
+ELSE
+	LOCAL = 100
+	FOR CCOUNT, 0, CHARANUM
+		SIF CCOUNT == MASTER
+			CONTINUE
+
+		;幽閉状態で放置
+		SIF CFLAG:CCOUNT:0 == 1
+			LOCAL -= 60 / (CHARANUM - 1)
+		;洗脳、悪堕ち状態で放置
+		SIF CFLAG:CCOUNT:0 == 2 || CFLAG:CCOUNT:0 == 3
+			LOCAL -= 30 / (CHARANUM - 1)
+		;死亡状態
+		SIF CFLAG:CCOUNT:0 == 9
+			LOCAL -= 90 / (CHARANUM - 1)
+	NEXT
+	IF LOCAL < 40
+		LOCAL:1 = 1
+		LOCALS:1 = E
+	ELSEIF LOCAL < 55
+		LOCAL:1 = 2
+		LOCALS:1 = D
+	ELSEIF LOCAL < 70
+		LOCAL:1 = 3
+		LOCALS:1 = C
+	ELSEIF LOCAL < 85
+		LOCAL:1 = 4
+		LOCALS:1 = B
+	ELSEIF LOCAL < 100
+		LOCAL:1 = 5
+		LOCALS:1 = A
+	ELSE
+		LOCAL:1 = 6
+		LOCALS:1 = S
+	ENDIF
+ENDIF
+
+;エンドレスモードの場合は撃破数評価
+IF FLAG:0 == 10
+	CALL TENTACLE_SURVIVE, "NUM"
+	LOCAL = FLAG:3 - RESULT
+	IF LOCAL < 10
+		LOCAL:2 = 1
+		LOCALS:2 = E
+	ELSEIF LOCAL < 15
+		LOCAL:2 = 2
+		LOCALS:2 = D
+	ELSEIF LOCAL < 20
+		LOCAL:2 = 3
+		LOCALS:2 = C
+	ELSEIF LOCAL < 40
+		LOCAL:2 = 4
+		LOCALS:2 = B
+	ELSEIF LOCAL < 50
+		LOCAL:2 = 5
+		LOCALS:2 = A
+	ELSE
+		LOCAL:2 = 6
+		LOCALS:2 = S
+	ENDIF
+;それ以外は残り日数による評価
+ELSE
+	LOCAL = (FLAG:1 - DAY) * 100 / FLAG:2
+	IF LOCAL < 30
+		LOCAL:2 = 1
+		LOCALS:2 = E
+	ELSEIF LOCAL < 70
+		LOCAL:2 = 2
+		LOCALS:2 = D
+	ELSEIF LOCAL < 110
+		LOCAL:2 = 3
+		LOCALS:2 = C
+	ELSEIF LOCAL < 150
+		LOCAL:2 = 4
+		LOCALS:2 = B
+	ELSEIF LOCAL < 190
+		LOCAL:2 = 5
+		LOCALS:2 = A
+	ELSE
+		LOCAL:2 = 6
+		LOCALS:2 = S
+	ENDIF
+ENDIF
+
+;全キャラの被姦経験と素質による評価
+LOCAL = 0
+FOR CCOUNT, 0, CHARANUM
+	SIF CCOUNT == MASTER
+		CONTINUE
+
+	IF TALENT:CCOUNT:処女 > 0 || TALENT:CCOUNT:清純派 > 0
+		LOCAL += EXP:CCOUNT:被姦経験
+	ELSE
+		LOCAL += EXP:CCOUNT:被姦経験 * 2
+	ENDIF
+	SIF TALENT:CCOUNT:処女 > 0 && TALENT:CCOUNT:清純派 > 0
+		LOCAL -= 1
+NEXT
+
+IF LOCAL >= 150
+	LOCAL:3 = 1
+	LOCALS:3 = E
+ELSEIF LOCAL >= 100
+	LOCAL:3 = 2
+	LOCALS:3 = D
+ELSEIF LOCAL >= 50
+	LOCAL:3 = 3
+	LOCALS:3 = C
+ELSEIF LOCAL >= 10
+	LOCAL:3 = 4
+	LOCALS:3 = B
+ELSEIF LOCAL >= 1
+	LOCAL:3 = 5
+	LOCALS:3 = A
+ELSE
+	LOCAL:3 = 6
+	LOCALS:3 = S
+ENDIF
+
+;生存キャラの性関連の能力値による評価
+LOCAL = 0
+FOR CCOUNT, O, CHARANUM
+	SIF CCOUNT == MASTER
+		CONTINUE
+
+	IF CFLAG:CCOUNT:0 == 0
+	
+		;快C
+		IF ABL:CCOUNT:Ｃ感覚 == 1
+			LOCAL += 1
+		ELSEIF ABL:CCOUNT:Ｃ感覚 == 2
+			LOCAL += 2
+		ELSEIF ABL:CCOUNT:Ｃ感覚 == 3
+			LOCAL += 3
+		ELSEIF ABL:CCOUNT:Ｃ感覚 == 4
+			LOCAL += 4
+		ELSEIF ABL:CCOUNT:Ｃ感覚 >= 5
+			LOCAL += 5
+		ENDIF
+		;快V
+		IF ABL:CCOUNT:Ｖ感覚 == 1
+			LOCAL += 2
+		ELSEIF ABL:CCOUNT:Ｖ感覚 == 2
+			LOCAL += 4
+		ELSEIF ABL:CCOUNT:Ｖ感覚 == 3
+			LOCAL += 6
+		ELSEIF ABL:CCOUNT:Ｖ感覚 == 4
+			LOCAL += 8
+		ELSEIF ABL:CCOUNT:Ｖ感覚 >= 5
+			LOCAL += 10
+		ENDIF
+		;快A
+		IF ABL:CCOUNT:Ａ感覚 == 1
+			LOCAL += 2
+		ELSEIF ABL:CCOUNT:Ａ感覚 == 2
+			LOCAL += 4
+		ELSEIF ABL:CCOUNT:Ａ感覚 == 3
+			LOCAL += 6
+		ELSEIF ABL:CCOUNT:Ａ感覚 == 4
+			LOCAL += 8
+		ELSEIF ABL:CCOUNT:Ａ感覚 >= 5
+			LOCAL += 10
+		ENDIF
+		;快B
+		IF ABL:CCOUNT:Ｂ感覚 == 1
+			LOCAL += 1
+		ELSEIF ABL:CCOUNT:Ｂ感覚 == 2
+			LOCAL += 2
+		ELSEIF ABL:CCOUNT:Ｂ感覚 == 3
+			LOCAL += 3
+		ELSEIF ABL:CCOUNT:Ｂ感覚 == 4
+			LOCAL += 4
+		ELSEIF ABL:CCOUNT:Ｂ感覚 >= 5
+			LOCAL += 5
+		ENDIF
+		;従順
+		IF ABL:CCOUNT:従順 == 1
+			LOCAL += 4
+		ELSEIF ABL:CCOUNT:従順 == 2
+			LOCAL += 6
+		ELSEIF ABL:CCOUNT:従順 == 3
+			LOCAL += 9
+		ELSEIF ABL:CCOUNT:従順 == 4
+			LOCAL += 12
+		ELSEIF ABL:CCOUNT:従順 >= 5
+			LOCAL += 15
+		ENDIF
+		;欲望
+		IF ABL:CCOUNT:欲望 == 1
+			LOCAL += 3
+		ELSEIF ABL:CCOUNT:欲望 == 2
+			LOCAL += 4
+		ELSEIF ABL:CCOUNT:欲望 == 3
+			LOCAL += 6
+		ELSEIF ABL:CCOUNT:欲望 == 4
+			LOCAL += 8
+		ELSEIF ABL:CCOUNT:欲望 >= 5
+			LOCAL += 10
+		ENDIF
+		;技巧
+		IF ABL:CCOUNT:技巧 == 1
+			LOCAL += 3
+		ELSEIF ABL:CCOUNT:技巧 == 2
+			LOCAL += 4
+		ELSEIF ABL:CCOUNT:技巧 == 3
+			LOCAL += 6
+		ELSEIF ABL:CCOUNT:技巧 == 4
+			LOCAL += 8
+		ELSEIF ABL:CCOUNT:技巧 >= 5
+			LOCAL += 10
+		ENDIF
+		;奉仕精神
+		IF ABL:CCOUNT:奉仕精神 == 1
+			LOCAL += 4
+		ELSEIF ABL:CCOUNT:奉仕精神 == 2
+			LOCAL += 6
+		ELSEIF ABL:CCOUNT:奉仕精神 == 3
+			LOCAL += 9
+		ELSEIF ABL:CCOUNT:奉仕精神 == 4
+			LOCAL += 12
+		ELSEIF ABL:CCOUNT:奉仕精神 >= 5
+			LOCAL += 15
+		ENDIF
+		;露出癖
+		IF ABL:CCOUNT:露出癖 == 1
+			LOCAL += 3
+		ELSEIF ABL:CCOUNT:露出癖 == 2
+			LOCAL += 4
+		ELSEIF ABL:CCOUNT:露出癖 == 3
+			LOCAL += 6
+		ELSEIF ABL:CCOUNT:露出癖 == 4
+			LOCAL += 8
+		ELSEIF ABL:CCOUNT:露出癖 >= 5
+			LOCAL += 10
+		ENDIF
+		;マゾっ気
+		IF ABL:CCOUNT:マゾっ気 == 1
+			LOCAL += 3
+		ELSEIF ABL:CCOUNT:マゾっ気 == 2
+			LOCAL += 4
+		ELSEIF ABL:CCOUNT:マゾっ気 == 3
+			LOCAL += 6
+		ELSEIF ABL:CCOUNT:マゾっ気 == 4
+			LOCAL += 8
+		ELSEIF ABL:CCOUNT:マゾっ気 >= 5
+			LOCAL += 10
+		ENDIF
+		;触手中毒
+		IF ABL:CCOUNT:触手中毒 == 1
+			LOCAL += 7
+		ELSEIF ABL:CCOUNT:触手中毒 == 2
+			LOCAL += 10
+		ELSEIF ABL:CCOUNT:触手中毒 == 3
+			LOCAL += 15
+		ELSEIF ABL:CCOUNT:触手中毒 == 4
+			LOCAL += 20
+		ELSEIF ABL:CCOUNT:触手中毒 >= 5
+			LOCAL += 25
+		ENDIF
+		;自慰中毒
+		IF ABL:CCOUNT:自慰中毒 == 1
+			LOCAL += 6
+		ELSEIF ABL:CCOUNT:自慰中毒 == 2
+			LOCAL += 8
+		ELSEIF ABL:CCOUNT:自慰中毒 == 3
+			LOCAL += 12
+		ELSEIF ABL:CCOUNT:自慰中毒 == 4
+			LOCAL += 16
+		ELSEIF ABL:CCOUNT:自慰中毒 >= 5
+			LOCAL += 20
+		ENDIF
+		;精液中毒
+		IF ABL:CCOUNT:精液中毒 == 1
+			LOCAL += 6
+		ELSEIF ABL:CCOUNT:精液中毒 == 2
+			LOCAL += 8
+		ELSEIF ABL:CCOUNT:精液中毒 == 3
+			LOCAL += 12
+		ELSEIF ABL:CCOUNT:精液中毒 == 4
+			LOCAL += 16
+		ELSEIF ABL:CCOUNT:精液中毒 >= 5
+			LOCAL += 20
+		ENDIF
+		;噴乳中毒
+		IF ABL:CCOUNT:噴乳中毒 == 1
+			LOCAL += 9
+		ELSEIF ABL:CCOUNT:噴乳中毒 == 2
+			LOCAL += 12
+		ELSEIF ABL:CCOUNT:噴乳中毒 == 3
+			LOCAL += 18
+		ELSEIF ABL:CCOUNT:噴乳中毒 == 4
+			LOCAL += 24
+		ELSEIF ABL:CCOUNT:噴乳中毒 >= 5
+			LOCAL += 30
+		ENDIF
+		;射精中毒
+		IF ABL:CCOUNT:射精中毒 == 1
+			LOCAL += 9
+		ELSEIF ABL:CCOUNT:射精中毒 == 2
+			LOCAL += 12
+		ELSEIF ABL:CCOUNT:射精中毒 == 3
+			LOCAL += 18
+		ELSEIF ABL:CCOUNT:射精中毒 == 4
+			LOCAL += 24
+		ELSEIF ABL:CCOUNT:射精中毒 >= 5
+			LOCAL += 30
+		ENDIF
+	
+	ENDIF
+	
+NEXT
+
+SIF CHARANUM_ALIVE()
+	LOCAL = LOCAL / CHARANUM_ALIVE()
+
+IF LOCAL < 20
+	LOCAL:4 = 1
+	LOCALS:4 = E
+ELSEIF LOCAL < 50
+	LOCAL:4 = 2
+	LOCALS:4 = D
+ELSEIF LOCAL < 80
+	LOCAL:4 = 3
+	LOCALS:4 = C
+ELSEIF LOCAL < 120
+	LOCAL:4 = 4
+	LOCALS:4 = B
+ELSEIF LOCAL < 150
+	LOCAL:4 = 5
+	LOCALS:4 = A
+ELSE
+	LOCAL:4 = 6
+	LOCALS:4 = S
+ENDIF
+
+;人気度による評価
+LOCAL = FLAG:853
+IF LOCAL <= -10
+	LOCAL:5 = 1
+	LOCALS:5 = E
+ELSEIF LOCAL < 15
+	LOCAL:5 = 2
+	LOCALS:5 = D
+ELSEIF LOCAL < 30 || (FLAG:0 == 2 && LOCAL < 30)
+	LOCAL:5 = 3
+	LOCALS:5 = C
+ELSEIF LOCAL < 40 || (FLAG:0 == 2 && LOCAL < 35)
+	LOCAL:5 = 4
+	LOCALS:5 = B
+ELSEIF LOCAL < 50 || (FLAG:0 == 2 && LOCAL < 40)
+	LOCAL:5 = 5
+	LOCALS:5 = A
+ELSE
+	LOCAL:5 = 6
+	LOCALS:5 = S
+ENDIF
+
+;クリア時の総資産による評価
+LOCAL = MONEY * 2
+;施設
+LOCAL += 5000 * (FLAG:50 - 1) + 5000
+LOCAL += 1000 * (FLAG:51 - 1) + 1000
+LOCAL += 10000 * FLAG:52 + 10000
+SIF (FLAG:53 & 観葉植物)
+	LOCAL += 500
+SIF (FLAG:53 & 上質なベッド)
+	LOCAL += 12000
+SIF (FLAG:53 & 最高級ベッド)
+	LOCAL += 95000
+SIF (FLAG:53 & マッサージチェア)
+	LOCAL += 25800
+SIF (FLAG:53 & シャワー設備)
+	LOCAL += 50000
+SIF (FLAG:53 & ゲームコーナー)
+	LOCAL += 100000
+SIF (FLAG:53 & 大浴場)
+	LOCAL += 200000
+SIF (FLAG:53 & 美容温泉)
+	LOCAL += 500000
+SIF (FLAG:53 & ビューティサロン)
+	LOCAL += 1500000
+
+;ソロモード時は３倍の評価
+SIF FLAG:0 == 2
+	LOCAL *= 3
+;所持アイテム
+FOR CCOUNT,0,999
+	SIF ITEM:CCOUNT
+		LOCAL += ITEMPRICE:CCOUNT
+NEXT
+IF LOCAL < 100000
+	LOCAL:6 = 1
+	LOCALS:6 = E
+ELSEIF LOCAL < 125000
+	LOCAL:6 = 2
+	LOCALS:6 = D
+ELSEIF LOCAL < 150000
+	LOCAL:6 = 3
+	LOCALS:6 = C
+ELSEIF LOCAL < 175000
+	LOCAL:6 = 4
+	LOCALS:6 = B
+ELSEIF LOCAL < 200000
+	LOCAL:6 = 5
+	LOCALS:6 = A
+ELSE
+	LOCAL:6 = 6
+	LOCALS:6 = S
+ENDIF
+
+;総合評価
+;被姦経験と性能力値のうち、良いスコアの方を総合評価に使う
+IF LOCAL:3 >= LOCAL:4
+	LOCAL:98 = LOCAL:3
+ELSE
+	LOCAL:98 = LOCAL:4
+ENDIF
+
+LOCAL = (LOCAL:1 + LOCAL:2 + LOCAL:98 + LOCAL:5 + (LOCAL:6 / 2) + 3) / 5
+
+IF LOCAL == 1
+	LOCALS:99 = E
+ELSEIF LOCAL == 2
+	LOCALS:99 = D
+ELSEIF LOCAL == 3
+	LOCALS:99 = C
+ELSEIF LOCAL == 4
+	LOCALS:99 = B
+ELSEIF LOCAL == 5
+	LOCALS:99 = A
+ELSE
+	LOCALS:99 = S
+ENDIF
+
+;評価の表示
+PRINTL *** クリアスコア ***
+CALL SHORTLINE
+PRINTFORML キャラの生存・・・%LOCALS:1%
+IF FLAG:0 == 10
+	PRINTFORML ボス撃破数・・・・%LOCALS:2%
+ELSE
+	PRINTFORML クリア日数・・・・%LOCALS:2%
+ENDIF
+IF LOCAL:3 >= LOCAL:4
+	PRINTFORML キャラの純潔度・・%LOCALS:3%    キャラの性成長・・%LOCALS:4%
+ELSE
+	PRINTFORML キャラの性成長・・%LOCALS:4%    キャラの純潔度・・%LOCALS:3%
+ENDIF
+PRINTFORML 人気度・・・・・・%LOCALS:5%
+PRINTFORML 総資産・・・・・・%LOCALS:6%
+PRINTL 
+PRINTFORML 総合評価・・・・・%LOCALS:99%
+CALL SHORTLINE
+PRINTW 
+;評価メッセージ
+PRINTL クリアおめでとうございます。
+PRINTL このコーナーではスコアに対する評価をしていきたいと思います。
+PRINTW 
+;生存評価
+PRINTFORML 生存評価：%LOCALS:1%
+IF FLAG:0 == 2
+	IF LOCAL:1 <= 3
+		PRINTL ソロモードでは幽閉されてもゲームオーバーにならない代わりに、
+		PRINTL 幽閉された回数で生存評価が低下してしまいます。
+		PRINTL また、洗脳/悪堕ちするとゲームオーバーになるという
+		PRINTL ソロモード独自の仕様があるので要注意です。
+	ELSEIF LOCAL:1 <= 5
+		PRINTL ソロモードでは一回や二回くらい幽閉されても余裕で脱出できます。
+		PRINTL しかし、Ｓ評価を目指すならば一度も幽閉されずにクリアする必要があります。
+		PRINTL 純潔度評価Ｓを目指せば自然と生存評価も良くなるので、同時に目指してみましょう。
+	ELSE
+		PRINTL 一度も幽閉されずにクリアできたようですね。
+		PRINTL たった一人でずいぶん大変だったろうと思います。
+		IF LOCAL:4 >= 3
+			PRINTL おまけに性成長評価が高いということは、茨の道を歩んできた証拠。
+			PRINTL そんなアナタに敬礼です。
+		ELSE
+			PRINTL 性成長評価を高めようとすると自然と幽閉されるプレイになると思うので、
+			PRINTL 生存評価と両立するのはもはや苦行の領域かもしれません。
+		ENDIF
+	ENDIF
+ELSE
+	IF LOCAL:1 <= 2
+		PRINTL 苦しい戦いだったかもしれませんが、よく頑張りました。
+		PRINTL 体力や気力が減ると命中率や回避率が大きく落ちてしまうので、
+		PRINTL 早めに撤退すれば敗北は避けられます。
+	ELSEIF LOCAL:1 == 3
+		PRINTL あらら・・・ずいぶん犠牲者が出てしまったようですね。
+		PRINTL 仲間を幽閉したボスは遭遇率がグーンと伸びるので、諦めずに救出に向かいましょう。
+	ELSEIF LOCAL:1 == 4
+		PRINTL 一人が捕まったくらいなら、防衛力を維持しながら鍛練するのも容易いはず。
+		PRINTL 戦闘支援を利用すれば撤退しやすくなるので、試しに使ってみては如何でしょう？
+	ELSEIF LOCAL:1 == 5
+		PRINTL 洗脳や悪堕ちしてしまった仲間を見捨てていませんか？
+		PRINTL 仲間が全員揃っていればクリア評価はＳになるので、もうひと踏ん張りです。
+	ELSE
+		PRINTL 全員を無事に生存させたみたいですね。
+		PRINTL 実は仲間が捕まってしまうと制限日数が増加するので、
+		PRINTL あえて捕まらせて日数を稼ぐという戦略もあります。
+		PRINTL 知ってました？
+	ENDIF
+ENDIF
+PRINTW 
+;撃破数評価/日数評価
+IF FLAG:0 == 10
+	PRINTFORML 撃破評価：%LOCALS:2%
+	IF LOCAL:2 <= 2
+		PRINTL あまり撃破数が伸びなかったようですね。
+		PRINTL 鍛錬するかボスに挑むかのバランスが攻略の鍵です。
+		PRINTL ENDLESSモードではボスのレベルアップが少しだけ遅いので、
+		PRINTL 思い切って突撃してみると意外と倒せたりします。
+	ELSEIF LOCAL:2 == 3
+		PRINTL 普通にプレイした場合の平均的な撃破数ですね。
+		PRINTL キャラクターにも苦手な相手と得意な相手が居ると思うので、
+		PRINTL どのボスが出現するか等の運の要素も絡んできます。
+	ELSEIF LOCAL:2 == 4
+		PRINTL ENDLESSモードではボス撃破数20を突破すると期限があまり伸びなくなるので、
+		PRINTL この先はひたすら制限日数との戦いになります。
+		PRINTL ここまで来たらキャラ引き継ぎやレベル引き継ぎで最高の戦力を用意して挑みましょう。
+	ELSEIF LOCAL:2 == 5
+		PRINTL 素晴らしい撃破数ですが、おしい。
+		PRINTL どんな手段を使ってでも期日を延ばして１体でも多くのボスを撃破しましょう。
+		PRINTL 最高評価まではあと一歩です！
+	ELSE
+		PRINTL お見事です。かなり効率的なプレイをしたみたいですね。
+		PRINTL この数のボスを撃破するのは並大抵のことではありません。
+		PRINTL 堂々のＳ評価おめでとうございます。
+	ENDIF
+ELSE
+	PRINTFORML 日数評価：%LOCALS:2%
+	IF LOCAL:2 == 1
+		PRINTL かなりギリギリだったようですね。
+		PRINTL 時間を掛け過ぎるとボスのレベルが上がってしまうので、
+		PRINTL 慎重になりすぎるのも考えものです。
+	ELSEIF LOCAL:2 == 2
+		PRINTL 慎重なプレイスタイルだったみたいですね。
+		PRINTL ラスボスのＨＰはかなり多いので、こまめに削っていくことが重要です。
+	ELSEIF LOCAL:2 == 3
+		PRINTL 初見プレイならば標準的な日数でクリアできました。
+		PRINTL より効率的な戦い方もできるので、探してみるのも楽しいですよ？
+	ELSEIF LOCAL:2 == 4
+		PRINTL 残り日数を意識してプレイすればこのくらいになるでしょうか。
+		PRINTL 鍛練施設Lvを早めに上げれば、もっと短縮できるはずです。
+	ELSEIF LOCAL:2 == 5
+		PRINTL 惜しいところでしたね。
+		PRINTL ボスとうまく遭遇できない場合もあるので、仕方ないかもしれません。
+	ELSE
+		PRINTL お見事です。かなり効率的なプレイをしたみたいですね。
+		PRINTL さらなる記録を目指すのもよし、別の攻略法を試してみるのも良いでしょう。
+		PRINTL ともかく、Ｓ評価おめでとうございます。
+	ENDIF
+ENDIF
+PRINTW 
+;純潔/性成長評価
+IF LOCAL:3 >= LOCAL:4
+	PRINTFORML 純潔度評価：%LOCALS:3%　　性成長評価：%LOCALS:4%
+	IF LOCAL:3 <= 3
+		PRINTL エッチなことを避けようとしたのに、犯されてしまったようですね。
+		PRINTL このくらいが正しい楽しみ方をしているとも言います。
+		PRINTL あえてリセットしないそのスタイルは好感に値します。
+	ELSEIF LOCAL:3 == 4
+		PRINTL エッチは回避して進んだものの、油断があったみたいですね。
+		PRINTL 処女を守り通したキャラは多少エッチなことをされても
+		PRINTL 純潔度が高くなるので、気を付けてみましょう。
+	ELSEIF LOCAL:3 == 5
+		PRINTL かなり頑張りましたが、残念。Ａ評価です。
+		PRINTL 一度でも捕まってしまうとＳ評価にはならないので、
+		PRINTL さらに上を目指すには敏捷性特化にする必要があるかもしれません。
+	ELSE
+		PRINTL お見事としか言いようがありません。
+		PRINTL エロゲーでここまで本気で純潔を守ったアナタは立派です。
+		PRINTL 堂々のＳ評価、おめでとうございます。
+	ENDIF
+ELSE
+	PRINTFORML 性成長評価：%LOCALS:4%　　純潔度評価：%LOCALS:3%
+	IF LOCAL:4 <= 2
+		PRINTL エッチなことを避けようとしたのに、エッチになってしまったようですね。
+		PRINTL 開き直ってエロエロなキャラを目指す遊び方もありますよ。
+	ELSEIF LOCAL:4 == 3 || LOCAL:4 == 4
+		PRINTL そこそこエッチな娘（たち）になってしまったようですね。
+		PRINTL このくらいが正しい楽しみ方をしているとも言います。
+		PRINTL どうせならもっとエロい娘を目指して、自分から捕まっちゃいましょう。
+	ELSEIF LOCAL:4 == 5
+		PRINTL かなりヤられちゃいましたね。
+		IF FLAG:0 == 2
+			PRINTL キャラが捕まると期限が延びるので、わざと幽閉されて日数を稼ぐ
+			PRINTL マッチポンプ戦法もオススメです。
+		ELSE
+			PRINTL キャラが捕まると期限が延びるので、「救出」コマンドを利用した
+			PRINTL マッチポンプ戦法もオススメです。
+		ENDIF
+	ELSE
+		PRINTL すごい事になってますね。
+		PRINTL わざと捕まったりしなければこの評価にはならないと思うので、
+		PRINTL お楽しみ頂けたようで何よりです。
+		PRINTL ともかく、Ｓ評価おめでとうございます。
+	ENDIF
+ENDIF
+PRINTW 
+;人気度評価
+PRINTFORML 人気度評価：%LOCALS:5%
+IF LOCAL:5 == 1
+	PRINTL もしかして防衛力のことを完全に忘れていませんか？
+	PRINTL ずっと出撃や防衛をせずに放置すると触手による侵攻が進んでしまいます。
+	PRINTL また、何度も繰り返し戦闘で敗北すると、フォローが利かなくなります。
+ELSEIF LOCAL:5 == 2
+	IF FLAG:0 == 2
+		PRINTL ソロモードでは防衛力の管理が簡単なので、
+		PRINTL 人気度の維持をすること自体は難しくないはず。
+		PRINTL まずはボスに敗北せずにクリアすることを目指しましょう。
+	ELSE
+		PRINTL ヒーローとしてはまずまずの評価です。
+		PRINTL ボスに苦戦して、何度か敗北してしまったのではないでしょうか？
+		PRINTL やられるくらいなら撤退した方が良いので、戦闘では引き際が肝心です。
+	ENDIF
+ELSEIF LOCAL:5 == 3
+	PRINTL 特に意識せずにプレイしていてもこの程度にはなるでしょう。
+	PRINTL 人気度は変動しにくい数値なので、
+	PRINTL なるべく低下させないように心がけると、自然と上昇していくはずです。
+ELSEIF LOCAL:5 == 4
+	PRINTL ただ触手を倒すだけでは真の英雄とは呼べません。
+	PRINTL ここからさらに上を目指すには、市民たちに親しみを覚えてもらう必要がありそうです。
+	PRINTL アルバイトをしてみたり、あとは…アイドルとして活動してみると、
+	PRINTL 応援してくれる人が増えるかもしれません。
+ELSEIF LOCAL:5 == 5
+	PRINTL なかなか順調にプレイが進んだようですね。
+	PRINTL リセットなしでここまで来れれば、
+	PRINTL 大分このゲームを攻略できていると言えそうです。
+ELSEIF FLAG:0 == 10
+	PRINTL 残念ながら、ENDLESSモードでは触手に勝つことはできません。
+	PRINTL せめて正義の味方たちが苦しまずに最期を迎えられたことを祈るばかりです。
+ELSE
+	PRINTL この評価ということは、正義の味方らしく街を守りきったのですね。
+	PRINTL 恐らくあなたたちに感謝している人々も多いはず。
+	PRINTL おめでとうございます、あなたは正真正銘の英雄です！
+ENDIF
+PRINTW 
+;資産評価
+PRINTFORML 資産評価：%LOCALS:6%
+IF LOCAL:6 <= 2
+	PRINTL お金のことを意識せずにプレイすればこんなものでしょう。
+	PRINTL 資産評価は現金のほうが好評価になるので、
+	PRINTL あえて使わずに取っておくべきかもしれません。
+ELSEIF LOCAL:6 == 3 || LOCAL:6 == 4
+	PRINT なかなかのお金持ちですね。
+	IF LOCAL:6 == 3
+		PRINTFORML Ｃ評価です。
+	ELSE
+		PRINTFORML Ｂ評価です。
+	ENDIF
+	PRINTL 戦力に余裕があるならバイトしてみるのも手です。
+	IF LOCAL:6 == 3
+		PRINTFORML 特に知力の高いキャラは研究助手をするのが良いでしょう。
+	ELSE
+		PRINTFORML 無駄な買い物を控えれば、もっと好評価になるでしょう。
+	ENDIF
+ELSEIF LOCAL:6 == 5
+	PRINTL かなりの大金持ちですね。ここまで来たらＳ評価を目指しましょう。
+	PRINTL アイドル稼業って最初は辛いけれども、
+	PRINTL 有名になればなるほど稼げる…　ハズです。
+ELSE
+	PRINTL ワンダフル！　これだけのお金を貯めるとは！
+	PRINTL あえてお金を使わず取っておいたりなど、苦労されたかと思います。
+	PRINTL そんなあなたに惜しみない賛辞を。素晴らしいです！
+ENDIF
+PRINTW 
+IF LOCAL > GLOBAL:110
+	GLOBAL:110 = LOCAL
+	SAVEGLOBAL
+ENDIF
+IF LOCAL == 1
+	PRINTL ついに…　ついに総合Ｅ評価が出てしまいましたか…
+	PRINTL これを見ているアナタはへっぽこ大魔王を名乗る義務があります。
+	IF LASTLOAD_VERSION == -1
+		PRINTL と思ったら、セーブ＆ロードなし…だと！？
+		PRINTL やるじゃねぇか旦那ァ、見直したぜッ！！！！
+	ELSE
+		PRINTL な…　何かの間違いですよね？　…もしや確信犯ではありませんか？
+	ENDIF
+	PRINTW 
+	IF GLOBAL:111 == 0 && LASTLOAD_VERSION == -1
+		PRINTL 【実績：覇者の証】を達成しました！
+		PRINTW 
+		GLOBAL:111 = 1
+		SAVEGLOBAL
+	ENDIF
+	IF GLOBAL:112 == 0
+		PRINTL 【実績：へっぽこ大魔王】を達成しました！
+		PRINTW 
+		GLOBAL:112 = 1
+		SAVEGLOBAL
+	ENDIF
+ELSEIF LOCAL == 6
+	PRINTL ついに…　ついに総合Ｓ評価が出ましたか！
+	PRINTL これを見ているアナタはGVTマスターを名乗る資格があります。
+	IF LASTLOAD_VERSION == -1
+		PRINTL おまけにセーブ＆ロードなし…だと！？
+		PRINTL そのリセットしない姿勢に感服致します！　おめでとうございます！！！
+	ELSE
+		PRINTL 何とも素晴らしい！　おめでとうございます！
+	ENDIF
+	PRINTL 
+	PRINTL ブラボーハラショーッ！
+	PRINTW 
+	IF GLOBAL:111 == 0 && LASTLOAD_VERSION == -1
+		PRINTL 【実績：覇者の証】を達成しました！
+		PRINTW 
+		GLOBAL:111 = 1
+		SAVEGLOBAL
+	ENDIF
+	IF GLOBAL:113 == 0
+		PRINTL 【実績：eraGVTマスター】を達成しました！
+		PRINTW 
+		GLOBAL:113 = 1
+		SAVEGLOBAL
+	ENDIF
+ELSE
+	IF LASTLOAD_VERSION == -1
+		PRINTL な、なんと…なんとなんと！！
+		PRINTL アナタ、セーブ＆ロードしてませんね！！
+		PRINTL こいつはぁたまげた！！！
+		PRINTL 
+		PRINTL そのリセットしない姿勢に感服致します！　おめでとうございます！
+	ELSE
+		PRINTL 以上、コメントコーナーでした。役に立つヒントはありましたか？
+		PRINTL ぜひとも次のプレイでまたお会いしましょう！
+	ENDIF
+	IF GLOBAL:111 == 0 && LASTLOAD_VERSION == -1
+		PRINTL 【実績：覇者の証】を達成しました！
+		PRINTW 
+		GLOBAL:111 = 1
+		SAVEGLOBAL
+	ENDIF
+ENDIF
+PRINTW 
+;各モードクリア回数の記録
+IF FLAG:0 == 2
+	GLOBAL:100 ++
+ELSEIF FLAG:0 == 1
+	GLOBAL:101 ++
+ELSEIF FLAG:0 == 4
+	GLOBAL:102 ++
+ENDIF
+SAVEGLOBAL
+;次周に向けて周回累積数を加算
+FLAG:854 ++
+RETURN LOCAL
+
+
+
+
+

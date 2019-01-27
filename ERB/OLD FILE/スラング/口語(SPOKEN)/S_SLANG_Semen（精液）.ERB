@@ -1,0 +1,78 @@
+;**********************************************************
+;基本ルール
+;加筆修正は、自由に行ってください
+;ただし、前の方が書いた文章は成るべく消さないでください
+;
+;口述での「精液」なので、吐息や詰まった表現などはありです
+;体力や発情など、ステータスでどもったりする様にしましょう
+;この変数を呼び出すときは、吃ることも含めてお使いください
+;
+;増やして欲しい隠語は、アウトプットしてリクエストなりしましょう
+;未登録の中に放り込むなり、掲示板にアップするなりすれば、
+;実装される可能性があります
+;
+;by 雑魚の人 2018/02/11
+;**********************************************************
+;Spoken_Semen(精液)の口述淫語
+;**********************************************************
+@S_SLANG_Semen(ARG)
+#DIMS S_SLANGWORD_Semen
+#FUNCTIONS
+
+;初期化
+S_SLANGWORD_Semen=
+
+
+;部位呼称
+IF TALENT:清純派
+	SELECTCASE RAND:3
+		CASE 2
+			S_SLANGWORD_Semen += "白いオシッコ"
+		CASE 1
+			S_SLANGWORD_Semen += "エッチな汁"
+		CASEELSE
+			S_SLANGWORD_Semen += "赤ちゃんの素"
+	ENDSELECT
+ELSEIF TALENT:淫乱 > 0
+	SELECTCASE RAND:5
+		CASE 4
+			S_SLANGWORD_Semen += "おちんぽミルク"
+		CASE 3
+			S_SLANGWORD_Semen += "雄ミルク"
+		CASEELSE
+			SELECTCASE RAND:3
+				CASE 2
+					S_SLANGWORD_Semen += "孕ませ"
+				CASE 1
+					S_SLANGWORD_Semen += "ザー"
+				CASEELSE
+					S_SLANGWORD_Semen += "子種"
+			ENDSELECT
+			S_SLANGWORD_Semen += "汁"
+	ENDSELECT
+ELSE
+	SELECTCASE RAND:3
+		CASE 2
+			S_SLANGWORD_Semen += "スペルマ"
+		CASE 1
+			S_SLANGWORD_Semen += "ザーメン"
+		CASEELSE
+			S_SLANGWORD_Semen += "精液"
+	ENDSELECT
+ENDIF
+
+
+;合成して出来上がった淫語を返す
+RETURNF S_SLANGWORD_Semen
+
+
+
+
+
+;*************【淫語覚書（未登録）】***********************
+;牡汁
+;
+;*************【淫語覚書（未登録）】***********************
+
+
+

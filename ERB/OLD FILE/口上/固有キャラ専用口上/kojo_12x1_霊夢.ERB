@@ -1,0 +1,2643 @@
+;eraGVT口上テンプレ
+;各関数のKOJO_霊夢_の0をcsvのキャラ番号に置換して使用します
+;汎用キャラ（キャラ番号0のキャラ）の口上を作成する場合は口上テンプレ_汎用キャラ用の方をお使いください
+;
+;例：キャラ番号1のキャラで口上を作成する場合
+;    KOJO_1_HITOKUTI_SHOP
+;
+;--------------------------------------------------
+;キャラクターの性成長で分岐させる際のガイダンス
+;
+;　ABL:従順		地の文はLv3以上で分岐		初めは反発していたキャラが大人しくなります。諦めたくはありませんが、強く抵抗する気にもなれません。
+;　ABL:欲望		地の文はLv3以上で分岐		性欲に抗えなくなり、嫌悪感より快楽が勝るようになります。快楽さえ与えてもらえるなら、受け入れてしまいましょう。
+;　TALENT:触手の虜	陥落素質			身も心も触手のお嫁さんになった状態です。好きなんです。大好きです。
+;　TALENT:淫乱		陥落素質			地の文では分岐がなく、欲望Lv4以上相当の扱いです。えっちなことならもう何でも平気です。
+;
+;　BASE:Ｃ結界耐久力	結界の耐久力が残っていると、該当する部位に触手は触れません。
+;　BASE:Ｖ結界耐久力	触れられていないため快楽も感じませんが、目の前に触手があるので嫌悪感や恐怖は感じます。
+;　BASE:Ａ結界耐久力	
+;　BASE:Ｂ結界耐久力	
+;
+;　TCVAR:2 == 4		奉仕フラグが立っている状態です。望むと望まざるとに関わらず、積極的に奉仕している状態です。
+;　TCVAR:2 == 100	Ｖ挿入防御フラグが立っている状態です。Ｖに挿入できませんが、触れられているので快楽は感じます。
+;
+;--------------------------------------------------
+
+;一口メッセージ
+
+;キャラ口上色
+;--------------------------------------------------
+@KOJO_1201_COLOR
+
+CALLFORM KOJO_霊夢_COLOR
+@KOJO_1211_COLOR
+
+CALLFORM KOJO_霊夢_COLOR
+@KOJO_霊夢_COLOR
+SETCOLOR 0xF08080
+
+;キャラ個別のオープニング
+;--------------------------------------------------
+@KOJO_1201_FIRST
+
+CALLFORM KOJO_霊夢_FIRST
+@KOJO_1211_FIRST
+
+CALLFORM KOJO_霊夢_FIRST
+@KOJO_霊夢_FIRST
+;ゲーム開始時に表示されるテキストを設定します
+;キャラが戦うに至った動機の説明など
+PRINTFORML 「……なんで、私がこんなところに」
+PRINTFORMDL ぽつりと呟く霊夢は、周囲からの視線を無視して”外”の光景を眺める
+PRINTFORMDL ビルが建ち並ぶごく普通の町並みには、袖が分離し脇の露わな改造巫女服は余りにもそぐわなくて
+PRINTFORMW 「どうやって帰ればいいのかしらね」
+PRINTFORMDL 呟いた瞬間、いきなり遠くで悲鳴があがり、周囲の人間が逃げ始める
+PRINTFORMDL 同時、霊夢の視界の先、幻想郷でも見たことのないバケモノが目に映った
+PRINTFORML 「っ！」
+PRINTFORMDW 反射的に、そのバケモノへ向けて飛び出す霊夢
+PRINTFORMDL 逃げている筈の人間達が、空を飛ぶ霊夢にあっけにとられているが、今はそんな事に構っている場合ではない
+PRINTFORML 「ちっ！　外もずいぶん厄介になったものね！」
+PRINTFORMDL 符と針を連続で打ち込む霊夢に、バケモノがこちらに意識を向けてくる
+PRINTFORMDW 効いてないと見て取った瞬間、霊夢は問答無用で夢想封印を叩き込む
+PRINTFORMDL 
+PRINTFORML 「……はぁ……しんど」
+PRINTFORMDL 呟きながら、霊夢はぼろクズになったバケモノを見つめる
+PRINTFORMDW 幻想郷の妖怪とは違うモノ、スペカルールなんて微塵も通用しないソレ
+PRINTFORMDL コイツラのせいで、自分がここに呼び寄せられたのかもしれない
+PRINTFORMDL そんな事を考える霊夢に、声がかけられた
+PRINTFORMDL コレと戦える人間を集めているという男に、霊夢は頷きを返す
+PRINTFORMDL 外の世界で生きる術など知らないのだ、たとえどれほど怪しくても、今は従う他に手はない
+PRINTFORMW 「……誰か、他にも来てたりするのかしら」
+PRINTL
+
+;ターン終了時の処理
+;--------------------------------------------------
+@KOJO_1201_TURNEND
+
+CALLFORM KOJO_霊夢_TURNEND
+@KOJO_1211_TURNEND
+
+CALLFORM KOJO_霊夢_TURNEND
+@KOJO_霊夢_TURNEND
+;ターン終了時に呼び出されるキャラ専用の処理です
+
+;ショップ画面
+;--------------------------------------------------
+@KOJO_1201_HITOKUTI_SHOP
+
+CALLFORM KOJO_霊夢_HITOKUTI_SHOP
+@KOJO_1211_HITOKUTI_SHOP
+
+CALLFORM KOJO_霊夢_HITOKUTI_SHOP
+@KOJO_霊夢_HITOKUTI_SHOP
+VARSET LOCAL
+;ショップ画面で選択されているときに一言しゃべります
+;普段の様子や体調、今の心情など
+SELECTCASE RAND:10
+CASE 9
+	PRINTFORML 「ふぁ……、めんどくさいわね」
+CASE 8
+	FOR LOCAL,1,CHARANUM
+		IF CALLNAME:LOCAL == "早苗"
+			IF !CFLAG:LOCAL:0
+				LOCAL:1 = 1
+			ELSE
+				LOCAL:1 = 2
+			ENDIF
+		ENDIF
+	NEXT
+	IF LOCAL:1 == 1
+		PRINTFORML 「早苗、なんか美味しいもの知らない？」
+	ELSEIF LOCAL:1 == 2
+		PRINTFORML 「どこいったのよ、早苗……」
+	ELSE
+		PRINTFORML 「たまったもんじゃないわね」
+	ENDIF
+CASE 7
+	FOR LOCAL,1,CHARANUM
+		IF CALLNAME:LOCAL == "魔理沙"
+			IF !CFLAG:LOCAL:0
+				LOCAL:1 = 1
+			ELSE
+				LOCAL:1 = 2
+			ENDIF
+		ENDIF
+	NEXT
+	IF LOCAL:1 == 1
+		PRINTFORML 「魔理沙、こっちの物は勝手に借りちゃダメよ」
+	ELSEIF LOCAL:1 == 2
+		PRINTFORML 「魔理沙……、さっさと帰ってきなさいよ……、バカ」
+	ELSE
+		PRINTFORML 「たまったもんじゃないわね」
+	ENDIF
+CASE 6
+	PRINTFORML 「……スペカになるくらいの術じゃないと効かないなんてねぇ」
+CASE 5
+	PRINTFORML 「こっちの菓子は甘すぎるわね、ホント」
+CASE 4
+	PRINTFORML 「紫のバカの仕業かしらね」
+CASE 3
+	PRINTFORML 「異変おきてなきゃ良いけど」
+CASE 2
+	PRINTFORML 「早く帰りたいわね」
+CASE 1
+	FOR LOCAL,1,CHARANUM
+		IF CALLNAME:LOCAL == "早苗"
+			IF !CFLAG:LOCAL:0
+				SETBIT LOCAL:1,0
+			ELSE
+				SETBIT LOCAL:1,1
+			ENDIF
+		ELSEIF CALLNAME:LOCAL == "魔理沙"
+			IF !CFLAG:LOCAL:0
+				SETBIT LOCAL:1,2
+			ELSE
+				SETBIT LOCAL:1,3
+			ENDIF
+		ELSE
+			IF !CFLAG:LOCAL:0
+				SETBIT LOCAL:1,4
+			ELSE
+				SETBIT LOCAL:1,5
+			ENDIF
+		ENDIF
+	NEXT
+	IF GETBIT(LOCAL:1,0) && GETBIT(LOCAL:1,2)
+		PRINTFORML 「……まぁ、魔理沙と早苗が居るだけましね」
+	ELSEIF GETBIT(LOCAL:1,0) && GETBIT(LOCAL:1,3)
+		PRINTFORML 「早苗だけじゃ心許ないわよ、魔理沙探さないと」
+	ELSEIF GETBIT(LOCAL:1,1) && GETBIT(LOCAL:1,2)
+		PRINTFORML 「魔理沙だけだと辛いわね、早苗見つけないと」
+	ELSEIF GETBIT(LOCAL:1,1) && GETBIT(LOCAL:1,3)
+		PRINTFORML 「……早く、……早く二人を見つけないと」
+	ELSEIF (GETBIT(LOCAL:1,0) || GETBIT(LOCAL:1,1)) && !(GETBIT(LOCAL:1,2) && GETBIT(LOCAL:1,3))
+		IF GETBIT(LOCAL:1,0)
+			PRINTFORML 「早苗、なんか美味しいもの知らない？」
+		ELSE
+			PRINTFORML 「どこいったのよ、早苗……」
+		ENDIF
+	ELSEIF !(GETBIT(LOCAL:1,0) && GETBIT(LOCAL:1,1)) && (GETBIT(LOCAL:1,2) || GETBIT(LOCAL:1,3))
+		IF GETBIT(LOCAL:1,2)
+			PRINTFORML 「魔理沙、こっちの物は勝手に借りちゃダメよ」
+		ELSE
+			PRINTFORML 「魔理沙……、さっさと帰ってきなさいよ……、バカ」
+		ENDIF
+	ELSEIF GETBIT(LOCAL:1,4)
+		PRINTFORML 「ふぁ、あいつら元気ねぇ」
+	ELSEIF GETBIT(LOCAL:1,5)
+		PRINTFORML 「ほっとくわけには、いかないわよね」
+	ENDIF
+CASE 0
+	PRINTFORML 「妖怪退治が専門の筈なんだけどね……」
+ENDSELECT
+
+
+;鍛錬
+
+;鍛練開始
+;--------------------------------------------------
+@KOJO_1201_TRAINING_BEGIN
+
+CALLFORM KOJO_霊夢_TRAINING_BEGIN
+@KOJO_1211_TRAINING_BEGIN
+
+CALLFORM KOJO_霊夢_TRAINING_BEGIN
+@KOJO_霊夢_TRAINING_BEGIN
+
+;鍛練終了
+;--------------------------------------------------
+@KOJO_1201_TRAINING_END
+
+CALLFORM KOJO_霊夢_TRAINING_END
+@KOJO_1211_TRAINING_END
+
+CALLFORM KOJO_霊夢_TRAINING_END
+@KOJO_霊夢_TRAINING_END
+
+;走りこみ
+;--------------------------------------------------
+@KOJO_1201_TRAINING_HASHIRI
+
+CALLFORM KOJO_霊夢_TRAINING_HASHIRI
+@KOJO_1211_TRAINING_HASHIRI
+
+CALLFORM KOJO_霊夢_TRAINING_HASHIRI
+@KOJO_霊夢_TRAINING_HASHIRI
+
+;精神鍛錬
+;--------------------------------------------------
+@KOJO_1201_TRAINING_SEISHIN
+
+CALLFORM KOJO_霊夢_TRAINING_SEISHIN
+@KOJO_1211_TRAINING_SEISHIN
+
+CALLFORM KOJO_霊夢_TRAINING_SEISHIN
+@KOJO_霊夢_TRAINING_SEISHIN
+
+;瞑想
+;--------------------------------------------------
+@KOJO_1201_TRAINING_MEISOU
+
+CALLFORM KOJO_霊夢_TRAINING_MEISOU
+@KOJO_1211_TRAINING_MEISOU
+
+CALLFORM KOJO_霊夢_TRAINING_MEISOU
+@KOJO_霊夢_TRAINING_MEISOU
+
+;筋トレ
+;--------------------------------------------------
+@KOJO_1201_TRAINING_KINTORE
+
+CALLFORM KOJO_霊夢_TRAINING_KINTORE
+@KOJO_1211_TRAINING_KINTORE
+
+CALLFORM KOJO_霊夢_TRAINING_KINTORE
+@KOJO_霊夢_TRAINING_KINTORE
+
+;自衛訓練
+;--------------------------------------------------
+@KOJO_1201_TRAINING_JIEI
+
+CALLFORM KOJO_霊夢_TRAINING_JIEI
+@KOJO_1211_TRAINING_JIEI
+
+CALLFORM KOJO_霊夢_TRAINING_JIEI
+@KOJO_霊夢_TRAINING_JIEI
+
+;ダッシュ
+;--------------------------------------------------
+@KOJO_1201_TRAINING_DASH
+
+CALLFORM KOJO_霊夢_TRAINING_DASH
+@KOJO_1211_TRAINING_DASH
+
+CALLFORM KOJO_霊夢_TRAINING_DASH
+@KOJO_霊夢_TRAINING_DASH
+
+;近距離戦闘訓練
+;--------------------------------------------------
+@KOJO_1201_TRAINING_SHORT
+
+CALLFORM KOJO_霊夢_TRAINING_SHORT
+@KOJO_1211_TRAINING_SHORT
+
+CALLFORM KOJO_霊夢_TRAINING_SHORT
+@KOJO_霊夢_TRAINING_SHORT
+
+;中距離戦闘訓練
+;--------------------------------------------------
+@KOJO_1201_TRAINING_MIDDLE
+
+CALLFORM KOJO_霊夢_TRAINING_MIDDLE
+@KOJO_1211_TRAINING_MIDDLE
+
+CALLFORM KOJO_霊夢_TRAINING_MIDDLE
+@KOJO_霊夢_TRAINING_MIDDLE
+
+;遠距離戦闘訓練
+;--------------------------------------------------
+@KOJO_1201_TRAINING_LONG
+
+CALLFORM KOJO_霊夢_TRAINING_LONG
+@KOJO_1211_TRAINING_LONG
+
+CALLFORM KOJO_霊夢_TRAINING_LONG
+@KOJO_霊夢_TRAINING_LONG
+
+;戦術研究
+;--------------------------------------------------
+@KOJO_1201_TRAINING_TACTICS
+
+CALLFORM KOJO_霊夢_TRAINING_TACTICS
+@KOJO_1211_TRAINING_TACTICS
+
+CALLFORM KOJO_霊夢_TRAINING_TACTICS
+@KOJO_霊夢_TRAINING_TACTICS
+
+;触手拘束具が鍛錬の邪魔をする
+;--------------------------------------------------
+@KOJO_1201_TRAINING_TENTACLECLOTH
+
+CALLFORM KOJO_霊夢_TRAINING_TENTACLECLOTH
+@KOJO_1211_TRAINING_TENTACLECLOTH
+
+CALLFORM KOJO_霊夢_TRAINING_TENTACLECLOTH
+@KOJO_霊夢_TRAINING_TENTACLECLOTH
+
+
+;触手と遭遇
+
+;ザコ触手と戦闘
+;--------------------------------------------------
+@KOJO_1201_ENCOUNT_MOB
+
+CALLFORM KOJO_霊夢_ENCOUNT_MOB
+@KOJO_1211_ENCOUNT_MOB
+
+CALLFORM KOJO_霊夢_ENCOUNT_MOB
+@KOJO_霊夢_ENCOUNT_MOB
+
+;ボス触手と戦闘
+;--------------------------------------------------
+@KOJO_1201_ENCOUNT_BOSS
+
+CALLFORM KOJO_霊夢_ENCOUNT_BOSS
+@KOJO_1211_ENCOUNT_BOSS
+
+CALLFORM KOJO_霊夢_ENCOUNT_BOSS
+@KOJO_霊夢_ENCOUNT_BOSS
+
+;ラスボス触手と戦闘
+;--------------------------------------------------
+@KOJO_霊夢_ENCOUNT_LASTBOSS
+
+;初めて洗脳キャラと対峙した
+;--------------------------------------------------
+@KOJO_1201_ENCOUNT_SENNOU_FIRST
+
+CALLFORM KOJO_霊夢_ENCOUNT_SENNOU_FIRST
+@KOJO_1211_ENCOUNT_SENNOU_FIRST
+
+CALLFORM KOJO_霊夢_ENCOUNT_SENNOU_FIRST
+@KOJO_霊夢_ENCOUNT_SENNOU_FIRST
+
+;洗脳キャラと対峙
+;--------------------------------------------------
+@KOJO_1201_ENCOUNT_SENNOU
+
+CALLFORM KOJO_霊夢_ENCOUNT_SENNOU
+@KOJO_1211_ENCOUNT_SENNOU
+
+CALLFORM KOJO_霊夢_ENCOUNT_SENNOU
+@KOJO_霊夢_ENCOUNT_SENNOU
+
+;始めて悪堕ちキャラと対峙した
+;--------------------------------------------------
+@KOJO_1201_ENCOUNT_AKUOTI_FIRST
+
+CALLFORM KOJO_霊夢_ENCOUNT_AKUOTI_FIRST
+@KOJO_1211_ENCOUNT_AKUOTI_FIRST
+
+CALLFORM KOJO_霊夢_ENCOUNT_AKUOTI_FIRST
+@KOJO_霊夢_ENCOUNT_AKUOTI_FIRST
+IF CALLNAME:(FLAG:111) == "魔理沙"
+	PRINTFORML 「あーもう、急に消えたと思ったらなにやってんのよバカ！」
+	PRINTFORMDL 霊夢の呼びかけに、にやにやと笑う魔理沙
+	PRINTFORMDL 身につけている服は異常に布地が切り取られ、かろうじて乳首や秘部を隠している程度
+	PRINTFORMDL 僅かに元の服の名残はあるものの、扇情的で蠱惑的な様子に、一瞬見とれてしまう
+	PRINTFORML 「っっ！　さっさと目を覚ましなさいよね！」
+	PRINTFORMDL その思いを必死に振り払って、霊夢は、魔理沙をにらみつけた
+ELSEIF CALLNAME:(FLAG:111) == "早苗"
+	PRINTFORML 「なにやってんのよ、早苗」
+	PRINTFORMDL 霊夢の声に、早苗が笑みを浮かべる
+	PRINTFORMDL 秘部と胸を覆う布地が剥ぎ取られて、豊かな乳房と秘処を晒す早苗
+	PRINTFORMDL その蠱惑的な姿に、一瞬欲情を覚えた霊夢は軽く頭を振った
+	PRINTFORML 「さっさと正気に戻ってもらうわよ」
+	PRINTFORMDL 目に映る場所に淫らな文様を刻む早苗に言葉を投げつけ、霊夢は構えをとった
+ENDIF
+
+;悪堕ちキャラと対峙
+;--------------------------------------------------
+@KOJO_1201_ENCOUNT_AKUOTI
+
+CALLFORM KOJO_霊夢_ENCOUNT_AKUOTI
+@KOJO_1211_ENCOUNT_AKUOTI
+
+CALLFORM KOJO_霊夢_ENCOUNT_AKUOTI
+@KOJO_霊夢_ENCOUNT_AKUOTI
+IF CALLNAME:(FLAG:111) == "魔理沙"
+	PRINTFORML 「帰るわよ、魔理沙」
+	PRINTFORMDL にやにやと笑う魔理沙に呼びかけながら、深呼吸する霊夢
+	PRINTFORMDL 淫猥な衣装と微笑み見とれそうになった霊夢は、慌てて頭を振って気を取り直す
+	PRINTFORML 「さっさと目を覚ますよう、ちょっと痛くするわよ」
+	PRINTFORMDL 科を作って笑う魔理沙に鼓動が早まるのを感じて、それでも霊夢は構えをとった
+ELSEIF CALLNAME:(FLAG:111) == "早苗"
+	PRINTFORML 「早苗、いい加減、正気に戻りなさい」
+	PRINTFORMDL 霊夢の言葉に、早苗はにっこりと笑うだけで応えない
+	PRINTFORMDL その笑みに、妙な欲情を覚え、必死にソレを振り払う
+	PRINTFORML 「ったく、情けないわね」
+	PRINTFORMDL 欲情を押し殺し、霊夢は戦うために身構えた
+ENDIF
+
+
+
+;戦闘関連の口上
+
+;キャラの行動
+
+;変身前のかけ声
+;口上オリジナルのかけ声を使用する場合のみコメントアウトを外して記述してください
+;@KOJO_霊夢_BATTLE_CHARA_TRANSFORMCALL
+
+;変身後の名乗り
+;口上オリジナルの名乗りを使用する場合のみコメントアウトを外して記述してください
+;@KOJO_霊夢_BATTLE_CHARA_NANORI
+
+;衣装の損傷が酷くなった関連
+
+;アウターが破れ始めた
+;--------------------------------------------------
+@KOJO_1201_BATTLE_CLOTH_OUTERDAMAGE
+
+CALLFORM KOJO_霊夢_BATTLE_CLOTH_OUTERDAMAGE
+@KOJO_1211_BATTLE_CLOTH_OUTERDAMAGE
+
+CALLFORM KOJO_霊夢_BATTLE_CLOTH_OUTERDAMAGE
+@KOJO_霊夢_BATTLE_CLOTH_OUTERDAMAGE
+;衣装が損傷した場合に呼び出される口上です
+IF CALLNAME:(FLAG:111) == "魔理沙"
+	PRINTFORML 「きゃっ！？　このスケベなに考えてるのよ！」
+	PRINTFORMDL いらだちを言葉に代えながら、霊夢は魔理沙をにらみつける
+	PRINTFORMDL 生地のそこかしこに裂け目が生じ、艶やかな肌が垣間見えた
+ELSEIF CALLNAME:(FLAG:111) == "早苗"
+	PRINTFORML 「やめてよバカ！」
+	PRINTFORMDL 早苗をにらみつけながら叫ぶ霊夢
+	PRINTFORMDL 切り裂かれた服の合間から、まるで光っているような肌が見えた
+ENDIF
+
+;アウターが破れた
+;--------------------------------------------------
+@KOJO_1201_BATTLE_CLOTH_OUTERBREAK
+
+CALLFORM KOJO_霊夢_BATTLE_CLOTH_OUTERBREAK
+@KOJO_1211_BATTLE_CLOTH_OUTERBREAK
+
+CALLFORM KOJO_霊夢_BATTLE_CLOTH_OUTERBREAK
+@KOJO_霊夢_BATTLE_CLOTH_OUTERBREAK
+;衣装が完全に破壊された場合に呼び出される口上です
+IF CALLNAME:(FLAG:111) == "魔理沙"
+	PRINTFORML 「このスケベＨヘンタイっ！　こんなところでっ！」
+	PRINTFORMDL 顔を真っ赤にして怒る霊夢に、にやにや笑う魔理沙
+	PRINTFORML 「あとで覚えときなさいよ！」
+	IF MARK:快楽刻印 + MARK:屈服刻印 + MARK:恥辱刻印 > 4 || ABL:欲望 > 5
+		PRINTFORMDL 口では文句を言いつつも、霊夢は心臓が高鳴り蜜が湧いた事を自覚する
+		PRINTFORML （ちがう、こんなの、こんなの）
+	ELSE
+		PRINTFORMDL 霊夢の健康的な肌が朱に染まっていく
+		PRINTFORML （魔理沙のばか、正気の時にしてよ）
+	ENDIF
+ELSEIF CALLNAME:(FLAG:111) == "早苗"
+	PRINTFORML 「早苗、いい加減にしてよっ！」
+	PRINTFORMDL 頬を紅くしながら叫ぶ霊夢に、早苗は楽しそうな笑顔を浮かべる
+	PRINTFORML 「いい加減にしないと、ぶっ飛ばすからね」
+	IF MARK:快楽刻印 + MARK:屈服刻印 + MARK:恥辱刻印 > 4 || ABL:欲望 > 5
+		PRINTFORMDL 口ではそう返しながら、霊夢は秘処から恥蜜がこぼれ落ちる感触に身を震わせた
+		PRINTFORML （恥ずかしいだけ、恥ずかしいだけなんだから、気持ちよくなんて……）
+	ELSE
+		PRINTFORMDL 霊夢の強がりに、早苗がさらに笑みを深める
+		PRINTFORML （いい加減、本気で怒るわよ、もう）
+	ENDIF
+ENDIF
+
+;インナーが破れ始めた
+;--------------------------------------------------
+@KOJO_1201_BATTLE_CLOTH_INNERDAMAGE
+
+CALLFORM KOJO_霊夢_BATTLE_CLOTH_INNERDAMAGE
+@KOJO_1211_BATTLE_CLOTH_INNERDAMAGE
+
+CALLFORM KOJO_霊夢_BATTLE_CLOTH_INNERDAMAGE
+@KOJO_霊夢_BATTLE_CLOTH_INNERDAMAGE
+
+;インナーが破れた
+;--------------------------------------------------
+@KOJO_1201_BATTLE_CLOTH_INNERBREAK
+
+CALLFORM KOJO_霊夢_BATTLE_CLOTH_INNERBREAK
+@KOJO_1211_BATTLE_CLOTH_INNERBREAK
+
+CALLFORM KOJO_霊夢_BATTLE_CLOTH_INNERBREAK
+@KOJO_霊夢_BATTLE_CLOTH_INNERBREAK
+
+;気力が尽きて変身が強制的に解けた
+@KOJO_霊夢_BATTLE_CHARA_TRANSRELEASE
+
+;撤退成功
+;--------------------------------------------------
+@KOJO_1201_BATTLE_CHARA_TETTAI_SUCCESS
+
+CALLFORM KOJO_霊夢_BATTLE_CHARA_TETTAI_SUCCESS
+@KOJO_1211_BATTLE_CHARA_TETTAI_SUCCESS
+
+CALLFORM KOJO_霊夢_BATTLE_CHARA_TETTAI_SUCCESS
+@KOJO_霊夢_BATTLE_CHARA_TETTAI_SUCCESS
+
+;撤退失敗
+;--------------------------------------------------
+@KOJO_1201_BATTLE_CHARA_TETTAI_FALSE
+
+CALLFORM KOJO_霊夢_BATTLE_CHARA_TETTAI_FALSE
+@KOJO_1211_BATTLE_CHARA_TETTAI_FALSE
+
+CALLFORM KOJO_霊夢_BATTLE_CHARA_TETTAI_FALSE
+@KOJO_霊夢_BATTLE_CHARA_TETTAI_FALSE
+
+;近距離攻撃
+;--------------------------------------------------
+@KOJO_1201_BATTLE_CHARA_ATTACK_RANGE_SHORT
+
+CALLFORM KOJO_霊夢_BATTLE_CHARA_ATTACK_RANGE_SHORT
+@KOJO_1211_BATTLE_CHARA_ATTACK_RANGE_SHORT
+
+CALLFORM KOJO_霊夢_BATTLE_CHARA_ATTACK_RANGE_SHORT
+@KOJO_霊夢_BATTLE_CHARA_ATTACK_RANGE_SHORT
+
+;中距離攻撃
+;--------------------------------------------------
+@KOJO_1201_BATTLE_CHARA_ATTACK_RANGE_MIDDLE
+
+CALLFORM KOJO_霊夢_BATTLE_CHARA_ATTACK_RANGE_MIDDLE
+@KOJO_1211_BATTLE_CHARA_ATTACK_RANGE_MIDDLE
+
+CALLFORM KOJO_霊夢_BATTLE_CHARA_ATTACK_RANGE_MIDDLE
+@KOJO_霊夢_BATTLE_CHARA_ATTACK_RANGE_MIDDLE
+
+;遠距離攻撃
+;--------------------------------------------------
+@KOJO_1201_BATTLE_CHARA_ATTACK_RANGE_LONG
+
+CALLFORM KOJO_霊夢_BATTLE_CHARA_ATTACK_RANGE_LONG
+@KOJO_1211_BATTLE_CHARA_ATTACK_RANGE_LONG
+
+CALLFORM KOJO_霊夢_BATTLE_CHARA_ATTACK_RANGE_LONG
+@KOJO_霊夢_BATTLE_CHARA_ATTACK_RANGE_LONG
+
+;防御
+;--------------------------------------------------
+@KOJO_1201_BATTLE_CHARA_DEFENSE
+
+CALLFORM KOJO_霊夢_BATTLE_CHARA_DEFENSE
+@KOJO_1211_BATTLE_CHARA_DEFENSE
+
+CALLFORM KOJO_霊夢_BATTLE_CHARA_DEFENSE
+@KOJO_霊夢_BATTLE_CHARA_DEFENSE
+
+;距離をとる
+;--------------------------------------------------
+@KOJO_1201_BATTLE_CHARA_TAKEAWAY
+
+CALLFORM KOJO_霊夢_BATTLE_CHARA_TAKEAWAY
+@KOJO_1211_BATTLE_CHARA_TAKEAWAY
+
+CALLFORM KOJO_霊夢_BATTLE_CHARA_TAKEAWAY
+@KOJO_霊夢_BATTLE_CHARA_TAKEAWAY
+
+;何もしない
+;--------------------------------------------------
+@KOJO_1201_BATTLE_CHARA_NOACTION
+
+CALLFORM KOJO_霊夢_BATTLE_CHARA_NOACTION
+@KOJO_1211_BATTLE_CHARA_NOACTION
+
+CALLFORM KOJO_霊夢_BATTLE_CHARA_NOACTION
+@KOJO_霊夢_BATTLE_CHARA_NOACTION
+
+;振り解く
+;--------------------------------------------------
+@KOJO_1201_BATTLE_CHARA_HURIHODOKU
+
+CALLFORM KOJO_霊夢_BATTLE_CHARA_HURIHODOKU
+@KOJO_1211_BATTLE_CHARA_HURIHODOKU
+
+CALLFORM KOJO_霊夢_BATTLE_CHARA_HURIHODOKU
+@KOJO_霊夢_BATTLE_CHARA_HURIHODOKU
+
+;暴れる
+;--------------------------------------------------
+@KOJO_1201_BATTLE_CHARA_ABARERU
+
+CALLFORM KOJO_霊夢_BATTLE_CHARA_ABARERU
+@KOJO_1211_BATTLE_CHARA_ABARERU
+
+CALLFORM KOJO_霊夢_BATTLE_CHARA_ABARERU
+@KOJO_霊夢_BATTLE_CHARA_ABARERU
+
+;耐える
+;--------------------------------------------------
+@KOJO_1201_BATTLE_CHARA_TAERU
+
+CALLFORM KOJO_霊夢_BATTLE_CHARA_TAERU
+@KOJO_1211_BATTLE_CHARA_TAERU
+
+CALLFORM KOJO_霊夢_BATTLE_CHARA_TAERU
+@KOJO_霊夢_BATTLE_CHARA_TAERU
+;あまり調教が進んでおらず、闘志が残っている状態です
+;情報を集めるため、油断を誘うためなど、まだ諦めていないような口上が相応しいでしょう
+
+;なすがまま
+;--------------------------------------------------
+@KOJO_1201_BATTLE_CHARA_NASUGAMAMA
+
+CALLFORM KOJO_霊夢_BATTLE_CHARA_NASUGAMAMA
+@KOJO_1211_BATTLE_CHARA_NASUGAMAMA
+
+CALLFORM KOJO_霊夢_BATTLE_CHARA_NASUGAMAMA
+@KOJO_霊夢_BATTLE_CHARA_NASUGAMAMA
+;苦痛や恐怖が高くなって翻弄されている状態です
+;余裕がなくなった様子を描写するのが良いでしょう
+
+;受け入れる
+;--------------------------------------------------
+@KOJO_1201_BATTLE_CHARA_UKEIRERU
+
+CALLFORM KOJO_霊夢_BATTLE_CHARA_UKEIRERU
+@KOJO_1211_BATTLE_CHARA_UKEIRERU
+
+CALLFORM KOJO_霊夢_BATTLE_CHARA_UKEIRERU
+@KOJO_霊夢_BATTLE_CHARA_UKEIRERU
+;屈服で心が折れたか、快楽に流されている状態です
+;普段よりも快楽に素直になっている様子を描写するのが良いでしょう
+
+;奉仕する
+;--------------------------------------------------
+@KOJO_1201_BATTLE_CHARA_HOUSI
+
+CALLFORM KOJO_霊夢_BATTLE_CHARA_HOUSI
+@KOJO_1211_BATTLE_CHARA_HOUSI
+
+CALLFORM KOJO_霊夢_BATTLE_CHARA_HOUSI
+@KOJO_霊夢_BATTLE_CHARA_HOUSI
+;恭順する気持ちから触手を満足させようとしている状態です
+;口では言い訳しつつ、心の底では触手のことが大好きです
+
+;Ｖ挿入防御
+;--------------------------------------------------
+@KOJO_1201_BATTLE_CHARA_ANTI_V
+
+CALLFORM KOJO_霊夢_BATTLE_CHARA_ANTI_V
+@KOJO_1211_BATTLE_CHARA_ANTI_V
+
+CALLFORM KOJO_霊夢_BATTLE_CHARA_ANTI_V
+@KOJO_霊夢_BATTLE_CHARA_ANTI_V
+;なりふり構わず処女だけを守り通す構えです
+;調教が進むと使えなくなるのであまり調教が進んでいない状況を想定しましょう
+
+;キャラの行動の結果
+
+;攻撃がクリティカルヒット
+;--------------------------------------------------
+@KOJO_1201_BATTLE_CHARA_ATTACK_CRITICAL_HIT
+
+CALLFORM KOJO_霊夢_BATTLE_CHARA_ATTACK_CRITICAL_HIT
+@KOJO_1211_BATTLE_CHARA_ATTACK_CRITICAL_HIT
+
+CALLFORM KOJO_霊夢_BATTLE_CHARA_ATTACK_CRITICAL_HIT
+@KOJO_霊夢_BATTLE_CHARA_ATTACK_CRITICAL_HIT
+
+;攻撃が通常ヒット
+;--------------------------------------------------
+@KOJO_1201_BATTLE_CHARA_ATTACK_HIT
+
+CALLFORM KOJO_霊夢_BATTLE_CHARA_ATTACK_HIT
+@KOJO_1211_BATTLE_CHARA_ATTACK_HIT
+
+CALLFORM KOJO_霊夢_BATTLE_CHARA_ATTACK_HIT
+@KOJO_霊夢_BATTLE_CHARA_ATTACK_HIT
+
+;攻撃失敗
+;--------------------------------------------------
+@KOJO_1201_BATTLE_CHARA_ATTACK_FALSE
+
+CALLFORM KOJO_霊夢_BATTLE_CHARA_ATTACK_FALSE
+@KOJO_1211_BATTLE_CHARA_ATTACK_FALSE
+
+CALLFORM KOJO_霊夢_BATTLE_CHARA_ATTACK_FALSE
+@KOJO_霊夢_BATTLE_CHARA_ATTACK_FALSE
+
+;振り解く成功
+;--------------------------------------------------
+@KOJO_1201_BATTLE_CHARA_HURIHODOKU_SUCCESS
+
+CALLFORM KOJO_霊夢_BATTLE_CHARA_HURIHODOKU_SUCCESS
+@KOJO_1211_BATTLE_CHARA_HURIHODOKU_SUCCESS
+
+CALLFORM KOJO_霊夢_BATTLE_CHARA_HURIHODOKU_SUCCESS
+@KOJO_霊夢_BATTLE_CHARA_HURIHODOKU_SUCCESS
+
+;振り解く失敗
+;--------------------------------------------------
+@KOJO_1201_BATTLE_CHARA_HURIHODOKU_FALSE
+
+CALLFORM KOJO_霊夢_BATTLE_CHARA_HURIHODOKU_FALSE
+@KOJO_1211_BATTLE_CHARA_HURIHODOKU_FALSE
+
+CALLFORM KOJO_霊夢_BATTLE_CHARA_HURIHODOKU_FALSE
+@KOJO_霊夢_BATTLE_CHARA_HURIHODOKU_FALSE
+
+
+
+;敵側の行動（攻撃など）
+
+;敵が攻撃
+;--------------------------------------------------
+@KOJO_1201_BATTLE_TENTACLE_ATTACK
+
+CALLFORM KOJO_霊夢_BATTLE_TENTACLE_ATTACK
+@KOJO_1211_BATTLE_TENTACLE_ATTACK
+
+CALLFORM KOJO_霊夢_BATTLE_TENTACLE_ATTACK
+@KOJO_霊夢_BATTLE_TENTACLE_ATTACK
+
+;敵が絡みつく
+;--------------------------------------------------
+@KOJO_1201_BATTLE_TENTACLE_KARAMITUKU
+
+CALLFORM KOJO_霊夢_BATTLE_TENTACLE_KARAMITUKU
+@KOJO_1211_BATTLE_TENTACLE_KARAMITUKU
+
+CALLFORM KOJO_霊夢_BATTLE_TENTACLE_KARAMITUKU
+@KOJO_霊夢_BATTLE_TENTACLE_KARAMITUKU
+
+;敵が体液を吐く
+;--------------------------------------------------
+@KOJO_1201_BATTLE_TENTACLE_TAIEKI
+
+CALLFORM KOJO_霊夢_BATTLE_TENTACLE_TAIEKI
+@KOJO_1211_BATTLE_TENTACLE_TAIEKI
+
+CALLFORM KOJO_霊夢_BATTLE_TENTACLE_TAIEKI
+@KOJO_霊夢_BATTLE_TENTACLE_TAIEKI
+
+;敵が距離をとる
+;--------------------------------------------------
+@KOJO_1201_BATTLE_TENTACLE_TAKEAWAY
+
+CALLFORM KOJO_霊夢_BATTLE_TENTACLE_TAKEAWAY
+@KOJO_1211_BATTLE_TENTACLE_TAKEAWAY
+
+CALLFORM KOJO_霊夢_BATTLE_TENTACLE_TAKEAWAY
+@KOJO_霊夢_BATTLE_TENTACLE_TAKEAWAY
+
+;敵が押し倒すを開始
+;--------------------------------------------------
+@KOJO_1201_BATTLE_TENTACLE_OSHITAOSU
+
+CALLFORM KOJO_霊夢_BATTLE_TENTACLE_OSHITAOSU
+@KOJO_1211_BATTLE_TENTACLE_OSHITAOSU
+
+CALLFORM KOJO_霊夢_BATTLE_TENTACLE_OSHITAOSU
+@KOJO_霊夢_BATTLE_TENTACLE_OSHITAOSU
+
+
+
+;敵の行動の結果
+
+;敵の攻撃がクリティカルヒット
+;--------------------------------------------------
+@KOJO_1201_BATTLE_TENTACLE_ATTACK_CRITICAL_HIT
+
+CALLFORM KOJO_霊夢_BATTLE_TENTACLE_ATTACK_CRITICAL_HIT
+@KOJO_1211_BATTLE_TENTACLE_ATTACK_CRITICAL_HIT
+
+CALLFORM KOJO_霊夢_BATTLE_TENTACLE_ATTACK_CRITICAL_HIT
+@KOJO_霊夢_BATTLE_TENTACLE_ATTACK_CRITICAL_HIT
+
+;敵の攻撃が通常ヒット
+;--------------------------------------------------
+@KOJO_1201_BATTLE_TENTACLE_ATTACK_HIT
+
+CALLFORM KOJO_霊夢_BATTLE_TENTACLE_ATTACK_HIT
+@KOJO_1211_BATTLE_TENTACLE_ATTACK_HIT
+
+CALLFORM KOJO_霊夢_BATTLE_TENTACLE_ATTACK_HIT
+@KOJO_霊夢_BATTLE_TENTACLE_ATTACK_HIT
+
+;敵の攻撃を回避
+;--------------------------------------------------
+@KOJO_1201_BATTLE_TENTACLE_ATTACK_FALSE
+
+CALLFORM KOJO_霊夢_BATTLE_TENTACLE_ATTACK_FALSE
+@KOJO_1211_BATTLE_TENTACLE_ATTACK_FALSE
+
+CALLFORM KOJO_霊夢_BATTLE_TENTACLE_ATTACK_FALSE
+@KOJO_霊夢_BATTLE_TENTACLE_ATTACK_FALSE
+
+;敵の絡みつくが成功
+;--------------------------------------------------
+@KOJO_1201_BATTLE_TENTACLE_KARAMITUKU_SUCCESS
+
+CALLFORM KOJO_霊夢_BATTLE_TENTACLE_KARAMITUKU_SUCCESS
+@KOJO_1211_BATTLE_TENTACLE_KARAMITUKU_SUCCESS
+
+CALLFORM KOJO_霊夢_BATTLE_TENTACLE_KARAMITUKU_SUCCESS
+@KOJO_霊夢_BATTLE_TENTACLE_KARAMITUKU_SUCCESS
+
+;敵の絡みつくを回避
+;--------------------------------------------------
+@KOJO_1201_BATTLE_TENTACLE_KARAMITUKU_FALSE
+
+CALLFORM KOJO_霊夢_BATTLE_TENTACLE_KARAMITUKU_FALSE
+@KOJO_1211_BATTLE_TENTACLE_KARAMITUKU_FALSE
+
+CALLFORM KOJO_霊夢_BATTLE_TENTACLE_KARAMITUKU_FALSE
+@KOJO_霊夢_BATTLE_TENTACLE_KARAMITUKU_FALSE
+
+;敵の体液を吐くがヒット
+;--------------------------------------------------
+@KOJO_1201_BATTLE_TENTACLE_TAIEKI_HIT
+
+CALLFORM KOJO_霊夢_BATTLE_TENTACLE_TAIEKI_HIT
+@KOJO_1211_BATTLE_TENTACLE_TAIEKI_HIT
+
+CALLFORM KOJO_霊夢_BATTLE_TENTACLE_TAIEKI_HIT
+@KOJO_霊夢_BATTLE_TENTACLE_TAIEKI_HIT
+
+;敵の体液を吐くを回避
+;--------------------------------------------------
+@KOJO_1201_BATTLE_TENTACLE_TAIEKI_FALSE
+
+CALLFORM KOJO_霊夢_BATTLE_TENTACLE_TAIEKI_FALSE
+@KOJO_1211_BATTLE_TENTACLE_TAIEKI_FALSE
+
+CALLFORM KOJO_霊夢_BATTLE_TENTACLE_TAIEKI_FALSE
+@KOJO_霊夢_BATTLE_TENTACLE_TAIEKI_FALSE
+
+;敵の押し倒すがヒット
+;--------------------------------------------------
+@KOJO_1201_BATTLE_TENTACLE_OSHITAOSU_SUCCESS
+
+CALLFORM KOJO_霊夢_BATTLE_TENTACLE_OSHITAOSU_SUCCESS
+@KOJO_1211_BATTLE_TENTACLE_OSHITAOSU_SUCCESS
+
+CALLFORM KOJO_霊夢_BATTLE_TENTACLE_OSHITAOSU_SUCCESS
+@KOJO_霊夢_BATTLE_TENTACLE_OSHITAOSU_SUCCESS
+
+;敵の押し倒すを回避
+;--------------------------------------------------
+@KOJO_1201_BATTLE_TENTACLE_OSHITAOSU_FALSE
+
+CALLFORM KOJO_霊夢_BATTLE_TENTACLE_OSHITAOSU_FALSE
+@KOJO_1211_BATTLE_TENTACLE_OSHITAOSU_FALSE
+
+CALLFORM KOJO_霊夢_BATTLE_TENTACLE_OSHITAOSU_FALSE
+@KOJO_霊夢_BATTLE_TENTACLE_OSHITAOSU_FALSE
+
+
+
+;敵から受ける性コマンド関連
+
+;COM0：C攻め弱　クリトリスを撫でる
+;--------------------------------------------------
+@KOJO_1201_SEX_COM0
+
+CALLFORM KOJO_霊夢_SEX_COM0
+@KOJO_1211_SEX_COM0
+
+CALLFORM KOJO_霊夢_SEX_COM0
+@KOJO_霊夢_SEX_COM0
+;ふたなりの場合はペニスを愛撫されている扱いになります。
+CALL 渧泣("C")
+
+;COM1：C攻め強　クリトリスに吸い付く
+;--------------------------------------------------
+@KOJO_1201_SEX_COM1
+
+CALLFORM KOJO_霊夢_SEX_COM1
+@KOJO_1211_SEX_COM1
+
+CALLFORM KOJO_霊夢_SEX_COM1
+@KOJO_霊夢_SEX_COM1
+;ふたなりの場合はペニスを吸われている扱いになります。
+CALL 渧泣("C")
+
+;SPCOM0：C攻めSP　クリトリスに噛み付く
+;--------------------------------------------------
+@KOJO_1201_SEX_SPCOM0
+
+CALLFORM KOJO_霊夢_SEX_SPCOM0
+@KOJO_1211_SEX_SPCOM0
+
+CALLFORM KOJO_霊夢_SEX_SPCOM0
+@KOJO_霊夢_SEX_SPCOM0
+;媚薬を注入されて、感度を高められたまま放置されたタイミングで表示されます。
+CALL 渧泣("C")
+
+;SPCOM8：C触手専用SP　尿道責め
+;--------------------------------------------------
+@KOJO_1201_SEX_SPCOM8
+
+CALLFORM KOJO_霊夢_SEX_SPCOM8
+@KOJO_1211_SEX_SPCOM8
+
+CALLFORM KOJO_霊夢_SEX_SPCOM8
+@KOJO_霊夢_SEX_SPCOM8
+;公開排尿なので、羞恥心を煽られる
+
+;COM2：V攻め弱　膣口を愛撫（処女は奪いません）
+;--------------------------------------------------
+@KOJO_1201_SEX_COM2
+
+CALLFORM KOJO_霊夢_SEX_COM2
+@KOJO_1211_SEX_COM2
+
+CALLFORM KOJO_霊夢_SEX_COM2
+@KOJO_霊夢_SEX_COM2
+;今にも犯されそうな状態です。
+CALL 渧泣("V")
+
+;COM3：V攻め強　挿入
+;--------------------------------------------------
+@KOJO_1201_SEX_COM3
+
+CALLFORM KOJO_霊夢_SEX_COM3
+@KOJO_1211_SEX_COM3
+
+CALLFORM KOJO_霊夢_SEX_COM3
+@KOJO_霊夢_SEX_COM3
+;TCVAR:2 == 100のときはＶ挿入防御状態です。
+;Ｖ感覚が0のときは苦痛が強く、Ｖ感覚が4以上なら強烈な快感を感じます。
+CALL 渧泣("V,1")
+
+;SPCOM1：V攻めSP　奥を突く
+;--------------------------------------------------
+@KOJO_1201_SEX_SPCOM1
+
+CALLFORM KOJO_霊夢_SEX_SPCOM1
+@KOJO_1211_SEX_SPCOM1
+
+CALLFORM KOJO_霊夢_SEX_SPCOM1
+@KOJO_霊夢_SEX_SPCOM1
+;激しいピストンで子宮口を責められている場面です。
+;「少女に似合わぬ獣のような喘ぎ声を上げ続けている・・・」に続く形になるため、
+;快楽に翻弄されているような文にするのが良いでしょう。
+CALL 渧泣("VA",1)
+
+;SPCOM9：V触手専用SP　V拡張責め（腹ボコ系
+;--------------------------------------------------
+@KOJO_1201_SEX_SPCOM9
+
+CALLFORM KOJO_霊夢_SEX_SPCOM9
+@KOJO_1211_SEX_SPCOM9
+
+CALLFORM KOJO_霊夢_SEX_SPCOM9
+@KOJO_霊夢_SEX_SPCOM9
+;通常なら入らない極太性器による拡張責め、V拡張経験によって地の文変化
+IF EXP:Ｖ拡張経験 < 8
+CALL 渧泣("MA")
+ELSE
+CALL 渧泣("V",1)
+ENDIF
+
+;COM4：A攻め弱　アナルを撫で回す
+;--------------------------------------------------
+@KOJO_1201_SEX_COM4
+
+CALLFORM KOJO_霊夢_SEX_COM4
+@KOJO_1211_SEX_COM4
+
+CALLFORM KOJO_霊夢_SEX_COM4
+@KOJO_霊夢_SEX_COM4
+;軽いちょっかいを出されている段階なので、それほど危機感は感じていない場面です。
+CALL 渧泣("A")
+
+;COM5：A攻め強　アナルに挿入
+;--------------------------------------------------
+@KOJO_1201_SEX_COM5
+
+CALLFORM KOJO_霊夢_SEX_COM5
+@KOJO_1211_SEX_COM5
+
+CALLFORM KOJO_霊夢_SEX_COM5
+@KOJO_霊夢_SEX_COM5
+;A攻め弱とは一転して激しく犯されます。
+CALL 渧泣("A",1)
+
+;SPCOM2：A攻めSP　激しくアナルを犯す
+;--------------------------------------------------
+@KOJO_1201_SEX_SPCOM2
+
+CALLFORM KOJO_霊夢_SEX_SPCOM2
+@KOJO_1211_SEX_SPCOM2
+
+CALLFORM KOJO_霊夢_SEX_SPCOM2
+@KOJO_霊夢_SEX_SPCOM2
+;かなりハードなプレイで、アナルから入った触手が口から出て"貫通"します。
+;地の文でもアヘ顔だったり白目を剥いて泡を吹いているので、相応の描写が必要です。
+CALL 渧泣("M")
+
+;SPCOM10：A触手専用SP　A拡張攻め（腹ボコ
+;--------------------------------------------------
+@KOJO_1201_SEX_SPCOM10
+
+CALLFORM KOJO_霊夢_SEX_SPCOM10
+@KOJO_1211_SEX_SPCOM10
+
+CALLFORM KOJO_霊夢_SEX_SPCOM10
+@KOJO_霊夢_SEX_SPCOM10
+;不定形触手による疑似浣腸による拡張　拡張経験によって地の文変化
+CALL 渧泣("A",1)
+
+;COM6：B攻め弱　胸を揉みしだく
+;--------------------------------------------------
+@KOJO_1201_SEX_COM6
+
+CALLFORM KOJO_霊夢_SEX_COM6
+@KOJO_1211_SEX_COM6
+
+CALLFORM KOJO_霊夢_SEX_COM6
+@KOJO_霊夢_SEX_COM6
+;胸を撫でられたり、乳首を引っ張られたりします。
+;鬼畜度の低い愛撫です。
+CALL 渧泣("B")
+
+;COM7：B攻め強　乳首に吸い付く
+;--------------------------------------------------
+@KOJO_1201_SEX_COM7
+
+CALLFORM KOJO_霊夢_SEX_COM7
+@KOJO_1211_SEX_COM7
+
+CALLFORM KOJO_霊夢_SEX_COM7
+@KOJO_霊夢_SEX_COM7
+;ややハードですが苦痛成分がないプレイです。母乳体質のアピールポイントです。
+CALL 渧泣("B")
+
+;SPCOM3：B攻めSP　媚薬ニプルファック
+;--------------------------------------------------
+@KOJO_1201_SEX_SPCOM3
+
+CALLFORM KOJO_霊夢_SEX_SPCOM3
+@KOJO_1211_SEX_SPCOM3
+
+CALLFORM KOJO_霊夢_SEX_SPCOM3
+@KOJO_霊夢_SEX_SPCOM3
+;胸の感度を高められてニプルファックで責められます。
+CALL 渧泣("B")
+
+;SPCOM5：パイズリ
+;--------------------------------------------------
+@KOJO_1201_SEX_SPCOM5
+
+CALLFORM KOJO_霊夢_SEX_SPCOM5
+@KOJO_1211_SEX_SPCOM5
+
+CALLFORM KOJO_霊夢_SEX_SPCOM5
+@KOJO_霊夢_SEX_SPCOM5
+;ごく普通のパイズリ…というわけではなく、無理やり奉仕させられる感が強いです。
+;触手の虜や「奉仕する」を選択している場合は普通のパイズリをしている感じになります。
+CALL 渧泣("B")
+
+;SPCOM11：B触手専用SP　甘えん坊授乳プレイ
+;--------------------------------------------------
+@KOJO_1201_SEX_SPCOM11
+
+CALLFORM KOJO_霊夢_SEX_SPCOM11
+@KOJO_1211_SEX_SPCOM11
+
+CALLFORM KOJO_霊夢_SEX_SPCOM11
+@KOJO_霊夢_SEX_SPCOM11
+;触手の虜or欲望3以上なら受け入れ・前記条件未取得かつ従順3以上無抵抗・前記条件未取得抵抗
+CALL 渧泣("BV",1)
+
+;SPCOM6：強制自慰
+;--------------------------------------------------
+@KOJO_1201_SEX_SPCOM6
+
+CALLFORM KOJO_霊夢_SEX_SPCOM6
+@KOJO_1211_SEX_SPCOM6
+
+CALLFORM KOJO_霊夢_SEX_SPCOM6
+@KOJO_霊夢_SEX_SPCOM6
+;このあと普通の自慰の口上も表示されるので、クドくならないように。
+
+;SPCOM7：羞恥プレイ
+;--------------------------------------------------
+@KOJO_1201_SEX_SPCOM7
+
+CALLFORM KOJO_霊夢_SEX_SPCOM7
+@KOJO_1211_SEX_SPCOM7
+
+CALLFORM KOJO_霊夢_SEX_SPCOM7
+@KOJO_霊夢_SEX_SPCOM7
+;それぞれのキャラで反応が違うと思うので、性格ごとに描写を変化させるのが良さそうです。
+
+;COM8：スパンキング
+;--------------------------------------------------
+@KOJO_1201_SEX_COM8
+
+CALLFORM KOJO_霊夢_SEX_COM8
+@KOJO_1211_SEX_COM8
+
+CALLFORM KOJO_霊夢_SEX_COM8
+@KOJO_霊夢_SEX_COM8
+;割とハードに暴行されるので、痛い！というよりは叫び声が出ると思います。
+;マゾっ気Lv2以上なら喜びます。
+CALL 渧泣("MA")
+
+;COM9：針
+;--------------------------------------------------
+@KOJO_1201_SEX_COM9
+
+CALLFORM KOJO_霊夢_SEX_COM9
+@KOJO_1211_SEX_COM9
+
+CALLFORM KOJO_霊夢_SEX_COM9
+@KOJO_霊夢_SEX_COM9
+;これもハード。殴られるより痛いはず。マゾっ気がLv3以上で欲情します。
+CALL 渧泣("MA")
+
+;SPCOM4：電流
+;--------------------------------------------------
+@KOJO_1201_SEX_SPCOM4
+
+CALLFORM KOJO_霊夢_SEX_SPCOM4
+@KOJO_1211_SEX_SPCOM4
+
+CALLFORM KOJO_霊夢_SEX_SPCOM4
+@KOJO_霊夢_SEX_SPCOM4
+;このゲーム内で最も苦痛が入るコマンドなので、たとえマゾでも絶叫しか聞かれないでしょう。
+;マゾっ気Lv4以上で欲情します。
+CALL 渧泣("MA")
+
+;SPCOM12：S触手専用SP ヘソ快楽攻め
+;--------------------------------------------------
+@KOJO_1201_SEX_SPCOM12
+
+CALLFORM KOJO_霊夢_SEX_SPCOM12
+@KOJO_1211_SEX_SPCOM12
+
+CALLFORM KOJO_霊夢_SEX_SPCOM12
+@KOJO_霊夢_SEX_SPCOM12
+;コンフィグでグロ表現がオフの場合、ヘソ挿入は無し
+;コンフィグオンオフにかかわらず、快感で限界気絶確定
+CALL 渧泣("MA")
+
+;COM10：手淫
+;--------------------------------------------------
+@KOJO_1201_SEX_COM10
+
+CALLFORM KOJO_霊夢_SEX_COM10
+@KOJO_1211_SEX_COM10
+
+CALLFORM KOJO_霊夢_SEX_COM10
+@KOJO_霊夢_SEX_COM10
+;調教が進んでいたり「奉仕する」を選んでいる場合は素直に手淫しますが、
+;それ以外では普通に抵抗している文が良いでしょう。
+
+;COM11：フェラ
+;--------------------------------------------------
+@KOJO_1201_SEX_COM11
+
+CALLFORM KOJO_霊夢_SEX_COM11
+@KOJO_1211_SEX_COM11
+
+CALLFORM KOJO_霊夢_SEX_COM11
+@KOJO_霊夢_SEX_COM11
+;基本的に無理やり口を犯されます。
+CALL 渧泣("M")
+
+;COM12：イラマチオ
+;--------------------------------------------------
+@KOJO_1201_SEX_COM12
+
+CALLFORM KOJO_霊夢_SEX_COM12
+@KOJO_1211_SEX_COM12
+
+CALLFORM KOJO_霊夢_SEX_COM12
+@KOJO_霊夢_SEX_COM12
+;フェラをさらにハードにしたバージョン。
+;地の文では息ができなくて気絶しかけるので、口上のほうも息も絶え絶えという感じが良いでしょう。
+CALL 渧泣("M")
+
+;COM13：絶頂禁止
+;--------------------------------------------------
+@KOJO_1201_SEX_COM13
+
+CALLFORM KOJO_霊夢_SEX_COM13
+@KOJO_1211_SEX_COM13
+
+CALLFORM KOJO_霊夢_SEX_COM13
+@KOJO_霊夢_SEX_COM13
+
+;COM14：衣装を破く
+;--------------------------------------------------
+@KOJO_1201_SEX_COM14
+
+CALLFORM KOJO_霊夢_SEX_COM14
+@KOJO_1211_SEX_COM14
+
+CALLFORM KOJO_霊夢_SEX_COM14
+@KOJO_霊夢_SEX_COM14
+
+;COM15：種付けピストン（Ｖ系統）
+;--------------------------------------------------
+@KOJO_1201_SEX_COM15
+CALLFORM KOJO_霊夢_SEX_COM15
+@KOJO_1211_SEX_COM15
+CALLFORM KOJO_霊夢_SEX_COM15
+@KOJO_霊夢_SEX_COM15
+CALL 渧泣("V,1")
+
+;COM16：種付けフィニッシュ（Ｖ系統）
+;--------------------------------------------------
+@KOJO_1201_SEX_COM16
+CALLFORM KOJO_霊夢_SEX_COM16
+@KOJO_1211_SEX_COM16
+CALLFORM KOJO_霊夢_SEX_COM16
+@KOJO_霊夢_SEX_COM16
+CALL 渧泣("V,1")
+
+
+;SPCOM13：P触手専用SP　丸飲み精液攻め
+;--------------------------------------------------
+@KOJO_1201_SEX_SPCOM13
+
+CALLFORM KOJO_霊夢_SEX_SPCOM13
+@KOJO_1211_SEX_SPCOM13
+
+CALLFORM KOJO_霊夢_SEX_SPCOM13
+@KOJO_霊夢_SEX_SPCOM13
+;触手の虜or欲望3以上or精液中毒2以上なら受け入れ、前記条件未取得なら抵抗
+
+;SPCOM14：H触手専用SP　催眠姦
+;--------------------------------------------------
+@KOJO_1201_SEX_SPCOM14
+
+CALLFORM KOJO_霊夢_SEX_SPCOM14
+@KOJO_1211_SEX_SPCOM14
+
+CALLFORM KOJO_霊夢_SEX_SPCOM14
+@KOJO_霊夢_SEX_SPCOM14
+;触手の虜or欲望3以上なら受け入れ、前記条件未取得なら屈辱＆羞恥
+;被姦後なので、されてる最中の描写は不可
+
+;SPCOM15：K触手専用SP サブミッションファック
+;--------------------------------------------------
+@KOJO_1201_SEX_SPCOM15
+
+CALLFORM KOJO_霊夢_SEX_SPCOM15
+@KOJO_1211_SEX_SPCOM15
+
+CALLFORM KOJO_霊夢_SEX_SPCOM15
+@KOJO_霊夢_SEX_SPCOM15
+;基本激痛で泣きわめいているような状態
+CALL 渧泣("MA")
+
+
+;キャラが射精
+;--------------------------------------------------
+@KOJO_1201_SEX_CHARA_SYASEI
+
+CALLFORM KOJO_霊夢_SEX_CHARA_SYASEI
+@KOJO_1211_SEX_CHARA_SYASEI
+
+CALLFORM KOJO_霊夢_SEX_CHARA_SYASEI
+@KOJO_霊夢_SEX_CHARA_SYASEI
+
+;キャラが大量射精
+;--------------------------------------------------
+@KOJO_1201_SEX_CHARA_SYASEI_HI
+
+CALLFORM KOJO_霊夢_SEX_CHARA_SYASEI_HI
+@KOJO_1211_SEX_CHARA_SYASEI_HI
+
+CALLFORM KOJO_霊夢_SEX_CHARA_SYASEI_HI
+@KOJO_霊夢_SEX_CHARA_SYASEI_HI
+
+;キャラが噴乳
+;--------------------------------------------------
+@KOJO_1201_SEX_CHARA_HUNNYU
+
+CALLFORM KOJO_霊夢_SEX_CHARA_HUNNYU
+@KOJO_1211_SEX_CHARA_HUNNYU
+
+CALLFORM KOJO_霊夢_SEX_CHARA_HUNNYU
+@KOJO_霊夢_SEX_CHARA_HUNNYU
+
+;キャラが大量噴乳
+;--------------------------------------------------
+@KOJO_1201_SEX_CHARA_HUNNYU_HI
+
+CALLFORM KOJO_霊夢_SEX_CHARA_HUNNYU_HI
+@KOJO_1211_SEX_CHARA_HUNNYU_HI
+
+CALLFORM KOJO_霊夢_SEX_CHARA_HUNNYU_HI
+@KOJO_霊夢_SEX_CHARA_HUNNYU_HI
+
+
+;絶頂関連
+
+;C絶頂
+;--------------------------------------------------
+@KOJO_1201_SEX_ECSTASY_C
+
+CALLFORM KOJO_霊夢_SEX_ECSTASY_C
+@KOJO_1211_SEX_ECSTASY_C
+
+CALLFORM KOJO_霊夢_SEX_ECSTASY_C
+@KOJO_霊夢_SEX_ECSTASY_C
+SIF NOWEX:Ｖ絶頂 > 0 || NOWEX:Ａ絶頂 > 0 || NOWEX:Ｂ絶頂 > 0
+RETURN
+IF NAME:(FLAG:111) == "霧雨 魔理沙" || CALLNAME:(FLAG:111) == "東風谷 早苗"
+IF ABL:欲望 == 5 && ABL:奉仕精神 == 5
+ELSEIF ABL:欲望 > 3 && ABL:奉仕精神 > 3
+ELSE
+ENDIF
+ELSE
+IF ABL:欲望 == 5 && ABL:触手中毒 == 5
+ELSEIF ABL:欲望 > 3 && ABL:触手中毒 > 3
+ELSE
+ENDIF
+ENDIF
+
+;C強絶頂
+;--------------------------------------------------
+@KOJO_1201_SEX_ECSTASY_C_HI
+
+CALLFORM KOJO_霊夢_SEX_ECSTASY_C_HI
+@KOJO_1211_SEX_ECSTASY_C_HI
+
+CALLFORM KOJO_霊夢_SEX_ECSTASY_C_HI
+@KOJO_霊夢_SEX_ECSTASY_C_HI
+SIF NOWEX:Ｖ絶頂 > 0 || NOWEX:Ａ絶頂 > 0 || NOWEX:Ｂ絶頂 > 0
+RETURN
+IF NAME:(FLAG:111) == "霧雨 魔理沙" || CALLNAME:(FLAG:111) == "東風谷 早苗"
+IF ABL:欲望 == 5 && ABL:奉仕精神 == 5
+ELSEIF ABL:欲望 > 3 && ABL:奉仕精神 > 3
+ELSE
+ENDIF
+ELSE
+IF ABL:欲望 == 5 && ABL:触手中毒 == 5
+ELSEIF ABL:欲望 > 3 && ABL:触手中毒 > 3
+ELSE
+ENDIF
+ENDIF
+
+;V絶頂
+;--------------------------------------------------
+@KOJO_1201_SEX_ECSTASY_V
+
+CALLFORM KOJO_霊夢_SEX_ECSTASY_V
+@KOJO_1211_SEX_ECSTASY_V
+
+CALLFORM KOJO_霊夢_SEX_ECSTASY_V
+@KOJO_霊夢_SEX_ECSTASY_V
+SIF NOWEX:Ｃ絶頂 > 0 || NOWEX:Ａ絶頂 > 0 || NOWEX:Ｂ絶頂 > 0
+RETURN
+IF NAME:(FLAG:111) == "霧雨 魔理沙" || CALLNAME:(FLAG:111) == "東風谷 早苗"
+IF ABL:欲望 == 5 && ABL:奉仕精神 == 5
+ELSEIF ABL:欲望 > 3 && ABL:奉仕精神 > 3
+ELSE
+ENDIF
+ELSE
+IF ABL:欲望 == 5 && ABL:触手中毒 == 5
+ELSEIF ABL:欲望 > 3 && ABL:触手中毒 > 3
+ELSE
+ENDIF
+ENDIF
+
+;V強絶頂
+;--------------------------------------------------
+@KOJO_1201_SEX_ECSTASY_V_HI
+
+CALLFORM KOJO_霊夢_SEX_ECSTASY_V_HI
+@KOJO_1211_SEX_ECSTASY_V_HI
+
+CALLFORM KOJO_霊夢_SEX_ECSTASY_V_HI
+@KOJO_霊夢_SEX_ECSTASY_V_HI
+SIF NOWEX:Ｃ絶頂 > 0 || NOWEX:Ａ絶頂 > 0 || NOWEX:Ｂ絶頂 > 0
+RETURN
+IF NAME:(FLAG:111) == "霧雨 魔理沙" || CALLNAME:(FLAG:111) == "東風谷 早苗"
+IF ABL:欲望 == 5 && ABL:奉仕精神 == 5
+ELSEIF ABL:欲望 > 3 && ABL:奉仕精神 > 3
+ELSE
+ENDIF
+ELSE
+IF ABL:欲望 == 5 && ABL:触手中毒 == 5
+ELSEIF ABL:欲望 > 3 && ABL:触手中毒 > 3
+ELSE
+ENDIF
+ENDIF
+
+;A絶頂
+;--------------------------------------------------
+@KOJO_1201_SEX_ECSTASY_A
+
+CALLFORM KOJO_霊夢_SEX_ECSTASY_A
+@KOJO_1211_SEX_ECSTASY_A
+
+CALLFORM KOJO_霊夢_SEX_ECSTASY_A
+@KOJO_霊夢_SEX_ECSTASY_A
+SIF NOWEX:Ｖ絶頂 > 0 || NOWEX:Ｃ絶頂 > 0 || NOWEX:Ｂ絶頂 > 0
+RETURN
+IF NAME:(FLAG:111) == "霧雨 魔理沙" || CALLNAME:(FLAG:111) == "東風谷 早苗"
+IF ABL:欲望 == 5 && ABL:奉仕精神 == 5
+ELSEIF ABL:欲望 > 3 && ABL:奉仕精神 > 3
+ELSE
+ENDIF
+ELSE
+IF ABL:欲望 == 5 && ABL:触手中毒 == 5
+ELSEIF ABL:欲望 > 3 && ABL:触手中毒 > 3
+ELSE
+ENDIF
+ENDIF
+
+;A強絶頂
+;--------------------------------------------------
+@KOJO_1201_SEX_ECSTASY_A_HI
+
+CALLFORM KOJO_霊夢_SEX_ECSTASY_A_HI
+@KOJO_1211_SEX_ECSTASY_A_HI
+
+CALLFORM KOJO_霊夢_SEX_ECSTASY_A_HI
+@KOJO_霊夢_SEX_ECSTASY_A_HI
+SIF NOWEX:Ｖ絶頂 > 0 || NOWEX:Ｃ絶頂 > 0 || NOWEX:Ｂ絶頂 > 0
+RETURN
+IF NAME:(FLAG:111) == "霧雨 魔理沙" || CALLNAME:(FLAG:111) == "東風谷 早苗"
+IF ABL:欲望 == 5 && ABL:奉仕精神 == 5
+ELSEIF ABL:欲望 > 3 && ABL:奉仕精神 > 3
+ELSE
+ENDIF
+ELSE
+IF ABL:欲望 == 5 && ABL:触手中毒 == 5
+ELSEIF ABL:欲望 > 3 && ABL:触手中毒 > 3
+ELSE
+ENDIF
+ENDIF
+
+;B絶頂
+;--------------------------------------------------
+@KOJO_1201_SEX_ECSTASY_B
+
+CALLFORM KOJO_霊夢_SEX_ECSTASY_B
+@KOJO_1211_SEX_ECSTASY_B
+
+CALLFORM KOJO_霊夢_SEX_ECSTASY_B
+@KOJO_霊夢_SEX_ECSTASY_B
+SIF NOWEX:Ｖ絶頂 > 0 || NOWEX:Ａ絶頂 > 0 || NOWEX:Ｃ絶頂 > 0
+RETURN
+IF NAME:(FLAG:111) == "霧雨 魔理沙" || CALLNAME:(FLAG:111) == "東風谷 早苗"
+IF ABL:欲望 == 5 && ABL:奉仕精神 == 5
+ELSEIF ABL:欲望 > 3 && ABL:奉仕精神 > 3
+ELSE
+ENDIF
+ELSE
+IF ABL:欲望 == 5 && ABL:触手中毒 == 5
+ELSEIF ABL:欲望 > 3 && ABL:触手中毒 > 3
+ELSE
+ENDIF
+ENDIF
+
+;B強絶頂
+;--------------------------------------------------
+@KOJO_1201_SEX_ECSTASY_B_HI
+
+CALLFORM KOJO_霊夢_SEX_ECSTASY_B_HI
+@KOJO_1211_SEX_ECSTASY_B_HI
+
+CALLFORM KOJO_霊夢_SEX_ECSTASY_B_HI
+@KOJO_霊夢_SEX_ECSTASY_B_HI
+SIF NOWEX:Ｖ絶頂 > 0 || NOWEX:Ａ絶頂 > 0 || NOWEX:Ｃ絶頂 > 0
+RETURN
+IF NAME:(FLAG:111) == "霧雨 魔理沙" || CALLNAME:(FLAG:111) == "東風谷 早苗"
+IF ABL:欲望 == 5 && ABL:奉仕精神 == 5
+ELSEIF ABL:欲望 > 3 && ABL:奉仕精神 > 5
+ELSE
+ENDIF
+ELSE
+IF ABL:欲望 == 5 && ABL:触手中毒 == 5
+ELSEIF ABL:欲望 > 3 && ABL:触手中毒 > 3
+ELSE
+ENDIF
+ENDIF
+
+
+
+;多重絶頂に関する口上
+
+;四重絶頂
+;--------------------------------------------------
+@KOJO_1201_SEX_MULTIECSTASY_CVAB
+
+CALLFORM KOJO_霊夢_SEX_MULTIECSTASY_CVAB
+@KOJO_1211_SEX_MULTIECSTASY_CVAB
+
+CALLFORM KOJO_霊夢_SEX_MULTIECSTASY_CVAB
+@KOJO_霊夢_SEX_MULTIECSTASY_CVAB
+
+;CVA三重絶頂
+;--------------------------------------------------
+@KOJO_1201_SEX_MULTIECSTASY_CVA
+
+CALLFORM KOJO_霊夢_SEX_MULTIECSTASY_3
+@KOJO_1211_SEX_MULTIECSTASY_CVA
+
+CALLFORM KOJO_霊夢_SEX_MULTIECSTASY_3
+
+;CVB三重絶頂
+;--------------------------------------------------
+@KOJO_1201_SEX_MULTIECSTASY_CVB
+
+CALLFORM KOJO_霊夢_SEX_MULTIECSTASY_3
+@KOJO_1211_SEX_MULTIECSTASY_CVB
+
+CALLFORM KOJO_霊夢_SEX_MULTIECSTASY_3
+
+;CAB三重絶頂
+;--------------------------------------------------
+@KOJO_1201_SEX_MULTIECSTASY_CAB
+
+CALLFORM KOJO_霊夢_SEX_MULTIECSTASY_3
+@KOJO_1211_SEX_MULTIECSTASY_CAB
+
+CALLFORM KOJO_霊夢_SEX_MULTIECSTASY_3
+
+;VAB三重絶頂
+;--------------------------------------------------
+@KOJO_1201_SEX_MULTIECSTASY_VAB
+
+CALLFORM KOJO_霊夢_SEX_MULTIECSTASY_3
+@KOJO_1211_SEX_MULTIECSTASY_VAB
+
+CALLFORM KOJO_霊夢_SEX_MULTIECSTASY_3
+
+;三重絶頂
+;--------------------------------------------------
+@KOJO_霊夢_SEX_MULTIECSTASY_3
+
+
+;CV二重絶頂
+;--------------------------------------------------
+@KOJO_1201_SEX_MULTIECSTASY_CV
+
+CALLFORM KOJO_霊夢_SEX_MULTIECSTASY_2
+@KOJO_1211_SEX_MULTIECSTASY_CV
+
+CALLFORM KOJO_霊夢_SEX_MULTIECSTASY_2
+
+;CA二重絶頂
+;--------------------------------------------------
+@KOJO_1201_SEX_MULTIECSTASY_CA
+
+CALLFORM KOJO_霊夢_SEX_MULTIECSTASY_2
+@KOJO_1211_SEX_MULTIECSTASY_CA
+
+CALLFORM KOJO_霊夢_SEX_MULTIECSTASY_2
+
+;CB二重絶頂
+;--------------------------------------------------
+@KOJO_1201_SEX_MULTIECSTASY_CB
+
+CALLFORM KOJO_霊夢_SEX_MULTIECSTASY_2
+@KOJO_1211_SEX_MULTIECSTASY_CB
+
+CALLFORM KOJO_霊夢_SEX_MULTIECSTASY_2
+
+;VA二重絶頂
+;--------------------------------------------------
+@KOJO_1201_SEX_MULTIECSTASY_VA
+
+CALLFORM KOJO_霊夢_SEX_MULTIECSTASY_2
+@KOJO_1211_SEX_MULTIECSTASY_VA
+
+CALLFORM KOJO_霊夢_SEX_MULTIECSTASY_2
+
+;VB二重絶頂
+;--------------------------------------------------
+@KOJO_1201_SEX_MULTIECSTASY_VB
+
+CALLFORM KOJO_霊夢_SEX_MULTIECSTASY_2
+@KOJO_1211_SEX_MULTIECSTASY_VB
+
+CALLFORM KOJO_霊夢_SEX_MULTIECSTASY_2
+
+;AB二重絶頂
+;--------------------------------------------------
+@KOJO_1201_SEX_MULTIECSTASY_AB
+
+CALLFORM KOJO_霊夢_SEX_MULTIECSTASY_2
+@KOJO_1211_SEX_MULTIECSTASY_AB
+
+CALLFORM KOJO_霊夢_SEX_MULTIECSTASY_2
+
+;二重絶頂
+;--------------------------------------------------
+@KOJO_霊夢_SEX_MULTIECSTASY_2
+
+
+
+;触手が射精したときの処理
+
+;膣に通常射精
+;--------------------------------------------------
+@KOJO_1201_SEX_TENTACLE_SYASEI_VAGINA
+
+CALLFORM KOJO_霊夢_SEX_TENTACLE_SYASEI_VAGINA
+@KOJO_1211_SEX_TENTACLE_SYASEI_VAGINA
+
+CALLFORM KOJO_霊夢_SEX_TENTACLE_SYASEI_VAGINA
+@KOJO_霊夢_SEX_TENTACLE_SYASEI_VAGINA
+
+;膣に大量射精
+;--------------------------------------------------
+@KOJO_1201_SEX_TENTACLE_SYASEI_VAGINA_HI
+
+CALLFORM KOJO_霊夢_SEX_TENTACLE_SYASEI_VAGINA_HI
+@KOJO_1211_SEX_TENTACLE_SYASEI_VAGINA_HI
+
+CALLFORM KOJO_霊夢_SEX_TENTACLE_SYASEI_VAGINA_HI
+@KOJO_霊夢_SEX_TENTACLE_SYASEI_VAGINA_HI
+
+;アナルに通常射精
+;--------------------------------------------------
+@KOJO_1201_SEX_TENTACLE_SYASEI_ANAL
+
+CALLFORM KOJO_霊夢_SEX_TENTACLE_SYASEI_ANAL
+@KOJO_1211_SEX_TENTACLE_SYASEI_ANAL
+
+CALLFORM KOJO_霊夢_SEX_TENTACLE_SYASEI_ANAL
+@KOJO_霊夢_SEX_TENTACLE_SYASEI_ANAL
+
+;アナルに大量射精
+;--------------------------------------------------
+@KOJO_1201_SEX_TENTACLE_SYASEI_ANAL_HI
+
+CALLFORM KOJO_霊夢_SEX_TENTACLE_SYASEI_ANAL_HI
+@KOJO_1211_SEX_TENTACLE_SYASEI_ANAL_HI
+
+CALLFORM KOJO_霊夢_SEX_TENTACLE_SYASEI_ANAL_HI
+@KOJO_霊夢_SEX_TENTACLE_SYASEI_ANAL_HI
+
+;手に通常射精
+;--------------------------------------------------
+@KOJO_1201_SEX_TENTACLE_SYASEI_HAND
+
+CALLFORM KOJO_霊夢_SEX_TENTACLE_SYASEI_HAND
+@KOJO_1211_SEX_TENTACLE_SYASEI_HAND
+
+CALLFORM KOJO_霊夢_SEX_TENTACLE_SYASEI_HAND
+@KOJO_霊夢_SEX_TENTACLE_SYASEI_HAND
+
+;手に大量射精
+;--------------------------------------------------
+@KOJO_1201_SEX_TENTACLE_SYASEI_HAND_HI
+
+CALLFORM KOJO_霊夢_SEX_TENTACLE_SYASEI_HAND_HI
+@KOJO_1211_SEX_TENTACLE_SYASEI_HAND_HI
+
+CALLFORM KOJO_霊夢_SEX_TENTACLE_SYASEI_HAND_HI
+@KOJO_霊夢_SEX_TENTACLE_SYASEI_HAND_HI
+
+;口内に通常射精
+;--------------------------------------------------
+@KOJO_1201_SEX_TENTACLE_SYASEI_MOUTH
+
+CALLFORM KOJO_霊夢_SEX_TENTACLE_SYASEI_MOUTH
+@KOJO_1211_SEX_TENTACLE_SYASEI_MOUTH
+
+CALLFORM KOJO_霊夢_SEX_TENTACLE_SYASEI_MOUTH
+@KOJO_霊夢_SEX_TENTACLE_SYASEI_MOUTH
+
+;口内に大量射精
+;--------------------------------------------------
+@KOJO_1201_SEX_TENTACLE_SYASEI_MOUTH_HI
+
+CALLFORM KOJO_霊夢_SEX_TENTACLE_SYASEI_MOUTH_HI
+@KOJO_1211_SEX_TENTACLE_SYASEI_MOUTH_HI
+
+CALLFORM KOJO_霊夢_SEX_TENTACLE_SYASEI_MOUTH_HI
+@KOJO_霊夢_SEX_TENTACLE_SYASEI_MOUTH_HI
+
+;胸に通常射精
+;--------------------------------------------------
+@KOJO_1201_SEX_TENTACLE_SYASEI_BUST
+
+CALLFORM KOJO_霊夢_SEX_TENTACLE_SYASEI_BUST
+@KOJO_1211_SEX_TENTACLE_SYASEI_BUST
+
+CALLFORM KOJO_霊夢_SEX_TENTACLE_SYASEI_BUST
+@KOJO_霊夢_SEX_TENTACLE_SYASEI_BUST
+
+;胸に大量射精
+;--------------------------------------------------
+@KOJO_1201_SEX_TENTACLE_SYASEI_BUST_HI
+
+CALLFORM KOJO_霊夢_SEX_TENTACLE_SYASEI_BUST_HI
+@KOJO_1211_SEX_TENTACLE_SYASEI_BUST_HI
+
+CALLFORM KOJO_霊夢_SEX_TENTACLE_SYASEI_BUST_HI
+@KOJO_霊夢_SEX_TENTACLE_SYASEI_BUST_HI
+
+
+
+;戦闘終了関連
+
+;ボス触手・ラスボス触手に勝利
+;--------------------------------------------------
+@KOJO_1201_BATTLE_END_WIN
+
+CALLFORM KOJO_霊夢_BATTLE_END_WIN
+@KOJO_1211_BATTLE_END_WIN
+
+CALLFORM KOJO_霊夢_BATTLE_END_WIN
+@KOJO_霊夢_BATTLE_END_WIN
+
+;敵キャラに勝利
+;--------------------------------------------------
+@KOJO_1201_BATTLE_END_WIN_ENEMY
+
+CALLFORM KOJO_霊夢_BATTLE_END_WIN_ENEMY
+@KOJO_1211_BATTLE_END_WIN_ENEMY
+
+CALLFORM KOJO_霊夢_BATTLE_END_WIN_ENEMY
+@KOJO_霊夢_BATTLE_END_WIN_ENEMY
+
+;ラスボス触手出現
+;--------------------------------------------------
+@KOJO_1201_BATTLE_END_LASTBOSSAPPEAR
+
+CALLFORM KOJO_霊夢_BATTLE_END_LASTBOSSAPPEAR
+@KOJO_1211_BATTLE_END_LASTBOSSAPPEAR
+
+CALLFORM KOJO_霊夢_BATTLE_END_LASTBOSSAPPEAR
+@KOJO_霊夢_BATTLE_END_LASTBOSSAPPEAR
+
+;完全殲滅
+;--------------------------------------------------
+@KOJO_1201_BATTLE_END_PERFECT
+
+CALLFORM KOJO_霊夢_BATTLE_END_PERFECT
+@KOJO_1211_BATTLE_END_PERFECT
+
+CALLFORM KOJO_霊夢_BATTLE_END_PERFECT
+@KOJO_霊夢_BATTLE_END_PERFECT
+
+;捕らわれキャラの救出
+;--------------------------------------------------
+@KOJO_1201_BATTLE_END_RESCUED
+
+CALLFORM KOJO_霊夢_BATTLE_END_RESCUED
+@KOJO_1211_BATTLE_END_RESCUED
+
+CALLFORM KOJO_霊夢_BATTLE_END_RESCUED
+@KOJO_霊夢_BATTLE_END_RESCUED
+
+;洗脳中キャラの救出
+;--------------------------------------------------
+@KOJO_1201_BATTLE_END_RESCUE_SENNOU
+
+CALLFORM KOJO_霊夢_BATTLE_END_RESCUE_SENNOU
+@KOJO_1211_BATTLE_END_RESCUE_SENNOU
+
+CALLFORM KOJO_霊夢_BATTLE_END_RESCUE_SENNOU
+@KOJO_霊夢_BATTLE_END_RESCUE_SENNOU
+
+;敵キャラの救出
+;--------------------------------------------------
+@KOJO_1201_BATTLE_END_RESCUE_ENEMY
+
+CALLFORM KOJO_霊夢_BATTLE_END_RESCUE_ENEMY
+@KOJO_1211_BATTLE_END_RESCUE_ENEMY
+
+CALLFORM KOJO_霊夢_BATTLE_END_RESCUE_ENEMY
+@KOJO_霊夢_BATTLE_END_RESCUE_ENEMY
+
+;敗北
+;--------------------------------------------------
+@KOJO_1201_BATTLE_END_LOSS
+
+CALLFORM KOJO_霊夢_BATTLE_END_LOSS
+@KOJO_1211_BATTLE_END_LOSS
+
+CALLFORM KOJO_霊夢_BATTLE_END_LOSS
+@KOJO_霊夢_BATTLE_END_LOSS
+
+;時間切れ
+;--------------------------------------------------
+@KOJO_1201_BATTLE_END_TIMEUP
+
+CALLFORM KOJO_霊夢_BATTLE_END_TIMEUP
+@KOJO_1211_BATTLE_END_TIMEUP
+
+CALLFORM KOJO_霊夢_BATTLE_END_TIMEUP
+@KOJO_霊夢_BATTLE_END_TIMEUP
+
+
+
+;素質関連
+
+;処女喪失
+;--------------------------------------------------
+@KOJO_1201_SEX_LOSTVIRGIN
+
+CALLFORM KOJO_霊夢_SEX_LOSTVIRGIN
+@KOJO_1211_SEX_LOSTVIRGIN
+
+CALLFORM KOJO_霊夢_SEX_LOSTVIRGIN
+@KOJO_霊夢_SEX_LOSTVIRGIN
+
+;触手の虜取得
+;--------------------------------------------------
+@KOJO_1201_GETTALENT_TORIKO
+
+CALLFORM KOJO_霊夢_GETTALENT_TORIKO
+@KOJO_1211_GETTALENT_TORIKO
+
+CALLFORM KOJO_霊夢_GETTALENT_TORIKO
+@KOJO_霊夢_GETTALENT_TORIKO
+
+;淫乱取得
+;--------------------------------------------------
+@KOJO_1201_GETTALENT_INRAN
+
+CALLFORM KOJO_霊夢_GETTALENT_INRAN
+@KOJO_1211_GETTALENT_INRAN
+
+CALLFORM KOJO_霊夢_GETTALENT_INRAN
+@KOJO_霊夢_GETTALENT_INRAN
+
+;淫核取得
+;--------------------------------------------------
+@KOJO_1201_GETTALENT_INKAKU
+
+CALLFORM KOJO_霊夢_GETTALENT_INKAKU
+@KOJO_1211_GETTALENT_INKAKU
+
+CALLFORM KOJO_霊夢_GETTALENT_INKAKU
+@KOJO_霊夢_GETTALENT_INKAKU
+
+;淫壷取得
+;--------------------------------------------------
+@KOJO_1201_GETTALENT_INTUBO
+
+CALLFORM KOJO_霊夢_GETTALENT_INTUBO
+@KOJO_1211_GETTALENT_INTUBO
+
+CALLFORM KOJO_霊夢_GETTALENT_INTUBO
+@KOJO_霊夢_GETTALENT_INTUBO
+
+;淫尻取得
+;--------------------------------------------------
+@KOJO_1201_GETTALENT_INJIRI
+
+CALLFORM KOJO_霊夢_GETTALENT_INJIRI
+@KOJO_1211_GETTALENT_INJIRI
+
+CALLFORM KOJO_霊夢_GETTALENT_INJIRI
+@KOJO_霊夢_GETTALENT_INJIRI
+
+;淫乳取得
+;--------------------------------------------------
+@KOJO_1201_GETTALENT_INNYUU
+
+CALLFORM KOJO_霊夢_GETTALENT_INNYUU
+@KOJO_1211_GETTALENT_INNYUU
+
+CALLFORM KOJO_霊夢_GETTALENT_INNYUU
+@KOJO_霊夢_GETTALENT_INNYUU
+
+
+
+;刻印関連
+
+;快楽刻印１取得
+;--------------------------------------------------
+@KOJO_1201_SEX_MARK_KAIRAKU_1
+
+CALLFORM KOJO_霊夢_SEX_MARK_KAIRAKU_1
+@KOJO_1211_SEX_MARK_KAIRAKU_1
+
+CALLFORM KOJO_霊夢_SEX_MARK_KAIRAKU_1
+@KOJO_霊夢_SEX_MARK_KAIRAKU_1
+IF CALLNAME:(FLAG:111) == "魔理沙"
+	PRINTFORML 「んっ……、これいいかも、って」
+	PRINTFORMDL 魔理沙から与えられる快楽に、一瞬頬を緩ませた霊夢は、慌てて顔を引き締めた
+ELSEIF CALLNAME:(FLAG:111) == "早苗"
+	PRINTFORML 「やめて、早苗、これ、これぇ」
+	PRINTFORMDL 早苗によって引き出された快感に、霊夢は戸惑いを隠せないでいる
+ELSE
+	PRINTFORML 「このバケモノの分際でっ！」
+	PRINTFORMDL 頬を上気させつつ、霊夢は押しつけられた悦楽を否定する
+ENDIF
+
+
+;快楽刻印２取得
+;--------------------------------------------------
+@KOJO_1201_SEX_MARK_KAIRAKU_2
+
+CALLFORM KOJO_霊夢_SEX_MARK_KAIRAKU_2
+@KOJO_1211_SEX_MARK_KAIRAKU_2
+
+CALLFORM KOJO_霊夢_SEX_MARK_KAIRAKU_2
+@KOJO_霊夢_SEX_MARK_KAIRAKU_2
+IF CALLNAME:(FLAG:111) == "魔理沙"
+	PRINTFORML 「はぁはぁ、魔理沙、お願いゆるしてぇ」
+	PRINTFORMDL 魔理沙のくれる快感に、心身をゆだねそうになるのを、霊夢は必死に堪える
+ELSEIF CALLNAME:(FLAG:111) == "早苗"
+	PRINTFORML 「んくっ、早苗、もうしないで、やだぁ」
+	PRINTFORMDL 早苗から与えられる快楽に、霊夢は身悶えしている
+ELSE
+	PRINTFORML 「やめて、やめなさいよ、このばけものぉ」
+	PRINTFORMDL 火照った体を押さえるように、悦楽を拒否する霊夢
+ENDIF
+
+;快楽刻印３取得
+;--------------------------------------------------
+@KOJO_1201_SEX_MARK_KAIRAKU_3
+
+CALLFORM KOJO_霊夢_SEX_MARK_KAIRAKU_3
+@KOJO_1211_SEX_MARK_KAIRAKU_3
+
+CALLFORM KOJO_霊夢_SEX_MARK_KAIRAKU_3
+@KOJO_霊夢_SEX_MARK_KAIRAKU_3
+IF CALLNAME:(FLAG:111) == "魔理沙"
+	PRINTFORML 「ふぁん……、あは、もう、いいや」
+	PRINTFORMDL うっとりとした表情で、霊夢は魔理沙からの快感に心を預けている
+	PRINTFORML 「魔理沙、これ、きもちいいの、もっとして、魔理沙ぁ」
+	PRINTFORMDL 自らおねだりする霊夢に、魔理沙が嬉しそうな笑顔を浮かべている
+ELSEIF CALLNAME:(FLAG:111) == "早苗"
+	PRINTFORML 「んっ……、早苗、私もう我慢できない」
+	PRINTFORMDL 呟くと同時、霊夢は早苗からの快楽に身をゆだねた
+	PRINTFORML 「はふ、んっ、もっと、もっとして、ね？」
+	PRINTFORMDL 霊夢のおねだりに、早苗が楽しげな笑みを浮かべた
+ELSE
+	PRINTFORML 「この、このこの、このぉっ！」
+	PRINTFORMDL ビクビクと悦楽に身を震わせながら、霊夢は必死で抗っている
+	PRINTFORML 「ふぁっ、んくっ、負けない、負けないんだからぁ」
+	PRINTFORMDL 口では抗いながらも、霊夢の体からは勝手に力が抜けていく
+ENDIF
+
+;苦痛刻印１取得
+;--------------------------------------------------
+@KOJO_1201_SEX_MARK_KUTUU_1
+
+CALLFORM KOJO_霊夢_SEX_MARK_KUTUU_1
+@KOJO_1211_SEX_MARK_KUTUU_1
+
+CALLFORM KOJO_霊夢_SEX_MARK_KUTUU_1
+@KOJO_霊夢_SEX_MARK_KUTUU_1
+IF CALLNAME:(FLAG:111) == "魔理沙"
+	PRINTFORML 「いったぁ……、なにするのよこのバカっっ！」
+	PRINTFORMDL 痛みを紛らわせるために声を荒らげる霊夢を、魔理沙はにやにやしながら見つめている
+ELSEIF CALLNAME:(FLAG:111) == "早苗"
+	PRINTFORML 「痛いってば！　止めて早苗っ！」
+	PRINTFORMDL 苦痛に顔を蹙める霊夢に、早苗は楽しそうな笑みを浮かべている
+ELSE
+	PRINTFORML 「ぐっ、つっ、バケモノ、の、癖にぃ」
+	PRINTFORMDL ギロりと殺意のこもる瞳で睨みながら、霊夢は鈍痛を堪える
+ENDIF
+
+;苦痛刻印２取得
+;--------------------------------------------------
+@KOJO_1201_SEX_MARK_KUTUU_2
+
+CALLFORM KOJO_霊夢_SEX_MARK_KUTUU_2
+@KOJO_1211_SEX_MARK_KUTUU_2
+
+CALLFORM KOJO_霊夢_SEX_MARK_KUTUU_2
+@KOJO_霊夢_SEX_MARK_KUTUU_2
+IF CALLNAME:(FLAG:111) == "魔理沙"
+
+ELSEIF CALLNAME:(FLAG:111) == "早苗"
+ELSE
+ENDIF
+
+;苦痛刻印３取得
+;--------------------------------------------------
+@KOJO_1201_SEX_MARK_KUTUU_3
+
+CALLFORM KOJO_霊夢_SEX_MARK_KUTUU_3
+@KOJO_1211_SEX_MARK_KUTUU_3
+
+CALLFORM KOJO_霊夢_SEX_MARK_KUTUU_3
+@KOJO_霊夢_SEX_MARK_KUTUU_3
+IF CALLNAME:(FLAG:111) == "魔理沙"
+ELSEIF CALLNAME:(FLAG:111) == "早苗"
+ELSE
+ENDIF
+
+;屈服刻印１取得
+;--------------------------------------------------
+@KOJO_1201_SEX_MARK_KUPPUKU_1
+
+CALLFORM KOJO_霊夢_SEX_MARK_KUPPUKU_1
+@KOJO_1211_SEX_MARK_KUPPUKU_1
+
+CALLFORM KOJO_霊夢_SEX_MARK_KUPPUKU_1
+@KOJO_霊夢_SEX_MARK_KUPPUKU_1
+IF CALLNAME:(FLAG:111) == "魔理沙"
+ELSEIF CALLNAME:(FLAG:111) == "早苗"
+ELSE
+ENDIF
+
+;屈服刻印２取得
+;--------------------------------------------------
+@KOJO_1201_SEX_MARK_KUPPUKU_2
+
+CALLFORM KOJO_霊夢_SEX_MARK_KUPPUKU_2
+@KOJO_1211_SEX_MARK_KUPPUKU_2
+
+CALLFORM KOJO_霊夢_SEX_MARK_KUPPUKU_2
+@KOJO_霊夢_SEX_MARK_KUPPUKU_2
+IF CALLNAME:(FLAG:111) == "魔理沙"
+ELSEIF CALLNAME:(FLAG:111) == "早苗"
+ELSE
+ENDIF
+
+;屈服刻印３取得
+;--------------------------------------------------
+@KOJO_1201_SEX_MARK_KUPPUKU_3
+
+CALLFORM KOJO_霊夢_SEX_MARK_KUPPUKU_3
+@KOJO_1211_SEX_MARK_KUPPUKU_3
+
+CALLFORM KOJO_霊夢_SEX_MARK_KUPPUKU_3
+@KOJO_霊夢_SEX_MARK_KUPPUKU_3
+IF CALLNAME:(FLAG:111) == "魔理沙"
+ELSEIF CALLNAME:(FLAG:111) == "早苗"
+ELSE
+ENDIF
+
+;恐怖刻印１取得
+;--------------------------------------------------
+@KOJO_1201_SEX_MARK_KYOUHU_1
+
+CALLFORM KOJO_霊夢_SEX_MARK_KYOUHU_1
+@KOJO_1211_SEX_MARK_KYOUHU_1
+
+CALLFORM KOJO_霊夢_SEX_MARK_KYOUHU_1
+@KOJO_霊夢_SEX_MARK_KYOUHU_1
+IF CALLNAME:(FLAG:111) == "魔理沙"
+ELSEIF CALLNAME:(FLAG:111) == "早苗"
+ELSE
+ENDIF
+
+;恐怖刻印２取得
+;--------------------------------------------------
+@KOJO_1201_SEX_MARK_KYOUHU_2
+
+CALLFORM KOJO_霊夢_SEX_MARK_KYOUHU_2
+@KOJO_1211_SEX_MARK_KYOUHU_2
+
+CALLFORM KOJO_霊夢_SEX_MARK_KYOUHU_2
+@KOJO_霊夢_SEX_MARK_KYOUHU_2
+IF CALLNAME:(FLAG:111) == "魔理沙"
+ELSEIF CALLNAME:(FLAG:111) == "早苗"
+ELSE
+ENDIF
+
+;恐怖刻印３取得
+;--------------------------------------------------
+@KOJO_1201_SEX_MARK_KYOUHU_3
+
+CALLFORM KOJO_霊夢_SEX_MARK_KYOUHU_3
+@KOJO_1211_SEX_MARK_KYOUHU_3
+
+CALLFORM KOJO_霊夢_SEX_MARK_KYOUHU_3
+@KOJO_霊夢_SEX_MARK_KYOUHU_3
+IF CALLNAME:(FLAG:111) == "魔理沙"
+ELSEIF CALLNAME:(FLAG:111) == "早苗"
+ELSE
+ENDIF
+
+;恥辱刻印１取得
+;--------------------------------------------------
+@KOJO_1201_SEX_MARK_TIJYOKU_1
+
+CALLFORM KOJO_霊夢_SEX_MARK_TIJYOKU_1
+@KOJO_1211_SEX_MARK_TIJYOKU_1
+
+CALLFORM KOJO_霊夢_SEX_MARK_TIJYOKU_1
+@KOJO_霊夢_SEX_MARK_TIJYOKU_1
+IF CALLNAME:(FLAG:111) == "魔理沙"
+ELSEIF CALLNAME:(FLAG:111) == "早苗"
+ELSE
+ENDIF
+
+;恥辱刻印２取得
+;--------------------------------------------------
+@KOJO_1201_SEX_MARK_TIJYOKU_2
+
+CALLFORM KOJO_霊夢_SEX_MARK_TIJYOKU_2
+@KOJO_1211_SEX_MARK_TIJYOKU_2
+
+CALLFORM KOJO_霊夢_SEX_MARK_TIJYOKU_2
+@KOJO_霊夢_SEX_MARK_TIJYOKU_2
+IF CALLNAME:(FLAG:111) == "魔理沙"
+ELSEIF CALLNAME:(FLAG:111) == "早苗"
+ELSE
+ENDIF
+
+;恥辱刻印３取得
+;--------------------------------------------------
+@KOJO_1201_SEX_MARK_TIJYOKU_3
+
+CALLFORM KOJO_霊夢_SEX_MARK_TIJYOKU_3
+@KOJO_1211_SEX_MARK_TIJYOKU_3
+
+CALLFORM KOJO_霊夢_SEX_MARK_TIJYOKU_3
+@KOJO_霊夢_SEX_MARK_TIJYOKU_3
+IF CALLNAME:(FLAG:111) == "魔理沙"
+ELSEIF CALLNAME:(FLAG:111) == "早苗"
+ELSE
+ENDIF
+
+
+
+;心境変化関連
+
+;倒錯
+;--------------------------------------------------
+@KOJO_1201_BATTLE_SHINKYOU_CHANGE_TOUSAKU
+
+CALLFORM KOJO_霊夢_BATTLE_SHINKYOU_CHANGE_TOUSAKU
+@KOJO_1211_BATTLE_SHINKYOU_CHANGE_TOUSAKU
+
+CALLFORM KOJO_霊夢_BATTLE_SHINKYOU_CHANGE_TOUSAKU
+@KOJO_霊夢_BATTLE_SHINKYOU_CHANGE_TOUSAKU
+
+;怒り
+;--------------------------------------------------
+@KOJO_1201_BATTLE_SHINKYOU_CHANGE_IKARI
+
+CALLFORM KOJO_霊夢_BATTLE_SHINKYOU_CHANGE_IKARI
+@KOJO_1211_BATTLE_SHINKYOU_CHANGE_IKARI
+
+CALLFORM KOJO_霊夢_BATTLE_SHINKYOU_CHANGE_IKARI
+@KOJO_霊夢_BATTLE_SHINKYOU_CHANGE_IKARI
+
+;諦観
+;--------------------------------------------------
+@KOJO_1201_BATTLE_SHINKYOU_CHANGE_TEIKAN
+
+CALLFORM KOJO_霊夢_BATTLE_SHINKYOU_CHANGE_TEIKAN
+@KOJO_1211_BATTLE_SHINKYOU_CHANGE_TEIKAN
+
+CALLFORM KOJO_霊夢_BATTLE_SHINKYOU_CHANGE_TEIKAN
+@KOJO_霊夢_BATTLE_SHINKYOU_CHANGE_TEIKAN
+
+;冷静
+;--------------------------------------------------
+@KOJO_1201_BATTLE_SHINKYOU_CHANGE_REISEI
+
+CALLFORM KOJO_霊夢_BATTLE_SHINKYOU_CHANGE_REISEI
+@KOJO_1211_BATTLE_SHINKYOU_CHANGE_REISEI
+
+CALLFORM KOJO_霊夢_BATTLE_SHINKYOU_CHANGE_REISEI
+@KOJO_霊夢_BATTLE_SHINKYOU_CHANGE_REISEI
+
+;動揺
+;--------------------------------------------------
+@KOJO_1201_BATTLE_SHINKYOU_CHANGE_DOUYOU
+
+CALLFORM KOJO_霊夢_BATTLE_SHINKYOU_CHANGE_DOUYOU
+@KOJO_1211_BATTLE_SHINKYOU_CHANGE_DOUYOU
+
+CALLFORM KOJO_霊夢_BATTLE_SHINKYOU_CHANGE_DOUYOU
+@KOJO_霊夢_BATTLE_SHINKYOU_CHANGE_DOUYOU
+
+;高揚
+;--------------------------------------------------
+@KOJO_1201_BATTLE_SHINKYOU_CHANGE_KOUYOU
+
+CALLFORM KOJO_霊夢_BATTLE_SHINKYOU_CHANGE_KOUYOU
+@KOJO_1211_BATTLE_SHINKYOU_CHANGE_KOUYOU
+
+CALLFORM KOJO_霊夢_BATTLE_SHINKYOU_CHANGE_KOUYOU
+@KOJO_霊夢_BATTLE_SHINKYOU_CHANGE_KOUYOU
+
+;消沈
+;--------------------------------------------------
+@KOJO_1201_BATTLE_SHINKYOU_CHANGE_SYOUTIN
+
+CALLFORM KOJO_霊夢_BATTLE_SHINKYOU_CHANGE_SYOUTIN
+@KOJO_1211_BATTLE_SHINKYOU_CHANGE_SYOUTIN
+
+CALLFORM KOJO_霊夢_BATTLE_SHINKYOU_CHANGE_SYOUTIN
+@KOJO_霊夢_BATTLE_SHINKYOU_CHANGE_SYOUTIN
+
+
+
+;体が竦んだ関連
+
+;触手の虜で体が竦む
+;--------------------------------------------------
+@KOJO_1201_BATTLE_DISACTION_TORIKO
+
+CALLFORM KOJO_霊夢_BATTLE_DISACTION_TORIKO
+@KOJO_1211_BATTLE_DISACTION_TORIKO
+
+CALLFORM KOJO_霊夢_BATTLE_DISACTION_TORIKO
+@KOJO_霊夢_BATTLE_DISACTION_TORIKO
+
+;快楽で体が竦む
+;--------------------------------------------------
+@KOJO_1201_BATTLE_DISACTION_KAIRAKU
+
+CALLFORM KOJO_霊夢_BATTLE_DISACTION_KAIRAKU
+@KOJO_1211_BATTLE_DISACTION_KAIRAKU
+
+CALLFORM KOJO_霊夢_BATTLE_DISACTION_KAIRAKU
+@KOJO_霊夢_BATTLE_DISACTION_KAIRAKU
+
+;苦痛で体が竦む
+;--------------------------------------------------
+@KOJO_1201_BATTLE_DISACTION_KUTUU
+
+CALLFORM KOJO_霊夢_BATTLE_DISACTION_KUTUU
+@KOJO_1211_BATTLE_DISACTION_KUTUU
+
+CALLFORM KOJO_霊夢_BATTLE_DISACTION_KUTUU
+@KOJO_霊夢_BATTLE_DISACTION_KUTUU
+
+;屈辱で体が竦む
+;--------------------------------------------------
+@KOJO_1201_BATTLE_DISACTION_KUTUZYOKU
+
+CALLFORM KOJO_霊夢_BATTLE_DISACTION_KUTUZYOKU
+@KOJO_1211_BATTLE_DISACTION_KUTUZYOKU
+
+CALLFORM KOJO_霊夢_BATTLE_DISACTION_KUTUZYOKU
+@KOJO_霊夢_BATTLE_DISACTION_KUTUZYOKU
+
+;恐怖で体が竦む
+;--------------------------------------------------
+@KOJO_1201_BATTLE_DISACTION_KYOUHU
+
+CALLFORM KOJO_霊夢_BATTLE_DISACTION_KYOUHU
+@KOJO_1211_BATTLE_DISACTION_KYOUHU
+
+CALLFORM KOJO_霊夢_BATTLE_DISACTION_KYOUHU
+@KOJO_霊夢_BATTLE_DISACTION_KYOUHU
+
+;恥辱で体が竦む
+;--------------------------------------------------
+@KOJO_1201_BATTLE_DISACTION_TIZYOKU
+
+CALLFORM KOJO_霊夢_BATTLE_DISACTION_TIZYOKU
+@KOJO_1211_BATTLE_DISACTION_TIZYOKU
+
+CALLFORM KOJO_霊夢_BATTLE_DISACTION_TIZYOKU
+@KOJO_霊夢_BATTLE_DISACTION_TIZYOKU
+
+;寄生の影響で体が竦む
+;--------------------------------------------------
+@KOJO_1201_BATTLE_DISACTION_PARASITE
+
+CALLFORM KOJO_霊夢_BATTLE_DISACTION_PARASITE
+@KOJO_1211_BATTLE_DISACTION_PARASITE
+
+CALLFORM KOJO_霊夢_BATTLE_DISACTION_PARASITE
+@KOJO_霊夢_BATTLE_DISACTION_PARASITE
+
+
+;自慰関連
+
+;戦闘後自慰
+;--------------------------------------------------
+@KOJO_1201_SELF_BATTLEEND
+
+CALLFORM KOJO_霊夢_SELF_BATTLEEND
+@KOJO_1211_SELF_BATTLEEND
+
+CALLFORM KOJO_霊夢_SELF_BATTLEEND
+@KOJO_霊夢_SELF_BATTLEEND
+
+;普通の自慰
+;--------------------------------------------------
+@KOJO_1201_SELF_N
+
+CALLFORM KOJO_霊夢_SELF_N
+@KOJO_1211_SELF_N
+
+CALLFORM KOJO_霊夢_SELF_N
+@KOJO_霊夢_SELF_N
+
+;胸自慰
+;--------------------------------------------------
+@KOJO_1201_SELF_B
+
+CALLFORM KOJO_霊夢_SELF_B
+@KOJO_1211_SELF_B
+
+CALLFORM KOJO_霊夢_SELF_B
+@KOJO_霊夢_SELF_B
+
+;アナニー
+;--------------------------------------------------
+@KOJO_1201_SELF_A
+
+CALLFORM KOJO_霊夢_SELF_A
+@KOJO_1211_SELF_A
+
+CALLFORM KOJO_霊夢_SELF_A
+@KOJO_霊夢_SELF_A
+
+
+;幽閉関係
+
+;初めての幽閉
+;--------------------------------------------------
+@KOJO_1201_PRISON_PRISENTENCE_FIRST
+
+CALLFORM KOJO_霊夢_PRISON_PRISENTENCE_FIRST
+@KOJO_1211_PRISON_PRISENTENCE_FIRST
+
+CALLFORM KOJO_霊夢_PRISON_PRISENTENCE_FIRST
+@KOJO_霊夢_PRISON_PRISENTENCE_FIRST
+
+;二度目以降の幽閉後の初被姦
+;--------------------------------------------------
+@KOJO_1201_PRISON_PRISENTENCE_START
+
+CALLFORM KOJO_霊夢_PRISON_PRISENTENCE_START
+@KOJO_1211_PRISON_PRISENTENCE_START
+
+CALLFORM KOJO_霊夢_PRISON_PRISENTENCE_START
+@KOJO_霊夢_PRISON_PRISENTENCE_START
+
+;幽閉後の被姦開始文
+;--------------------------------------------------
+@KOJO_1201_PRISON_PRISENTENCE
+
+CALLFORM KOJO_霊夢_PRISON_PRISENTENCE
+@KOJO_1211_PRISON_PRISENTENCE
+
+CALLFORM KOJO_霊夢_PRISON_PRISENTENCE
+@KOJO_霊夢_PRISON_PRISENTENCE
+
+;洗脳になった
+;--------------------------------------------------
+@KOJO_1201_PRISON_SENNOU
+
+CALLFORM KOJO_霊夢_PRISON_SENNOU
+@KOJO_1211_PRISON_SENNOU
+
+CALLFORM KOJO_霊夢_PRISON_SENNOU
+@KOJO_霊夢_PRISON_SENNOU
+
+;悪堕ちになった
+;--------------------------------------------------
+@KOJO_1201_PRISON_AKUOTI
+
+CALLFORM KOJO_霊夢_PRISON_AKUOTI
+@KOJO_1211_PRISON_AKUOTI
+
+CALLFORM KOJO_霊夢_PRISON_AKUOTI
+@KOJO_霊夢_PRISON_AKUOTI
+
+;取り込まれ
+;--------------------------------------------------
+@KOJO_1201_PRISON_DEAD
+
+CALLFORM KOJO_霊夢_PRISON_DEAD
+@KOJO_1211_PRISON_DEAD
+
+CALLFORM KOJO_霊夢_PRISON_DEAD
+@KOJO_霊夢_PRISON_DEAD
+
+;ふたなり化
+;--------------------------------------------------
+@KOJO_1201_PRISON_HUTANARI
+
+CALLFORM KOJO_霊夢_PRISON_HUTANARI
+@KOJO_1211_PRISON_HUTANARI
+
+CALLFORM KOJO_霊夢_PRISON_HUTANARI
+@KOJO_霊夢_PRISON_HUTANARI
+
+;母乳体質化
+;--------------------------------------------------
+@KOJO_1201_PRISON_BONYU
+
+CALLFORM KOJO_霊夢_PRISON_BONYU
+@KOJO_1211_PRISON_BONYU
+
+CALLFORM KOJO_霊夢_PRISON_BONYU
+@KOJO_霊夢_PRISON_BONYU
+
+;C中心攻め
+;--------------------------------------------------
+@KOJO_1201_PRISON_COM_0
+
+CALLFORM KOJO_霊夢_PRISON_COM_0
+@KOJO_1211_PRISON_COM_0
+
+CALLFORM KOJO_霊夢_PRISON_COM_0
+@KOJO_霊夢_PRISON_COM_0
+
+;V中心攻め
+;--------------------------------------------------
+@KOJO_1201_PRISON_COM_1
+
+CALLFORM KOJO_霊夢_PRISON_COM_1
+@KOJO_1211_PRISON_COM_1
+
+CALLFORM KOJO_霊夢_PRISON_COM_1
+@KOJO_霊夢_PRISON_COM_1
+
+;A中心攻め
+;--------------------------------------------------
+@KOJO_1201_PRISON_COM_2
+
+CALLFORM KOJO_霊夢_PRISON_COM_2
+@KOJO_1211_PRISON_COM_2
+
+CALLFORM KOJO_霊夢_PRISON_COM_2
+@KOJO_霊夢_PRISON_COM_2
+
+;B中心攻め
+;--------------------------------------------------
+@KOJO_1201_PRISON_COM_3
+
+CALLFORM KOJO_霊夢_PRISON_COM_3
+@KOJO_1211_PRISON_COM_3
+
+CALLFORM KOJO_霊夢_PRISON_COM_3
+@KOJO_霊夢_PRISON_COM_3
+
+;Sな攻め
+;--------------------------------------------------
+@KOJO_1201_PRISON_COM_4
+
+CALLFORM KOJO_霊夢_PRISON_COM_4
+@KOJO_1211_PRISON_COM_4
+
+CALLFORM KOJO_霊夢_PRISON_COM_4
+@KOJO_霊夢_PRISON_COM_4
+
+;強制奉仕
+;--------------------------------------------------
+@KOJO_1201_PRISON_COM_5
+
+CALLFORM KOJO_霊夢_PRISON_COM_5
+@KOJO_1211_PRISON_COM_5
+
+CALLFORM KOJO_霊夢_PRISON_COM_5
+@KOJO_霊夢_PRISON_COM_5
+
+;羞恥な攻め
+;--------------------------------------------------
+@KOJO_1201_PRISON_COM_6
+
+CALLFORM KOJO_霊夢_PRISON_COM_6
+@KOJO_1211_PRISON_COM_6
+
+CALLFORM KOJO_霊夢_PRISON_COM_6
+@KOJO_霊夢_PRISON_COM_6
+
+;子触手に犯される
+;--------------------------------------------------
+@KOJO_1201_PRISON_COM_7
+
+CALLFORM KOJO_霊夢_PRISON_COM_7
+@KOJO_1211_PRISON_COM_7
+
+CALLFORM KOJO_霊夢_PRISON_COM_7
+@KOJO_霊夢_PRISON_COM_7
+
+;ふたなり攻め
+;--------------------------------------------------
+@KOJO_1201_PRISON_COM_100
+
+CALLFORM KOJO_霊夢_PRISON_COM_100
+@KOJO_1211_PRISON_COM_100
+
+CALLFORM KOJO_霊夢_PRISON_COM_100
+@KOJO_霊夢_PRISON_COM_100
+
+;V拡張
+;--------------------------------------------------
+@KOJO_1201_PRISON_COM_101
+
+CALLFORM KOJO_霊夢_PRISON_COM_101
+@KOJO_1211_PRISON_COM_101
+
+CALLFORM KOJO_霊夢_PRISON_COM_101
+@KOJO_霊夢_PRISON_COM_101
+
+;A拡張
+;--------------------------------------------------
+@KOJO_1201_PRISON_COM_102
+
+CALLFORM KOJO_霊夢_PRISON_COM_102
+@KOJO_1211_PRISON_COM_102
+
+CALLFORM KOJO_霊夢_PRISON_COM_102
+@KOJO_霊夢_PRISON_COM_102
+
+;搾乳攻め
+;--------------------------------------------------
+@KOJO_1201_PRISON_COM_103
+
+CALLFORM KOJO_霊夢_PRISON_COM_103
+@KOJO_1211_PRISON_COM_103
+
+CALLFORM KOJO_霊夢_PRISON_COM_103
+@KOJO_霊夢_PRISON_COM_103
+
+;Vに産卵
+;--------------------------------------------------
+@KOJO_1201_PRISON_COM_200
+
+CALLFORM KOJO_霊夢_PRISON_COM_200
+@KOJO_1211_PRISON_COM_200
+
+CALLFORM KOJO_霊夢_PRISON_COM_200
+@KOJO_霊夢_PRISON_COM_200
+
+;Aに産卵
+;--------------------------------------------------
+@KOJO_1201_PRISON_COM_201
+
+CALLFORM KOJO_霊夢_PRISON_COM_201
+@KOJO_1211_PRISON_COM_1201
+
+CALLFORM KOJO_霊夢_PRISON_COM_201
+@KOJO_霊夢_PRISON_COM_201
+
+;注射
+;--------------------------------------------------
+@KOJO_1201_PRISON_COM_300
+
+CALLFORM KOJO_霊夢_PRISON_COM_300
+@KOJO_1211_PRISON_COM_300
+
+CALLFORM KOJO_霊夢_PRISON_COM_300
+@KOJO_霊夢_PRISON_COM_300
+
+;触手の寄生
+;--------------------------------------------------
+@KOJO_1201_PRISON_COM_301
+
+CALLFORM KOJO_霊夢_PRISON_COM_301
+@KOJO_1211_PRISON_COM_301
+
+CALLFORM KOJO_霊夢_PRISON_COM_301
+@KOJO_霊夢_PRISON_COM_301
+
+
+
+;サブイベント関連
+
+;戦闘のサブイベント
+
+;悪堕ちキャラに敗北して犯される
+;--------------------------------------------------
+@KOJO_1201_SUBEVENT_BATTLE_RAPED_ENEMY
+
+CALLFORM KOJO_霊夢_SUBEVENT_BATTLE_RAPED_ENEMY
+@KOJO_1211_SUBEVENT_BATTLE_RAPED_ENEMY
+
+CALLFORM KOJO_霊夢_SUBEVENT_BATTLE_RAPED_ENEMY
+@KOJO_霊夢_SUBEVENT_BATTLE_RAPED_ENEMY
+IF CALLNAME:(FLAG:111) == "魔理沙"
+	IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+[SKIPSTART]
+「正気に、もどってよ、魔理沙ぁ」
+幾たびも刻み込まれた絶頂のせいで、身動きできない霊夢に、卑猥な衣装の魔理沙が近づいてくる
+「私は正気だぜ？　それに、霊夢だって私にＨなことされたいんだろ？　さっきまで可愛い声で鳴いてたくせに」
+魔理沙の指摘に頬が熱くなる
+図星を指されたから、ではなく
+「可愛い？」
+「ああ、霊夢は本当に可愛いぜ」
+魔理沙の言葉に、天にも昇るようなうれしさを覚えたせい
+「でも、ここは可愛いっていうより、綺麗ってところだよな」
+「ふぁんっっ！　や、やだぁ%UNICODE(0x2665)%　魔理沙のばかぁ」
+身をかがめてのしかかってきた魔理沙の指が、膣内に軽く入ってきただけで体がびくんっと大きく震えてしまった
+「ふふ、そんなに私の指、気持ちいい？」
+魔理沙の問いかけに何度もうなずく霊夢
+扇情的な魔理沙の格好に、どきどきと心臓が高鳴っていく
+間髪容れず、霊夢は少し身をずらして魔理沙の乳首に吸い付いた
+「あんっ……、もう、ほんと可愛いなぁ」
+ちゅうちゅうと、魔理沙の乳首を吸う霊夢
+くすくすと笑う魔理沙の指の動きが心地よくて
+「ふふ、もうおまんこぐちょぐちょだな。ちんぽはめて欲しいか？」
+魔理沙の卑猥な言葉に、魔理沙の胸に吸い付いたまま、霊夢はこくこくとうなずく
+「ちんぽより、触手の方が」「それはやだ！」
+思わず魔理沙の胸から口を離して声を上げる
+「やだ、魔理沙のおちんちんが良いの！　触手なんかよりもっと」
+[SKIPEND]
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && !(MESSAGE_BRANCH_F(TARGET) & 絶望)
+	ELSE
+	ENDIF
+ELSEIF CALLNAME:(FLAG:111) == "早苗"
+	IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && !(MESSAGE_BRANCH_F(TARGET) & 絶望)
+	ELSE
+	ENDIF
+ENDIF
+
+
+
+
+
+;触手拘束具を着せられた
+;--------------------------------------------------
+@KOJO_1201_SUBEVENT_BATTLE_SETTENTACLECLOTH
+
+CALLFORM KOJO_霊夢_SUBEVENT_BATTLE_SETTENTACLECLOTH
+@KOJO_1211_SUBEVENT_BATTLE_SETTENTACLECLOTH
+
+CALLFORM KOJO_霊夢_SUBEVENT_BATTLE_SETTENTACLECLOTH
+@KOJO_霊夢_SUBEVENT_BATTLE_SETTENTACLECLOTH
+
+;触手拘束具による被姦
+;--------------------------------------------------
+@KOJO_1201_SUBEVENT_BATTLE_ACTTENTACLECLOTH
+
+CALLFORM KOJO_霊夢_SUBEVENT_BATTLE_ACTTENTACLECLOTH
+@KOJO_1211_SUBEVENT_BATTLE_ACTTENTACLECLOTH
+
+CALLFORM KOJO_霊夢_SUBEVENT_BATTLE_ACTTENTACLECLOTH
+@KOJO_霊夢_SUBEVENT_BATTLE_ACTTENTACLECLOTH

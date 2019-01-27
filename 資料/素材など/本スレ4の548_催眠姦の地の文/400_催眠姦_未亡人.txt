@@ -1,0 +1,31 @@
+;--------------------------------------------------
+;【未亡人】
+;--------------------------------------------------
+ELSEIF TALENT:ARG:交際相手 == 5
+	PRINTFORML 「%PRINT_TRANSCALLNAME(TARGET)%、%PRINT_TRANSCALLNAME(TARGET)%」
+	PRINTFORML 呼びかける声に導かれ、%PRINT_TRANSCALLNAME(TARGET)%は重たい瞼をこじ開けた。
+	PRINTFORML 
+	PRINTFORML どこか懐かしい寝室、見覚えのある布団、そして…
+	PRINTFORML もうどこにも居ないはずの「夫」。
+	PRINTFORML 
+	PRINTFORML どうしてここに？迎えに来てくれたの？私も「同じところ」へ逝くの？
+	PRINTFORML 何て声を掛けよう？…疑問符が次々ど涌いて出る。
+	PRINTFORML …しかしその一切合切は、丸ごと飲み込まれた。
+	PRINTFORML 
+	PRINTFORML 甘く、優しく、それでいて激しい大人のキス。
+	PRINTFORML 
+	PRINTFORML ここは夢か、死後の世界なのか、分からない。
+	PRINTFORML 何が何やらさっぱりだ…だけど…「本物」だ！
+	PRINTFORML 匂いも、キスの味も、些細な仕草も、自分しか知らない彼の癖も、
+	PRINTFORML その全てが亡くして久しい「夫」そのものだった。
+	PRINTFORML 
+	PRINTFORML 求めに応えたい、いや欲しがってるのは自分だ。
+	SIF TALENT:処女 > 0
+		PRINTFORML ついに捧げる事が叶わなかった「初めて」も今ここでなら…
+	PRINTFORML 
+	PRINTFORML 大人のキスの「その先」を
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は生涯最大の素直さでもって求め、受け止めた。
+
+ENDIF
+
+

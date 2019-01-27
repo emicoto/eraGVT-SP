@@ -1,0 +1,59 @@
+﻿
+; 起動時
+;-------------------
+@SYSTEM_TITLE
+
+; 初期化
+;-------------------
+RESETDATA
+
+; データインストール
+;-------------------
+
+LOADGLOBAL
+;グローバルのアップデート
+IF RESULT == 1
+	CALL UPDATE_GLOBAL
+ELSE
+	MOB_GLOBAL:0:1 = 100
+	SAVEGLOBAL
+ENDIF
+
+;デフォルトキャラ追加
+ADDDEFCHARA
+
+;ゲーム初期設定
+TIME = 1
+MONEY = 5000
+FLAG:800 = 0
+FLAG:801 = 1
+FLAG:802 = 31
+FLAG:803 = 7
+FLAG:804 = 7
+ITEM:100 = 1
+ITEM:200 = 1
+ITEM:201 = 1
+ITEM:202 = 1
+ITEM:299 = 1
+ITEM:300 = 1
+ITEM:401 = 1
+
+;MASTERとTARGETの入れ替え
+;MASTERにダミー用のキャラを入れて、TARGETを消しておく
+SWAPCHARA 0, 1
+DELCHARA 1
+
+;REDRAW 0進行でCLEARLINE時のちらつき防止
+REDRAW 0
+RESETBGCOLOR
+
+; タイトル画面
+;-------------------
+CALL PRINT_TITLE
+
+@TEST_LAUNCH
+FONTBOLD
+PRINTL TESTING.....
+INPUT
+
+

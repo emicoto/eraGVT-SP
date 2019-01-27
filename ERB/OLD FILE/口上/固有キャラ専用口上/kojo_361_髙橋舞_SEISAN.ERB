@@ -1,0 +1,627 @@
+;eraGVTアルバイト口上テンプレver0.360
+;各関数のKOJO_0_の0をcsvのキャラ番号に置換して使用します
+;汎用キャラ（キャラ番号0のキャラ）の口上を作成する場合は末尾に性格番号を付けてください
+;
+;例：汎用キャラ(キャラ番号0)で元気っ子(性格番号13)の口上を作成する場合
+;    KOJO_0_SEISAN_FAMILY_normal_13
+;
+;例：キャラ番号1のキャラで口上を作成する場合
+;    KOJO_1_SEISAN_FAMILY_normal
+;--------------------------------------------------
+
+;休憩
+;--------------------------------------------------
+@KOJO_361_REST
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_REST_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_REST_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;アルバイト『ファミレス』（通常）
+;--------------------------------------------------
+@KOJO_361_SEISAN_FAMILY_normal
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_FAMILY_normal_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_FAMILY_normal_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;アルバイト『ファミレス』（痴漢）
+;--------------------------------------------------
+@KOJO_361_SEISAN_FAMILY_chikan
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_FAMILY_chikan_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_FAMILY_chikan_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;アルバイト『食堂』
+;--------------------------------------------------
+@KOJO_361_SEISAN_SYOKUDOU
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_SYOKUDOU_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_SYOKUDOU_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;アルバイト『食堂』(痴漢)
+;--------------------------------------------------
+@KOJO_361_SEISAN_SYOKUDOU_chikan
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_SYOKUDOU_chikan_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_SYOKUDOU_chikan_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;アルバイト『食堂』(薬)
+;--------------------------------------------------
+@KOJO_361_SEISAN_SYOKUDOU_drug
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_SYOKUDOU_drug_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_SYOKUDOU_drug_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;アルバイト『新聞配達』
+;--------------------------------------------------
+@KOJO_361_SEISAN_SHINBUN
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_SHINBUN_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_SHINBUN_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;アルバイト『新聞配達』(アクメ自転車)
+;--------------------------------------------------
+@KOJO_361_SEISAN_SHINBUN_acmecycle
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_SHINBUN_acmecycle_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_SHINBUN_acmecycle_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;アルバイト『新聞配達』(トップニュース)
+;--------------------------------------------------
+@KOJO_361_SEISAN_SHINBUN_topnews
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_SHINBUN_topnews_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_SHINBUN_topnews_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;アルバイト『新聞配達』(出歯亀)
+;--------------------------------------------------
+@KOJO_361_SEISAN_SHINBUN_debagame
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_SHINBUN_debagame_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_SHINBUN_debagame_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;アルバイト『ヒーローショー』（通常）
+;--------------------------------------------------
+@KOJO_361_SEISAN_HERO_normal
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_HERO_normal_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_HERO_normal_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;アルバイト『ヒーローショー』（転んだ）
+;--------------------------------------------------
+@KOJO_361_SEISAN_HERO_korobi
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_HERO_korobi_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_HERO_korobi_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;アルバイト『ヒーローショー』（スカート捲り）
+;--------------------------------------------------
+@KOJO_361_SEISAN_HERO_skirtmekuri
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_HERO_skirtmekuri_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_HERO_skirtmekuri_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;アルバイト『ヒーローショー』（痴漢）
+;--------------------------------------------------
+@KOJO_361_SEISAN_HERO_chikan
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_HERO_chikan_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_HERO_chikan_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;アルバイト『ヒーローショー』（触手拘束具）
+;--------------------------------------------------
+@KOJO_361_SEISAN_HERO_syokusyu
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_HERO_syokusyu_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_HERO_syokusyu_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;アルバイト『ヒーローショー』（陵辱ショー）
+;--------------------------------------------------
+@KOJO_361_SEISAN_HERO_ryoujoku
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_HERO_ryoujoku_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_HERO_ryoujoku_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;研究所助手（通常）
+;--------------------------------------------------
+@KOJO_361_SEISAN_KENKYU_normal
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_KENKYU_normal_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_KENKYU_normal_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;研究所助手（妊娠）
+;--------------------------------------------------
+@KOJO_361_SEISAN_KENKYU_ninshin
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_KENKYU_ninshin_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_KENKYU_ninshin_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;研究所助手（妊娠経験あり）
+;--------------------------------------------------
+@KOJO_361_SEISAN_KENKYU_after
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_KENKYU_after_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_KENKYU_after_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;研究所助手（搾乳）
+;--------------------------------------------------
+@KOJO_361_SEISAN_KENKYU_sakunyu
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_KENKYU_sakunyu_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_KENKYU_sakunyu_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;研究所助手（ふたなり）
+;--------------------------------------------------
+@KOJO_361_SEISAN_KENKYU_hutanari
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_KENKYU_hutanari_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_KENKYU_hutanari_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;雑魚触手退治（通常）
+;--------------------------------------------------
+@KOJO_361_SEISAN_BATTLE_normal
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_BATTLE_normal_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_BATTLE_normal_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;雑魚触手退治（敗北：苦痛）
+;--------------------------------------------------
+@KOJO_361_SEISAN_BATTLE_haibokuA
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_BATTLE_haibokuA_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_BATTLE_haibokuA_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;雑魚触手退治（敗北：陵辱）
+;--------------------------------------------------
+@KOJO_361_SEISAN_BATTLE_haibokuB
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_BATTLE_haibokuB_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_BATTLE_haibokuB_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;雑魚触手退治（触手の虜）
+;--------------------------------------------------
+@KOJO_361_SEISAN_BATTLE_toriko
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_BATTLE_toriko_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_BATTLE_toriko_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;援助交際（調教：快楽）
+;--------------------------------------------------
+@KOJO_361_SEISAN_SYOUHU_nomalA
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_SYOUHU_nomalA_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_SYOUHU_nomalA_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;援助交際（調教：フェラ）
+;--------------------------------------------------
+@KOJO_361_SEISAN_SYOUHU_nomalB
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_SYOUHU_nomalB_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_SYOUHU_nomalB_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;援助交際（調教：キス）
+;--------------------------------------------------
+@KOJO_361_SEISAN_SYOUHU_nomalC
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_SYOUHU_nomalC_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_SYOUHU_nomalC_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;援助交際（変態：浣腸）
+;--------------------------------------------------
+@KOJO_361_SEISAN_SYOUHU_hentaiA
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_SYOUHU_hentaiA_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_SYOUHU_hentaiA_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;援助交際（変態：メスブタ）
+;--------------------------------------------------
+@KOJO_361_SEISAN_SYOUHU_hentaiB
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_SYOUHU_hentaiB_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_SYOUHU_hentaiB_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;援助交際（変態：メスイヌ）
+;--------------------------------------------------
+@KOJO_361_SEISAN_SYOUHU_hentaiC
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_SYOUHU_hentaiC_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_SYOUHU_hentaiC_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;援助交際（変態：女王様）
+;--------------------------------------------------
+@KOJO_361_SEISAN_SYOUHU_hentaiD
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_SYOUHU_hentaiD_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_SYOUHU_hentaiD_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;援助交際（レズ）
+;--------------------------------------------------
+@KOJO_361_SEISAN_SYOUHU_les
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_SYOUHU_les_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_SYOUHU_les_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;AV撮影
+;--------------------------------------------------
+@KOJO_361_SEISAN_AV
+;;コスプレ魔法少女  マジカル☆○○
+;IF CFLAG:282 == 1
+;;凌辱ヒロイン プリティー☆○○ セカンドシーズン
+;ELSEIF CFLAG:282 == 2
+;;サディスティック魔法少女 すぷらったー☆○○
+;ELSEIF CFLAG:282 == 3
+;;ふたなりな妹とえっちしてみませんか？
+;ELSEIF CFLAG:282 == 4
+;;私の子●はお父さんとの子 腹ボテ小○生 鬼畜父親中出し 近親相姦成長記録
+;ELSEIF CFLAG:282 == 5
+;;ネコ耳○○のニャンニャンしちゃうぞ
+;ELSEIF CFLAG:282 == 6
+;;淫語 卑猥語 BEST SELECTION
+;ELSEIF CFLAG:282 == 7
+;;萌え萌えコスプレ7
+;ELSEIF CFLAG:282 == 8
+;;かわゆ過ぎる○○と僕のパコパコ同棲性活
+;ELSEIF CFLAG:282 == 9
+;;無理矢理犯されるアナル 4時間
+;ELSEIF CFLAG:282 == 10
+;;おしおきされてイキまくるドジっ娘メイド
+;ELSEIF CFLAG:282 == 11
+;ENDIF
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_AV_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_AV_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;公衆便所（路地裏）
+;--------------------------------------------------
+@KOJO_361_SEISAN_TOILET_roji
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_TOILET_roji_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_TOILET_roji_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;公衆便所（浮浪者）
+;--------------------------------------------------
+@KOJO_361_SEISAN_TOILET_homeless
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_TOILET_homeless_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_TOILET_homeless_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;公衆便所（野良犬）
+;--------------------------------------------------
+@KOJO_361_SEISAN_TOILET_dog
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_TOILET_dog_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_TOILET_dog_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;アイドル活動（下積み：低知名度）
+;--------------------------------------------------
+@KOJO_361_SEISAN_IDOL1
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_IDOL1_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_IDOL1_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;アイドル活動（下積み：高知名度）
+;--------------------------------------------------
+@KOJO_361_SEISAN_IDOL2
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_IDOL2_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_IDOL2_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;アイドル活動（路上ライブ）
+;--------------------------------------------------
+@KOJO_361_SEISAN_IDOL3
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_IDOL3_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_IDOL3_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;アイドル活動（売り込み）
+;--------------------------------------------------
+@KOJO_361_SEISAN_IDOL4
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_IDOL4_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_IDOL4_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;アイドル活動（テレビ番組）
+;--------------------------------------------------
+@KOJO_361_SEISAN_IDOL_TV
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_IDOL_TV_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_IDOL_TV_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;アイドル活動（グラビア撮影）
+;--------------------------------------------------
+@KOJO_361_SEISAN_IDOL_picture
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_IDOL_picture_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_IDOL_picture_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;アイドル活動（新曲）
+;--------------------------------------------------
+@KOJO_361_SEISAN_IDOL_music
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_IDOL_music_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_IDOL_music_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;アイドル活動（イベント）
+;--------------------------------------------------
+@KOJO_361_SEISAN_IDOL_event
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_IDOL_event_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_IDOL_event_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;枕営業（プロデューサー：フェラ）
+;--------------------------------------------------
+@KOJO_361_SEISAN_MAKURA_pro1
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_MAKURA_pro1_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_MAKURA_pro1_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;枕営業（プロデューサー：立ちバック）
+;--------------------------------------------------
+@KOJO_361_SEISAN_MAKURA_pro2
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_MAKURA_pro2_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_MAKURA_pro2_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;枕営業（役員：処女正常位）
+;--------------------------------------------------
+@KOJO_361_SEISAN_MAKURA_client1
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_MAKURA_client1_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_MAKURA_client1_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;枕営業（お得意様：正常位）
+;--------------------------------------------------
+@KOJO_361_SEISAN_MAKURA_client2
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_MAKURA_client2_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_MAKURA_client2_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;枕営業（コスプレ：アナル）
+;--------------------------------------------------
+@KOJO_361_SEISAN_MAKURA_client3
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_MAKURA_client3_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_MAKURA_client3_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;枕営業（ファンクラブ：輪姦）
+;--------------------------------------------------
+@KOJO_361_SEISAN_MAKURA_fanclub
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_MAKURA_fanclub_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_MAKURA_fanclub_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;ライブ公演（通常）
+;--------------------------------------------------
+@KOJO_361_SEISAN_LIVE_normal
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_LIVE_normal_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_LIVE_normal_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;ライブ公演（転んだ）
+;--------------------------------------------------
+@KOJO_361_SEISAN_LIVE_kobori
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_LIVE_kobori_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_LIVE_kobori_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+
+
+;ライブ公演（触手拘束具）
+;--------------------------------------------------
+@KOJO_361_SEISAN_LIVE_syokusyu
+IF CFLAG:1 > 0
+	TRYCALLFORM KOJO_0_SEISAN_LIVE_syokusyu_{SEIKAKU_CHECK_F(TARGET)}
+ELSE
+	TRYCALLFORM KOJO_0_SEISAN_LIVE_syokusyu_{SEIKAKU_CHECK_F(TARGET)}
+ENDIF
+
+

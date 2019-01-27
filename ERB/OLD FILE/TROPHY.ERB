@@ -1,0 +1,756 @@
+;-----------------------------------------------------------------------------------------------
+;実績トロフィーを表示
+@SHOW_TROPHY
+#DIM PAGEMAX
+LOCAL = 1
+PAGEMAX = 5
+$START
+CALL LB
+PRINTL ☆☆☆実績＆トロフィーの確認☆☆☆
+DRAWLINE
+IF LOCAL == 1
+	PRINTFORML  プレイの記録
+	CALL SHORTLINE
+	PRINTFORM 　　総合ランク最高記録　　　　　　　　　
+	IF GLOBAL:110 == 1
+		PRINTL Ｅランク
+	ELSEIF GLOBAL:110 == 2
+		PRINTL Ｄランク
+	ELSEIF GLOBAL:110 == 3
+		PRINTL Ｃランク
+	ELSEIF GLOBAL:110 == 4
+		PRINTL Ｂランク
+	ELSEIF GLOBAL:110 == 5
+		PRINTL Ａランク
+	ELSEIF GLOBAL:110 == 6
+		PRINTL Ｓランク
+	ELSE
+		PRINTL なし
+	ENDIF
+	PRINTFORML 　　周回数累計　　　　　　　　　　　　　 {FLAG:854} 回
+	SIF GLOBAL:114 > 0
+		PRINTFORML 　　ENDLESS撃破記録 　　　　　　　　　　 {GLOBAL:114} 体　
+	PRINTL 
+	PRINTFORML 　　現在の共通設定
+	PRINTFORM 　　　主題　　　　　　　　　　　　　　　
+	IF FLAG:5 == 1
+		PRINTFORML 『%SAVESTR:10%』
+	ELSE
+		PRINTFORML 『なし』
+	ENDIF
+	PRINTFORM 　　　冠名　　　　　　　　　　　　　　　
+	IF FLAG:6 == 1
+		PRINTFORML 『%SAVESTR:11%』
+	ELSE
+		PRINTFORML 『なし』
+	ENDIF
+	PRINTFORM 　　　かけ声　　　　　　　　　　　　　　
+	IF FLAG:7 == 1
+		PRINTFORML 『%SAVESTR:12%』
+	ELSE
+		PRINTFORML 『なし』
+	ENDIF
+	PRINTL  
+	CALL SHORTLINE
+	PRINTFORML  ＨＡＬＬ　ＯＦ　ＦＡＭＥ　～　歴代記録保持者　～
+	CALL SHORTLINE
+	PRINTL ※一日の終了時に記録が更新されます
+	PRINTL 
+	PRINT 　　体力　　　
+	IF GLOBALS:0 == ""
+		PRINTFORML なし
+	ELSE
+		PRINTFORML %GLOBALS:0%
+	ENDIF
+	PRINTL 
+	PRINT 　　気力　　　
+	IF GLOBALS:1 == ""
+		PRINTFORML なし
+	ELSE
+		PRINTFORML %GLOBALS:1%
+	ENDIF
+	PRINTL 
+	PRINT 　　性耐性　　
+	IF GLOBALS:2 == ""
+		PRINTFORML なし
+	ELSE
+		PRINTFORML %GLOBALS:2%
+	ENDIF
+	PRINTL 
+	PRINT 　　攻撃　　　
+	IF GLOBALS:10 == ""
+		PRINTFORML なし
+	ELSE
+		PRINTFORML %GLOBALS:10%
+	ENDIF
+	PRINTL 
+	PRINT 　　防御　　　
+	IF GLOBALS:11 == ""
+		PRINTFORML なし
+	ELSE
+		PRINTFORML %GLOBALS:11%
+	ENDIF
+	PRINTL 
+	PRINT 　　敏捷　　　
+	IF GLOBALS:12 == ""
+		PRINTFORML なし
+	ELSE
+		PRINTFORML %GLOBALS:12%
+	ENDIF
+	PRINTL 
+	PRINT 　　知性　　　
+	IF GLOBALS:13 == ""
+		PRINTFORML なし
+	ELSE
+		PRINTFORML %GLOBALS:13%
+	ENDIF
+	PRINTL 
+ELSEIF LOCAL == 2
+	PRINTL 実績名　　　　　　　　　　　　内容　　　　　　　　　　　　　　　　周回ボーナス
+	CALL SHORTLINE
+	IF GLOBAL:111
+		PRINTFORML 　01 覇者の証　　　　　　　　　　１周目でセーブロードなし　　　　　　+5
+	ELSE
+		SETCOLOR 96,96,96
+		PRINTFORML 　01 ？？？　　　　　　　　　　　セーブ＆ロードなんて邪道だよ！　　　？
+		RESETCOLOR
+	ENDIF
+	PRINTL 
+	IF GLOBAL:112
+		PRINTFORML 　02 へっぽこ大魔王　　　　　　　１周目で総合Ｅランク　　　　　　　　+5
+	ELSE
+		SETCOLOR 96,96,96
+		PRINTFORML 　02 ？？？　　　　　　　　　　　むしろ褒めてあげたい　　　　　　　　？
+		RESETCOLOR
+	ENDIF
+	IF GLOBAL:112
+		PRINTL 　　　※キャラメイク素質：死亡が解禁
+	ELSE
+		PRINTL 
+	ENDIF
+	IF GLOBAL:113
+		PRINTFORML 　03 eraGVTマスター　　　　　　　１周目で総合Ｓランク　　　　　　　　+5
+	ELSE
+		SETCOLOR 96,96,96
+		PRINTFORML 　03 ？？？　　　　　　　　　　　最高スコアを目指すのだ！　　　　　　？
+		RESETCOLOR
+	ENDIF
+	IF GLOBAL:113
+		PRINTL 　　　※周回要素：レベル引き継ぎが解禁
+	ELSE
+		PRINTL 
+	ENDIF
+	IF GLOBAL:120
+		PRINTFORML 　04 腕力自慢　　　　　　　　　　攻撃実数値500突破 　　　　　　　　　+1
+	ELSE
+		SETCOLOR 96,96,96
+		PRINTFORML 　04 ？？？　　　　　　　　　　　能力を特化させてみよう　　　　　　　？
+		RESETCOLOR
+	ENDIF
+	PRINTL 
+	IF GLOBAL:121
+		PRINTFORML 　05 脳筋こそ至高　　　　　　　　攻撃実数値1000突破　　　　　　　　　+1
+	ELSE
+		SETCOLOR 96,96,96
+		PRINTFORML 　05 ？？？　　　　　　　　　　　能力を特化させてみよう　　　　　　　？
+		RESETCOLOR
+	ENDIF
+	PRINTL 
+	IF GLOBAL:122
+		PRINTFORML 　06 メイン盾きた！　　　　　　　防御実数値500突破 　　　　　　　　　+1
+	ELSE
+		SETCOLOR 96,96,96
+		PRINTFORML 　06 ？？？　　　　　　　　　　　能力を特化させてみよう　　　　　　　？
+		RESETCOLOR
+	ENDIF
+	PRINTL 
+	IF GLOBAL:123
+		PRINTFORML 　07 移動城塞　　　　　　　　　　防御実数値1000突破　　　　　　　　　+1
+	ELSE
+		SETCOLOR 96,96,96
+		PRINTFORML 　07 ？？？　　　　　　　　　　　能力を特化させてみよう　　　　　　　？
+		RESETCOLOR
+	ENDIF
+	PRINTL 
+	IF GLOBAL:124
+		PRINTFORML 　08 韋駄天　　　　　　　　　　　敏捷実数値500突破 　　　　　　　　　+1
+	ELSE
+		SETCOLOR 96,96,96
+		PRINTFORML 　08 ？？？　　　　　　　　　　　能力を特化させてみよう　　　　　　　？
+		RESETCOLOR
+	ENDIF
+	PRINTL 
+	IF GLOBAL:125
+		PRINTFORML 　09 俊足瞬撃、並ぶものなし　　　敏捷実数値1000突破　　　　　　　　　+1
+	ELSE
+		SETCOLOR 96,96,96
+		PRINTFORML 　09 ？？？　　　　　　　　　　　能力を特化させてみよう　　　　　　　？
+		RESETCOLOR
+	ENDIF
+	PRINTL 
+	IF GLOBAL:126
+		PRINTFORML 　10 データにはなかったぞ！？　　知性実数値500突破 　　　　　　　　　+1
+	ELSE
+		SETCOLOR 96,96,96
+		PRINTFORML 　10 ？？？　　　　　　　　　　　能力を特化させてみよう　　　　　　　？
+		RESETCOLOR
+	ENDIF
+	PRINTL 
+	IF GLOBAL:127
+		PRINTFORML 　11 静かなる賢者　　　　　　　　知性実数値1000突破　　　　　　　　　+1
+	ELSE
+		SETCOLOR 96,96,96
+		PRINTFORML 　11 ？？？　　　　　　　　　　　能力を特化させてみよう　　　　　　　？
+		RESETCOLOR
+	ENDIF
+	PRINTL 
+ELSEIF LOCAL == 3
+	PRINTL 実績名　　　　　　　　　　　　内容　　　　　　　　　　　　　　　　周回ボーナス
+	CALL SHORTLINE
+	IF GLOBAL:128
+		PRINTFORML 　12 不死身のソルジャー　　　　　体力実数値10000突破 　　　　　　　　+2
+	ELSE
+		SETCOLOR 96,96,96
+		PRINTFORML 　12 ？？？　　　　　　　　　　　能力を特化させてみよう　　　　　　　？
+		RESETCOLOR
+	ENDIF
+	PRINTL 
+	IF GLOBAL:129
+		PRINTFORML 　13 ライオンハート　　　　　　　気力実数値10000突破 　　　　　　　　+2
+	ELSE
+		SETCOLOR 96,96,96
+		PRINTFORML 　13 ？？？　　　　　　　　　　　能力を特化させてみよう　　　　　　　？
+		RESETCOLOR
+	ENDIF
+	PRINTL 
+	IF GLOBAL:130
+		PRINTFORML 　14 絶倫魔法少女　　　　　　　　性耐性実数値1000突破　　　　　　　　+2
+	ELSE
+		SETCOLOR 96,96,96
+		PRINTFORML 　14 ？？？　　　　　　　　　　　能力を特化させてみよう　　　　　　　？
+		RESETCOLOR
+	ENDIF
+	PRINTL 
+	IF GLOBAL:131
+		PRINTFORML 　15 グランドマスター　　　　　　近距離戦技Lv9達成 　　　　　　　　　+1
+	ELSE
+		SETCOLOR 96,96,96
+		PRINTFORML 　15 ？？？　　　　　　　　　　　能力を特化させてみよう　　　　　　　？
+		RESETCOLOR
+	ENDIF
+	PRINTL 
+	IF GLOBAL:132
+		PRINTFORML 　16 主砲オーケストラ　　　　　　中距離戦技Lv9達成 　　　　　　　　　+1
+	ELSE
+		SETCOLOR 96,96,96
+		PRINTFORML 　16 ？？？　　　　　　　　　　　能力を特化させてみよう　　　　　　　？
+		RESETCOLOR
+	ENDIF
+	PRINTL 
+	IF GLOBAL:133
+		PRINTFORML 　17 スナイパードライツェン　　　遠距離戦技Lv9達成 　　　　　　　　　+1
+	ELSE
+		SETCOLOR 96,96,96
+		PRINTFORML 　17 ？？？　　　　　　　　　　　能力を特化させてみよう　　　　　　　？
+		RESETCOLOR
+	ENDIF
+	PRINTL 
+	IF GLOBAL:140
+		PRINTFORML 　18 性の目覚め　　　　　　　　　感覚Lv合計5突破 　　　　　　　　　　+1
+	ELSE
+		SETCOLOR 96,96,96
+		PRINTFORML 　18 ？？？　　　　　　　　　　　触手相手に感じちゃうなんて…　　　　？
+		RESETCOLOR
+	ENDIF
+	PRINTL 
+	IF GLOBAL:141
+		PRINTFORML 　19 触れられただけで・・・　　　感覚Lv合計10突破　　　　　　　　　　+1
+	ELSE
+		SETCOLOR 96,96,96
+		PRINTFORML 　19 ？？？　　　　　　　　　　　さらに上の領域　　　　　　　　　　　？
+		RESETCOLOR
+	ENDIF
+	PRINTL 
+	IF GLOBAL:142
+		PRINTFORML 　20 艶やかなる饗宴　　　　　　　感覚Lv合計15突破　　　　　　　　　　+1
+	ELSE
+		SETCOLOR 96,96,96
+		PRINTFORML 　20 ？？？　　　　　　　　　　　さらにさらに上の領域　　　　　　　　？
+		RESETCOLOR
+	ENDIF
+	PRINTL 
+	IF GLOBAL:143
+		PRINTFORML 　21 淫界の住人　　　　　　　　　感覚Lv合計20突破　　　　　　　　　　+2
+	ELSE
+		SETCOLOR 96,96,96
+		PRINTFORML 　21 ？？？　　　　　　　　　　　もう戻れない　　　　　　　　　　　　？
+		RESETCOLOR
+	ENDIF
+	PRINTL 
+	IF GLOBAL:144
+		PRINTFORML 　22 双なる具現　　　　　　　　　射精中毒Lv5以上 　　　　　　　　　　+2
+	ELSE
+		SETCOLOR 96,96,96
+		PRINTFORML 　22 ？？？　　　　　　　　　　　びゅっびゅっしましょうねぇ～♪　　　？
+		RESETCOLOR
+	ENDIF
+	IF GLOBAL:144
+		PRINTL 　　　※キャラメイク素質：ふたなりが解禁
+	ELSE
+		PRINTL 
+	ENDIF
+ELSEIF LOCAL == 4
+	PRINTL 実績名　　　　　　　　　　　　内容　　　　　　　　　　　　　　　　周回ボーナス
+	CALL SHORTLINE
+	IF GLOBAL:145
+		PRINTFORML 　23 キャトルガール　　　　　　　噴乳中毒Lv5以上 　　　　　　　　　　+2
+	ELSE
+		SETCOLOR 96,96,96
+		PRINTFORML 　23 ？？？　　　　　　　　　　　びゅっびゅっしましょうねぇ～♪　　　？
+		RESETCOLOR
+	ENDIF
+	IF GLOBAL:145
+		PRINTL 　　　※キャラメイク素質：母乳体質が解禁
+	ELSE
+		PRINTL 
+	ENDIF
+	IF GLOBAL:150
+		PRINTFORML 　24 初めての出産　　　　　　　　出産経験1 　　　　　　　　　　　　　+1
+	ELSE
+		SETCOLOR 96,96,96
+		PRINTFORML 　24 ？？？　　　　　　　　　　　こんにちは、あかちゃん　　　　　　　？
+		RESETCOLOR
+	ENDIF
+	PRINTL 
+	IF GLOBAL:151
+		PRINTFORML 　25 駆け出しママン　　　　　　　出産経験10突破　　　　　　　　　　　+1
+	ELSE
+		SETCOLOR 96,96,96
+		PRINTFORML 　25 ？？？　　　　　　　　　　　ごちそう、いっぱい　　　　　　　　　？
+		RESETCOLOR
+	ENDIF
+	PRINTL 
+	IF GLOBAL:152
+		PRINTFORML 　26 暗黒ベビーブーム　　　　　　出産経験50突破　　　　　　　　　　　+1
+	ELSE
+		SETCOLOR 96,96,96
+		PRINTFORML 　26 ？？？　　　　　　　　　　　もﾞぅ…うﾞみだくないぃ…　　　　　　？
+		RESETCOLOR
+	ENDIF
+	PRINTL 
+	IF GLOBAL:153
+		PRINTFORML 　27 THE QUEEN 　　　　　　　　　出産経験100突破 　　　　　　　　　　+2
+	ELSE
+		SETCOLOR 96,96,96
+		PRINTFORML 　27 ？？？　　　　　　　　　　　母は偉大なり　　　　　　　　　　　　？
+		RESETCOLOR
+	ENDIF
+	IF GLOBAL:153
+		PRINTL 　　　※キャラメイク素質：苗床化が解禁
+	ELSE
+		PRINTL 
+	ENDIF
+	IF GLOBAL:154
+		PRINTFORML 　28 幸せ家族計画　　　　　　　　近親交配経験20突破　　　　　　　　　+1
+	ELSE
+		SETCOLOR 96,96,96
+		PRINTFORML 　28 ？？？　　　　　　　　　　　それもひとつの愛のカタチ　　　　　　？
+		RESETCOLOR
+	ENDIF
+	PRINTL 
+	IF GLOBAL:155
+		PRINTFORML 　29 寄生ジョーカー　　　　　　　寄生経験50突破　　　　　　　　　　　+1
+	ELSE
+		SETCOLOR 96,96,96
+		PRINTFORML 　29 ？？？　　　　　　　　　　　これぞダークヒーロー　　　　　　　　？
+		RESETCOLOR
+	ENDIF
+	IF GLOBAL:155
+		PRINTL 　　　※キャラメイク素質：寄生が解禁
+	ELSE
+		PRINTL 
+	ENDIF
+	IF GLOBAL:156
+		PRINTFORML 　30 マジ☆かるアイドル育成計画　魅了経験100突破 　　　　　　　　　　+1
+	ELSE
+		SETCOLOR 96,96,96
+		PRINTFORML 　30 ？？？　　　　　　　　　　　キラッ☆　　　　　　　　　　　　　　？
+		RESETCOLOR
+	ENDIF
+	PRINTL 
+	IF GLOBAL:157
+		PRINTFORML 　31 ＡＶ女優　　　　　　　　　　ＡＶ売上2000$突破 　　　　　　　　　+1
+	ELSE
+		SETCOLOR 96,96,96
+		PRINTFORML 　31 ？？？　　　　　　　　　　　これでアナタも有名人　　　　　　　　？
+		RESETCOLOR
+	ENDIF
+	PRINTL 
+	IF GLOBAL:158
+		PRINTFORML 　32 捕らわれのお姫様　　　　　　幽閉経験5突破　　 　　　　　　　　　+1
+	ELSE
+		SETCOLOR 96,96,96
+		PRINTFORML 　32 ？？？　　　　　　　　　　　繰り返される悲劇　　　　　　　　　　？
+		RESETCOLOR
+	ENDIF
+	IF GLOBAL:158
+		PRINTL 　　　※キャラメイク素質：幽閉が解禁
+	ELSE
+		PRINTL 
+	ENDIF
+	IF GLOBAL:159
+		PRINTFORML 　33 もったいないお化け　　　　　修練Ｐ1000残してクリア　　　　　　　+1
+	ELSE
+		SETCOLOR 96,96,96
+		PRINTFORML 　33 ？？？　　　　　　　　　　　使わないともったいない　　　　　　　？
+		RESETCOLOR
+	ENDIF
+	PRINTL 
+ELSEIF LOCAL == 5
+	PRINTL 実績名　　　　　　　　　　　　内容　　　　　　　　　　　　　　　　周回ボーナス
+	CALL SHORTLINE
+	IF GLOBAL:160
+		PRINTFORML 　34 触手なんかに負けない！　　　ソロモードを全部位敏感でクリア　　　+1
+	ELSE
+		SETCOLOR 96,96,96
+		PRINTFORML 　34 ？？？　　　　　　　　　　　あえて感度ビンビン！　　　　　　　　？
+		RESETCOLOR
+	ENDIF
+	IF GLOBAL:160
+		PRINTL 
+	ELSE
+		PRINTL 　　　※ソロモード限定
+	ENDIF
+	IF GLOBAL:161
+		PRINTFORML 　35 不屈の闘志　　　　　　　　　ソロモードで幽閉経験1以上でクリア 　+1
+	ELSE
+		SETCOLOR 96,96,96
+		PRINTFORML 　35 ？？？　　　　　　　　　　　ぐぬぬ…負けるもんか！　　　　　　　？
+		RESETCOLOR
+	ENDIF
+	IF GLOBAL:161
+		PRINTL 
+	ELSE
+		PRINTL 　　　※ソロモード限定
+	ENDIF
+	IF GLOBAL:162
+		PRINTFORML 　36 淫鬱ハネムーン　　　　　　　触手の虜の人数が3人以上　　　　　 　+2
+	ELSE
+		SETCOLOR 96,96,96
+		PRINTFORML 　36 ？？？　　　　　　　　　　　皆で触手のお嫁さん　　　　　　　　　？
+		RESETCOLOR
+	ENDIF
+	IF GLOBAL:162
+		PRINTL 　　　※キャラメイク素質：悪堕ちが解禁
+	ELSE
+		PRINTL 
+	ENDIF
+	IF GLOBAL:163
+		PRINTFORML 　37 破壊神の一撃　　　　　　　　一撃のダメージが5000を突破　　　　　+1
+	ELSE
+		SETCOLOR 96,96,96
+		PRINTFORML 　37 ？？？　　　　　　　　　　　一撃で昇天する威力　　　　　　　　　？
+		RESETCOLOR
+	ENDIF
+	PRINTL 
+	IF GLOBAL:164
+		PRINTFORML 　38 処女アナル愛好家　　　　　　処女のままＡ経験10突破　　　　　　　+1
+	ELSE
+		SETCOLOR 96,96,96
+		PRINTFORML 　38 ？？？　　　　　　　　　　　あえて奪わない、奪わせない　　　　　？
+		RESETCOLOR
+	ENDIF
+	PRINTL 
+	IF GLOBAL:165
+		PRINTFORML 　39 NEXT GENERATION 　　　　　　娘が３人以上いる状態でクリア　　　　+1
+	ELSE
+		SETCOLOR 96,96,96
+		PRINTFORML 　39 ？？？　　　　　　　　　　　そして次の世代へ…　　　　　　　　　？
+		RESETCOLOR
+	ENDIF
+	PRINTL 
+	IF GLOBAL:166
+		PRINTFORML 　40 パーフェクトキル　　　　　　ノーダメージでボスを撃破した　　　　+2
+	ELSE
+		SETCOLOR 96,96,96
+		PRINTFORML 　40 ？？？　　　　　　　　　　　思わずドヤ顔したくなる　　　　　　　？
+		RESETCOLOR
+	ENDIF
+	PRINTL 
+	IF GLOBAL:167
+		PRINTFORML 　41 奇跡の逆転勝利　　　　　　　搾精ダメージでボスを撃破した　　　　+1
+	ELSE
+		SETCOLOR 96,96,96
+		PRINTFORML 　41 ？？？　　　　　　　　　　　ピンチからの逆転劇　　　　　　　　　？
+		RESETCOLOR
+	ENDIF
+	PRINTL 
+	IF GLOBAL:168
+		PRINTFORML 　42 タクティカルオーダー　　　　戦闘支援効果200％突破 　　　　　　　+1
+	ELSE
+		SETCOLOR 96,96,96
+		PRINTFORML 　42 ？？？　　　　　　　　　　　仲間の力を合わせて　　　　　　　　　？
+		RESETCOLOR
+	ENDIF
+	PRINTL 
+	IF GLOBAL:169
+		PRINTFORML 　43 バトルレイヤー　　　　　　　衣装を10種類以上購入　　　　　　　　+1
+	ELSE
+		SETCOLOR 96,96,96
+		PRINTFORML 　43 ？？？　　　　　　　　　　　おしゃれしたい、女の子だもの　　　　？
+		RESETCOLOR
+	ENDIF
+	PRINTL 
+	IF GLOBAL:170
+		PRINTFORML 　44 とびっきりの最強対最強　　　裏ボスを撃破した　　　　　　　　　　+2
+	ELSE
+		SETCOLOR 96,96,96
+		PRINTFORML 　44 ？？？　　　　　　　　　　　オラわくわくしてきたぞ！！　　　　　？
+		RESETCOLOR
+	ENDIF
+	PRINTL 
+ENDIF
+DRAWLINE
+IF LOCAL > 1
+	PRINT [100]前のページへ　　　　　
+ELSE
+	PRINT                            
+ENDIF
+PRINTPLAINFORM PAGE < {LOCAL}/{PAGEMAX} >　　　　
+SIF LOCAL < PAGEMAX
+	PRINT [200]次のページへ
+PRINTL 
+PRINTL [999]戻る
+$INPUT_LOOP
+INPUT
+IF RESULT == 100 && LOCAL > 1
+	LOCAL --
+	GOTO START
+ELSEIF RESULT == 200 && LOCAL < PAGEMAX
+	LOCAL ++
+	GOTO START
+ELSEIF RESULT == 999
+	RETURN
+ELSE
+	GOTO INPUT_LOOP
+ENDIF
+
+
+
+@GET_STATE_TROPHY,ARG
+IF MAXBASE:ARG:攻撃 >= 500 && GLOBAL:120 == 0
+	PRINTL 
+	PRINTL 【実績：腕力自慢】を達成しました！
+	PRINTW 
+	GLOBAL:120 = 1
+	SAVEGLOBAL
+ENDIF
+IF MAXBASE:ARG:攻撃 >= 1000 && GLOBAL:121 == 0
+	PRINTL 
+	PRINTL 【実績：脳筋こそ至高】を達成しました！
+	PRINTW 
+	GLOBAL:121 = 1
+	SAVEGLOBAL
+ENDIF
+IF MAXBASE:ARG:防御 >= 500 && GLOBAL:122 == 0
+	PRINTL 
+	PRINTL 【実績：メイン盾きた！】を達成しました！
+	PRINTW 
+	GLOBAL:122 = 1
+	SAVEGLOBAL
+ENDIF
+IF MAXBASE:ARG:防御 >= 1000 && GLOBAL:123 == 0
+	PRINTL 
+	PRINTL 【実績：移動城塞】を達成しました！
+	PRINTW 
+	GLOBAL:123 = 1
+	SAVEGLOBAL
+ENDIF
+IF MAXBASE:ARG:敏捷 >= 500 && GLOBAL:124 == 0
+	PRINTL 
+	PRINTL 【実績：韋駄天】を達成しました！
+	PRINTW 
+	GLOBAL:124 = 1
+	SAVEGLOBAL
+ENDIF
+IF MAXBASE:ARG:敏捷 >= 1000 && GLOBAL:125 == 0
+	PRINTL 
+	PRINTL 【実績：俊足瞬撃、並ぶ者なし】を達成しました！
+	PRINTW 
+	GLOBAL:125 = 1
+	SAVEGLOBAL
+ENDIF
+IF MAXBASE:ARG:知性 >= 500 && GLOBAL:126 == 0
+	PRINTL 
+	PRINTL 【実績：データには無かったぞ！？】を達成しました！
+	PRINTW 
+	GLOBAL:126 = 1
+	SAVEGLOBAL
+ENDIF
+IF MAXBASE:ARG:知性 >= 1000 && GLOBAL:127 == 0
+	PRINTL 
+	PRINTL 【実績：静かなる賢者】を達成しました！
+	PRINTW 
+	GLOBAL:127 = 1
+	SAVEGLOBAL
+ENDIF
+IF MAXBASE:ARG:体力 >= 10000 && GLOBAL:128 == 0
+	PRINTL 
+	PRINTL 【実績：不死身のソルジャー】を達成しました！
+	PRINTW 
+	GLOBAL:128 = 1
+	SAVEGLOBAL
+ENDIF
+IF MAXBASE:ARG:気力 >= 10000 && GLOBAL:129 == 0
+	PRINTL 
+	PRINTL 【実績：ライオンハート】を達成しました！
+	PRINTW 
+	GLOBAL:129 = 1
+	SAVEGLOBAL
+ENDIF
+IF MAXBASE:ARG:性耐性 >= 1000 && GLOBAL:130 == 0
+	PRINTL 
+	PRINTL 【実績：絶倫魔法少女】を達成しました！
+	PRINTW 
+	GLOBAL:130 = 1
+	SAVEGLOBAL
+ENDIF
+IF ABL:ARG:近距離 >= 9 && GLOBAL:131 == 0
+	PRINTL 
+	PRINTL 【実績：グランドマスター】を達成しました！
+	PRINTW 
+	GLOBAL:131 = 1
+	SAVEGLOBAL
+ENDIF
+IF ABL:ARG:中距離 >= 9 && GLOBAL:132 == 0
+	PRINTL 
+	PRINTL 【実績：主砲オーケストラ】を達成しました！
+	PRINTW 
+	GLOBAL:132 = 1
+	SAVEGLOBAL
+ENDIF
+IF ABL:ARG:遠距離 >= 9 && GLOBAL:133 == 0
+	PRINTL 
+	PRINTL 【実績：スナイパードライツェン】を達成しました！
+	PRINTW 
+	GLOBAL:133 = 1
+	SAVEGLOBAL
+ENDIF
+
+
+@GET_STATE_ABLUP,ARG
+LOCAL = ABL:ARG:Ｃ感覚 + ABL:ARG:Ｖ感覚 + ABL:ARG:Ａ感覚 + ABL:ARG:Ｂ感覚
+IF LOCAL >= 5 && GLOBAL:140 == 0
+	PRINTL 【実績：性の目覚め】を達成しました！
+	PRINTW 
+	GLOBAL:140 = 1
+	SAVEGLOBAL
+ENDIF
+IF LOCAL >= 10 && GLOBAL:141 == 0
+	PRINTL 【実績：触れられただけで・・・】を達成しました！
+	PRINTW 
+	GLOBAL:141 = 1
+	SAVEGLOBAL
+ENDIF
+IF LOCAL >= 15 && GLOBAL:142 == 0
+	PRINTL 【実績：艶やかなる饗宴】を達成しました！
+	PRINTW 
+	GLOBAL:142 = 1
+	SAVEGLOBAL
+ENDIF
+IF LOCAL >= 20 && GLOBAL:143 == 0
+	PRINTL 【実績：淫界の住人】を達成しました！
+	PRINTW 
+	GLOBAL:143 = 1
+	SAVEGLOBAL
+ENDIF
+IF ABL:ARG:射精中毒 >= 5 && GLOBAL:144 == 0
+	PRINTL 【実績：双なる具現】を達成しました！
+	PRINTW 
+	GLOBAL:144 = 1
+	SAVEGLOBAL
+ENDIF
+IF ABL:ARG:噴乳中毒 >= 5 && GLOBAL:145 == 0
+	PRINTL 【実績：キャトルガール】を達成しました！
+	PRINTW 
+	GLOBAL:145 = 1
+	SAVEGLOBAL
+ENDIF
+LOCAL:1 = 0
+FOR LOCAL,0,CHARANUM
+	SIF LOCAL == MASTER
+		CONTINUE
+	SIF TALENT:LOCAL:触手の虜 > 0
+		LOCAL:1 ++
+NEXT
+IF LOCAL:1 >= 3 && GLOBAL:162 == 0
+	PRINTL 【実績：淫鬱ハネムーン】を達成しました！
+	PRINTW 
+	GLOBAL:162 = 1
+	SAVEGLOBAL
+ENDIF
+
+
+@GET_STATE_EXPUP,ARG
+IF EXP:ARG:出産経験 >= 1 && GLOBAL:150 == 0
+	PRINTL 【実績：初めての出産】を達成しました！
+	PRINTW 
+	GLOBAL:150 = 1
+	SAVEGLOBAL
+ENDIF
+IF EXP:ARG:出産経験 >= 10 && GLOBAL:151 == 0
+	PRINTL 【実績：駆け出しママン】を達成しました！
+	PRINTW 
+	GLOBAL:151 = 1
+	SAVEGLOBAL
+ENDIF
+IF EXP:ARG:出産経験 >= 50 && GLOBAL:152 == 0
+	PRINTL 【実績：暗黒ベビーブーム】を達成しました！
+	PRINTW 
+	GLOBAL:152 = 1
+	SAVEGLOBAL
+ENDIF
+IF EXP:ARG:出産経験 >= 100 && GLOBAL:153 == 0
+	PRINTL 【実績：THE QUEEN】を達成しました！
+	PRINTW 
+	GLOBAL:153 = 1
+	SAVEGLOBAL
+ENDIF
+IF EXP:ARG:近親交配経験 >= 20 && GLOBAL:154 == 0
+	PRINTL 【実績：幸せ家族計画】を達成しました！
+	PRINTW 
+	GLOBAL:154 = 1
+	SAVEGLOBAL
+ENDIF
+IF EXP:ARG:寄生経験 >= 50 && GLOBAL:155 == 0
+	PRINTL 【実績：寄生ジョーカー】を達成しました！
+	PRINTW 
+	GLOBAL:155 = 1
+	SAVEGLOBAL
+ENDIF
+IF EXP:ARG:魅了経験 >= 100 && GLOBAL:156 == 0
+	PRINTL 【実績：マジ☆かるアイドル育成計画】を達成しました！
+	PRINTW 
+	GLOBAL:156 = 1
+	SAVEGLOBAL
+ENDIF
+IF EXP:ARG:幽閉経験 >= 5 && GLOBAL:158 == 0
+	PRINTL 【実績：捕らわれのお姫様】を達成しました！
+	PRINTW 
+	GLOBAL:158 = 1
+	SAVEGLOBAL
+ENDIF
+IF TALENT:ARG:処女 > 0 && EXP:ARG:Ａ経験 >= 10 && GLOBAL:164 == 0
+	PRINTL 【実績：処女アナル愛好家】を達成しました！
+	PRINTW 
+	GLOBAL:164 = 1
+	SAVEGLOBAL
+ENDIF
+
+
+
+
+
+
+
+

@@ -1,0 +1,141 @@
+
+@COLOR_TABLE
+#DIM LCOUNT, 2
+#DIM 軸
+#DIM 軸色
+
+#DIM 赤
+#DIM 緑
+#DIM 青
+
+#DIM 明度
+
+#DIM SELECT_R
+#DIM SELECT_G
+#DIM SELECT_B
+
+#DIM MODE
+
+軸色 = 8
+
+PRINTFORML 　%UNICODE(0x250C)%%UNICODE(0x2500) * 32%%UNICODE(0x2510)%
+DO
+	FOR LCOUNT:0, 0, 32
+		PRINTFORM 　%UNICODE(0x2502)%
+		FOR LCOUNT:1, 0, 32
+			赤 = LIMIT((軸 == 0) * 軸色 + (軸 == 1) * (256 - (LCOUNT:0 + 1) * 8) + (軸 == 2) * (LCOUNT:1 + 1) * 8, 0, 255)
+			緑 = LIMIT((軸 == 1) * 軸色 + (軸 == 2) * (256 - (LCOUNT:0 + 1) * 8) + (軸 == 0) * (LCOUNT:1 + 1) * 8, 0, 255)
+			青 = LIMIT((軸 == 2) * 軸色 + (軸 == 0) * (256 - (LCOUNT:0 + 1) * 8) + (軸 == 1) * (LCOUNT:1 + 1) * 8, 0, 255)
+			SETCOLOR 赤, 緑, 青
+			PRINTBUTTON "■", LCOUNT:1 * 100 + LCOUNT:0 + 10000
+			RESETCOLOR
+		NEXT
+		PRINTFORM %UNICODE(0x2502)%　
+		赤 = (軸 == 0) * LIMIT(256 - LCOUNT:0 * 8, 0, 255)
+		緑 = (軸 == 1) * LIMIT(256 - LCOUNT:0 * 8, 0, 255)
+		青 = (軸 == 2) * LIMIT(256 - LCOUNT:0 * 8, 0, 255)
+		PRINT [
+		SETCOLOR 赤, 緑, 青
+		PRINTBUTTON "■", LCOUNT:0 + 20000
+		RESETCOLOR
+		PRINT ]
+		IF LCOUNT:0 == 32 - 軸色 / 8
+			PRINTFORM %UNICODE(0x25C4)%
+		ELSE
+			PRINTPLAIN  
+		ENDIF
+		PRINTPLAIN 　
+		IF MODE == 1
+			赤 = SELECT_R * (32 - LCOUNT:0) / 32
+			緑 = SELECT_G * (32 - LCOUNT:0) / 32
+			青 = SELECT_B * (32 - LCOUNT:0) / 32
+			PRINT [
+			SETCOLOR 赤, 緑, 青
+			PRINTBUTTON "■", LCOUNT:0 + 30000
+			RESETCOLOR
+			PRINT ]
+			PRINTFORM 明度 {100 * (32 - LCOUNT:0) / 32}％
+		ENDIF
+		PRINTL 
+	NEXT
+	PRINTFORML 　%UNICODE(0x2514)%%UNICODE(0x2500) * 32%%UNICODE(0x2518)%
+
+	IF MODE == 0
+		PRINTL 
+		PRINTL 　　軸の色を変更
+		PRINTL 　　　　[0]赤　[1]緑　[2]青　
+		PRINTL 
+	ELSEIF MODE == 1
+		RESULT:1 = LIMIT(SELECT_R * 明度 / 32, 0,255)
+		RESULT:2 = LIMIT(SELECT_G * 明度 / 32, 0,255)
+		RESULT:3 = LIMIT(SELECT_B * 明度 / 32, 0,255)
+		PRINTL 
+		PRINT 　　[
+		SETCOLOR RESULT:1, RESULT:2, RESULT:3
+		PRINT ■
+		RESETCOLOR
+		PRINT ]
+		PRINTFORML 　　この色でよろしいですか？（{RESULT:1}, {RESULT:2}, {RESULT:3}, 明度選択：{100 * 明度 / 32}％）
+		PRINTL 　　　　　　[0]はい　[1]いいえ
+		IF RESULT == 0
+			BREAK
+		ENDIF
+		PRINTL 
+	ENDIF
+
+	DRAWLINE
+	PRINTL [99]戻る
+
+	INPUT
+
+	IF RESULT >= 0 && RESULT < 3
+		IF MODE == 0
+			軸 = RESULT
+		ELSEIF MODE == 1
+			IF RESULT == 0
+				;色を決定した場合
+				RESULT = 1
+				BREAK
+			ELSE
+				MODE = 0
+			ENDIF
+		ENDIF
+	ELSEIF RESULT == 99
+		RESULT = -1
+		RESULT:1 = -1
+		RESULT:2 = -1
+		RESULT:3 = -1
+		BREAK
+	ELSEIF RESULT >= 10000 && RESULT < 13232
+		IF 軸 == 0
+			赤 = LIMIT(軸色, 0, 255)
+			緑 = LIMIT((RESULT / 100 % 100 + 1) * 8, 0, 255)
+			青 = LIMIT(256 - RESULT % 100 * 8, 0, 255)
+		ELSEIF 軸 == 1
+			赤 = LIMIT(256 - RESULT % 100 * 8, 0, 255)
+			緑 = LIMIT(軸色, 0, 255)
+			青 = LIMIT((RESULT / 100 + 1) % 100 * 8, 0, 255)
+		ELSE
+			赤 = LIMIT((RESULT / 100 % 100 + 1) * 8, 0, 255)
+			緑 = LIMIT(256 - RESULT % 100 * 8, 0, 255)
+			青 = LIMIT(軸色, 0, 255)
+		ENDIF
+		MODE = 1
+		;色を変更したら明度は100%に戻す
+		明度 = 32
+		SELECT_R = 赤
+		SELECT_G = 緑
+		SELECT_B = 青
+	ELSEIF RESULT >= 20000 && RESULT < 20032
+		軸色 = (32 - RESULT % 100) * 8
+	ELSEIF RESULT >= 30000 && RESULT < 30032
+		明度 = 30032 - RESULT
+		RESULT:1 = 赤 * 明度 / 32
+		RESULT:2 = 緑 * 明度 / 32
+		RESULT:3 = 青 * 明度 / 32
+	ELSE
+		BREAK
+	ENDIF
+	CLEARLINE 40
+LOOP 1
+RETURN RESULT, RESULT:1, RESULT:2, RESULT:3

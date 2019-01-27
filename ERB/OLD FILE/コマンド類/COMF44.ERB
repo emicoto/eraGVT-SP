@@ -1,0 +1,63 @@
+;睨みつける
+@COM44
+
+;距離表示
+CALL PRINT_DISTANCE
+PRINTL 
+
+;油断度の上昇
+TFLAG:3 += 25
+
+;防御フラグ：睨みつけるにする
+TCVAR:2 = 体勢：睨みつける
+
+;ゲージが増加
+IF CFLAG:99 < 5
+	TCVAR:6 += 20 + RAND:16
+ELSEIF CFLAG:99 < 15
+	TCVAR:6 += 15 + RAND:11
+ELSE
+	TCVAR:6 += 10 + RAND:6
+ENDIF
+
+;気力が5%回復　疲労の影響がない
+;回復早いなら+1%
+;回復遅いなら-1%
+;最大値と衣装と防御力による補正から回復量を計算
+CALL CLOTH_BATTLE_HOSEI, "BOUGYO"
+LOCAL:1 = MAXBASE:気力 + BASE:防御 * RESULT * 4 / 200
+;FEATによる回復量ボーナス
+SIF TALENT:溢れる生命力 > 0
+	TIMES LOCAL:1, 1.25
+IF TALENT:回復早い == 1
+	TIMES LOCAL:1, 0.06
+ELSEIF TALENT:回復遅い == 1
+	TIMES LOCAL:1, 0.04
+ELSE
+	TIMES LOCAL:1, 0.05
+ENDIF
+SIF BASE:気力 + LOCAL:1 >= MAXBASE:気力
+	LOCAL:1 = MAXBASE:気力 - BASE:気力
+;気力が尽きている場合、気力が回復しない
+SIF BASE:気力 == 0
+	LOCAL:1 = 0
+BASE:気力 += LOCAL:1
+
+;地の文：睨みつける
+CALL MESSAGE_BATTLE_CHARA_NIRAMI
+;地の文：洗脳/悪堕ちキャラが操作キャラの睨みつけるを見た
+SIF FLAG:110 == 1
+	CALL MESSAGE_OTHER_BATTLE_CHARA_NIRAMI
+
+;行動ポイントを+1
+EX:行動ポイント += 1
+
+IF BASE:気力
+	PRINTFORML %BASENAME:1%が{LOCAL:1}回復した
+ELSE
+	PRINTFORML %BASENAME:1%は既に尽きてしまっている……
+ENDIF
+PRINTFORML ＥＸゲージが少し溜まった！
+PRINTL 
+
+RETURN 1

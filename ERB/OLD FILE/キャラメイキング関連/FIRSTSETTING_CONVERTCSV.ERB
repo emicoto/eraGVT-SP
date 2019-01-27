@@ -1,0 +1,33 @@
+;**********************************************************
+;CSVのRELATIONを独自仕様に合わせてコンバート
+@CONVERT_RELATION
+#DIM CHARA
+#DIM SELECT
+#DIM RELATION_LIST, CHARACSV最大数
+;全キャラ分ループ
+FOR CHARA, 0, CHARANUM
+	SIF CHARA == MASTER
+		CONTINUE
+	;全RELATIONのコンバート
+	;CSVの値をリストにコピー
+	FOR SELECT, 0, CHARACSV最大数
+		RELATION_LIST:SELECT = RELATION:CHARA:SELECT
+	NEXT
+	;リストに該当するキャラが存在するならその位置に更にコピー
+	FOR SELECT, 0, CHARANUM
+		SIF SELECT == MASTER
+			CONTINUE
+		SIF RELATION_LIST:(NO:SELECT) > 0
+			RELATION:CHARA:SELECT = RELATION_LIST:(NO:SELECT)
+	NEXT
+NEXT
+;コンバート終了
+
+
+
+
+
+
+
+
+

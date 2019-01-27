@@ -1,0 +1,253 @@
+;===================================================================================================
+;	説明:戦闘履歴を残す関数
+;
+;
+;===================================================================================================
+@BATTLE_REPORT()
+;BASE関連の履歴
+IF BASE:体力 == 0 && TCREPORT:TCR体力零 == 0
+	TCREPORT:TCR体力零 = TFLAG:TFターン
+	TCREPORT:TCR体力零時絶頂回数 = (EX:Ｃ絶頂+EX:Ｖ絶頂+EX:Ａ絶頂+EX:Ｂ絶頂)
+ENDIF
+IF BASE:気力 == 0 && TCREPORT:TCR気力零 == 0
+	TCREPORT:TCR気力零 = TFLAG:TFターン
+	TCREPORT:TCR気力零時絶頂回数 = (EX:Ｃ絶頂+EX:Ｖ絶頂+EX:Ａ絶頂+EX:Ｂ絶頂)
+ENDIF
+IF BASE:性耐性 == 0 && TCREPORT:TCR耐性零 == 0
+	TCREPORT:TCR耐性零 = TFLAG:TFターン
+	TCREPORT:TCR耐性零時絶頂回数 = (EX:Ｃ絶頂+EX:Ｖ絶頂+EX:Ａ絶頂+EX:Ｂ絶頂)
+ENDIF
+;衣装関連の履歴
+IF TCVAR:TCV外装耐久 == 0 && TCREPORT:TCR外装耐久零 == 0
+	TCREPORT:TCR外装耐久零 = TFLAG:TFターン
+ENDIF
+IF TCVAR:TCV変装耐久 == 0 && TCREPORT:TCR変装耐久零 == 0
+	TCREPORT:TCR変装耐久零 = TFLAG:TFターン
+ENDIF
+IF TCVAR:TCV内装耐久 == 0 && TCREPORT:TCR内装耐久零 == 0
+	TCREPORT:TCR内装耐久零 = TFLAG:TFターン
+ENDIF
+;===================================================================================================
+;	説明:eraいことになった
+;[in]	キャラ番号　現状GVTだとほぼ確定でTARGETですが拡張性を持たせる
+;[out]	1:	シチュエーション対応してる地の文を表示した。
+;		0:	地の文を表示してないためデフォルト文を表示する。
+;===================================================================================================
+@LOSE_SITUATION(A_CHARAID)
+#DIM A_CHARAID
+#DIM CONST RJ時間 = 10
+#DIM 絶頂回数差
+;作者がeraいと思う順番
+;イメージ
+;体力0 = 気絶
+;気力0 = 戦意喪失
+;耐性0 = 意識はあるけど体は動かない
+
+;心を折られた後に長時間徹底的に凌辱されて気絶させてお持ち帰り
+IF (TCREPORT:TCR気力零 < TCREPORT:TCR体力零 - RJ時間) && GET_RSIT(気性体)
+	PRINTFORML ……触手の猛攻の前に心が折れた%PRINT_TRANSCALLNAME(A_CHARAID)%。
+	PRINTW それは捕食者にとっては格好の獲物だった。
+	PRINTFORML %PRINT_TRANSCALLNAME(A_CHARAID)%を拘束し、ぬめった触手を使い獲物の全身を舐め回す。
+	PRINTL 与えられる刺激に反応する獲物の様子が面白くて仕方がないようだ。
+	PRINTL 舐め上げ、吸い付き、時には叩き、突き上げる。
+	PRINTFORML 次々と趣向を変えて繰り出される責め苦に%PRINT_TRANSCALLNAME(A_CHARAID)%は抵抗もできず、ただただ凌辱者を楽しませるだけだった。
+	絶頂回数差 = TCREPORT:TCR耐性零時絶頂回数 - TCREPORT:TCR気力零時絶頂回数
+	IF TCREPORT:TCR気力零時絶頂回数 == 0 && TCREPORT:TCR耐性零時絶頂回数> 0
+		PRINTL そして、ついには倒すべき敵の前で屈辱の絶頂を果たしてしまう。
+	ENDIF
+	IF 絶頂回数差 > 1
+		PRINTL 獲物が一度イッても触手が手を休めることなどなく、次の絶頂を迎えさせんと更に強く責め立てる
+	ENDIF
+	絶頂回数差 = TCREPORT:TCR体力零時絶頂回数 - TCREPORT:TCR耐性零時絶頂回数
+	IF 絶頂回数差 > 0
+		PRINTFORML {TCREPORT:TCR耐性零時絶頂回数}回イかせた頃に獲物の弱点を把握した凌辱者は、集中して弱点をいじめ抜き始めた。
+		IF 絶頂回数差 > 1
+			;PRINTFORML 玩具が気絶するイかせ続けた後、触手の塊は%CALLNAME%を体内に取り込むと巣に帰っていった…………
+			PRINTFORMW 更に連続で{絶頂回数差}回イかせ、反応が無くなるまで嬲り尽くすと体内に取り込むと巣に帰っていった…………
+		ELSE
+			PRINTFORMW 弱点を的確に責め立てる事で%CALLNAME:A_CHARAID%を特大の絶頂で失神させ、体内に取り込み巣に帰っていった…………
+		ENDIF
+	ELSE
+		PRINTFORMW 性愛玩具での遊びを十分に堪能した捕食者は一つ満足げに震えた後、ソレの意識を奪い体内に取り込むと巣に帰っていった…………
+	ENDIF
+	RETURN 1
+ENDIF
+;抵抗の意思はあるが体は裏切り動けず、長時間(ry
+IF (TCREPORT:TCR耐性零 < TCREPORT:TCR気力零 - RJ時間) && (TCREPORT:TCR耐性零 < TCREPORT:TCR体力零 - RJ時間)
+	PRINTFORML ……触手の群れの前に投げ出された%PRINT_TRANSCALLNAME(A_CHARAID)%。
+	PRINT 気丈に迫りくる触手を睨むも
+	IF TCREPORT:TCR耐性零時絶頂回数 > 1
+		PRINT 何度もイかされた
+	ELSE
+		PRINT 全身をくまなく嬲られた
+	ENDIF
+	PRINTL 体では立ち上がることさえできなかった。
+	PRINTFORML 捕食者は%PRINT_TRANSCALLNAME(A_CHARAID)%をゆっくりと拘束し、ぬめった触手を使い獲物の全身を舐め回す。
+	PRINTFORML %PRINT_TRANSCALLNAME(A_CHARAID)%の意思とは裏腹に、その肉体は触手の愛撫を受け入れ快楽を貪り始めた。
+	IF GET_RSIT(性気体)
+		絶頂回数差 = TCREPORT:TCR気力零時絶頂回数 -TCREPORT:TCR耐性零時絶頂回数
+		IF 絶頂回数差 > 2
+			PRINTFORML 触手の激しい責めに弄ばれながらも戦意を保っていた%PRINT_TRANSCALLNAME(A_CHARAID)%だったが
+			PRINTFORML {TCREPORT:TCR気力零時絶頂回数}回目の絶頂を迎える頃には、その気力も保てなくなり
+			絶頂回数差 = TCREPORT:TCR体力零時絶頂回数 -TCREPORT:TCR気力零時絶頂回数
+			IF 絶頂回数差 > 0
+				PRINTFORM 更に{絶頂回数差}回イかされたことにより
+			ENDIF
+			PRINTL 失神してしまった。
+			
+			RETURN 1
+		ELSE
+			PRINTL 触手は獲物の最後の抵抗を楽しもうと責め手を緩め、
+			PRINTFORML 念入りにいたぶろうと%PRINT_TRANSCALLNAME(A_CHARAID)%を焦らし始めた。
+			PRINTW
+			IF 絶頂回数差 > 0
+				PRINTFORML 触手は被虐者の足掻きに十分に満足すると、トドメをさして巣に帰っていった…………
+			ELSE ;あるのかこれ……？
+				PRINTFORML %PRINT_TRANSCALLNAME(A_CHARAID)%の心を折るために始めた焦らしプレイがよほど楽しかったのか、
+				PRINTFORML %PRINT_TRANSCALLNAME(A_CHARAID)%が絶頂を迎えることを許さないまま巣に持ち帰った。
+				PRINTFORML %CALLNAME:A_CHARAID%が泣いて絶頂を懇願するまで続けるのだろう…………
+			ENDIF
+			RETURN 1
+		ENDIF
+	ELSEIF GET_RSIT(性体気)
+		絶頂回数差 = TCREPORT:TCR体力零時絶頂回数 -TCREPORT:TCR耐性零時絶頂回数
+		IF 絶頂回数差 > 2
+			PRINTFORML 触手の激しい責めに弄ばれながらも戦意を保っていた%PRINT_TRANSCALLNAME(A_CHARAID)%だったが
+			PRINTFORMW {TCREPORT:TCR体力零時絶頂回数}回もイかされてしまっては体力も尽き、失神してしまった。
+			絶頂回数差 = TCREPORT:TCR気力零時絶頂回数 - TCREPORT:TCR体力零時絶頂回数
+			IF 絶頂回数差 > 0
+				PRINTFORML だが凌辱者は気絶した%PRINT_TRANSCALLNAME(A_CHARAID)%に更なる凌辱を行い
+				PRINTFORML %PRINT_TRANSCALLNAME(A_CHARAID)%の心の奥底にまで敗北絶頂を刻み込んだ。
+			ENDIF
+			PRINTFORMW 性愛玩具での遊びを十分に堪能した捕食者は一つ満足げに震えた後、%CALLNAME:A_CHARAID%を体内に取り込むと巣に帰っていった…………
+			
+			RETURN 1
+		ENDIF
+	ENDIF
+ENDIF
+;全裸で戦わされいじめられる
+IF (TCREPORT:TCR内装耐久零 + RJ時間 *15/10) < TFLAG:TFターン
+	PRINTFORML	…………%PRINT_TRANSCALLNAME(A_CHARAID)%は触手と闘いを繰り広げていた。
+	PRINTL		…………
+	PRINTW		…………全裸で。
+	IF TCREPORT:TCR内装耐久零 < 10
+		PRINT 瞬く間に
+	ELSEIF TCREPORT:TCR内装耐久零 < 20
+		PRINT 衣服に攻撃を集中され
+	ELSE
+		PRINT 戦いの最中
+	ENDIF
+	;TODO 露出癖分岐
+	PRINTFORM 裸にされてしまった%PRINT_TRANSCALLNAME(A_CHARAID)%だが、
+	IF ABL:露出癖 > 2
+		PRINT 興奮で
+	ELSE
+		PRINT ピンチに
+	ENDIF
+	PRINTW 闘志に火が付いたのか、触手と一進一退の攻防を続けていた。
+	PRINTW だがそれは触手の巧妙な罠だった。
+	PRINTL
+	PRINTL 対象を裸にした後、あえて手を抜くことで戦いを続けさせる。
+	;TODO　きょにう差分
+	;PRINTFORML %PRINT_TRANSCALLNAME(A_CHARAID)%の艶やかな肢体を
+	PRINTFORM そして%PRINT_TRANSCALLNAME(A_CHARAID)%が、
+	IF ABL:露出癖 > 2
+		PRINT 興奮で
+	ELSE
+		PRINT 羞恥で
+	ENDIF
+	PRINTL 判断を誤るのを待っていたのだった。
+	;TODO 魅力差分
+	[SKIPSTART]
+	;と思ったけどこれだけやる理由が無かった
+	IF EXP:魅了経験 > 100
+		;アイドルと正体バレの条件分岐ってどうやるんだろう
+		;とりあえずCALLNAME = CSTR:1の時またはCSTRが空の時に分岐 
+		IF %CALLNAME% == %PRINT_TRANSCALLNAME(A_CHARAID)%  || %PRINT_TRANSCALLNAME(A_CHARAID)% == ""
+			PRINTFORML
+		ELSE
+			PRINTFORML 
+		ENDIF
+	ELSEIF EXP:魅了経験 > 49
+		IF %CALLNAME% == %PRINT_TRANSCALLNAME(A_CHARAID)%  || %PRINT_TRANSCALLNAME(A_CHARAID)% == ""
+			PRINTFORML 
+		ELSE
+			PRINTFORML 
+		ENDIF
+	ELSE
+		
+	ENDIF
+	[SKIPEND]
+	PRINTFORML %PRINT_TRANSCALLNAME(A_CHARAID)%の艶やかな肢体を存分に堪能し終わった後、隙をついて数多の触手で雁字搦めに拘束した
+	PRINTFORML どうやらお気に召したらしく、コレクションのひとつに加えることにしたようだ……
+	RETURN 1
+ENDIF
+
+IF GET_RSIT(体気性)
+
+ENDIF
+IF GET_RSIT(体性気)
+
+ENDIF
+IF GET_RSIT(気体性)
+
+ENDIF
+IF GET_RSIT(気性体)
+
+ENDIF
+IF GET_RSIT(性体気)
+
+ENDIF
+IF GET_RSIT(性気体)
+
+ENDIF
+;===================================================================================================
+;	説明:シチュエーション判定関数
+;
+;
+;===================================================================================================
+@GET_RSIT(ARG:0)
+#FUNCTION
+IF (ARG:0 == 体気性)
+	IF (TCREPORT:TCR体力零 < TCREPORT:TCR気力零) && (TCREPORT:TCR気力零 < TCREPORT:TCR耐性零)
+		RETURNF 1
+	ELSE
+		RETURNF 0
+	ENDIF
+ENDIF
+IF (ARG:0 == 体性気)
+	IF (TCREPORT:TCR体力零 < TCREPORT:TCR耐性零) && (TCREPORT:TCR耐性零 < TCREPORT:TCR気力零)
+		RETURNF 1
+	ELSE
+		RETURNF 0
+	ENDIF
+ENDIF
+IF (ARG:0 == 気体性)
+	IF (TCREPORT:TCR気力零 < TCREPORT:TCR体力零) && (TCREPORT:TCR体力零 < TCREPORT:TCR耐性零)
+		RETURNF 1
+	ELSE
+		RETURNF 0
+	ENDIF
+ENDIF
+IF (ARG:0 == 気性体)
+	IF (TCREPORT:TCR気力零 < TCREPORT:TCR耐性零) && (TCREPORT:TCR耐性零 < TCREPORT:TCR体力零)
+		RETURNF 1
+	ELSE
+		RETURNF 0
+	ENDIF
+ENDIF
+IF (ARG:0 == 性体気)
+	IF (TCREPORT:TCR耐性零 < TCREPORT:TCR体力零) && (TCREPORT:TCR体力零 < TCREPORT:TCR体力零)
+		RETURNF 1
+	ELSE
+		RETURNF 0
+	ENDIF
+ENDIF
+
+IF (ARG:0 == 性気体)
+	IF (TCREPORT:TCR耐性零 < TCREPORT:TCR気力零) && (TCREPORT:TCR気力零 < TCREPORT:TCR体力零)
+		RETURNF 1
+	ELSE
+		RETURNF 0
+	ENDIF
+ENDIF

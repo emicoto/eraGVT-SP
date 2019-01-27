@@ -1,0 +1,92 @@
+;**********************************************************
+;基本ルール
+;加筆修正は、自由に行ってください
+;ただし、前の方が書いた文章は出来る限り消さないでください
+;
+;ザーメンは別に用意してますが、呼び出してしまう事を考えて
+;こちらからも飛ぶ様にしてみます
+;
+;増やして欲しい隠語は、アウトプットしてリクエストなりしましょう
+;未登録の中に放り込むなり、掲示板にアップするなりすれば、
+;実装される可能性があります
+;
+;by 雑魚の人 2018/02/01
+;**********************************************************
+;Juice(汁)の淫語
+;**********************************************************
+@SLANG_Juice(ARG,ARGS:0)
+#DIMS SLANGWORD_Juice
+#FUNCTIONS
+
+;初期化
+SLANGWORD_Juice=
+
+;**************************
+;液体名称分類
+;**************************
+SELECTCASE ARGS:0
+	;精液は専用のコールへ
+	CASE "ザーメン" , "精液" , "スペルマ"
+		SLANGWORD_Juice=%SLANG_Semen(TARGET)%
+
+
+	CASE "愛液" , "ラブジュース" , "膣分泌液"
+		IF TALENT:淫壷>0 || TALENT:淫乱>0
+			SELECTCASE RAND:2
+				CASE 1
+					SLANGWORD_Juice += "愛液"
+				CASEELSE
+					SLANGWORD_Juice += "淫水"
+			ENDSELECT
+		ELSE
+			SELECTCASE RAND:2
+				CASE 1
+					SLANGWORD_Juice += "膣粘液"
+				CASEELSE
+					SLANGWORD_Juice += "潤滑液"
+			ENDSELECT
+		ENDIF
+
+
+	CASE "腸液" , "直腸液" , "肛門液"
+		IF TALENT:淫尻>0 || TALENT:淫乱>0
+			SELECTCASE RAND:2
+				CASE 1
+					SLANGWORD_Juice += "肛蜜"
+				CASEELSE
+					SLANGWORD_Juice += "発情液"
+			ENDSELECT
+		ELSE
+			SELECTCASE RAND:2
+				CASE 1
+					SLANGWORD_Juice += "腸液"
+				CASEELSE
+					SLANGWORD_Juice += "潤滑液"
+			ENDSELECT
+		ENDIF
+
+
+	CASEELSE
+		SELECTCASE RAND:4
+			CASE 3
+				SLANGWORD_Juice += "潤滑液"
+			CASE 2
+				SLANGWORD_Juice += "粘液"
+			CASE 1
+				SLANGWORD_Juice += "ラブジュース"
+			CASEELSE
+				SLANGWORD_Juice += ARGS:0
+		ENDSELECT
+ENDSELECT
+
+
+
+RETURNF SLANGWORD_Juice
+
+
+;*************【淫語覚書（未登録）】***********************
+;
+;*************【淫語覚書（未登録）】***********************
+
+
+

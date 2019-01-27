@@ -1,0 +1,76 @@
+;**********************************************************
+;基本ルール
+;加筆修正は、自由に行ってください
+;ただし、前の方が書いた文章は成るべく消さないでください
+;
+;地の文によっては「黄ばんだ」や「破瓜の血混じり」などを外部で入れるので
+;ここで書く色は「白」を基本としましょう
+;「泡立つ」など性交の内容で変わりそうな表現は、成るべく避けてください
+;
+;増やして欲しい隠語は、アウトプットしてリクエストなりしましょう
+;未登録の中に放り込むなり、掲示板にアップするなりすれば、
+;実装される可能性があります
+;
+;by 雑魚の人 2018/02/11
+;**********************************************************
+;Semen(精液)の淫語
+;**********************************************************
+@SLANG_Semen(ARG)
+#DIMS SLANGWORD_Semen
+#FUNCTIONS
+
+;初期化
+SLANGWORD_Semen=
+
+
+;部位呼称
+IF TALENT:清純派
+	SELECTCASE RAND:3
+		CASE 2
+			SLANGWORD_Semen += "白濁液"
+		CASE 1
+			SLANGWORD_Semen += "白濁した液体"
+		CASEELSE
+			SLANGWORD_Semen += "赤ちゃんの素"
+	ENDSELECT
+ELSEIF TALENT:淫乱 > 0
+	SELECTCASE RAND:4
+		CASE 3
+			SLANGWORD_Semen += "白濁液"
+		CASEELSE
+			SELECTCASE RAND:3
+				CASE 2
+					SLANGWORD_Semen += "孕ませ"
+				CASE 1
+					SLANGWORD_Semen += "ザー"
+				CASEELSE
+					SLANGWORD_Semen += "子種"
+			ENDSELECT
+			SLANGWORD_Semen += "汁"
+	ENDSELECT
+ELSE
+	SELECTCASE RAND:3
+		CASE 2
+			SLANGWORD_Semen += "スペルマ"
+		CASE 1
+			SLANGWORD_Semen += "ザーメン"
+		CASEELSE
+			SLANGWORD_Semen += "精液"
+	ENDSELECT
+ENDIF
+
+
+;合成して出来上がった淫語を返す
+RETURNF SLANGWORD_Semen
+
+
+
+
+
+;*************【淫語覚書（未登録）】***********************
+;カルピスの原液に似た
+;
+;*************【淫語覚書（未登録）】***********************
+
+
+

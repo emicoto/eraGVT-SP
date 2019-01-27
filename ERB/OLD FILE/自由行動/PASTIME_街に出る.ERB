@@ -1,0 +1,320 @@
+@PASTIME_街に出る, ARG
+#DIMS 目的地
+
+PRINTL 街に出る
+PRINTL 
+IF TALENT:オトコ <= 0 && TALENT:変身時ＴＳ > 0 && CFLAG:1 > 0
+	IF TALENT:淫乱 > 0
+		PRINTFORML 女性の姿に変身した%PRINT_TRANSCALLNAME(TARGET)%は、身綺麗にして街に繰り出していた。
+		PRINTW 
+		PRINTFORML 露出の多い服装に下着が見えそうなマイクロミニスカート。
+		PRINTFORML とどめに派手な色のサイハイソックスを身に付けた姿はいかにも腰の軽そうなギャル風だ。
+	ELSEIF TALENT:女体受容 > 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は女性化した状態で街をぶらつくことにした。
+		PRINTW 
+		PRINTFORML 以前に感じていた違和感を今は全く感じなくなり
+		PRINTFORML すっかり変身中のカラダに慣れた事を実感する。
+	ELSE
+		PRINTFORML 少しでも変身中のカラダに慣れておこうと考え、
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は女性化した状態で街に出ることにした。
+		PRINTW 
+		PRINTFORML ネットや雑誌を参考に服装はしっかり整えたつもりだが
+		PRINTFORML 不慣れな為か変な目で見られていないかと気になってしまう。
+	ENDIF
+ELSEIF TALENT:淫乱 > 0
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は、身綺麗にして街に繰り出していた。
+	PRINTW 
+	PRINTFORML 露出の多い服装に下着が見えそうな%SPLIT_SEX(TARGET,"マイクロミニスカート／ミニホットパンツ")%。。
+	PRINTFORML とどめに派手な色のサイハイソックスを身に付けた姿はいかにも腰の軽そうなギャル風だ。
+ELSE
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は、街に出ることにした。
+ENDIF
+PRINTW 
+PRINTL 
+PRINTFORML 街に出た%PRINT_TRANSCALLNAME(TARGET)%の行き先は・・・
+PRINTL 
+PRINTFORML [0]ショッピングモール
+PRINTFORML [1]アミューズメント施設
+PRINTFORML [2]繁華街
+PRINTFORML [3]公園
+PRINTL 
+DRAWLINE
+$INPUT_LOOP
+INPUT
+PRINTL 
+DRAWLINE
+IF RESULT == 0
+	PRINTL ショッピングモール
+ELSEIF RESULT == 1
+	PRINTL アミューズメント施設
+ELSEIF RESULT == 2
+	PRINTL 繁華街
+ELSEIF RESULT == 3
+	PRINTL 公園
+ELSE
+	PRINTL 正しい値を入力してください
+	GOTO INPUT_LOOP
+ENDIF
+PRINTL 
+
+PRINTW 
+PRINTW ・・
+PRINTW ・・・・
+PRINTW ・・・・・・
+PRINTL 
+IF RESULT == 0
+	目的地 = ショッピングモール
+	IF RAND:2 == 0
+		PRINTFORML ショッピングモールに訪れた%PRINT_TRANSCALLNAME(TARGET)%は
+		IF RAND:2 == 0
+			PRINTFORML ランジェリーショップでウインドウショッピングを楽しんでいる。
+		ELSE
+			PRINTFORML ブティックでウインドウショッピングを楽しんでいる。
+		ENDIF
+		PRINTL 
+		PRINTFORML 何点か気に入った服を手に取ると、店員を呼び止め試着室へ案内して貰った。
+		PRINTFORML 試着して問題がないことを確認した%PRINT_TRANSCALLNAME(TARGET)%は何着かお買い上げすると
+		PRINTFORML 満足げな顔で次の店を見に行くようだ・・・
+	ELSE
+		PRINTFORML ショッピングモールに訪れた%PRINT_TRANSCALLNAME(TARGET)%は
+		PRINTFORML 店舗を回ってウインドウショッピングを楽しんでいる。
+		PRINTL 
+		IF RAND:3 == 0 && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0)
+			PRINTFORML 階を移動しようとエスカレーターへ向かう%PRINT_TRANSCALLNAME(TARGET)%の後ろに
+			PRINTFORML 挙動不審な男がぴたりと着いて来ている。
+			PRINTFORML どうやら%PRINT_TRANSCALLNAME(TARGET)%のスカートの中を覗こうと企んでいるようだ。
+			PRINTL 
+			IF RAND:3 == 0
+				PRINTFORML 後を着いてくる気配に気がついた%PRINT_TRANSCALLNAME(TARGET)%は
+				PRINTFORML 足早に立ち去り不審者を撒く事に成功した…
+			ELSE
+				PRINTFORML しかし、%PRINT_TRANSCALLNAME(TARGET)%は不審者に気が付かずエスカレーターに乗ってしまった。
+				IF RAND:2 == 0
+					PRINTFORML 不審者は小型カメラで%PRINT_TRANSCALLNAME(TARGET)%のスカートの中を撮影している。
+				ELSE
+					PRINTFORML 不審者はビデオカメラで%PRINT_TRANSCALLNAME(TARGET)%のスカートの中を撮影している。
+				ENDIF
+				IF RAND:2 == 0
+					PRINTFORML 降りる直前で不審者に気がついた%PRINT_TRANSCALLNAME(TARGET)%は
+					PRINTFORML 顔を真赤にしてその場を立ち去っていった・・・
+				ELSE
+					PRINTFORML 結局、%PRINT_TRANSCALLNAME(TARGET)%は降りてからも暫く不審者に気が付かず
+					PRINTFORML スカートの中を散々撮影されてしまった・・・
+				ENDIF
+				
+			ENDIF
+		ELSE
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は人気のブランドやお気に入りの店で季節物の新作などに目を通しているが
+			PRINTFORML 次々と気になる服に目移りしどれを買おうか悩んでいる・・・
+		ENDIF
+	ENDIF
+ELSEIF RESULT == 1
+	IF RAND:3 == 0
+		目的地 = ゲームセンター
+		PRINTFORM ゲームセンターに訪れた%PRINT_TRANSCALLNAME(TARGET)%は
+		IF RAND:3 == 0 && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0)
+			;パンチラに気付いてないのエロいよねって思ってスカート強制にしてるけど
+			;性格なりの判定でなしにしたほうがいいかもわからんね
+			PRINTFORML ダンスゲームを楽しんでいる。
+			PRINTL 
+			PRINTFORML 熱中のあまり激しく身体を動かしすぎてその度にスカートが翻り
+			PRINTFORML チラチラと下着が見えてしまっているのだが
+			PRINTFORML 集中している%PRINT_TRANSCALLNAME(TARGET)%その事に気がついていない。
+			PRINTFORML 一通り楽しんだ%PRINT_TRANSCALLNAME(TARGET)%は筐体から離れ移動していった・・・
+		ELSE
+			PRINTFORML クレーンゲームを楽しんでいる。
+			PRINTL 
+			IF RAND:3 == 0 && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0)
+				SIF CFLAG:1 == 0
+					LOCAL = TALENT:外見
+				SIF CFLAG:1 >= 1
+					LOCAL = TALENT:変身時外見
+				PRINTFORML すれ違う男共の視線が%PRINT_TRANSCALLNAME(TARGET)%の無防備に晒された
+				IF LOCAL == 2
+					PRINT むちむちとした
+				ELSEIF LOCAL == 1
+					PRINT 豊満な
+				ELSEIF LOCAL == 0
+					PRINT 整った
+				ELSE
+					PRINT 小振りな
+				ENDIF
+				PRINTFORML ヒップにささっているが
+				PRINTFORML 熱中のあまり%PRINT_TRANSCALLNAME(TARGET)%は気付いていない。
+				PRINTL 
+			ENDIF
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は一目見て気に入ったキャラクターグッズを狙っているが
+			PRINTFORML あと一歩のところで上手く行かず、コインを何枚も吸い込まれている・・・
+		ENDIF
+	ELSEIF RAND:2 == 0
+		目的地 = ボーリング
+		PRINTFORM ボーリング場に訪れた%PRINT_TRANSCALLNAME(TARGET)%は
+		PRINTFORML ボーリングを楽しんでいる。
+		IF RAND:3 == 0 && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0)
+			PRINTL 
+			PRINTFORML 熱中のあまり激しく身体を動かしすぎてその度にスカートが翻り
+			PRINTFORML チラチラと下着が見えてしまっているのだが
+			PRINTFORML 集中している%PRINT_TRANSCALLNAME(TARGET)%その事に気がついていない。
+			PRINTL 
+		ENDIF
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の投げたボールは
+		IF RAND:3 == 0
+			PRINTFORML 綺麗にレーンの真ん中を転がっていくと全てのピンをなぎ倒した。
+			PRINTFORML 見事なストライクだ。
+		ELSE
+			PRINTFORML レーンの端に吸い寄せられるようによっていくと側溝に落ち込んでしまった。
+			PRINTFORML 残念ながらガーターだ。
+		ENDIF
+		PRINTL 
+		PRINTFORML １ゲーム終えた%PRINT_TRANSCALLNAME(TARGET)%は一息しようとレーンから離れていった・・・
+	ELSE
+		目的地 = 映画館
+		PRINTFORM 映画館に訪れた%PRINT_TRANSCALLNAME(TARGET)%は
+		IF RAND:6 == 0
+			PRINTFORML サメ映画を観賞している。
+			PRINTL 
+			PRINTFORML 間違いなくクソ映画だ。
+		ELSEIF RAND:5 == 0
+			PRINTFORML ゾンビ映画を観賞している。
+			PRINTL 
+			PRINTFORML 間違いなくクソ映画だ。
+		ELSEIF RAND:4 == 0
+			PRINTFORML アメコミヒーロー映画を観賞している。
+			PRINTL 
+			PRINTFORML 戦いの参考にならないかと思い、その目は真剣そのものだ。
+		ELSEIF RAND:3 == 0
+			PRINTFORML パニックホラー映画を観賞している。
+			PRINTL 
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は悲鳴を堪えるのに必死になっている。
+		ELSEIF RAND:2 == 0
+			PRINTFORML コメディ映画を観賞している。
+			PRINTL 
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は笑いを堪えるのに必死になっている。
+		ELSE
+			PRINTFORML 恋愛映画を観賞している。
+			PRINTL 
+			IF (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0)
+				PRINTFORML スクリーンの中のヒロインに自己投影してしまいうっとりしている。
+			ELSE
+				PRINTFORML スクリーンの中のヒロインに自己投影してしまいうっとりしている。
+			ENDIF
+		ENDIF
+		PRINTFORML 観賞を終えた%PRINT_TRANSCALLNAME(TARGET)%は余韻に浸りつつシアターを後にした・・・
+	ENDIF
+ELSEIF RESULT == 2
+	目的地 = 繁華街
+	PRINTFORML 繁華街に訪れた%PRINT_TRANSCALLNAME(TARGET)%は、
+	IF RAND:2 == 0
+		PRINTFORML 特に当てもなく通りを散策している。
+		PRINTL 
+		IF RAND:3 == 0 && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0) && TALENT:巨乳 > 0
+			PRINTFORML すれ違う男共の視線が%PRINT_TRANSCALLNAME(TARGET)%の服の上からでもわかる
+			IF TALENT:巨乳 > 2
+				PRINT ダイナミックな大きさの
+			ELSE
+				PRINT 豊満な
+			ENDIF
+			PRINTFORML バストにささっている。
+			PRINTL 
+		ENDIF
+		IF RAND:3 == 0 && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0)
+			;上に同じく突然のパンチラってｒｙ
+			PRINTFORML 突然、強風が吹いて%PRINT_TRANSCALLNAME(TARGET)%のスカートが捲れ上がり
+			IF CFLAG:42 >= 300 && CFLAG:42 < 400
+				PRINTFORML スカートに隠されていた%ITEMNAME:(CFLAG:42)%が衆目に晒されてしまった！
+			ELSE
+				PRINTFORML スカートに隠されていた秘所が衆目に晒されてしまった！
+			ENDIF
+			IF TALENT:淫乱 > 0 || ABL:露出癖 > 2
+				PRINTFORML 慌てた様子も見せずにスカートを抑えたがしっかり目にされたらしくスケベな視線を感じる。
+				PRINTFORML 下着を見られてしまった%PRINT_TRANSCALLNAME(TARGET)%だったが
+				PRINTFORML 特に気にもせず堂々とその場を立ち去った・・・
+			ELSE
+				PRINTFORML 慌ててスカートを抑えるも一瞬とは言えしっかり目にされたらしくスケベな視線を感じる。
+				PRINTFORML 下着を見られてしまい顔を真赤にした%PRINT_TRANSCALLNAME(TARGET)%は
+				PRINTFORML 足早にその場を立ち去った・・・
+			ENDIF
+		ELSE
+			PRINTFORML しばらくして喉が乾いて来たのか喫茶店にでも入ろうかと悩んでいる・・・
+		ENDIF
+	ELSE
+		PRINTFORML 話題の洋菓子店を訪れている。
+		PRINTL 
+		PRINTFORML 行列に並んで待っていると、暫くしてようやく%PRINT_TRANSCALLNAME(TARGET)%の番となった。
+		PRINTFORML 噂から想像した以上の美味しさで待った甲斐があったと満足そうだ。
+		PRINTFORML 甘いお菓子に舌鼓を打った%PRINT_TRANSCALLNAME(TARGET)%は幸福そうな顔で店を後にした・・・
+	ENDIF
+ELSEIF RESULT == 3
+	目的地 = 公園
+	IF RAND:3 == 0
+		PRINTFORML 公園に訪れた%PRINT_TRANSCALLNAME(TARGET)%は
+		PRINTFORML 据え付けられたベンチに座って日向ぼっこをしている。
+		PRINTL 
+		PRINTFORML ポカポカとした暖かな日差しが心地よい・・・
+		PRINTW 
+	ELSEIF RAND:2 == 0
+		PRINTFORML 公園に訪れた%PRINT_TRANSCALLNAME(TARGET)%は
+		PRINTFORML どこかのんびりできそうな場所を探している。
+		PRINTL 
+		IF RAND:4 == 0
+			PRINTFORML いい場所はないかと探していると数匹の子猫達にじゃれつかれた。
+			PRINTFORML 野良猫のようだが随分人懐っこい。
+			PRINTFORML もふもふの毛玉達に癒やされる・・・
+		ELSEIF RAND:3 == 0
+			PRINTFORML いい場所はないかと探していると首輪をした小型犬にじゃれつかれた。
+			PRINTFORML よく躾られているらしくお手などちょっとした芸にも応えてくれた。
+			PRINTFORML 程なくして飼い主が来ると謝罪を述べながら引き連れていった・・・
+		ELSEIF RAND:2 == 0
+			PRINTFORML いい場所はないかと探していると首輪をした大型犬にじゃれつかれた。
+			PRINTFORML 尻尾を振り回しながら体重を載せて抱きついて顔を舐めてくる。
+			PRINTFORML 飼い主が来て引き離すまで%PRINT_TRANSCALLNAME(TARGET)%は散々舐め回されてしまった・・・
+		ELSE
+			PRINTFORML いい場所はないかと探していると目の前をカルガモの親子が横切った。
+			PRINTFORML よちよち歩きで親鳥に着いていく雛が可愛らしい。
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はカルガモ親子のお引越しをその場で見届けた・・・
+		ENDIF
+		PRINTW 
+	ELSE
+		PRINTFORML 公園に訪れた%PRINT_TRANSCALLNAME(TARGET)%は
+		PRINTFORML 池に沿うように設けられた遊歩道で散歩している。
+		PRINTL 
+		IF RAND:3 == 0 && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0) && TALENT:巨乳 > 0
+			PRINTFORML すれ違う男共の視線が%PRINT_TRANSCALLNAME(TARGET)%の服の上からでもわかる
+			IF TALENT:巨乳 > 2
+				PRINT ダイナミックな大きさの
+			ELSE
+				PRINT 豊満な
+			ENDIF
+			PRINTFORML バストにささっている。
+			PRINTL 
+		ENDIF
+		IF RAND:3 == 0 && (TALENT:オトコ <= 0)
+			PRINTFORML 突然、強風が吹いて%PRINT_TRANSCALLNAME(TARGET)%のスカートが捲れ上がり
+			IF CFLAG:42 >= 300 && CFLAG:42 < 400
+				PRINTFORML スカートに隠されていた%ITEMNAME:(CFLAG:42)%が衆目に晒されてしまった！
+			ELSE
+				PRINTFORML スカートに隠されていた秘所が衆目に晒されてしまった！
+			ENDIF
+			IF TALENT:淫乱 > 0 || ABL:露出癖 > 2
+				PRINTFORML 慌てた様子も見せずにスカートを抑えたがしっかり目にされたらしくスケベな視線を感じる。
+				PRINTFORML 下着を見られてしまった%PRINT_TRANSCALLNAME(TARGET)%だったが
+				PRINTFORML 特に気にもせず堂々とその場を立ち去った・・・
+			ELSE
+				PRINTFORML 慌ててスカートを抑えるも一瞬とは言えしっかり目にされたらしくスケベな視線を感じる。
+				PRINTFORML 下着を見られてしまい顔を真赤にした%PRINT_TRANSCALLNAME(TARGET)%は
+				PRINTFORML 足早にその場を立ち去った・・・
+			ENDIF
+		ELSE
+			PRINTFORML 木陰から漏れる日差しとそよ風が心地よい・・・
+		ENDIF
+	ENDIF
+ENDIF
+PRINTW 
+
+CALL PASTIME_NANPA
+IF RESULT > 0
+	CALL MESSAGE_PASTIME_NANPA,ARG
+ELSE
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は、%目的地%を満喫してきたようだ。
+ENDIF
+RETURN 0

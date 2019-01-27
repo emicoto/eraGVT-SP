@@ -1,0 +1,21 @@
+;ギブアップ
+@COM99
+
+;距離表示
+CALL PRINT_DISTANCE
+PRINTL 
+
+BASE:体力 = 0
+BASE:気力 = 0
+BASE:性耐性 = 0
+
+;防御フラグを何もしないに変更
+TCVAR:2 = 体勢：何もしない
+
+;地の文：何もしない
+CALL MESSAGE_BATTLE_CHARA_NOACTION
+;地の文：洗脳/悪堕ちキャラが操作キャラの何もしないを見た
+SIF FLAG:110 == 1
+	CALL MESSAGE_OTHER_BATTLE_CHARA_NOACTION
+
+RETURN 1

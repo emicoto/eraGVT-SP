@@ -1,0 +1,668 @@
+
+;--------------------------------
+;触手妊娠に対する地の文
+;--------------------------------
+@MESSAGE_NINNSIN
+IF TALENT:主観視点 > 0
+	PRINTFORMW %PRINT_CALLNAME(TARGET)%は自分の体に強い違和感を感じる・・・
+ELSE
+	PRINTFORMW %PRINT_CALLNAME(TARGET)%の様子がおかしい・・・
+ENDIF
+IF (TCVAR:12 & 排卵)
+	PRINTFORM 排卵させられた状態での膣内射精により、%PRINT_CALLNAME(TARGET)%の腹に
+ELSE
+	PRINTFORM 度重なる膣内への射精により、%PRINT_CALLNAME(TARGET)%の腹に
+ENDIF
+IF CONFIG_CHECK_OTHER_F(0) == 0
+	PRINT 触手の幼体
+ELSE
+	PRINT 新たな生命
+ENDIF
+PRINTL が宿ったようだ。
+SIF CFLAG:6 == -1
+	PRINTFORML %PRINT_CALLNAME(TARGET)%は自分の身体の変化を理解できずに戸惑っている・・・
+PRINTW
+PRINTFORMW %PRINT_CALLNAME(TARGET)%は[妊娠]した
+
+;--------------------------------
+;妊娠でオトコに戻れなくなる
+;--------------------------------
+@MESSAGE_NINNSIN_TS_FIX
+PRINTL 
+PRINTFORML ・・
+PRINTFORML ・・・・
+PRINTFORML ・・・・・・
+PRINTFORML 胎内に宿った儚くまだ新しい生命が、
+PRINTFORML %PRINT_CALLNAME(TARGET)%の肉体の根本的な部分を変化させていく。
+PRINTFORML その感覚の意味を本能的に理解した%PRINT_CALLNAME(TARGET)%は、
+PRINTFORML 自分がもう後には引けないことを悟った・・・
+PRINTL 
+PRINTFORML %PRINT_CALLNAME(TARGET)%は妊娠した影響で[オトコ]に戻れなくなった
+PRINTW 
+
+;--------------------------------
+;触手産卵、妊娠に対する地の文
+;--------------------------------
+@MESSAGE_PRISON_COM_200_DASH
+
+;--------------------------------
+;出産準備
+;--------------------------------
+@MESSAGE_MATANITY
+PRINTL 
+PRINTFORMW %PRINT_CALLNAME(TARGET)%の出産が近い・・・
+PRINTFORM %PRINT_CALLNAME(TARGET)%は
+;育児判定による文字の選択
+IF CONFIG_CHECK_OTHER_F(0) == 0
+	PRINT 触手の
+ELSE
+	PRINT 子供の
+ENDIF
+PRINTL 出産に備えて特別病棟に移った・・・
+PRINTW 
+
+;--------------------------------
+;触手出産(幽閉時)
+;--------------------------------
+@MESSAGE_PRISON_SHUSSAN,ARG
+PRINTL 
+PRINTFORMW %PRINT_CALLNAME(TARGET)%の出産の時がやってきた・・・
+PRINTL 
+IF RAND:2 == 0 && (FILTER_CHECK_F(14) == 0)
+	PRINTFORML まだ触手に犯されている最中に%PRINT_CALLNAME(TARGET)%の陣痛は唐突に始まった。
+	IF TALENT:感情乏しい > 0
+		PRINTFORML 叫び声ひとつ上げない%PRINT_CALLNAME(TARGET)%の膣奥を触手が一突きすると、
+	ELSE
+		PRINTFORML 激しい痛みに苦痛の叫びを上げる%PRINT_CALLNAME(TARGET)%を無視して触手が膣奥を一突きすると、
+	ENDIF
+	PRINTFORML 水門が決壊したかのように羊水が流れ出していく。
+	IF TALENT:感情乏しい > 0
+		PRINTFORML %PRINT_CALLNAME(TARGET)%の手足が抑えつけられ、
+	ELSE
+		PRINTFORML たまらず泣き叫ぶ%PRINT_CALLNAME(TARGET)%の手足が抑えつけられ、
+	ENDIF
+	PRINTFORML 出産のために緩んだ膣口に更なる触手が挿入された・・・
+	PRINTW 
+	PRINTFORML 胎内に侵入した触手が出産直前の幼体に巻き付き、
+	SIF TALENT:触手の虜 == 0 && TALENT:感情乏しい == 0
+		PRINTFORM 制止する%PRINT_CALLNAME(TARGET)%の声も聞かずに
+	PRINTFORML そのまま力任せに引っ張り始める。
+	PRINTFORM ずるり、ずるりと幼体が産道を引き摺られてい
+	IF TALENT:触手の虜 > 0 || ABL:欲望 >= 4 || ABL:マゾっ気 >= 3
+		PRINTFORML く感触に%PRINT_CALLNAME(TARGET)%はたまらず絶頂を迎えてしまう。
+		PRINTFORML ぴくぴくと痙攣する%PRINT_CALLNAME(TARGET)%をよそに、
+	ELSE
+		PRINTFORML くと、やがて先端が膣外へと顔を出し、
+	ENDIF
+	PRINTFORML 幼体は元気にぴぎぃと産声を上げて這いずり出てきた・・・
+ELSE
+	PRINTFORML 身重になった%PRINT_CALLNAME(TARGET)%を無数の触手が絡み合って出来た分娩台の上へと連れて行き、
+	PRINTFORML Ｍの字に開脚させた状態で縛り付けた。
+	PRINTFORML 出産を促すために%PRINT_CALLNAME(TARGET)%の腹部を触手が撫でまわすと同時に、
+	PRINTFORML 細い触手を数本膣内へと侵入させて子宮口を突きつつ産道を少し拡げる。
+	PRINTFORML その甲斐があったのだろうか。愛撫されているうちに%PRINT_CALLNAME(TARGET)%は産気づいたらしく、
+	IF TALENT:主観視点 > 0
+		PRINTFORML 胎内から感じる強烈な圧迫感と違和感に、苦悶の声を漏らしてしまった・・・
+	ELSEIF TALENT:感情乏しい > 0
+		PRINTFORML ビクリと手足を強張らせ、いきみ始めた・・・
+	ELSE
+		PRINTFORML 頭を激しく振りながら苦悶の声を上げ始めた・・・
+	ENDIF
+	PRINTW  
+	PRINTFORML 永遠とも思える時間が過ぎたかに思える頃に突如%PRINT_CALLNAME(TARGET)%の腹が蠢き出し、
+	PRINTFORML 大きく拡げた膣口からは汚臭のする羊水が大量に噴き出した。
+	PRINTFORML 胎内にいた触手の幼体がゆっくりと産道を通り、ずるり、ずるりと這いずり出てくる・・・
+ENDIF
+PRINTW 
+IF TALENT:触手の虜 > 0 || ABL:欲望 >= 4 || ABL:マゾっ気 >= 3 && TALENT:主観視点 > 0
+	PRINTFORML 筆舌し難い苦痛にも関わらず、%PRINT_CALLNAME(TARGET)%は強い恍惚を感じてしまう。
+ELSEIF TALENT:主観視点 > 0
+	PRINTFORML %PRINT_CALLNAME(TARGET)%は筆舌し難い苦痛に声無き叫びを上げてしまう。
+ELSEIF TALENT:感情乏しい > 0
+	PRINTFORML 表情に変化はなくとも、%PRINT_CALLNAME(TARGET)%は苦痛を感じている様子だ。
+ELSEIF TALENT:触手の虜 > 0 || ABL:欲望 >= 4 || ABL:マゾっ気 >= 3
+	PRINTFORML 筆舌し難い苦痛にも関わらず、%PRINT_CALLNAME(TARGET)%は恍惚の表情を浮かべている。
+ELSE
+	PRINTFORML %PRINT_CALLNAME(TARGET)%は筆舌し難い苦痛に声無き叫びを上げている。
+ENDIF
+IF ARG > 1
+	PRINTFORML 触手の幼体を産み落とした%PRINT_CALLNAME(TARGET)%の腹部はまだ大きく膨れており、
+	PRINTFORML しばらくすると2匹目の触手が産道から姿を覗かせた・・・
+	SIF ARG > 2
+		PRINTFORM {ARG}匹目の触手を産み終えて
+ELSE
+	PRINT 触手の幼体を産み落としたばかりで
+ENDIF
+PRINTFORML ぐったりとした%PRINT_CALLNAME(TARGET)%の身体を、
+PRINTFORM まだ臍の緒で繋がっている触手
+SIF ARG > 1
+	PRINT の幼体たち
+IF TALENT:主観視点 > 0
+	PRINTL が這いまわり、母乳を貪ってくる。
+ELSE
+	PRINTL が這いまわり、母乳を貪っている。
+ENDIF
+PRINTW 
+IF TALENT:触手の虜 > 0 && TALENT:主観視点 > 0
+	PRINTFORML 身も心も触手の苗床妻となってしまった%PRINT_CALLNAME(TARGET)%は、
+	PRINTFORML 乳首にむしゃぶり着く我が子の姿に、愛おしさを感じてしまう・・・
+	PRINTFORML %PRINT_CALLNAME(TARGET)%は体の底から湧き上がるような母性に任せて、そっと子供たちを撫でてやった。
+ELSEIF TALENT:触手の虜 > 0
+	PRINTFORML 身も心も触手の苗床妻となった%PRINT_CALLNAME(TARGET)%は、
+	PRINTFORML 乳首にむしゃぶり着く我が子を愛おしそうに撫でている・・・
+ELSEIF ABL:欲望 >= 4 && TALENT:主観視点 > 0
+	PRINTFORML 出産と同時に数度の絶頂を迎えてしまった%PRINT_CALLNAME(TARGET)%は、
+	PRINTFORML 肩で息をしながら恍惚に浸った・・・
+ELSEIF ABL:欲望 >= 4
+	PRINTFORML 出産と同時に数度の絶頂を迎えた%PRINT_CALLNAME(TARGET)%は、
+	PRINTFORML 肩で息をしながら恍惚としている・・・
+ELSEIF ABL:奉仕精神 >= 3 && TALENT:主観視点 > 0
+	PRINTFORML %PRINT_CALLNAME(TARGET)%は疲労のために肩で息をしながらも、
+	PRINTFORML 乳首にむしゃぶり着く我が子をそっと撫でてやった・・・
+ELSEIF ABL:奉仕精神 >= 3
+	PRINTFORML %PRINT_CALLNAME(TARGET)%は疲労のために肩で息をしながらも、
+	PRINTFORML 乳首にむしゃぶり着く我が子をそっと撫でた・・・
+ELSEIF TALENT:感情乏しい > 0
+	PRINTFORML %PRINT_CALLNAME(TARGET)%は疲労で肩で息をしながらも
+	PRINTFORML 這いまわる子触手の様子を無表情に見つめている・・・
+ELSEIF TALENT:主観視点 > 0
+	PRINTFORML %PRINT_CALLNAME(TARGET)%は湧き上がる絶望感を抑えきれず、
+	PRINTFORML 肩で息をしている%PRINT_CALLNAME(TARGET)%の頬を一筋の涙が伝っていく・・・
+ELSE
+	PRINTFORML %PRINT_CALLNAME(TARGET)%の目からは光が消え、
+	PRINTFORML 絶望の涙を流しながら肩で息をしている・・・
+ENDIF
+PRINTW 
+PRINTFORML 子触手を{ARG}匹産み落としました
+
+;--------------------------------
+;触手出産
+;--------------------------------
+@MESSAGE_SHUSSAN,ARG
+PRINTL 
+PRINTFORMW %PRINT_CALLNAME(TARGET)%の出産の時がやってきた・・・
+PRINTL 
+IF TALENT:触手の虜 > 0 && TALENT:主観視点 > 0
+	PRINTFORML 出産の痛みを堪えながらも、%PRINT_CALLNAME(TARGET)%の心は
+	PRINTFORML どこか言いようのない寂しさを感じていた・・・
+ELSEIF TALENT:主観視点 > 0
+	PRINTFORML %PRINT_CALLNAME(TARGET)%は歯を食いしばって出産の痛みに耐えようとするも
+	PRINTFORML あまりの衝撃に、唇の端から苦痛の喘ぎを漏らしてしまう・・・
+ELSEIF TALENT:感情乏しい > 0
+	PRINTFORML 無表情のままだが陣痛は感じているのか
+	PRINTFORML その唇の端からは苦痛の喘ぎが漏れている・・・
+ELSEIF TALENT:触手の虜 > 0
+	PRINTFORML 出産の痛みに耐える%PRINT_CALLNAME(TARGET)%の表情には
+	PRINTFORML どこか悲しみのようなものが浮かんでいる・・・
+ELSE
+	PRINTFORML %PRINT_CALLNAME(TARGET)%は歯を食いしばって出産の痛みに耐えようとするも
+	PRINTFORML その唇の端からは苦痛の喘ぎが漏れている・・・
+ENDIF
+PRINTL 
+PRINTFORML 胎内にいた%STR:2500%は全身をくねらせ
+PRINTFORML 表面の凹凸で膣壁を擦りあげながら降りてくる。
+PRINTFORML %STR:2500%の幼体は産道を通り、大きく拡げた膣口から汚臭のする羊水と粘液をまき散らしながら
+PRINTFORML ずるりと這いずり出てきた。
+PRINTW 
+PRINTFORML しかし%STR:2500%の幼体はそこが安全な場所ではないと直感的に悟ったのか
+PRINTFORML 完全に産まれ落ちる前に全身を大きく波打たせて%PRINT_CALLNAME(TARGET)%の胎内に戻ってしまった。
+IF TALENT:主観視点 > 0
+	PRINTFORML %PRINT_CALLNAME(TARGET)%の体は予想もできない常軌を逸した苦痛と快楽に延々とさらされ
+ELSE
+	PRINTFORML %PRINT_CALLNAME(TARGET)%は予想もできない常軌を逸した苦痛と快楽に延々とさらされ
+ENDIF
+PRINTFORML 痙攣し始めた・・・
+PRINTW
+PRINTFORML 母体の押し出す力に%STR:2500%の幼体は抵抗し何度も膣内を荒々しくブラシを掛けて登っていき、
+PRINTFORM そのたびに%PRINT_CALLNAME(TARGET)%は
+SIF TALENT:母乳体質 == 1
+	PRINT 母乳を噴きあげながら
+IF TALENT:主観視点 > 0
+	PRINTL 絶頂し、より強く産道を締めあげてしまう。
+ELSE
+	PRINTL 絶頂し、より強く産道を締めあげていく。
+ENDIF
+PRINTW
+IF ARG > 1
+	PRINTFORML 永遠とも思える時間が過ぎた後、%PRINT_CALLNAME(TARGET)%は気を失いかけながらも
+	SIF ARG > 2
+		PRINTFORM {ARG}匹目の
+	PRINTFORM %STR:2500%の幼体を産み終えると、
+ELSE
+	PRINTFORML %PRINT_CALLNAME(TARGET)%が気を失いかけながらも%STR:2500%の幼体を産み落とすと、
+ENDIF
+PRINTFORML %PRINT_CALLNAME(TARGET)%はそのまま意識が遠のいて行った・・・
+PRINTW
+IF FLAG:0 == 2
+	PRINTFORML %PRINT_CALLNAME(TARGET)%が気を失っている間、%STR:2500%の幼体は施設の自動駆除機能によって処理された。
+ELSE
+	PRINTFORML %PRINT_CALLNAME(TARGET)%が気を失っている間、%STR:2500%の幼体は仲間達の手によって処理された。
+ENDIF
+PRINTW 
+
+;--------------------------------
+;合いの子出産(幽閉時
+;--------------------------------
+@MESSAGE_PRISON_AINOKO_SHUSSAN,ARG
+PRINTL 
+PRINTFORMW %PRINT_CALLNAME(TARGET)%の出産の時がやってきた・・・
+PRINTL 
+IF RAND:2 == 0 && (FILTER_CHECK_F(14) == 0)
+	PRINTFORML まだ触手に犯されている最中に%PRINT_CALLNAME(TARGET)%の陣痛は唐突に始まった。
+	IF TALENT:感情乏しい > 0
+		PRINTFORML 叫び声ひとつ上げない%PRINT_CALLNAME(TARGET)%の膣奥を触手が一突きすると、
+	ELSE
+		PRINTFORML 激しい痛みに苦痛の叫びを上げる%PRINT_CALLNAME(TARGET)%を無視して触手が膣奥を一突きすると、
+	ENDIF
+	PRINTFORML 水門が決壊したかのように羊水が流れ出していく。
+	IF TALENT:感情乏しい > 0
+		PRINTFORML %PRINT_CALLNAME(TARGET)%の手足が抑えつけられ、
+	ELSE
+		PRINTFORML たまらず泣き叫ぶ%PRINT_CALLNAME(TARGET)%の手足が抑えつけられ、
+	ENDIF
+	PRINTFORML 出産のために緩んだ膣口に更なる触手が挿入された・・・
+	PRINTW 
+	PRINTFORML 胎内に侵入した触手が出産直前の胎児に巻き付き、
+	SIF TALENT:触手の虜 == 0 && TALENT:感情乏しい == 0
+		PRINTFORM 制止する%PRINT_CALLNAME(TARGET)%の声も聞かずに
+	PRINTFORML そのまま力任せに引っ張り始める。
+	PRINTFORM ずるり、ずるりと胎児が産道を引き摺られてい
+	IF TALENT:触手の虜 > 0 || ABL:欲望 >= 4 || ABL:マゾっ気 >= 3
+		PRINTFORML く感触に%PRINT_CALLNAME(TARGET)%はたまらず絶頂を迎えてしまう。
+		PRINTFORM ぴくぴくと痙攣する%PRINT_CALLNAME(TARGET)%の膣口から
+		PRINTFORML やがて赤子の頭の先端が膣外へと姿を現し、
+		PRINTFORML 次いで全身が転がるように滑り出た・・・
+	ELSE
+		PRINTFORML くと、
+		PRINTFORM やがて赤子の頭の先端が膣外へと姿を現し、
+		PRINTFORML 次いで全身が転がるように滑り出た・・・
+	ENDIF
+ELSE
+	PRINTFORML 身重になった%PRINT_CALLNAME(TARGET)%を無数の触手が絡み合って出来た分娩台の上へと連れて行き、
+	PRINTFORML Ｍの字に開脚させた状態で縛り付けた。
+	PRINTFORML 出産を促すために%PRINT_CALLNAME(TARGET)%の腹部を触手が撫でまわすと同時に、
+	PRINTFORML 細い触手を数本膣内へと侵入させて子宮口を突きつつ産道を少し拡げる。
+	PRINTFORML その甲斐があったのだろうか。愛撫されているうちに%PRINT_CALLNAME(TARGET)%は産気づいたらしく、
+	IF TALENT:感情乏しい > 0 || TALENT:主観視点 > 0
+		PRINTFORML ビクリと手足を強張らせ、いきみ始めた・・・
+	ELSE
+		PRINTFORML 頭を激しく振りながら苦悶の声を上げ始めた・・・
+	ENDIF
+	PRINTW  
+	PRINTFORML ゆっくりと%PRINT_CALLNAME(TARGET)%の産道から赤子の頭が見えてくる。
+	PRINTFORML 永遠とも思える時間が過ぎた後に、ついに%PRINT_CALLNAME(TARGET)%の子供が
+	PRINTFORML 完全に外の世界に産み落とされた・・・
+ENDIF
+PRINTW 
+IF CFLAG:6 >= 0 && TALENT:主観視点 > 0
+	PRINTFORML %PRINT_CALLNAME(TARGET)%の産み落とした子供は、
+	PRINTFORML ごく普通の赤ん坊の姿をしている・・・
+ELSEIF CFLAG:6 >= 0
+	PRINTFORML %PRINT_CALLNAME(TARGET)%は自分が産んだ子供が
+	PRINTFORML おぞましい怪物でないこと気付いたようだ・・・
+ELSEIF TALENT:主観視点 > 0
+	PRINTFORML %PRINT_CALLNAME(TARGET)%は自分が産み落とした我が子の姿を見ようと、
+	PRINTFORML ゆっくりと首を持ち上げた・・・
+ELSE
+	PRINTFORML %PRINT_CALLNAME(TARGET)%は自分が産み落としたのが
+	PRINTFORML 自分の子供であることに気付いたようだ・・・
+ENDIF
+PRINTW 
+PRINTW ・
+PRINTW ・・
+PRINTW ・・・
+CLEARLINE 6
+SETCOLOR 255,0,0
+IF CFLAG:6 >= 0 && TALENT:主観視点 > 0
+	PRINTFORML 赤ん坊の様子が、おかしい・・・
+	PRINTFORML 自らが産み落とした異形を確かに認識してしまい、
+	PRINTFORML %PRINT_CALLNAME(TARGET)%の全身からは嫌な汗が噴き出し、顔がどんどん引きつっていく
+ELSEIF TALENT:主観視点 > 0
+	PRINTFORML 目の前に写るのは、名状しがたき異形の仔
+	PRINTFORML ソレ は確かにあなたから産み落とされたはずだった
+	PRINTFORML しかし、おぞましい産声を上げる ソレ は地球上にいるあらゆる生物の特徴にも似ておらず、
+	PRINTFORML %PRINT_CALLNAME(TARGET)%はついに、自らが産み落とした ソレ が、何なのか理解できなかった
+ELSEIF TALENT:感情乏しい > 0
+	PRINTFORML %PRINT_CALLNAME(TARGET)%は自分が産んだ子供の
+	PRINTFORML 様子がおかしいことに気付いたようだ・・・
+ELSEIF CFLAG:6 >= 0
+	PRINTFORML %PRINT_CALLNAME(TARGET)%は自分が産んだ子供の
+	PRINTFORML 様子がおかしいことに気付き、表情を引き攣らせた・・・
+ELSE
+	PRINTFORML %PRINT_CALLNAME(TARGET)%は自分が産み落としたのが
+	PRINTFORML 何なのか理解できずに表情を引き攣らせた・・・
+ENDIF
+RESETCOLOR
+PRINTL 
+PRINTL ・
+PRINTL ・・
+PRINTW ・・・
+PRINTL 
+IF RAND:6 == 0 && EXP:近親交配経験 > 20
+	PRINTFORML 産み落とされた赤子はヒトとも触手とも違った外見をしており、
+	PRINTFORML 腕や眼球や口が複雑に絡み合った肉塊のような姿をしている。
+ELSEIF RAND:5 == 0 && EXP:近親交配経験 > 20
+	PRINTFORML 産み落とされた赤子は全身がアメーバ状の組織に覆われており、
+	PRINTFORML 脳や内蔵が外から丸見えになっている。
+ELSEIF RAND:4 == 0
+	PRINTFORML 産み落とされた赤子は全身がぶよぶよと膨れ上がっており、
+	PRINTFORML その股間には成人男性のものより大きな脈打つ男根が屹立している。
+ELSEIF RAND:3 == 0
+	PRINTFORML 産み落とされた赤子は頭部こそ人間のようだったが、
+	PRINTFORML 芋虫のような胴体に手足はなく、背中からは複数の触手が伸びている。
+ELSEIF RAND:2 == 0
+	PRINTFORML 産み落とされた赤子は人間のような手足を持っていたが、
+	PRINTFORML その頭部はミミズ状に細長く伸びており、先端の開口部には鋭利な歯が並んでいる。
+ELSE
+	PRINTFORML 産み落とされた赤子は一見して普通の人間の姿をしているが、
+	PRINTFORML よく見れば眼球の数が１つしかなく、全身が緑色の粘液に覆われている。
+ENDIF
+IF TALENT:感情乏しい > 0
+	PRINTFORML おぞましい怪物を産み落としたにも関わらず、
+	PRINTFORML %PRINT_CALLNAME(TARGET)%の表情に変化は見られない・・・
+	PRINTW 
+	PRINTFORML まだ臍の緒が繋がったままの異形の赤子が産声を上げると、
+	PRINTFORML %PRINT_CALLNAME(TARGET)%は事務的な動きで赤子を抱きあげた・・・
+ELSEIF CFLAG:6 == -1
+	PRINTFORML %PRINT_CALLNAME(TARGET)%は自分が産み落としたのがいったい何なのか理解できない・・・
+	PRINTW 
+	PRINTFORML まだ臍の緒が繋がったままの異形の赤子が産声を上げると、
+	IF TALENT:主観視点
+		PRINTFORML 恐怖と嫌悪感が最高潮に達し、%PRINT_CALLNAME(TARGET)%は悲痛な叫び声を上げてしまった・・・
+	ELSE
+		PRINTFORML 恐怖と嫌悪感が最高潮に達した%PRINT_CALLNAME(TARGET)%の悲痛な叫びが周囲に木霊した・・・
+	ENDIF
+ELSEIF TALENT:触手の虜 > 0 || ABL:触手中毒 >= 2
+	PRINTFORML おぞましい怪物を産み落としたにも関わらず、
+	IF TALENT:主観視点 > 0
+		PRINTFORML %PRINT_CALLNAME(TARGET)%は確かに「我が子」に母性を感じていた・・・
+	ELSE
+		PRINTFORML %PRINT_CALLNAME(TARGET)%は母性を感じているらしい・・・
+	ENDIF
+	PRINTW 
+	PRINTFORML %PRINT_CALLNAME(TARGET)%は優しく抱きあげて胸元へ引き寄せると、
+	PRINTFORML まだ臍の緒が繋がったままの異形の赤子が産声を上げた・・・
+ELSEIF TALENT:主観視点 > 0
+	PRINTFORML %PRINT_CALLNAME(TARGET)%は自身がおぞましい怪物を産み落としたという事実を、目の前に突きつけられる・・・
+	PRINTW 
+	PRINTFORML まだ臍の緒が繋がったままの異形の赤子が産声を上げると同時に
+	PRINTFORML 恐怖と嫌悪感が最高潮に達し、%PRINT_CALLNAME(TARGET)%は悲痛な叫び声を上げてしまった・・・
+ELSE
+	PRINTFORML %PRINT_CALLNAME(TARGET)%は自身がおぞましい怪物を産み落としたことに愕然としている・・・
+	PRINTW 
+	PRINTFORML まだ臍の緒が繋がったままの異形の赤子が産声を上げると、
+	PRINTFORML 恐怖と嫌悪感が最高潮に達した%PRINT_CALLNAME(TARGET)%の悲痛な叫びが周囲に木霊した・・・
+ENDIF
+PRINTW 
+PRINTFORML 子触手を{ARG}匹産み落としました
+
+;--------------------------------
+;子供出産(幽閉時
+;--------------------------------
+@MESSAGE_PRISON_CHILD_SHUSSAN
+PRINTL 
+PRINTFORMW %PRINT_CALLNAME(TARGET)%の出産の時がやってきた・・・
+PRINTL 
+IF RAND:2 == 0 && (FILTER_CHECK_F(14) == 0)
+	PRINTFORML まだ触手に犯されている最中に%PRINT_CALLNAME(TARGET)%の陣痛は唐突に始まった。
+	IF TALENT:感情乏しい > 0
+		PRINTFORML 叫び声ひとつ上げない%PRINT_CALLNAME(TARGET)%の膣奥を触手が一突きすると、
+	ELSE
+		PRINTFORML 激しい痛みに苦痛の叫びを上げる%PRINT_CALLNAME(TARGET)%を無視して触手が膣奥を一突きすると、
+	ENDIF
+	PRINTFORML 水門が決壊したかのように羊水が流れ出していく。
+	IF TALENT:感情乏しい > 0
+		PRINTFORML %PRINT_CALLNAME(TARGET)%の手足が抑えつけられ、
+	ELSE
+		PRINTFORML たまらず泣き叫ぶ%PRINT_CALLNAME(TARGET)%の手足が抑えつけられ、
+	ENDIF
+	PRINTFORML 出産のために緩んだ膣口に更なる触手が挿入された・・・
+	PRINTW 
+	PRINTFORML 胎内に侵入した触手が出産直前の胎児に巻き付き、
+	SIF TALENT:触手の虜 == 0 && TALENT:感情乏しい == 0
+		PRINTFORM 制止する%PRINT_CALLNAME(TARGET)%の声も聞かずに
+	PRINTFORML そのまま力任せに引っ張り始める。
+	PRINTFORM ずるり、ずるりと胎児が産道を引き摺られてい
+	IF TALENT:触手の虜 > 0 || ABL:欲望 >= 4 || ABL:マゾっ気 >= 3
+		PRINTFORML く感触に%PRINT_CALLNAME(TARGET)%はたまらず絶頂を迎えてしまう。
+		PRINTFORM ぴくぴくと痙攣する%PRINT_CALLNAME(TARGET)%の膣口から
+	ELSE
+		PRINTFORML くと、
+	ENDIF
+	PRINTFORML やがて赤子の頭の先端が膣外へと姿を現し、次いで全身が転がるように滑り出た・・・
+ELSE
+	PRINTFORML 身重になった%PRINT_CALLNAME(TARGET)%を無数の触手が絡み合って出来た分娩台の上へと連れて行き、
+	PRINTFORML Ｍの字に開脚させた状態で縛り付けた。
+	PRINTFORML 出産を促すために%PRINT_CALLNAME(TARGET)%の腹部を触手が撫でまわすと同時に、
+	PRINTFORML 細い触手を数本膣内へと侵入させて子宮口を突きつつ産道を少し拡げる。
+	PRINTFORML その甲斐があったのだろうか。愛撫されているうちに%PRINT_CALLNAME(TARGET)%は産気づいたらしく、
+	IF TALENT:主観視点 > 0
+		PRINTFORML 胎内から感じる強烈な圧迫感と違和感に、思わず苦悶の声を上げてしまう・・・
+	ELSEIF TALENT:感情乏しい > 0
+		PRINTFORML ビクリと手足を強張らせ、いきみ始めた・・・
+	ELSE
+		PRINTFORML 頭を激しく振りながら苦悶の声を上げ始めた・・・
+	ENDIF
+	PRINTW  
+	PRINTFORML ゆっくりと%PRINT_CALLNAME(TARGET)%の産道から赤子の頭が見えてくる。
+	PRINTFORML 永遠とも思える時間が過ぎた後に、ついに%PRINT_CALLNAME(TARGET)%の子供が
+	PRINTFORML 完全に外の世界に産み落とされた・・・
+ENDIF
+PRINTW 
+IF CFLAG:6 >= 0 && TALENT:主観視点 > 0
+	PRINTFORML %PRINT_CALLNAME(TARGET)%の産み落とした子供は、
+	PRINTFORML ごく普通の赤ん坊の姿をしている・・・
+ELSEIF CFLAG:6 >= 0
+	PRINTFORML %PRINT_CALLNAME(TARGET)%は自分が産んだ子供が
+	PRINTFORML おぞましい怪物でないこと気付いたようだ・・・
+ELSEIF TALENT:主観視点 > 0
+	PRINTFORML %PRINT_CALLNAME(TARGET)%は自分が産み落とした我が子の姿を見ようと、
+	PRINTFORML ゆっくりと首を持ち上げた・・・
+ELSE
+	PRINTFORML %PRINT_CALLNAME(TARGET)%は自分が産み落としたのが
+	PRINTFORML 自分の子供であることに気付いたようだ・・・
+ENDIF
+PRINTW 
+PRINTW ・
+PRINTW ・・
+PRINTW ・・・
+PRINTL 
+IF TALENT:感情乏しい > 0 && TALENT:主観視点 == 0
+	PRINTFORML 自身と臍の緒で繋がったままの幼く小さな命を抱き上げる%PRINT_CALLNAME(TARGET)%。
+	PRINTFORML その瞳の中に感情らしい感情が浮かぶことはなかったが、
+	PRINTFORML 赤子を扱うその仕草はどこか母親らしい優しさが感じられるものだった・・・
+ELSEIF CFLAG:6 == -1
+	PRINTFORML 恐る恐る赤ん坊を抱き締めると、
+	PRINTFORML 母親である%PRINT_CALLNAME(TARGET)%の腕に抱かれた赤子が安心して泣き止む。
+	IF TALENT:主観視点 > 0
+		PRINTFORML それを見た%PRINT_CALLNAME(TARGET)%の胸にも温かい気持ちが広がっていく・・・
+	ELSE
+		PRINTFORML それを見た%PRINT_CALLNAME(TARGET)%の胸にも温かい気持ちが広がっていった・・・
+	ENDIF
+ELSEIF TALENT:触手の虜 > 0 && TALENT:主観視点 > 0
+	PRINTFORML 弱弱しく泣く赤子を%PRINT_CALLNAME(TARGET)%の指が優しく撫でる。
+	PRINTFORML 産まれたときから%STR:2500%の玩具となることが決まっているとはいえ、
+	PRINTFORML この子は紛れも無く%PRINT_CALLNAME(TARGET)%の娘なのだ・・・
+	PRINTL 
+	PRINTFORML 母として何もしてやれないことを悔やみながらも、
+	PRINTFORML %PRINT_CALLNAME(TARGET)%は我が子の温もりを心に刻みつけようと、
+	PRINTFORML 腕の中に抱き締めた・・・
+ELSEIF TALENT:触手の虜 > 0
+	PRINTFORML 弱弱しく泣く赤子を%PRINT_CALLNAME(TARGET)%の指が優しく撫でている。
+	IF CFLAG:0 != 1
+		PRINTFORML しかしその表情は酷薄な笑みの形に歪んでおり、
+		PRINTFORML 子を慈しむ母親の表情にしてはあまりに妖艶すぎる・・・
+		PRINTL 
+		PRINTFORML %PRINT_CALLNAME(TARGET)%は我が子を抱きしめながら額に口づけをし、
+		PRINTFORML 大きくなったらあなたも触手様の忠実な僕として働くのよ、と
+		PRINTFORML 言って聞かせている・・・
+	ELSE
+		PRINTFORML 産まれたときから%STR:2500%の玩具となることが決まっているとはいえ、
+		PRINTFORML この子は紛れも無く%PRINT_CALLNAME(TARGET)%の娘なのだ・・・
+		PRINTL 
+		PRINTFORML 母として何もしてやれないことを悔やみながらも、
+		PRINTFORML %PRINT_CALLNAME(TARGET)%は我が子の温もりを心に刻みつけようと、
+		PRINTFORML 腕の中に抱き締めた・・・
+	ENDIF
+ELSE
+	PRINTFORML 安心すると同時に、それは%PRINT_CALLNAME(TARGET)%にとって最悪の悪夢だった。
+	PRINTFORML この幼い娘は産まれながらにして%STR:2500%どもの玩具としての生が運命付けられたのだ。
+	IF TALENT:主観視点 > 0
+		PRINTFORML 安らかな我が子の寝顔にそのような悲惨な未来を幻視してしまい、
+		PRINTFORML %PRINT_CALLNAME(TARGET)%の心は罪悪感で満たされていく・・・
+	ELSE
+		PRINTFORML %PRINT_CALLNAME(TARGET)%は曇りきった瞳で自分の子供に対して
+		PRINTFORML 掠れている声で延々と謝罪をつぶやいている・・・
+	ENDIF
+	PRINTL 
+	IF TALENT:主観視点 > 0
+		PRINTFORML しかしそれすらもやがて水音と%PRINT_CALLNAME(TARGET)%自身の発する喘ぎ声に塗りつぶされて、
+		PRINTFORML 快楽の渦へと呑まれて消えていってしまった・・・
+	ELSE
+		PRINTFORML しかしそれすらもやがて%PRINT_CALLNAME(TARGET)%の喘ぎ声に埋もれて聞こえなくなっていった・・・
+	ENDIF
+ENDIF
+PRINTW 
+
+@MESSAGE_PRISON_CHILD_SHUSSAN_NORMAL
+PRINTL 
+PRINTFORMW %PRINT_CALLNAME(TARGET)%の出産の時がやってきた・・・
+PRINTL 
+IF RAND:2 == 0
+	PRINTFORML まだ触手に犯されている最中に%PRINT_CALLNAME(TARGET)%の陣痛は唐突に始まった。
+	IF TALENT:感情乏しい > 0
+		PRINTFORML 叫び声ひとつ上げない%PRINT_CALLNAME(TARGET)%の膣奥を触手が一突きすると、
+	ELSE
+		PRINTFORML 激しい痛みに苦痛の叫びを上げる%PRINT_CALLNAME(TARGET)%を無視して触手が膣奥を一突きすると、
+	ENDIF
+	PRINTFORML 水門が決壊したかのように羊水が流れ出していく。
+	PRINTFORML たまらず泣き叫ぶ%PRINT_CALLNAME(TARGET)%の手足が抑えつけられ、
+	PRINTFORML 出産のために緩んだ膣口に更なる触手が挿入された・・・
+	PRINTW 
+	PRINTFORML 胎内に侵入した触手が出産直前の胎児に巻き付き、
+	SIF TALENT:触手の虜 == 0 || TALENT:感情乏しい > 0
+		PRINTFORM 制止する%PRINT_CALLNAME(TARGET)%の声も聞かずに
+	PRINTFORML そのまま力任せに引っ張り始める。
+	PRINTFORM ずるり、ずるりと胎児が産道を引き摺られてい
+	IF TALENT:触手の虜 > 0 || ABL:欲望 >= 4 || ABL:マゾっ気 >= 3
+		PRINTFORML く感触に%PRINT_CALLNAME(TARGET)%はたまらず絶頂を迎えてしまう。
+		PRINTFORM ぴくぴくと痙攣する%PRINT_CALLNAME(TARGET)%の膣口から
+	ELSE
+		PRINTFORML くと、
+	ENDIF
+	PRINTFORML やがて赤子の頭の先端が膣外へと姿を現し、次いで全身が転がるように滑り出た・・・
+ELSE
+	PRINTFORML 身重になった%PRINT_CALLNAME(TARGET)%を無数の触手が絡み合って出来た分娩台の上へと連れて行き、
+	PRINTFORML Ｍの字に開脚させた状態で縛り付けた。
+	PRINTFORML 出産を促すために%PRINT_CALLNAME(TARGET)%の腹部を触手が撫でまわすと同時に、
+	PRINTFORML 細い触手を数本膣内へと侵入させて子宮口を突きつつ産道を少し拡げる。
+	PRINTFORML その甲斐があったのだろうか。愛撫されているうちに%PRINT_CALLNAME(TARGET)%は産気づいたらしく、
+	IF TALENT:主観視点 > 0
+		PRINTFORML 胎内から感じる強烈な圧迫感と違和感に、思わず苦悶の声が漏れる・・・
+	ELSEIF TALENT:感情乏しい > 0
+		PRINTFORML ビクリと手足を強張らせ、いきみ始めた・・・
+	ELSE
+		PRINTFORML 頭を激しく振りながら苦悶の声を上げ始めた・・・
+	ENDIF
+	PRINTW  
+	PRINTFORML ゆっくりと%PRINT_CALLNAME(TARGET)%の産道から赤子の頭が見えてくる。
+	PRINTFORML 永遠とも思える時間が過ぎた後に、ついに%PRINT_CALLNAME(TARGET)%の子供が
+	PRINTFORML 完全に外の世界に産み落とされた・・・
+ENDIF
+PRINTW 
+PRINTW ・
+PRINTW ・・
+PRINTW ・・・
+PRINTL 
+PRINTFORML 出産の苦痛と疲労で息も絶え絶えの%PRINT_CALLNAME(TARGET)%の途切れそうな意識を、
+PRINTFORML か弱い赤子の泣き声が現実に引き戻した。
+PRINTFORML 我が子を守らなくてはという、その気持ちだけで必死に腕を伸ばす%PRINT_CALLNAME(TARGET)%。
+PRINTFORML しかし周囲の触手が産まれ落ちたばかりの生命を見逃すはずもなく、
+IF TALENT:感情乏しい > 0
+	PRINT 止めるように言う
+ELSE
+	PRINT 力なく懇願する
+ENDIF
+PRINTFORML %PRINT_CALLNAME(TARGET)%の目の前で赤ん坊をどこかへ連れ去ってしまった。
+PRINTW 
+PRINTFORML 遠ざかっていく赤子の細い声と共に、%PRINT_CALLNAME(TARGET)%の意識は今度こそ薄れていった・・・
+PRINTW 
+@MESSAGE_CHILD_PRAYER
+PRINTFORML %PRINT_CALLNAME(TARGET)%は我が子の無事を祈り、名前を心の中で反芻した・・・
+PRINTW
+
+
+@MESSAGE_CHILD_GIVEUP
+PRINTFORML %PRINT_CALLNAME(TARGET)%は瞑目し、心の中で我が子に別れを告げた・・・
+PRINTW
+
+
+;--------------------------------
+;子供出産
+;--------------------------------
+@MESSAGE_CHILD_SHUSSAN
+PRINTL 
+PRINTFORMW %PRINT_CALLNAME(TARGET)%の出産の時がやってきた・・・
+PRINTL 
+IF TALENT:感情乏しい > 0
+	PRINTFORML 筆舌し難い苦痛にも関わらず叫び声一つ上げない%PRINT_CALLNAME(TARGET)%だったが、
+ELSE
+	PRINTFORML 筆舌し難い苦痛に声無き叫びを上げている%PRINT_CALLNAME(TARGET)%だったが、
+ENDIF
+PRINTFORML ゆっくりと%PRINT_CALLNAME(TARGET)%の産道から赤子の頭が見えてくると
+PRINTFORML 心なしか母親の表情になった・・・
+PRINTW 
+PRINTFORML 永遠とも思える時間が過ぎ、
+PRINTFORML ついに%PRINT_CALLNAME(TARGET)%から完全に子供が外の世界に産み出されると、
+PRINTFORML %PRINT_CALLNAME(TARGET)%は複雑な表情で自分が産んだ子供がおぞましい怪物でないことに
+PRINTFORML 安堵の息をついた。
+PRINTW
+IF TALENT:小柄 > 0
+	PRINTFORML その時%PRINT_CALLNAME(TARGET)%の小さな体には確かに母性が芽生えていた・・・
+ELSE
+	PRINTFORML %PRINT_CALLNAME(TARGET)%の心が大きな母性で満たされていく・・・
+ENDIF
+PRINTW 
+
+@MESSAGE_CHILD_SHUSSAN_NORMAL
+PRINTL 
+PRINTFORMW %PRINT_CALLNAME(TARGET)%の出産の時がやってきた・・・
+PRINTL 
+IF TALENT:感情乏しい > 0
+	PRINTFORML 筆舌し難い苦痛にも関わらず叫び声一つ上げない%PRINT_CALLNAME(TARGET)%だったが、
+ELSE
+	PRINTFORML 筆舌し難い苦痛に声無き叫びを上げている%PRINT_CALLNAME(TARGET)%だったが、
+ENDIF
+PRINTFORML ゆっくりと%PRINT_CALLNAME(TARGET)%の産道から赤子の頭が見えてくると
+PRINTFORML 心なしか母親の表情になった・・・
+PRINTW 
+PRINTFORML 永遠とも思える時間が過ぎ、
+PRINTFORML ついに%PRINT_CALLNAME(TARGET)%から完全に子供が外の世界に産み出される。
+PRINTFORML しばしの沈黙を経て聞こえてきた赤子の産声に、
+PRINTFORML %PRINT_CALLNAME(TARGET)%は半ば無意識に安堵の息をついていた。
+PRINTW
+IF RAND:2 == 0
+	PRINTL 「頑張りましたねー。はい、元気な女の子ですよー」
+	CFLAG:TARGET:226 = 0
+ELSE
+	PRINTL 「頑張りましたねー。はい、元気な男の子ですよー」
+	CFLAG:TARGET:226 = 1
+ENDIF
+PRINTFORML 看護婦に腕の中に抱かせてもらった小さな赤ちゃんの鼓動を感じながら、
+IF TALENT:小柄 > 0
+	PRINTFORML その時%PRINT_CALLNAME(TARGET)%の小さな体には確かに母性が芽生えていた・・・
+ELSE
+	PRINTFORML %PRINT_CALLNAME(TARGET)%の心が大きな母性で満たされていく・・・
+ENDIF
+PRINTW 
+
+@MESSAGE_CHILD_CRADLE
+PRINTFORML %PRINT_CALLNAME(TARGET)%は何があろうと自分の手で子供を育て上げることを誓った。
+PRINTW
+PRINTFORML 　　 %PRINT_CALLNAME(TARGET)%はしばらく育児にかかりきりになるので命令を出せません。
+PRINTW 
+
+@MESSAGE_CHILD_ASLYM
+PRINTFORMW %PRINT_CALLNAME(TARGET)%は戦いに巻き込まないためにも、せめてこの子には幸せになってもらおうと我が子を施設に預けた・・・
+
+

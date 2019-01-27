@@ -1,0 +1,1008 @@
+;--------------------------------------------------
+;変身する
+@COM_ABLE0
+RESETCOLOR
+;拘束中はだめ
+SIF TCVAR:0 == 0
+	RETURN 0
+;変身素質がないとだめ
+SIF TALENT:変身能力 != 1
+	RETURN 0
+;変身中はだめ
+SIF CFLAG:1 != 0
+	RETURN 0
+;妊娠発覚後はＴＳ男性化できない
+SIF CHARATALENT_F(TARGET,0,"オトコ") == 0 && CHARATALENT_F(TARGET,1,"オトコ") > 0 && CHECK_PREGNANT_F(TARGET) > 0
+	RETURN 0
+;気力が10%未満だとだめ
+SIF BASE:気力*100/MAXBASE:気力 < 10
+	RETURN 0
+;気絶中はだめ
+SIF (TCVAR:12 & 気絶)
+	RETURN 0
+SIF CONFIG_CHECK_SCREEN_F(2) > 0 && TCVAR:8 < 10
+	RETURN 0
+RETURN 1
+
+;--------------------------------------------------
+;近距離攻撃
+@COM_ABLE1
+RESETCOLOR
+;拘束中はだめ
+SIF TCVAR:0 == 0
+	RETURN 0
+;気絶中はだめ
+SIF (TCVAR:12 & 気絶)
+	RETURN 0
+;腰くだけなら近距離でなければだめ
+SIF (TCVAR:12 & 腰くだけ) && TCVAR:0 != 1
+	RETURN 0
+SIF CONFIG_CHECK_SCREEN_F(2) > 0 && TCVAR:8 < 10
+	RETURN 0
+RETURN 1
+
+;--------------------------------------------------
+;中距離攻撃
+@COM_ABLE2
+RESETCOLOR
+;拘束中はだめ
+SIF TCVAR:0 == 0
+	RETURN 0
+;気絶中はだめ
+SIF (TCVAR:12 & 気絶)
+	RETURN 0
+;腰くだけ中なら中距離でなければだめ
+SIF (TCVAR:12 & 腰くだけ) && TCVAR:0 != 2
+	RETURN 0
+SIF CONFIG_CHECK_SCREEN_F(2) > 0 && TCVAR:8 < 10
+	RETURN 0
+RETURN 1
+
+;--------------------------------------------------
+;遠距離攻撃
+@COM_ABLE3
+RESETCOLOR
+;拘束中はだめ
+SIF TCVAR:0 == 0
+	RETURN 0
+;気絶中はだめ
+SIF (TCVAR:12 & 気絶)
+	RETURN 0
+;腰くだけ中なら遠距離でなければだめ
+SIF (TCVAR:12 & 腰くだけ) && TCVAR:0 != 3
+	RETURN 0
+SIF CONFIG_CHECK_SCREEN_F(2) > 0 && TCVAR:8 < 10
+	RETURN 0
+RETURN 1
+
+;--------------------------------------------------
+;防御
+@COM_ABLE4
+RESETCOLOR
+;拘束中はだめ
+SIF TCVAR:0 == 0
+	RETURN 0
+;気絶中はだめ
+SIF (TCVAR:12 & 気絶)
+	RETURN 0
+SIF CONFIG_CHECK_SCREEN_F(2) > 0 && TCVAR:8 < 10
+	RETURN 0
+RETURN 1
+
+;--------------------------------------------------
+;距離を取る
+@COM_ABLE5
+RESETCOLOR
+;連続使用できない
+SIF PREVCOM == 5
+	RETURN 0
+;拘束中はだめ
+SIF TCVAR:0 == 0
+	RETURN 0
+;疲労度が50以上だとだめ
+SIF CFLAG:99 >= 50
+	RETURN 0
+;気絶中はだめ
+SIF (TCVAR:12 & 気絶)
+	RETURN 0
+;腰くだけ中はだめ
+SIF (TCVAR:12 & 腰くだけ)
+	RETURN 0
+SIF CONFIG_CHECK_SCREEN_F(2) > 0 && TCVAR:8 < 10
+	RETURN 0
+RETURN 1
+
+;--------------------------------------------------
+;背後に回る
+@COM_ABLE6
+RESETCOLOR
+;連続使用できない
+SIF PREVCOM == 6
+	RETURN 0
+;拘束中はだめ
+SIF TCVAR:0 == 0
+	RETURN 0
+;疲労度が50以上だとだめ
+SIF CFLAG:99 >= 50
+	RETURN 0
+;気絶中はだめ
+SIF (TCVAR:12 & 気絶)
+	RETURN 0
+;腰くだけ中はだめ
+SIF (TCVAR:12 & 腰くだけ)
+	RETURN 0
+SIF CONFIG_CHECK_SCREEN_F(2) > 0 && TCVAR:8 < 10
+	RETURN 0
+RETURN 1
+
+;--------------------------------------------------
+;見切り
+@COM_ABLE7
+RESETCOLOR
+;連続使用できない
+SIF PREVCOM == 7
+	RETURN 0
+;拘束中はだめ
+SIF TCVAR:0 == 0
+	RETURN 0
+;疲労度が50以上だとだめ
+SIF CFLAG:99 >= 50
+	RETURN 0
+;気絶中はだめ
+SIF (TCVAR:12 & 気絶)
+	RETURN 0
+;腰くだけ中はだめ
+SIF (TCVAR:12 & 腰くだけ)
+	RETURN 0
+SIF CONFIG_CHECK_SCREEN_F(2) > 0 && TCVAR:8 < 10
+	RETURN 0
+RETURN 1
+
+;--------------------------------------------------
+;振り解く
+@COM_ABLE8
+RESETCOLOR
+;拘束中でないとだめ
+SIF TCVAR:0 >= 1
+	RETURN 0
+;強拘束中だとだめ
+SIF (TCVAR:12 & 強拘束)
+	RETURN 0
+;気絶中はだめ
+SIF (TCVAR:12 & 気絶)
+	RETURN 0
+SIF CONFIG_CHECK_SCREEN_F(2) > 0 && TCVAR:8 < 10
+	RETURN 0
+RETURN 1
+
+;--------------------------------------------------
+;暴れる
+@COM_ABLE9
+RESETCOLOR
+;拘束中でないとだめ
+SIF TCVAR:0 >= 1
+	RETURN 0
+;強拘束中だとだめ
+SIF (TCVAR:12 & 強拘束)
+	RETURN 0
+;変身能力があり、変身前はだめ
+SIF TALENT:変身能力 != 0 && CFLAG:1 == 0
+	RETURN 0
+;麻痺中はだめ
+SIF (TCVAR:12 & 麻痺)
+	RETURN 0
+;気絶中はだめ
+SIF (TCVAR:12 & 気絶)
+	RETURN 0
+;恍惚中はだめ
+SIF (TCVAR:12 & 恍惚)
+	RETURN 0
+SIF CONFIG_CHECK_SCREEN_F(2) > 0 && TCVAR:8 < 10
+	RETURN 0
+RETURN 1
+
+;--------------------------------------------------
+;耐える
+@COM_ABLE10
+RESETCOLOR
+;拘束中でないとだめ
+SIF TCVAR:0 >= 1
+	RETURN 0
+;すでに敗北しているならだめ
+SIF BASE:体力 == 0 && BASE:気力 == 0 && BASE:性耐性 == 0
+	RETURN 0
+;堕落フラグが立っていたらだめ
+SIF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+	RETURN 0
+;快楽蕩けフラグが立っていたらだめ
+SIF (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)
+	RETURN 0
+;絶望フラグが立っていたらだめ
+SIF (MESSAGE_BRANCH_F(TARGET) & 絶望)
+	RETURN 0
+;なすがままの条件を満たしているなら、恐怖と苦痛のPALAM合計が8000以下でないとだめ
+SIF (MARK:苦痛刻印 + MARK:恐怖刻印) > 3 && (PALAM:苦痛 + PALAM:恐怖) > 7999
+	RETURN 0
+;受け入れるの条件を満たしているなら、欲情と屈服と恥情のPALAM合計が30000以下でないとだめ
+SIF (MARK:快楽刻印 + MARK:屈服刻印 + MARK:恥辱刻印 + ABL:欲望) > 5 && (PALAM:欲情 + PALAM:屈服 + PALAM:恥情 / 5) > 29999
+	RETURN 0
+;奉仕するの条件を満たしているなら、恭順のPALAM合計が4000以下でないとだめ
+SIF (ABL:従順 + ABL:奉仕精神 + ABL:触手中毒) > 5 && PALAM:恭順 > 3999
+	RETURN 0
+;気絶中はだめ
+SIF (TCVAR:12 & 気絶)
+	RETURN 0
+SIF CONFIG_CHECK_SCREEN_F(2) > 0 && TCVAR:8 < 10
+	RETURN 0
+RETURN 1
+
+;--------------------------------------------------
+;なすがまま
+@COM_ABLE11
+RESETCOLOR
+;拘束中でないとだめ
+SIF TCVAR:0 >= 1
+	RETURN 0
+;気絶中なら実行可能
+SIF (TCVAR:12 & 気絶)
+	RETURN 1
+;すでに敗北しているなら実行可能
+SIF BASE:体力 == 0 && BASE:気力 == 0 && BASE:性耐性 == 0
+	RETURN 1
+SIF CONFIG_CHECK_SCREEN_F(2) > 0 && TCVAR:8 < 10
+	RETURN 0
+;苦戦フラグが立っていたらＯＫ
+SIF (MESSAGE_BRANCH_F(TARGET) & 苦戦)
+	RETURN 1
+;恐怖刻印と苦痛刻印の合計が4以上でないとだめ
+SIF (MARK:苦痛刻印 + MARK:恐怖刻印) < 4
+	RETURN 0
+RETURN 1
+
+;--------------------------------------------------
+;受け入れる
+@COM_ABLE12
+RESETCOLOR
+;拘束中でないとだめ
+SIF TCVAR:0 >= 1
+	RETURN 0
+;気絶中はだめ
+SIF (TCVAR:12 & 気絶)
+	RETURN 0
+SIF CONFIG_CHECK_SCREEN_F(2) > 0 && TCVAR:8 < 10
+	RETURN 0
+;性抵抗フラグが立っていたらＯＫ
+SIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗)
+	RETURN 1
+;欲情、屈服、恥情の合計が30000以上ならＯＫ
+SIF (PALAM:欲情 + PALAM:屈服 + PALAM:恥情 / 5) >= 30000
+	RETURN 1
+;欲望Lvと快楽刻印と屈服刻印と恥辱刻印の合計が6以上でないとだめ
+SIF (ABL:欲望 + MARK:快楽刻印 + MARK:屈服刻印 + MARK:恥辱刻印) < 6
+	RETURN 0
+RETURN 1
+
+;--------------------------------------------------
+;奉仕する
+@COM_ABLE13
+RESETCOLOR
+;拘束中でないとだめ
+SIF TCVAR:0 >= 1
+	RETURN 0
+;気絶中はだめ
+SIF (TCVAR:12 & 気絶)
+	RETURN 0
+SIF CONFIG_CHECK_SCREEN_F(2) > 0 && TCVAR:8 < 10
+	RETURN 0
+;堕落フラグが立っていればＯＫ
+SIF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+	RETURN 1
+;従順Lvと奉仕精神Lvと触手中毒Lvの合計が6以上でないとだめ
+SIF ABL:従順 + ABL:奉仕精神 + ABL:触手中毒 < 6 || PALAM:恭順 < 4000
+	RETURN 0
+RETURN 1
+
+;--------------------------------------------------
+;Ｖ挿入防御
+@COM_ABLE14
+RESETCOLOR
+;オトコには必要ない
+SIF TALENT:オトコ > 0
+	RETURN 0
+;一部のコマンド直後は駄目
+SIF (TCVAR:12 & 強拘束) && (TFLAG:20 == 3 || TFLAG:20 == 15 || TFLAG:20 == 19 || TFLAG:20 == 1001 || TFLAG:20 == 1011 || TFLAG:20 == 1014)
+	RETURN 0
+;拘束中でないとだめ
+SIF TCVAR:0 >= 1
+	RETURN 0
+;気絶中はだめ
+SIF (TCVAR:12 & 気絶)
+	RETURN 0
+SIF CONFIG_CHECK_SCREEN_F(2) > 0 && TCVAR:8 < 10
+	RETURN 0
+RETURN 1
+
+;--------------------------------------------------
+;救出コマンド
+@COM_ABLE15
+RESETCOLOR
+;強拘束中だとだめ
+SIF (TCVAR:12 & 強拘束)
+	RETURN 0
+;気絶中はだめ
+SIF (TCVAR:12 & 気絶)
+	RETURN 0
+;恍惚中はだめ
+SIF (TCVAR:12 & 恍惚)
+	RETURN 0
+SIF CONFIG_CHECK_SCREEN_F(2) > 0 && TCVAR:8 < 10
+	RETURN 0
+;,救出済みはダメ
+IF (TFLAG:19 != 1)
+	;触手が油断してないとダメ,拘束中でないとダメ
+	IF (TCVAR:0 == 0) && (TFLAG:2 >= 1)
+		;今の触手にとらわれているキャラがいる
+		CALL PRISON_CHARA
+		IF RESULT != -1
+			RETURN 1
+		ENDIF
+	ENDIF
+ENDIF
+RETURN 0
+
+;--------------------------------------------------
+;エアストライク
+@COM_ABLE16
+RESETCOLOR
+SIF GETBIT(TCVAR:216, 0)
+	SETCOLOR 255, 255, 0
+;拘束中はだめ
+SIF TCVAR:0 == 0
+	RETURN 0
+;ゲージ切れならだめ
+SIF BASE:空中ダッシュ == 0
+	RETURN 0
+;変身前はだめ
+SIF TALENT:変身能力 && CFLAG:1 == 0
+	RETURN 0
+;疲労度が50以上だとだめ
+SIF CFLAG:99 >= 50
+	RETURN 0
+;気絶中はだめ
+SIF (TCVAR:12 & 気絶)
+	RETURN 0
+;恍惚中はだめ
+SIF (TCVAR:12 & 恍惚)
+	RETURN 0
+SIF CONFIG_CHECK_SCREEN_F(2) > 0 && TCVAR:8 < 10
+	RETURN 0
+RETURN 1
+
+;--------------------------------------------------
+;バースト攻撃
+@COM_ABLE17
+RESETCOLOR
+SIF GETBIT(TCVAR:217, 0)
+	SETCOLOR 255, 255, 0
+;拘束中はだめ
+SIF TCVAR:0 == 0
+	RETURN 0
+;ゲージ200以上かSPモード中でないとだめ
+;FEAT効果があればバースト攻撃使用可能
+SIF TCVAR:4 < 200 && CFLAG:1 < 2 && TALENT:ホットスタート == 0
+	RETURN 0
+;変身前はだめ
+SIF TALENT:変身能力 && CFLAG:1 == 0
+	RETURN 0
+;疲労度が50以上だとだめ
+SIF CFLAG:99 >= 50
+	RETURN 0
+;気絶中はだめ
+SIF (TCVAR:12 & 気絶)
+	RETURN 0
+;恍惚中はだめ
+SIF (TCVAR:12 & 恍惚)
+	RETURN 0
+SIF CONFIG_CHECK_SCREEN_F(2) > 0 && TCVAR:8 < 10
+	RETURN 0
+RETURN 1
+
+;--------------------------------------------------
+;ひきはがす
+@COM_ABLE40
+RESETCOLOR
+;オトコには必要ない
+SIF TALENT:オトコ > 0
+	RETURN 0
+;すでに敗北しているならだめ
+SIF BASE:体力 == 0 && BASE:気力 == 0 && BASE:性耐性 == 0
+	RETURN 0
+;強拘束中でないとだめ
+SIF (TCVAR:12 & 強拘束) == 0
+	RETURN 0
+;拘束中でないとだめ
+SIF TCVAR:0 >= 1
+	RETURN 0
+;気絶中はだめ
+SIF (TCVAR:12 & 気絶)
+	RETURN 0
+;麻痺中はだめ
+SIF (TCVAR:12 & 麻痺)
+	RETURN 0
+;恍惚中はだめ
+SIF (TCVAR:12 & 恍惚)
+	RETURN 0
+SIF CONFIG_CHECK_SCREEN_F(2) > 0 && TCVAR:8 < 10
+	RETURN 0
+RETURN 1
+
+;--------------------------------------------------
+;睨みつける
+@COM_ABLE44
+RESETCOLOR
+;感情乏しいとだめ
+SIF TALENT:感情乏しい > 0
+	RETURN 0
+;拘束中でないとだめ
+SIF TCVAR:0 >= 1
+	RETURN 0
+;種付けフィニッシュ直後はだめ
+SIF TFLAG:20 == 16
+	RETURN 0
+;強制自慰直後はだめ
+SIF TFLAG:20 == 1006
+	RETURN 0
+;連続使用できない
+SIF PREVCOM == 44
+	RETURN 0
+;気力が尽きていたらだめ
+SIF BASE:気力 == 0
+	RETURN 0
+;堕落フラグが立っていたらだめ
+SIF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+	RETURN 0
+;絶望フラグが立っていたらだめ
+SIF (MESSAGE_BRANCH_F(TARGET) & 絶望)
+	RETURN 0
+;恍惚中はだめ
+SIF (TCVAR:12 & 恍惚)
+	RETURN 0
+;気絶中はだめ
+SIF (TCVAR:12 & 気絶)
+	RETURN 0
+SIF CONFIG_CHECK_SCREEN_F(2) > 0 && TCVAR:8 < 10
+	RETURN 0
+RETURN 1
+
+;--------------------------------------------------
+;罵倒する
+@COM_ABLE45
+RESETCOLOR
+;感情乏しいとだめ
+SIF TALENT:感情乏しい > 0
+	RETURN 0
+;拘束中でないとだめ
+SIF TCVAR:0 >= 1
+	RETURN 0
+;フェラ直後はだめ
+SIF TFLAG:20 == 11
+	RETURN 0
+;イラマチオ直後はだめ
+SIF TFLAG:20 == 12
+	RETURN 0
+;種付けフィニッシュ直後はだめ
+SIF TFLAG:20 == 16
+	RETURN 0
+;強制自慰直後はだめ
+SIF TFLAG:20 == 1006
+	RETURN 0
+;連続使用できない
+SIF PREVCOM == 45
+	RETURN 0
+;気力が75%以下でないならだめ
+SIF PERCENT_CAL_F(BASE:気力, MAXBASE:気力) > 75
+	RETURN 0
+;堕落フラグが立っていたらだめ
+SIF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+	RETURN 0
+;相手が悪堕ちキャラの場合、強気な性格でないとだめ
+;相手が悪堕ちキャラでない場合、弱気な性格だとだめ
+IF FLAG:110 > 0
+	SIF TALENT:勝気 == 0 && TALENT:古風 == 0 && TALENT:乱暴者 == 0
+		RETURN 0
+ELSE
+	SIF TALENT:臆病 || TALENT:恥ずかしがり屋 || TALENT:悲観的
+		RETURN 0
+ENDIF
+;恍惚中はだめ
+SIF (TCVAR:12 & 恍惚)
+	RETURN 0
+;気絶中はだめ
+SIF (TCVAR:12 & 気絶)
+	RETURN 0
+SIF CONFIG_CHECK_SCREEN_F(2) > 0 && TCVAR:8 < 10
+	RETURN 0
+RETURN 1
+
+;--------------------------------------------------
+;反抗する
+@COM_ABLE46
+RESETCOLOR
+;拘束中でないとだめ
+SIF TCVAR:0 >= 1
+	RETURN 0
+;フェラ直後はだめ
+SIF TFLAG:20 == 11
+	RETURN 0
+;イラマチオ直後はだめ
+SIF TFLAG:20 == 12
+	RETURN 0
+;種付けフィニッシュ直後はだめ
+SIF TFLAG:20 == 16
+	RETURN 0
+;強制自慰直後はだめ
+SIF TFLAG:20 == 1006
+	RETURN 0
+;連続使用できない
+SIF PREVCOM == 46
+	RETURN 0
+;気力が75%以下でないならだめ
+SIF PERCENT_CAL_F(BASE:気力, MAXBASE:気力) > 75
+	RETURN 0
+;堕落フラグが立っていたらだめ
+SIF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+	RETURN 0
+;相手が悪堕ちキャラの場合、強気な性格だとだめ
+;相手が悪堕ちキャラでない場合、弱気な性格か感情乏しいでないとだめ
+IF FLAG:110 > 0
+	SIF TALENT:勝気 || TALENT:古風 || TALENT:乱暴者
+		RETURN 0
+ELSE
+	SIF TALENT:臆病 == 0 && TALENT:恥ずかしがり屋 == 0 && TALENT:悲観的 == 0 && TALENT:感情乏しい == 0
+		RETURN 0
+ENDIF
+;恍惚中はだめ
+SIF (TCVAR:12 & 恍惚)
+	RETURN 0
+;気絶中はだめ
+SIF (TCVAR:12 & 気絶)
+	RETURN 0
+SIF CONFIG_CHECK_SCREEN_F(2) > 0 && TCVAR:8 < 10
+	RETURN 0
+RETURN 1
+
+;--------------------------------------------------
+;説得する
+@COM_ABLE47
+RESETCOLOR
+;相手が触手だとだめ
+SIF FLAG:110 == 0
+	RETURN 0
+;攻撃した後だとだめ
+SIF PREVCOM == 1 || PREVCOM == 2 || PREVCOM == 3 || PREVCOM == 9
+	RETURN 0
+;フェラ直後はだめ
+SIF TFLAG:20 == 11
+	RETURN 0
+;イラマチオ直後はだめ
+SIF TFLAG:20 == 12
+	RETURN 0
+;種付けフィニッシュ直後はだめ
+SIF TFLAG:20 == 16
+	RETURN 0
+;強制自慰直後はだめ
+SIF TFLAG:20 == 1006
+	RETURN 0
+;連続使用できない
+SIF PREVCOM == 47
+	RETURN 0
+;恍惚中はだめ
+SIF (TCVAR:12 & 恍惚)
+	RETURN 0
+;気絶中はだめ
+SIF (TCVAR:12 & 気絶)
+	RETURN 0
+SIF CONFIG_CHECK_SCREEN_F(2) > 0 && TCVAR:8 < 10
+	RETURN 0
+RETURN 1
+
+;--------------------------------------------------
+;何もしない
+@COM_ABLE69
+RESETCOLOR
+;拘束中はだめ
+SIF TCVAR:0 == 0
+	RETURN 0
+SIF CONFIG_CHECK_SCREEN_F(2) > 0 && TCVAR:8 < 10
+	RETURN 0
+RETURN 1
+
+;--------------------------------------------------
+;SPバースト
+@COM_ABLE70
+RESETCOLOR
+;拘束中以外はだめ
+SIF TCVAR:0 > 0
+	RETURN 0
+;ゲージ300以上
+SIF TCVAR:4 + TCVAR:6 < 300 && CFLAG:1 < 2
+	RETURN 0
+;変身前はだめ
+SIF TALENT:変身能力 && CFLAG:1 == 0
+	RETURN 0
+;気絶中はだめ
+SIF (TCVAR:12 & 気絶)
+	RETURN 0
+SIF CONFIG_CHECK_SCREEN_F(2) > 0 && TCVAR:8 < 10
+	RETURN 0
+RETURN 1
+
+;--------------------------------------------------
+;EX:攻
+@COM_ABLE71
+RESETCOLOR
+IF GETBIT(TCVAR:3, 0) == 0
+	;ゲージ100以上かSPモード中
+	SIF TCVAR:4 + TCVAR:6 < 100 && CFLAG:1 < 2
+		RETURN 0
+	;変身前はだめ
+	SIF TALENT:変身能力 && CFLAG:1 == 0
+		RETURN 0
+ELSE
+	SETCOLOR 255, 255, 0
+ENDIF
+
+;気絶中はだめ
+SIF (TCVAR:12 & 気絶)
+	RETURN 0
+;恍惚中はだめ
+SIF (TCVAR:12 & 恍惚)
+	RETURN 0
+SIF CONFIG_CHECK_SCREEN_F(2) > 0 && TCVAR:8 < 10
+	RETURN 0
+RETURN 1
+
+;--------------------------------------------------
+;EX:防
+@COM_ABLE72
+RESETCOLOR
+IF GETBIT(TCVAR:3, 1) == 0
+	;ゲージ100以上かSPモード中
+	SIF TCVAR:4 + TCVAR:6 < 100 && CFLAG:1 < 2
+		RETURN 0
+	;変身前はだめ
+	SIF TALENT:変身能力 && CFLAG:1 == 0
+		RETURN 0
+ELSE
+	SETCOLOR 255, 255, 0
+ENDIF
+
+;気絶中はだめ
+SIF (TCVAR:12 & 気絶)
+	RETURN 0
+;恍惚中はだめ
+SIF (TCVAR:12 & 恍惚)
+	RETURN 0
+SIF CONFIG_CHECK_SCREEN_F(2) > 0 && TCVAR:8 < 10
+	RETURN 0
+RETURN 1
+
+;--------------------------------------------------
+;SP変身
+@COM_ABLE73
+RESETCOLOR
+;拘束中はだめ
+SIF TCVAR:0 == 0
+	RETURN 0
+;ゲージ200以上必要
+SIF TCVAR:4 + TCVAR:6 < 200
+	RETURN 0
+;変身能力なしならだめ
+SIF TALENT:変身能力 < 1
+	RETURN 0
+;変身能力ありなら変身前はだめ
+SIF TALENT:変身能力 > 0 && CFLAG:1 == 0
+	RETURN 0
+;SP変身中はだめ
+SIF CFLAG:1 == 2
+	RETURN 0
+;気絶中はだめ
+SIF (TCVAR:12 & 気絶)
+	RETURN 0
+;恍惚中はだめ
+SIF (TCVAR:12 & 恍惚)
+	RETURN 0
+SIF CONFIG_CHECK_SCREEN_F(2) > 0 && TCVAR:8 < 10
+	RETURN 0
+RETURN 1
+
+;--------------------------------------------------
+;ギブアップ
+@COM_ABLE99
+RESETCOLOR
+SIF FLAG:999 < 1 && CONFIG_CHECK_OTHER_F(4) == 0
+	RETURN 0
+SIF CONFIG_CHECK_SCREEN_F(2) > 0 && TCVAR:8 < 10
+	RETURN 0
+RETURN 1
+
+
+;--------------------------------------------------
+;手淫攻撃
+@COM_ABLE100
+RESETCOLOR
+;清純派は使用不可
+SIF TALENT:清純派 > 0
+	RETURN 0
+;男女平等オフなら使用不能
+SIF TALENT:オトコ > 0 && FILTER_CHECK_F(5)
+	RETURN 0
+;拘束中でないとだめ
+SIF TCVAR:0 >= 1
+	RETURN 0
+;麻痺中はだめ
+SIF (TCVAR:12 & 麻痺)
+	RETURN 0
+;恍惚中はだめ
+SIF (TCVAR:12 & 恍惚)
+	RETURN 0
+;気絶中はだめ
+SIF (TCVAR:12 & 気絶)
+	RETURN 0
+SIF CONFIG_CHECK_SCREEN_F(2) > 0 && TCVAR:8 < 10
+	RETURN 0
+;性コマンド可否判定
+SIF CHARA_SEX_COMABLE_F(100) == 0
+	RETURN 0
+SETCOLOR 250,60,250
+RETURN 1
+
+;--------------------------------------------------
+;フェラ攻撃
+@COM_ABLE101
+RESETCOLOR
+;清純派は使用不可
+SIF TALENT:清純派 > 0
+	RETURN 0
+;相手にペニスが無ければ使用不可
+SIF FLAG:110 == 1 && (TALENT:(FLAG:111):オトコ <= 0 && TALENT:(FLAG:111):ふたなり < 1 && TALENT:(FLAG:111):寄生 == 0)
+	RETURN 0
+;男女平等オフなら使用不能
+SIF TALENT:オトコ > 0 && FILTER_CHECK_F(5)
+	RETURN 0
+;拘束中でないとだめ
+SIF TCVAR:0 >= 1
+	RETURN 0
+;連続使用できない
+SIF PREVCOM == 101
+	RETURN 0
+;強拘束中でなければ、フェラ系コマンドの直後しか使用できない
+IF FLAG:10 == 2 && (TCVAR:12 & 強拘束) == 0
+	TRYCCALLFORM SEX_TYPE_MOB_{FLAG:11}_COM{TFLAG:20}
+	CATCH
+		RETURN 0
+	ENDCATCH
+ELSEIF (TCVAR:12 & 強拘束) == 0
+	TRYCCALLFORM SEX_TYPE_COM{TFLAG:20}
+	CATCH
+		RETURN 0
+	ENDCATCH
+ENDIF
+SIF (RESULT & フェラ) == 0 && (TCVAR:12 & 強拘束) == 0
+	RETURN 0
+;麻痺中はだめ
+SIF (TCVAR:12 & 麻痺)
+	RETURN 0
+;恍惚中はだめ
+SIF (TCVAR:12 & 恍惚)
+	RETURN 0
+;気絶中はだめ
+SIF (TCVAR:12 & 気絶)
+	RETURN 0
+SIF CONFIG_CHECK_SCREEN_F(2) > 0 && TCVAR:8 < 10
+	RETURN 0
+;性コマンド可否判定
+SIF CHARA_SEX_COMABLE_F(101) == 0
+	RETURN 0
+SETCOLOR 250,60,250
+RETURN 1
+
+;--------------------------------------------------
+;足コキ攻撃
+@COM_ABLE102
+RESETCOLOR
+;清純派は使用不可
+SIF TALENT:清純派 > 0
+	RETURN 0
+;相手にペニスが無ければ使用不可
+SIF FLAG:110 == 1 && (TALENT:(FLAG:111):オトコ <= 0 && TALENT:(FLAG:111):ふたなり < 1 && TALENT:(FLAG:111):寄生 == 0)
+	RETURN 0
+;男女平等オフなら使用不能
+SIF TALENT:オトコ > 0 && FILTER_CHECK_F(5)
+	RETURN 0
+;強拘束中だとだめ
+SIF (TCVAR:12 & 強拘束)
+	RETURN 0
+;拘束中でないとだめ
+SIF TCVAR:0 >= 1
+	RETURN 0
+;技巧Lv1以上必要
+SIF ABL:技巧 < 1
+	RETURN 0
+;連続使用できない
+SIF PREVCOM == 102
+	RETURN 0
+;麻痺中はだめ
+SIF (TCVAR:12 & 麻痺)
+	RETURN 0
+;恍惚中はだめ
+SIF (TCVAR:12 & 恍惚)
+	RETURN 0
+;気絶中はだめ
+SIF (TCVAR:12 & 気絶)
+	RETURN 0
+SIF CONFIG_CHECK_SCREEN_F(2) > 0 && TCVAR:8 < 10
+	RETURN 0
+;性コマンド可否判定
+SIF CHARA_SEX_COMABLE_F(102) == 0
+	RETURN 0
+SETCOLOR 250,60,250
+RETURN 1
+
+;--------------------------------------------------
+;素股焦らし
+@COM_ABLE103
+RESETCOLOR
+;清純派は使用不可
+SIF TALENT:清純派 > 0
+	RETURN 0
+;相手にペニスが無ければ使用不可
+SIF FLAG:110 == 1 && (TALENT:(FLAG:111):オトコ <= 0 && TALENT:(FLAG:111):ふたなり < 1 && TALENT:(FLAG:111):寄生 == 0)
+	RETURN 0
+;男女平等オフなら使用不能
+SIF TALENT:オトコ > 0 && FILTER_CHECK_F(5)
+	RETURN 0
+;強拘束中だとだめ
+SIF (TCVAR:12 & 強拘束)
+	RETURN 0
+;拘束中でないとだめ
+SIF TCVAR:0 >= 1
+	RETURN 0
+;技巧Lv2以上必要
+SIF ABL:技巧 < 2
+	RETURN 0
+;連続使用できない
+SIF PREVCOM == 103
+	RETURN 0
+;失敗時のカウンター行動が設定されていない相手には使用できない
+IF FLAG:10 == 2
+	TRYCCALLFORM TENTACLE_MOB_{FLAG:11}_REACTION_REF, 2
+	CATCH
+		RETURN 0
+	ENDCATCH
+ELSEIF FLAG:10 == 1
+	TRYCCALLFORM TENTACLE_LASTBOSS_{FLAG:11}_REACTION_REF, 2
+	CATCH
+		RETURN 0
+	ENDCATCH
+ELSE
+	TRYCCALLFORM TENTACLE_BOSS_{FLAG:11}_REACTION_REF, 2
+	CATCH
+		RETURN 0
+	ENDCATCH
+ENDIF
+;カウンター行動が挿入系でない相手には使用できない
+IF FLAG:10 == 2
+	TRYCCALLFORM SEX_TYPE_MOB_{FLAG:11}_COM{RESULT}
+	CATCH
+		RETURN 0
+	ENDCATCH
+ELSE
+	TRYCCALLFORM SEX_TYPE_COM{RESULT}
+	CATCH
+		RETURN 0
+	ENDCATCH
+ENDIF
+SIF (RESULT & 挿入) == 0
+	RETURN 0
+;麻痺中はだめ
+SIF (TCVAR:12 & 麻痺)
+	RETURN 0
+;恍惚中はだめ
+SIF (TCVAR:12 & 恍惚)
+	RETURN 0
+;気絶中はだめ
+SIF (TCVAR:12 & 気絶)
+	RETURN 0
+SIF CONFIG_CHECK_SCREEN_F(2) > 0 && TCVAR:8 < 10
+	RETURN 0
+;性コマンド可否判定
+SIF CHARA_SEX_COMABLE_F(103) == 0
+	RETURN 0
+SETCOLOR 250,60,250
+RETURN 1
+
+;--------------------------------------------------
+;搾り取る
+@COM_ABLE104
+RESETCOLOR
+;清純派は使用不可
+SIF TALENT:清純派 > 0
+	RETURN 0
+;オトコは使用不可
+SIF TALENT:オトコ > 0
+	RETURN 0
+;すでに敗北しているならだめ
+SIF BASE:体力 == 0 && BASE:気力 == 0 && BASE:性耐性 == 0
+	RETURN 0
+;強拘束中でないとだめ
+SIF (TCVAR:12 & 強拘束) == 0
+	RETURN 0
+;拘束中でないとだめ
+SIF TCVAR:0 >= 1
+	RETURN 0
+;技巧Lv3以上必要
+SIF ABL:技巧 < 3
+	RETURN 0
+;麻痺中はだめ
+SIF (TCVAR:12 & 麻痺)
+	RETURN 0
+;恍惚中はだめ
+SIF (TCVAR:12 & 恍惚)
+	RETURN 0
+;気絶中はだめ
+SIF (TCVAR:12 & 気絶)
+	RETURN 0
+SIF CONFIG_CHECK_SCREEN_F(2) > 0 && TCVAR:8 < 10
+	RETURN 0
+;性コマンド可否判定
+SIF CHARA_SEX_COMABLE_F(104) == 0
+	RETURN 0
+SETCOLOR 250,60,250
+RETURN 1
+
+
+
+;--------------------------------------------------
+;プレイヤーキャラの性コマンド使用可否判定共通処理
+;一応、ARG=コマンドの番号を参照可能にしておく
+@CHARA_SEX_COMABLE_F(ARG)
+#FUNCTION
+;触手の虜や淫乱なら常に実行可能
+SIF TALENT:触手の虜 > 0 || TALENT:淫乱 > 0
+	RETURNF 1
+
+;足コキ攻撃は実行難度2
+IF ARG == 102
+	LOCAL = -2
+;素股焦らしは実行難度3
+ELSEIF ARG == 103
+	LOCAL = -3
+;それ以外は実行難度1
+ELSE
+	LOCAL = -1
+ENDIF
+
+;性抵抗
+SIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) > 0
+	LOCAL += 1
+;潤滑+恭順+欲情が3000以上
+SIF PALAM:潤滑 + PALAM:恭順 + PALAM:欲情 >= 3000
+	LOCAL += 1
+;時間経過
+LOCAL += SQRT(TFLAG:0 + 1)
+
+SIF LOCAL > 0
+	RETURNF 1
+;それ以外は使用不可
+RETURNF 0
+
+
+
+
+
+
+
+
+
+

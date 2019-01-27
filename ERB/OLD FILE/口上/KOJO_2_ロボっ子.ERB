@@ -1,0 +1,1188 @@
+;キャラ番号0（汎用・ロボっ子）の口上アクセサファイル
+;性格ごとの口上の振り分けをこのファイルで行います
+;--------------------------------------------------
+
+
+;口上色設定
+;--------------------------------------------------
+@KOJO_2_COLOR
+SETCOLOR 180,200,250
+
+
+;初期設定
+;--------------------------------------------------
+@KOJO_2_FIRST
+
+;ターン終了時の処理
+;--------------------------------------------------
+@KOJO_2_TURNEND
+
+;ショップ画面
+;--------------------------------------------------
+@KOJO_2_HITOKUTI_SHOP
+;体力が少ない場合
+IF BASE:体力 <= 500
+	SELECTCASE RAND:2
+		CASE 0
+			PRINTFORML 「疲労の蓄積を確認。定期メンテナンスの必要性あり」
+		CASE 1
+			PRINTFORML 「休息および定期メンテナンスの実施を提案」
+	ENDSELECT
+ELSE
+	SELECTCASE CFLAG:100
+		CASE 0
+			PRINTFORML 「行動予定なし。休息モードに移行し指示を待ちます」
+		CASE 101
+			PRINTFORML 「システムチェック……オールグリーン」
+			PRINTFORML 「いつでも出られます」
+		CASE 103
+			PRINTFORML 「了解、念のためメンテナンスを行います」
+		CASE 105
+			PRINTFORML 「ミッション了解」
+			PRINTFORML 「哨戒モードに移行し、周辺区域の警備に当たります」
+		CASE 106
+			PRINTFORML 「戦闘支援のため、データベースにアクセス中……」
+			PRINTFORML 「アクセス完了。ご指示をどうぞ」
+		CASEELSE
+			PRINTFORML 「了解。出撃せずに臨時ミッションに当たります」
+	ENDSELECT
+ENDIF
+PRINTFORML 
+
+
+
+;鍛錬
+
+;鍛練開始
+;--------------------------------------------------
+@KOJO_2_TRAINING_BEGIN
+
+;鍛練終了
+;--------------------------------------------------
+@KOJO_2_TRAINING_END
+
+;走りこみ
+;--------------------------------------------------
+@KOJO_2_TRAINING_HASHIRI
+PRINTFORML 「…………」
+PRINTFORML  %CALLNAME%は黙々とトレーニングをこなしている。
+
+;精神鍛錬
+;--------------------------------------------------
+@KOJO_2_TRAINING_SEISHIN
+PRINTFORML 「…………」
+PRINTFORML  %CALLNAME%は黙々とトレーニングをこなしている。
+
+;瞑想
+;--------------------------------------------------
+@KOJO_2_TRAINING_MEISOU
+PRINTFORML 「…………」
+PRINTFORML  %CALLNAME%は黙々とトレーニングをこなしている。
+
+;筋トレ
+;--------------------------------------------------
+@KOJO_2_TRAINING_KINTORE
+PRINTFORML 「…………」
+PRINTFORML  %CALLNAME%は黙々とトレーニングをこなしている。
+
+;自衛訓練
+;--------------------------------------------------
+@KOJO_2_TRAINING_JIEI
+PRINTFORML 「…………」
+PRINTFORML  %CALLNAME%は黙々とトレーニングをこなしている。
+
+;ダッシュ
+;--------------------------------------------------
+@KOJO_2_TRAINING_DASH
+PRINTFORML 「…………」
+PRINTFORML  %CALLNAME%は黙々とトレーニングをこなしている。
+
+;近距離戦闘訓練
+;--------------------------------------------------
+@KOJO_2_TRAINING_SHORT
+PRINTFORML 「…………」
+PRINTFORML  %CALLNAME%は黙々とトレーニングをこなしている。
+
+;中距離戦闘訓練
+;--------------------------------------------------
+@KOJO_2_TRAINING_MIDDLE
+PRINTFORML 「…………」
+PRINTFORML  %CALLNAME%は黙々とトレーニングをこなしている。
+
+;遠距離戦闘訓練
+;--------------------------------------------------
+@KOJO_2_TRAINING_LONG
+PRINTFORML 「…………」
+PRINTFORML  %CALLNAME%は黙々とトレーニングをこなしている。
+
+;戦術研究
+;--------------------------------------------------
+@KOJO_2_TRAINING_TACTICS
+PRINTFORML 「…………」
+PRINTFORML  %CALLNAME%は黙々とトレーニングをこなしている。
+
+
+;触手拘束具が鍛錬の邪魔をする
+;--------------------------------------------------
+@KOJO_2_TRAINING_TENTACLECLOTH
+PRINTFORML  %CALLNAME%に取りついた触手が訓練中に蠢きだした！
+PRINTFORML  粘液を分泌しながら、ねっとりと%CALLNAME%の身体を撫でまわしていく。
+PRINTFORML 「……っ！」
+PRINTFORML  外見上はまるで動じていない%CALLNAME%だが、
+PRINTFORML  その股間はじっとりと愛液で濡れはじめている……
+
+
+;触手と遭遇
+
+;ザコ触手と戦闘
+;--------------------------------------------------
+@KOJO_2_ENCOUNT_MOB
+SELECTCASE RAND:5
+	CASE 0
+		PRINTFORML 「殲滅完了。ミッション達成率100パーセント」
+	CASE 1
+		PRINTFORML 「掃討を完了しました」
+	CASE 2
+		PRINTFORML 「周辺の雑魚触手を一掃しました。これより帰還します」
+	CASE 3
+		PRINTFORML 「脅威度0パーセントに低下。状況終了」
+	CASE 4
+		PRINTFORML 「ミッション完了。こちらの被害は軽微です」
+ENDSELECT
+PRINTFORML  淡々と報告する%CALLNAME%の全身は粘液や返り血でべっとりと汚れている……
+
+;ボス触手と戦闘
+;--------------------------------------------------
+@KOJO_2_ENCOUNT_BOSS
+;最初のボス戦
+CALL TENTACLE_SURVIVE,"NUM"
+IF (FLAG:3 - RESULT) == 0
+	PRINTFORML 「――周辺の脅威度評価を更新。危険度：高」
+	PRINTFORML  ぬちゃぬちゃと音を立てる巨大な肉の塊が、建物の蔭から姿を現す。
+	PRINTFORML  その圧倒的な存在感が、%CALLNAME%を獲物と見定めて襲いかかってきた！
+	PRINTFORML 「ボス触手と思しき存在と交戦を開始。データの収集を開始します」
+;触手の虜取得後
+ELSEIF TALENT:触手の虜
+	PRINTFORML 「索敵ポイントにてボス触手と遭遇。これより交戦を――」
+	PRINTFORML  一見して、普段と変わらぬ無表情のままに見える%CALLNAME%。
+	PRINTFORML  だが、その股間は傍目にも分かるほど濡れており、どうにも足元がおぼつかない……
+	PRINTFORML 「――交戦を開始します」
+;快楽刻印
+ELSEIF MARK:快楽刻印 > RAND:4
+	PRINTFORML 「索敵ポイントにてボス触手と遭遇。これより交戦を開始します」
+	PRINTFORML  武器を構えて見せる%CALLNAME%だが、どうにも普段と様子が違う。
+	PRINTFORML  微かに頬が上気し、足腰が僅かに震えている……
+ELSE
+	SELECTCASE RAND:6
+		CASE 0
+			PRINTFORML 「討伐対象を確認。エンゲージ」
+		CASE 1
+			PRINTFORML 「あなたを駆除します」
+		CASE 2
+			PRINTFORML 「戦術データベースとのリンクを開始」
+		CASE 3
+			PRINTFORML 「速やかに葬らせて頂きます」
+		CASE 4
+			PRINTFORML 「戦闘モードに移行します」
+		CASE 5
+			PRINTFORML 「戦闘を開始します」
+	ENDSELECT
+	PRINTFORML  %CALLNAME%は機械的な正確さで武器を取り出し、構えた。
+ENDIF
+
+;ラスボス触手と戦闘
+;--------------------------------------------------
+@KOJO_2_ENCOUNT_LASTBOSS
+PRINTFORML 「最終ミッションを開始します」
+PRINTFORML 「戦闘モード、起動。データリンク、良好」
+PRINTFORML 「エンゲージ」
+
+;初めて洗脳キャラと対峙した
+;--------------------------------------------------
+@KOJO_2_ENCOUNT_SENNOU_FIRST
+
+;洗脳キャラと対峙
+;--------------------------------------------------
+@KOJO_2_ENCOUNT_SENNOU
+
+;始めて悪堕ちキャラと対峙した
+;--------------------------------------------------
+@KOJO_2_ENCOUNT_AKUOTI_FIRST
+
+;悪堕ちキャラと対峙
+;--------------------------------------------------
+@KOJO_2_ENCOUNT_AKUOTI
+
+
+
+;戦闘関連の口上
+
+;キャラの行動
+
+;変身時のかけ声
+;--------------------------------------------------
+@KOJO_2_BATTLE_CHARA_TRANSFORMCALL
+SIF CFLAG:4 == 1
+	PRINTFORML 「%CSTR:2%」
+
+;変身後の名乗り
+;--------------------------------------------------
+@KOJO_2_BATTLE_CHARA_NANORI
+SIF CFLAG:5 == 1
+	PRINTFORML 「%CSTR:3%」
+
+;衣装の損傷が酷くなった関連
+
+;アウターが破れ始めた
+;--------------------------------------------------
+@KOJO_2_BATTLE_CLOTH_OUTERDAMAGE
+PRINTFORML 「ダメージ確認、損傷軽微」
+
+;アウターが破れた
+;--------------------------------------------------
+@KOJO_2_BATTLE_CLOTH_OUTERBREAK
+PRINTFORML 「装備パーツが破損。危険です」
+
+;インナーが破れ始めた
+;--------------------------------------------------
+@KOJO_2_BATTLE_CLOTH_INNERDAMAGE
+PRINTFORML 「警告。ダメージが増大中」
+
+;インナーが破れた
+;--------------------------------------------------
+@KOJO_2_BATTLE_CLOTH_INNERBREAK
+PRINTFORML 「警告……これ以上のダメージは……危険……」
+
+
+
+;気力が尽きて変身が強制的に解けた
+;--------------------------------------------------
+@KOJO_2_BATTLE_CHARA_TRANSRELEASE
+PRINTFORML 「システム……オーバーヒート……」
+PRINTFORML 「変身……維持不能……」
+
+;撤退成功
+;--------------------------------------------------
+@KOJO_2_BATTLE_CHARA_TETTAI_SUCCESS
+
+;撤退失敗
+;--------------------------------------------------
+@KOJO_2_BATTLE_CHARA_TETTAI_FALSE
+
+;近距離攻撃
+;--------------------------------------------------
+@KOJO_2_BATTLE_CHARA_ATTACK_RANGE_SHORT
+
+;中距離攻撃
+;--------------------------------------------------
+@KOJO_2_BATTLE_CHARA_ATTACK_RANGE_MIDDLE
+
+;遠距離攻撃
+;--------------------------------------------------
+@KOJO_2_BATTLE_CHARA_ATTACK_RANGE_LONG
+
+;防御
+;--------------------------------------------------
+@KOJO_2_BATTLE_CHARA_DEFENSE
+
+;距離をとる
+;--------------------------------------------------
+@KOJO_2_BATTLE_CHARA_TAKEAWAY
+
+;距離をとる
+;--------------------------------------------------
+@KOJO_2_BATTLE_CHARA_NOACTION
+
+;振り解く
+;--------------------------------------------------
+@KOJO_2_BATTLE_CHARA_HURIHODOKU
+
+;暴れる
+;--------------------------------------------------
+@KOJO_2_BATTLE_CHARA_ABARERU
+
+;耐える
+;--------------------------------------------------
+@KOJO_2_BATTLE_CHARA_TAERU
+
+;なすがまま
+;--------------------------------------------------
+@KOJO_2_BATTLE_CHARA_NASUGAMAMA
+
+;受け入れる
+;--------------------------------------------------
+@KOJO_2_BATTLE_CHARA_UKEIRERU
+
+;奉仕する
+;--------------------------------------------------
+@KOJO_2_BATTLE_CHARA_HOUSI
+
+;Ｖ挿入防御
+;--------------------------------------------------
+@KOJO_2_BATTLE_CHARA_ANIT_V
+
+
+;キャラの行動の結果
+
+;攻撃がクリティカルヒット
+;--------------------------------------------------
+@KOJO_2_BATTLE_CHARA_ATTACK_CRITICAL_HIT
+SIF RESULT == 999
+	RETURN 999
+
+;攻撃が通常ヒット
+;--------------------------------------------------
+@KOJO_2_BATTLE_CHARA_ATTACK_HIT
+SIF RESULT == 999
+	RETURN 999
+
+;攻撃失敗
+;--------------------------------------------------
+@KOJO_2_BATTLE_CHARA_ATTACK_FALSE
+
+;振り解く成功
+;--------------------------------------------------
+@KOJO_2_BATTLE_CHARA_HURIHODOKU_SUCCESS
+
+;振り解く失敗
+;--------------------------------------------------
+@KOJO_2_BATTLE_CHARA_HURIHODOKU_FALSE
+
+
+
+;敵側の行動（攻撃など）
+
+;敵が攻撃
+;--------------------------------------------------
+@KOJO_2_BATTLE_TENTACLE_ATTACK
+
+;敵が絡みつく
+;--------------------------------------------------
+@KOJO_2_BATTLE_TENTACLE_KARAMITUKU
+
+;敵が体液を吐く
+;--------------------------------------------------
+@KOJO_2_BATTLE_TENTACLE_TAIEKI
+
+;敵が距離をとる
+;--------------------------------------------------
+@KOJO_2_BATTLE_TENTACLE_TAKEAWAY
+
+;敵が押し倒すを開始
+;--------------------------------------------------
+@KOJO_2_BATTLE_TENTACLE_OSHITAOSU
+
+
+
+;敵の行動の結果
+
+;敵の攻撃がクリティカルヒット
+;--------------------------------------------------
+@KOJO_2_BATTLE_TENTACLE_ATTACK_CRITICAL_HIT
+
+;敵の攻撃が通常ヒット
+;--------------------------------------------------
+@KOJO_2_BATTLE_TENTACLE_ATTACK_HIT
+
+;敵の攻撃を回避
+;--------------------------------------------------
+@KOJO_2_BATTLE_TENTACLE_ATTACK_FALSE
+
+;敵の絡みつくが成功
+;--------------------------------------------------
+@KOJO_2_BATTLE_TENTACLE_KARAMITUKU_SUCCESS
+
+;敵の絡みつくを回避
+;--------------------------------------------------
+@KOJO_2_BATTLE_TENTACLE_KARAMITUKU_FALSE
+
+;敵の体液を吐くがヒット
+;--------------------------------------------------
+@KOJO_2_BATTLE_TENTACLE_TAIEKI_HIT
+
+;敵の体液を吐くを回避
+;--------------------------------------------------
+@KOJO_2_BATTLE_TENTACLE_TAIEKI_FALSE
+
+;敵の押し倒すがヒット
+;--------------------------------------------------
+@KOJO_2_BATTLE_TENTACLE_OSHITAOSU_SUCCESS
+
+;敵の押し倒すを回避
+;--------------------------------------------------
+@KOJO_2_BATTLE_TENTACLE_OSHITAOSU_FALSE
+
+
+
+;敵から受ける性コマンド関連
+
+;COM0：C攻め弱　クリトリスを撫でる
+;--------------------------------------------------
+@KOJO_2_SEX_COM0
+
+;COM1：C攻め強　クリトリスに吸い付く
+;--------------------------------------------------
+@KOJO_2_SEX_COM1
+
+;SPCOM0：C攻めSP　クリトリスに噛み付く
+;--------------------------------------------------
+@KOJO_2_SEX_SPCOM0
+
+;COM2：V攻め弱　膣口を愛撫（処女は奪いません）
+;--------------------------------------------------
+@KOJO_2_SEX_COM2
+
+;COM3：V攻め強　挿入
+;--------------------------------------------------
+@KOJO_2_SEX_COM3
+
+;SPCOM1：V攻めSP　奥を突く
+;--------------------------------------------------
+@KOJO_2_SEX_SPCOM1
+
+;COM4：A攻め弱　アナルを撫で回す
+;--------------------------------------------------
+@KOJO_2_SEX_COM4
+
+;COM5：A攻め強　アナルに挿入
+;--------------------------------------------------
+@KOJO_2_SEX_COM5
+
+;SPCOM2：A攻めSP　激しくアナルを犯す
+;--------------------------------------------------
+@KOJO_2_SEX_SPCOM2
+
+;COM6：B攻め弱　胸を揉みしだく
+;--------------------------------------------------
+@KOJO_2_SEX_COM6
+
+;COM7：B攻め強　乳首に吸い付く
+;--------------------------------------------------
+@KOJO_2_SEX_COM7
+
+;SPCOM3：B攻めSP　乳首に噛み付く
+;--------------------------------------------------
+@KOJO_2_SEX_SPCOM3
+
+;COM8：スパンキング
+;--------------------------------------------------
+@KOJO_2_SEX_COM8
+
+;COM9：針
+;--------------------------------------------------
+@KOJO_2_SEX_COM9
+
+;SPCOM4：電流
+;--------------------------------------------------
+@KOJO_2_SEX_SPCOM4
+
+;COM10：手淫
+;--------------------------------------------------
+@KOJO_2_SEX_COM10
+
+;COM11：フェラ
+;--------------------------------------------------
+@KOJO_2_SEX_COM11
+
+;COM12：イラマチオ
+;--------------------------------------------------
+@KOJO_2_SEX_COM12
+
+;COM13：絶頂禁止
+;--------------------------------------------------
+@KOJO_2_SEX_COM13
+
+;COM14：衣装を破く
+;--------------------------------------------------
+@KOJO_2_SEX_COM14
+
+;SPCOM5：パイズリ
+;--------------------------------------------------
+@KOJO_2_SEX_SPCOM5
+
+;SPCOM6：強制自慰
+;--------------------------------------------------
+@KOJO_2_SEX_SPCOM6
+
+;SPCOM7：羞恥プレイ
+;--------------------------------------------------
+@KOJO_2_SEX_SPCOM7
+
+
+;キャラが射精
+;--------------------------------------------------
+@KOJO_2_SEX_CHARA_SYASEI
+
+;キャラが大量射精
+;--------------------------------------------------
+@KOJO_2_SEX_CHARA_SYASEI_HI
+
+;キャラが噴乳
+;--------------------------------------------------
+@KOJO_2_SEX_CHARA_HUNNYU
+
+;キャラが大量噴乳
+;--------------------------------------------------
+@KOJO_2_SEX_CHARA_HUNNYU_HI
+
+
+;絶頂関連
+
+;C絶頂
+;--------------------------------------------------
+@KOJO_2_SEX_ECSTASY_C
+
+;C強絶頂
+;--------------------------------------------------
+@KOJO_2_SEX_ECSTASY_C_HI
+
+;V絶頂
+;--------------------------------------------------
+@KOJO_2_SEX_ECSTASY_V
+
+;V強絶頂
+;--------------------------------------------------
+@KOJO_2_SEX_ECSTASY_V_HI
+
+;A絶頂
+;--------------------------------------------------
+@KOJO_2_SEX_ECSTASY_A
+
+;A強絶頂
+;--------------------------------------------------
+@KOJO_2_SEX_ECSTASY_A_HI
+
+;B絶頂
+;--------------------------------------------------
+@KOJO_2_SEX_ECSTASY_B
+
+;B強絶頂
+;--------------------------------------------------
+@KOJO_2_SEX_ECSTASY_B_HI
+
+
+
+;多重絶頂に関する口上
+
+;四重絶頂
+;--------------------------------------------------
+@KOJO_2_SEX_MULTIECSTASY_CVAB
+
+;CVA三重絶頂
+;--------------------------------------------------
+@KOJO_2_SEX_MULTIECSTASY_CVA
+
+;CVB三重絶頂
+;--------------------------------------------------
+@KOJO_2_SEX_MULTIECSTASY_CVB
+
+;CAB三重絶頂
+;--------------------------------------------------
+@KOJO_2_SEX_MULTIECSTASY_CAB
+
+;VAB三重絶頂
+;--------------------------------------------------
+@KOJO_2_SEX_MULTIECSTASY_VAB
+
+;CV二重絶頂
+;--------------------------------------------------
+@KOJO_2_SEX_MULTIECSTASY_CV
+
+;CA二重絶頂
+;--------------------------------------------------
+@KOJO_2_SEX_MULTIECSTASY_CA
+
+;CB二重絶頂
+;--------------------------------------------------
+@KOJO_2_SEX_MULTIECSTASY_CB
+
+;VA二重絶頂
+;--------------------------------------------------
+@KOJO_2_SEX_MULTIECSTASY_VA
+
+;VB二重絶頂
+;--------------------------------------------------
+@KOJO_2_SEX_MULTIECSTASY_VB
+
+;AB二重絶頂
+;--------------------------------------------------
+@KOJO_2_SEX_MULTIECSTASY_AB
+
+
+;絶頂抑制
+;--------------------------------------------------
+@KOJO_2_SEX_ECSTASY_INHIBITION
+
+;絶頂禁止
+;--------------------------------------------------
+@KOJO_2_SEX_ECSTASY_PROHIBITION
+
+;絶頂懇願
+;--------------------------------------------------
+@KOJO_2_SEX_ECSTASY_ENTREATY
+
+
+;触手が射精したときの処理
+
+;膣に通常射精
+;--------------------------------------------------
+@KOJO_2_SEX_TENTACLE_SYASEI_VAGINA
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_SEX_TENTACLE_SYASEI_VAGINA_{RESULT}
+
+;膣に大量射精
+;--------------------------------------------------
+@KOJO_2_SEX_TENTACLE_SYASEI_VAGINA_HI
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_SEX_TENTACLE_SYASEI_VAGINA_HI_{RESULT}
+
+;アナルに通常射精
+;--------------------------------------------------
+@KOJO_2_SEX_TENTACLE_SYASEI_ANAL
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_SEX_TENTACLE_SYASEI_ANAL_{RESULT}
+
+;アナルに大量射精
+;--------------------------------------------------
+@KOJO_2_SEX_TENTACLE_SYASEI_ANAL_HI
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_SEX_TENTACLE_SYASEI_ANAL_HI_{RESULT}
+
+;手に通常射精
+;--------------------------------------------------
+@KOJO_2_SEX_TENTACLE_SYASEI_HAND
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_SEX_TENTACLE_SYASEI_HAND_{RESULT}
+
+;手に大量射精
+;--------------------------------------------------
+@KOJO_2_SEX_TENTACLE_SYASEI_HAND_HI
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_SEX_TENTACLE_SYASEI_HAND_HI_{RESULT}
+
+;口内に通常射精
+;--------------------------------------------------
+@KOJO_2_SEX_TENTACLE_SYASEI_MOUTH
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_SEX_TENTACLE_SYASEI_MOUTH_{RESULT}
+
+;口内に大量射精
+;--------------------------------------------------
+@KOJO_2_SEX_TENTACLE_SYASEI_MOUTH_HI
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_SEX_TENTACLE_SYASEI_MOUTH_HI_{RESULT}
+
+;胸に通常射精
+;--------------------------------------------------
+@KOJO_2_SEX_TENTACLE_SYASEI_BUST
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_SEX_TENTACLE_SYASEI_BUST_{RESULT}
+
+;胸に大量射精
+;--------------------------------------------------
+@KOJO_2_SEX_TENTACLE_SYASEI_BUST_HI
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_SEX_TENTACLE_SYASEI_BUST_HI_{RESULT}
+
+;射精暴発
+;--------------------------------------------------
+@KOJO_2_SEX_TENTACLE_SYASEI_EXPLODE
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_SEX_TENTACLE_SYASEI_EXPLODE_{RESULT}
+
+
+
+;戦闘終了関連
+
+;ボス触手・ラスボス触手に勝利
+;--------------------------------------------------
+@KOJO_2_BATTLE_END_WIN
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_BATTLE_END_WIN_{RESULT}
+
+;敵キャラに勝利
+;--------------------------------------------------
+@KOJO_2_BATTLE_END_WIN_ENEMY
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_BATTLE_END_WIN_ENEMY_{RESULT}
+
+;ラスボス触手出現
+;--------------------------------------------------
+@KOJO_2_BATTLE_END_LASTBOSSAPPEAR
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_BATTLE_END_LASTBOSSAPPEAR_{RESULT}
+
+;完全殲滅
+;--------------------------------------------------
+@KOJO_2_BATTLE_END_PERFECT
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_BATTLE_END_PERFECT_{RESULT}
+
+;捕らわれキャラの救出
+;--------------------------------------------------
+@KOJO_2_BATTLE_END_RESCUED
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_BATTLE_END_RESCUED_{RESULT}
+
+;洗脳中キャラの救出
+;--------------------------------------------------
+@KOJO_2_BATTLE_END_RESCUE_SENNOU
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_BATTLE_END_RESCUE_SENNOU_{RESULT}
+
+;敵キャラの救出
+;--------------------------------------------------
+@KOJO_2_BATTLE_END_RESCUE_ENEMY
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_BATTLE_END_RESCUE_ENEMY_{RESULT}
+
+;敗北
+;--------------------------------------------------
+@KOJO_2_BATTLE_END_LOSS
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_BATTLE_END_LOSS_{RESULT}
+
+;時間切れ
+;--------------------------------------------------
+@KOJO_2_BATTLE_END_TIMEUP
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_BATTLE_END_TIMEUP_{RESULT}
+
+
+
+;素質関連
+
+;処女喪失
+;--------------------------------------------------
+@KOJO_2_SEX_LOSTVIRGIN
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_SEX_LOSTVIRGIN_{RESULT}
+
+;触手の虜取得
+;--------------------------------------------------
+@KOJO_2_GETTALENT_TORIKO
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_GETTALENT_TORIKO_{RESULT}
+
+;淫乱取得
+;--------------------------------------------------
+@KOJO_2_GETTALENT_INRAN
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_GETTALENT_INRAN_{RESULT}
+
+;淫核取得
+;--------------------------------------------------
+@KOJO_2_GETTALENT_INKAKU
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_GETTALENT_INKAKU_{RESULT}
+
+;淫壷取得
+;--------------------------------------------------
+@KOJO_2_GETTALENT_INTUBO
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_GETTALENT_INTUBO_{RESULT}
+
+;淫尻取得
+;--------------------------------------------------
+@KOJO_2_GETTALENT_INJIRI
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_GETTALENT_INJIRI_{RESULT}
+
+;淫乳取得
+;--------------------------------------------------
+@KOJO_2_GETTALENT_INNYUU
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_GETTALENT_INNYUU_{RESULT}
+
+
+
+;刻印関連
+
+;快楽刻印１取得
+;--------------------------------------------------
+@KOJO_2_SEX_MARK_KAIRAKU_1
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_SEX_MARK_KAIRAKU_1_{RESULT}
+
+;快楽刻印２取得
+;--------------------------------------------------
+@KOJO_2_SEX_MARK_KAIRAKU_2
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_SEX_MARK_KAIRAKU_2_{RESULT}
+
+;快楽刻印３取得
+;--------------------------------------------------
+@KOJO_2_SEX_MARK_KAIRAKU_3
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_SEX_MARK_KAIRAKU_3_{RESULT}
+
+;苦痛刻印１取得
+;--------------------------------------------------
+@KOJO_2_SEX_MARK_KUTUU_1
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_SEX_MARK_KUTUU_1_{RESULT}
+
+;苦痛刻印２取得
+;--------------------------------------------------
+@KOJO_2_SEX_MARK_KUTUU_2
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_SEX_MARK_KUTUU_2_{RESULT}
+
+;苦痛刻印３取得
+;--------------------------------------------------
+@KOJO_2_SEX_MARK_KUTUU_3
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_SEX_MARK_KUTUU_3_{RESULT}
+
+;屈服刻印１取得
+;--------------------------------------------------
+@KOJO_2_SEX_MARK_KUPPUKU_1
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_SEX_MARK_KUPPUKU_1_{RESULT}
+
+;屈服刻印２取得
+;--------------------------------------------------
+@KOJO_2_SEX_MARK_KUPPUKU_2
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_SEX_MARK_KUPPUKU_2_{RESULT}
+
+;屈服刻印３取得
+;--------------------------------------------------
+@KOJO_2_SEX_MARK_KUPPUKU_3
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_SEX_MARK_KUPPUKU_3_{RESULT}
+
+;恐怖刻印１取得
+;--------------------------------------------------
+@KOJO_2_SEX_MARK_KYOUHU_1
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_SEX_MARK_KYOUHU_1_{RESULT}
+
+;恐怖刻印２取得
+;--------------------------------------------------
+@KOJO_2_SEX_MARK_KYOUHU_2
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_SEX_MARK_KYOUHU_2_{RESULT}
+
+;恐怖刻印３取得
+;--------------------------------------------------
+@KOJO_2_SEX_MARK_KYOUHU_3
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_SEX_MARK_KYOUHU_3_{RESULT}
+
+;恥辱刻印１取得
+;--------------------------------------------------
+@KOJO_2_SEX_MARK_TIJYOKU_1
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_SEX_MARK_TIJYOKU_1_{RESULT}
+
+;恥辱刻印２取得
+;--------------------------------------------------
+@KOJO_2_SEX_MARK_TIJYOKU_2
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_SEX_MARK_TIJYOKU_2_{RESULT}
+
+;恥辱刻印３取得
+;--------------------------------------------------
+@KOJO_2_SEX_MARK_TIJYOKU_3
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_SEX_MARK_TIJYOKU_3_{RESULT}
+
+
+
+;心境変化関連
+
+;倒錯
+;--------------------------------------------------
+@KOJO_2_BATTLE_SHINKYOU_CHANGE_TOUSAKU
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_BATTLE_SHINKYOU_CHANGE_TOUSAKU_{RESULT}
+
+;怒り
+;--------------------------------------------------
+@KOJO_2_BATTLE_SHINKYOU_CHANGE_IKARI
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_BATTLE_SHINKYOU_CHANGE_IKARI_{RESULT}
+
+;諦観
+;--------------------------------------------------
+@KOJO_2_BATTLE_SHINKYOU_CHANGE_TEIKAN
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_BATTLE_SHINKYOU_CHANGE_TEIKAN_{RESULT}
+
+;冷静
+;--------------------------------------------------
+@KOJO_2_BATTLE_SHINKYOU_CHANGE_REISEI
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_BATTLE_SHINKYOU_CHANGE_REISEI_{RESULT}
+
+;動揺
+;--------------------------------------------------
+@KOJO_2_BATTLE_SHINKYOU_CHANGE_DOUYOU
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_BATTLE_SHINKYOU_CHANGE_DOUYOU_{RESULT}
+
+;高揚
+;--------------------------------------------------
+@KOJO_2_BATTLE_SHINKYOU_CHANGE_KOUYOU
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_BATTLE_SHINKYOU_CHANGE_KOUYOU_{RESULT}
+
+;消沈
+;--------------------------------------------------
+@KOJO_2_BATTLE_SHINKYOU_CHANGE_SYOUTIN
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_BATTLE_SHINKYOU_CHANGE_SYOUTIN_{RESULT}
+
+
+
+;体が竦んだ関連
+
+;触手の虜で体が竦む
+;--------------------------------------------------
+@KOJO_2_BATTLE_DISACTION_TORIKO
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_BATTLE_DISACTION_TORIKO_{RESULT}
+
+;快楽で体が竦む
+;--------------------------------------------------
+@KOJO_2_BATTLE_DISACTION_KAIRAKU
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_BATTLE_DISACTION_KAIRAKU_{RESULT}
+
+;苦痛で体が竦む
+;--------------------------------------------------
+@KOJO_2_BATTLE_DISACTION_KUTUU
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_BATTLE_DISACTION_KUTUU_{RESULT}
+
+;屈辱で体が竦む
+;--------------------------------------------------
+@KOJO_2_BATTLE_DISACTION_KUTUZYOKU
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_BATTLE_DISACTION_KUTUZYOKU_{RESULT}
+
+;恐怖で体が竦む
+;--------------------------------------------------
+@KOJO_2_BATTLE_DISACTION_KYOUHU
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_BATTLE_DISACTION_KYOUHU_{RESULT}
+
+;恥辱で体が竦む
+;--------------------------------------------------
+@KOJO_2_BATTLE_DISACTION_TIZYOKU
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_BATTLE_DISACTION_TIZYOKU_{RESULT}
+
+;寄生の影響で体が竦む
+;--------------------------------------------------
+@KOJO_2_BATTLE_DISACTION_PARASITE
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_BATTLE_DISACTION_PARASITE_{RESULT}
+
+
+
+;自慰関連
+
+;戦闘後自慰
+;--------------------------------------------------
+@KOJO_2_SELF_BATTLEEND
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_SELF_BATTLEEND_{RESULT}
+
+;普通の自慰
+;--------------------------------------------------
+@KOJO_2_SELF_N
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_SELF_N_{RESULT}
+
+;胸自慰
+;--------------------------------------------------
+@KOJO_2_SELF_B
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_SELF_B_{RESULT}
+
+;アナニー
+;--------------------------------------------------
+@KOJO_2_SELF_A
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_SELF_A_{RESULT}
+
+
+;幽閉関係
+
+;初めての幽閉
+;--------------------------------------------------
+@KOJO_2_PRISON_PRISENTENCE_FIRST
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_PRISON_PRISENTENCE_FIRST_{RESULT}
+
+;二度目以降の幽閉後の初被姦
+;--------------------------------------------------
+@KOJO_2_PRISON_PRISENTENCE_START
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_PRISON_PRISENTENCE_START_{RESULT}
+
+;洗脳になった
+;--------------------------------------------------
+@KOJO_2_PRISON_SENNOU
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_PRISON_SENNOU_{RESULT}
+
+;悪堕ちになった
+;--------------------------------------------------
+@KOJO_2_PRISON_AKUOTI
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_PRISON_AKUOTI_{RESULT}
+
+;幽閉後の被姦開始文
+;--------------------------------------------------
+@KOJO_2_PRISON_PRISENTENCE
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_PRISON_PRISENTENCE_{RESULT}
+
+;取り込まれ
+;--------------------------------------------------
+@KOJO_2_PRISON_DEAD
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_PRISON_DEAD_{RESULT}
+
+;ふたなり化
+;--------------------------------------------------
+@KOJO_2_PRISON_HUTANARI
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_PRISON_HUTANARI_{RESULT}
+
+;母乳体質化
+;--------------------------------------------------
+@KOJO_2_PRISON_BONYU
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_PRISON_BONYU_{RESULT}
+
+;C中心攻め
+;--------------------------------------------------
+@KOJO_2_PRISON_COM_0
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_PRISON_COM_1_{RESULT}
+
+;V中心攻め
+;--------------------------------------------------
+@KOJO_2_PRISON_COM_1
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_PRISON_COM_1_{RESULT}
+
+;A中心攻め
+;--------------------------------------------------
+@KOJO_2_PRISON_COM_2
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_PRISON_COM_2_{RESULT}
+
+;B中心攻め
+;--------------------------------------------------
+@KOJO_2_PRISON_COM_3
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_PRISON_COM_3_{RESULT}
+
+;Sな攻め
+;--------------------------------------------------
+@KOJO_2_PRISON_COM_4
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_PRISON_COM_4_{RESULT}
+
+;強制奉仕
+;--------------------------------------------------
+@KOJO_2_PRISON_COM_5
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_PRISON_COM_5_{RESULT}
+
+;羞恥な攻め
+;--------------------------------------------------
+@KOJO_2_PRISON_COM_6
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_PRISON_COM_6_{RESULT}
+
+;子触手に犯される
+;--------------------------------------------------
+@KOJO_2_PRISON_COM_7
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_PRISON_COM_7_{RESULT}
+
+;ふたなり攻め
+;--------------------------------------------------
+@KOJO_2_PRISON_COM_100
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_PRISON_COM_100_{RESULT}
+
+;V拡張
+;--------------------------------------------------
+@KOJO_2_PRISON_COM_101
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_PRISON_COM_101_{RESULT}
+
+;A拡張
+;--------------------------------------------------
+@KOJO_2_PRISON_COM_102
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_PRISON_COM_102_{RESULT}
+
+;搾乳攻め
+;--------------------------------------------------
+@KOJO_2_PRISON_COM_103
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_PRISON_COM_103_{RESULT}
+
+
+;種付け
+;--------------------------------------------------
+@KOJO_2_PRISON_COM_104
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_PRISON_COM_104_{RESULT}
+
+
+;Vに産卵
+;--------------------------------------------------
+@KOJO_2_PRISON_COM_200
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_PRISON_COM_200_{RESULT}
+
+;Aに産卵
+;--------------------------------------------------
+@KOJO_2_PRISON_COM_201
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_PRISON_COM_201_{RESULT}
+
+
+;注射
+;--------------------------------------------------
+@KOJO_2_PRISON_COM_300
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_PRISON_COM_300_{RESULT}
+
+;触手の寄生
+;--------------------------------------------------
+@KOJO_2_PRISON_COM_301
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_PRISON_COM_301_{RESULT}
+
+
+;サブイベント関連
+
+;戦闘のサブイベント
+
+;悪堕ちキャラに敗北して犯される
+;--------------------------------------------------
+@KOJO_2_SUBEVENT_BATTLE_RAPED_ENEMY
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_SUBEVENT_BATTLE_RAPED_ENEMY_{RESULT}
+
+;触手拘束具を着せられた
+;--------------------------------------------------
+@KOJO_2_SUBEVENT_BATTLE_SETTENTACLECLOTH
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_SUBEVENT_BATTLE_SETTENTACLECLOTH_{RESULT}
+
+;触手拘束具による被姦
+;--------------------------------------------------
+@KOJO_2_SUBEVENT_BATTLE_ACTTENTACLECLOTH
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", TARGET
+TRYCALLFORM KOJO_2_SUBEVENT_BATTLE_ACTTENTACLECLOTH_{RESULT}

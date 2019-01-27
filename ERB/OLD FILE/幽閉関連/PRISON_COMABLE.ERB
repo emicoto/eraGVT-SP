@@ -1,0 +1,180 @@
+;**********************************************************
+;幽閉コマンドのCOMABLE
+;キャラの身体的特徴によって実行不可なコマンドを他のコマンドに割り振ったりしている
+
+;ARG=コマンド番号
+@PRISON_COMABLE, ARG
+#DIM LCOUNT
+#DIM SH_VAR, 感覚数
+
+;結界振替え用
+IF ARG == -1
+	$SHIELDED
+	VARSET SH_VAR
+	FOR LCOUNT, 0, 感覚数
+		SIF BASE:(LCOUNT + 30) > 0
+			SH_VAR:LCOUNT = 1
+	NEXT
+
+	DO
+		ARG = RAND:感覚数
+	LOOP SH_VAR:ARG == 1
+ENDIF
+
+SELECTCASE ARG
+	;C中心攻め
+	CASE 0
+		CALL PRISON_COM0
+	;V中心攻め
+	CASE 1
+		;オトコの場合はC中心攻めに振り変える
+		IF TALENT:オトコ > 0
+			CALL PRISON_COM0
+		ELSE
+			CALL PRISON_COM1
+		ENDIF
+	;A中心攻め
+	CASE 2
+		CALL PRISON_COM2
+	;B中心攻め
+	CASE 3
+		CALL PRISON_COM3
+	;Sな攻め
+	CASE 4
+		CALL PRISON_COM4
+	;強制奉仕
+	CASE 5
+		CALL PRISON_COM5
+	;羞恥な攻め
+	CASE 6
+		;感情乏しい場合はSな攻めに振り変える
+		IF TALENT:感情乏しい > 0
+			CALL PRISON_COM4
+		ELSE
+			CALL PRISON_COM6
+		ENDIF
+	;子触手に犯される
+	CASE 7
+		;部位結界
+		SIF SHIELD:1 > 0
+			GOTO SHIELDED
+		;オトコの場合はC中心攻めに振り変える
+		IF TALENT:オトコ > 0
+			CALL PRISON_COM0
+		ELSE
+			CALL PRISON_COM7
+		ENDIF
+	;ふたなり攻め
+	CASE 100
+		;部位結界
+		SIF SHIELD:0 > 0
+			GOTO SHIELDED
+		;オトコの場合やフィルタ×の場合はC中心攻めに振り変える
+		IF TALENT:オトコ > 0 || FILTER_CHECK_F(1)
+			CALL PRISON_COM0
+		ELSE
+			CALL PRISON_COM100
+		ENDIF
+	;V拡張
+	CASE 101
+		;部位結界
+		SIF SHIELD:1 > 0
+			GOTO SHIELDED
+		;オトコの場合はC中心攻めに振り変える
+		IF TALENT:オトコ > 0
+			CALL PRISON_COM0
+		;V経験が少ない場合、V中心攻めにする
+		ELSEIF EXP:Ｖ経験 < 20
+			CALL PRISON_COM1
+		ELSE
+			CALL PRISON_COM101
+		ENDIF
+		
+	;A拡張
+	CASE 102
+		;部位結界
+		SIF SHIELD:2 > 0
+			GOTO SHIELDED
+		;A経験が少ない場合、A中心攻めにする
+		IF EXP:Ａ経験 < 20
+			CALL PRISON_COM2
+		ELSE
+			CALL PRISON_COM102
+		ENDIF
+		
+	;搾乳攻め
+	CASE 103
+		;部位結界
+		SIF SHIELD:3 > 0
+			GOTO SHIELDED
+		;オトコの場合やフィルタ×の場合はB中心攻めに振り変える
+		IF TALENT:オトコ > 0 || FILTER_CHECK_F(2)
+			CALL PRISON_COM3
+		ELSE
+			CALL PRISON_COM103
+		ENDIF
+	;種付け
+	CASE 104
+		;部位結界
+		SIF SHIELD:1 > 0
+			GOTO SHIELDED
+		;オトコの場合はC中心攻めに振り変える
+		IF TALENT:オトコ > 0
+			CALL PRISON_COM0
+		ELSE
+			;Ｖ感覚Lv5以上かＶ拡張経験が10以上でなければＶ拡張
+			IF ABL:Ｖ感覚 < 5 && EXP:Ｖ拡張経験 < 10
+				;V経験が少ない場合、V中心攻めにする
+				IF EXP:Ｖ経験 < 20
+					CALL PRISON_COM1
+				ELSE
+					CALL PRISON_COM101
+				ENDIF
+			ELSE
+				CALL PRISON_COM104
+			ENDIF
+		ENDIF
+	;Vに産卵
+	CASE 200
+		;部位結界
+		SIF SHIELD:1 > 0
+			GOTO SHIELDED
+		;オトコの場合はC中心攻めに振り変える
+		IF TALENT:オトコ > 0
+			CALL PRISON_COM0
+		ELSEIF EXP:Ｖ拡張経験 > 3
+			CALL PRISON_COM200
+		;拡張経験が足りなければ拡張コマンドにする
+		ELSE
+			CALL PRISON_COM101
+		ENDIF
+	;Aに産卵
+	CASE 201
+		;部位結界
+		SIF SHIELD:2 > 0
+			GOTO SHIELDED
+		IF EXP:Ａ拡張経験 > 3
+			CALL PRISON_COM201
+		;拡張経験が足りなければ拡張コマンドにする
+		ELSE
+			CALL PRISON_COM102
+		ENDIF
+	;注射　淫乱系素質をつける
+	CASE 300
+		CALL PRISON_COM300
+	;寄生　触手を寄生させる
+	CASE 301
+		;フィルタ×の場合や既に寄生持ちの場合は、C攻め、B攻め、注射に割り振る
+		IF TALENT:寄生 || FILTER_CHECK_F(3)
+			SELECTCASE RAND:3
+				CASE 0
+					CALL PRISON_COM0
+				CASE 1
+					CALL PRISON_COM1
+				CASE 2
+					CALL PRISON_COM300
+			ENDSELECT
+		ELSE
+			CALL PRISON_COM301
+		ENDIF
+ENDSELECT

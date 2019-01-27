@@ -1,0 +1,51 @@
+;--------------------------------------------------
+;武器データの圧縮保存・解凍に関する処理群
+
+;圧縮文字列から武器データを解凍する
+;ARG	キャラクター番号
+;ARG:1	距離
+@DECODE_WEAPON_DATA, ARG, ARG:1
+#DIMS SeparatorMajor
+#DIMS SeparatorMinor
+#DIMS String
+SeparatorMajor = //
+SeparatorMinor = <>
+
+;圧縮データを取得
+String = %CSTR:ARG:(ARG:1 + 14)%
+SIF String == ""
+	RETURN -1
+
+;圧縮データを分解
+SPLIT String, SeparatorMajor, LOCALS
+
+;第０節は武器名
+CSTR:ARG:(ARG:1 + 4) = %LOCALS:0%
+
+;第１節は地の文カスタマイズ
+;現在は工事中につき中身なし
+
+;第２節は戦闘スタイル
+IF LOCALS:2 == "連続" || LOCALS:2 == "1"
+	CDFLAG:ARG:(ARG:1):戦闘スタイル = 1
+ELSEIF  LOCALS:2 == "装甲" || LOCALS:2 == "2"
+	CDFLAG:ARG:(ARG:1):戦闘スタイル = 2
+ELSEIF  LOCALS:2 == "撹乱" || LOCALS:2 == "3"
+	CDFLAG:ARG:(ARG:1):戦闘スタイル = 3
+ELSEIF  LOCALS:2 == "重撃" || LOCALS:2 == "4"
+	CDFLAG:ARG:(ARG:1):戦闘スタイル = 4
+ELSEIF  LOCALS:2 == "広範" || LOCALS:2 == "5"
+	CDFLAG:ARG:(ARG:1):戦闘スタイル = 5
+ELSEIF  LOCALS:2 == "全力" || LOCALS:2 == "6"
+	CDFLAG:ARG:(ARG:1):戦闘スタイル = 6
+ELSEIF  LOCALS:2 == "知略" || LOCALS:2 == "7"
+	CDFLAG:ARG:(ARG:1):戦闘スタイル = 7
+ELSEIF  LOCALS:2 == "設置" || LOCALS:2 == "8"
+	CDFLAG:ARG:(ARG:1):戦闘スタイル = 8
+ELSEIF  LOCALS:2 == "使役" || LOCALS:2 == "9"
+	CDFLAG:ARG:(ARG:1):戦闘スタイル = 9
+ELSE
+	CDFLAG:ARG:(ARG:1):戦闘スタイル = 0
+ENDIF
+
+

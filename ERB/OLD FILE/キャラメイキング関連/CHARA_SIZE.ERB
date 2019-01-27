@@ -1,0 +1,473 @@
+
+
+;乱数値		キャラクターの部位のサイズを決定する値　RESULT:0で返す
+;		乱数値 = RAND:(11 * 31 * 59 * 15 * 16 * 13 * 23 * 7 * 53)
+;11	身長成長率
+;31	身長補正
+;59	体重(BMI)
+;15	胴囲
+;16	腰囲
+;13	アンダー
+;23	胸の張りの強さ
+;7	胸サイズ成長率
+;53	胸サイズ補正
+
+;成長曲線	5歳～19歳まで1年にどれだけ身長が伸びるかを設定する　RESULT:1で返す
+;		また、そのキャラクターのプロフィールが設定済みかを0かどうかで判定する
+;年齢		キャラクターの年齢
+
+;RESULT:2	身長を返す(単位：1mm)
+;RESULT:3	体重を返す(単位：0.1kg)
+;RESULT:4	胸囲を返す(単位：1mm)
+;RESULT:5	胴囲を返す(単位：1mm)
+;RESULT:6	腰囲を返す(単位：1mm)
+@GENERATE_CHAR_SIZE, 対象キャラ, 変身値
+#DIM KEEPTARGET
+#DIM LCOUNT, 2
+
+#DIM 対象キャラ
+#DIM 年齢値
+#DIM 身長
+#DIM 体重, 2
+#DIM 胸囲
+#DIM 胴囲
+#DIM 腰囲
+#DIM アンダー
+#DIM 乱数値, 7
+#DIM 成長曲線
+#DIM 成長値, 15
+#DIM BMI
+#DIM ローレル指数
+#DIM 変身値
+
+#DIM CAL_VAR
+#DIM DEV_VAR, 15
+#DIM RAN_VAR, 2
+
+VARSET 成長値
+
+乱数値 = CFLAG:対象キャラ:33
+成長曲線 = CFLAG:対象キャラ:34
+IF 変身値 > 0
+	年齢値 = MAXBASE:対象キャラ:年齢
+ELSE
+	年齢値 = BASE:対象キャラ:年齢
+ENDIF
+
+;乱数値の上書きと決定
+乱数値:1 = 乱数値 % 11
+SIF TALENT:対象キャラ:身長成長率乱数 > 0 && TALENT:対象キャラ:身長成長率乱数 < 12
+	乱数値:1 = TALENT:対象キャラ:身長成長率乱数 - 1
+乱数値:2 = 乱数値 % 31
+SIF TALENT:対象キャラ:身長補正乱数 > 0 && TALENT:対象キャラ:身長補正乱数 < 32
+	乱数値:2 = TALENT:対象キャラ:身長補正乱数 - 1
+乱数値:3 = 乱数値 % 59
+SIF TALENT:対象キャラ:体重乱数 > 0 && TALENT:対象キャラ:体重乱数 < 60
+	乱数値:3 = TALENT:対象キャラ:体重乱数 - 1
+乱数値:4 = 乱数値 % 15
+SIF TALENT:対象キャラ:胴囲乱数 > 0 && TALENT:対象キャラ:胴囲乱数 < 16
+	乱数値:4 = TALENT:対象キャラ:胴囲乱数 - 1
+乱数値:5 = 乱数値 % 16
+SIF TALENT:対象キャラ:腰囲乱数 > 0 && TALENT:対象キャラ:腰囲乱数 < 17
+	乱数値:5 = TALENT:対象キャラ:腰囲乱数 - 1
+乱数値:6 = 乱数値 % 13
+SIF TALENT:対象キャラ:アンダー乱数 > 0 && TALENT:対象キャラ:アンダー乱数 < 14
+	乱数値:6 = TALENT:対象キャラ:アンダー乱数 - 1
+
+LCOUNT:1 = 成長曲線
+
+;年齢ごとの成長値の設定
+FOR LCOUNT, 0, 15
+	成長値:LCOUNT = LCOUNT:1 % 10
+	LCOUNT:1 /= 10
+	成長値:LCOUNT *= 30
+
+	IF LCOUNT < 7
+		成長値:LCOUNT += 400
+	ELSEIF LCOUNT == 7
+		成長値:LCOUNT += 210
+	ELSEIF LCOUNT == 8
+		成長値:LCOUNT += 100
+	ENDIF
+NEXT
+
+;身長の設定
+
+;最低身長の乱数計算
+;5歳時の平均
+身長 = 10940 * (乱数値:1 + 95) / 100
+
+;0歳時	66.2cm
+SIF 年齢値 == 0
+	身長 = 身長 * 605 / 1000
+
+;1歳時	79.4cm
+SIF 年齢値 == 1
+	身長 = 身長 * 725 / 1000
+
+;2歳時	88.4cm
+SIF 年齢値 == 2
+	身長 = 身長 * 808 / 1000
+
+;3歳時	95.9cm
+SIF 年齢値 == 3
+	身長 = 身長 * 876 / 1000
+
+;4歳時	102.8cm
+SIF 年齢値 == 4
+	身長 = 身長 * 939 / 1000
+
+FOR LCOUNT, 5,年齢値 + 1
+	IF LCOUNT < 20
+		身長 += 成長値:(LCOUNT - 5)
+	ELSEIF LCOUNT < 25
+		身長 += 成長値:14 / 4
+	ELSEIF LCOUNT < 30
+		身長 += 成長値:14 / 8
+	ELSEIF LCOUNT < 40
+	ELSEIF LCOUNT < 50
+		身長 -= 成長値:14 / 8
+	ELSE
+		身長 -= 成長値:14 / 4
+	ENDIF
+NEXT
+
+;身長の乱数計算
+身長 = 身長 * ((CHARATALENT_F(対象キャラ,変身値,"小柄") == 0) * 25 + CHARATALENT_F(対象キャラ,変身値,"長身") * 25 + 乱数値:2 + 260) / 3000
+
+;FEATによる身長への影響
+IF TALENT:対象キャラ:小さな体躯 > 0
+	身長 = 身長 * 75 / 100
+	SIF TALENT:対象キャラ:妖精族 > 0
+		身長 = 身長 * 50 / 100
+ENDIF
+
+;オトコ
+SIF CHARATALENT_F(対象キャラ,変身値,"オトコ")
+	身長 = 身長 * 1085 / 1000
+
+;身長の上書き
+SIF TALENT:対象キャラ:身長指定 > 0 && 変身値 == 0
+	身長 = TALENT:対象キャラ:身長指定
+SIF TALENT:対象キャラ:変身時身長指定 > 0 && 変身値 == 1
+	身長 = TALENT:対象キャラ:変身時身長指定
+
+;安産型:5　むちむち:6　イカ腹:7
+;BMIはそれぞれ通常20(美容体重)、むちむち22（健康体重）、スレンダー18（モデル体重）を基本とする
+;長身はBMIが低下、小柄はBMIが上昇
+BMI = 乱数値:3 / 20 + CHARATALENT_F(対象キャラ,変身値,"むちむち") * 20 + (CHARATALENT_F(対象キャラ,変身値,"スレンダー") == 0) * 20 - CHARATALENT_F(対象キャラ,変身値,"長身") * 20 + CHARATALENT_F(対象キャラ,変身値,"小柄") * 20 - (TALENT:対象キャラ:妖精族 > 0) * 10 + (TALENT:対象キャラ:ケモミミ族 > 0) * 10 + 180
+BMI = BMI * LIMIT(年齢値 + 100, 100, 120) / 120
+ローレル指数 = (乱数値:3 + CHARATALENT_F(対象キャラ,変身値,"むちむち") * 11 + (CHARATALENT_F(対象キャラ,変身値,"スレンダー") == 0) * 11 + 178) / 2
+
+体重 = BMI * 身長 * 身長 / 1000000
+体重:1 = 1000000 * 身長 / (13200000 - 6456 * 身長)
+体重:1 = 体重:1 * (BMI * 5292307 - 2700000) / 1000000000
+
+CAL_VAR = LIMIT((1500 - 身長) * 4, 0, 1000)
+
+体重 = (体重:0 * (1000 - CAL_VAR) + 体重:1 * CAL_VAR) / 1000 + 乱数値:3
+
+;ゴールデンカノン
+;身長比でバストは0.54、ウエストは0.38、ヒップは0.54
+;胴囲の乱数計算
+胴囲 = 身長 * (BMI * 9 + 乱数値:4 * 30 + CHARATALENT_F(対象キャラ,変身値,"むちむち") * 50 + CHARATALENT_F(対象キャラ,変身値,"イカ腹") * 200 + (CHARATALENT_F(対象キャラ,変身値,"安産型") == 0 && CHARATALENT_F(対象キャラ,変身値,"スレンダー") == 0) * 100 + (TALENT:対象キャラ:ケモミミ族 == 0) * 50 + 1650) / 10000
+
+;腰囲の乱数計算
+腰囲 = 身長 * (BMI * 7 + 乱数値:5 * 30 + CHARATALENT_F(対象キャラ,変身値,"安産型") * 200 + CHARATALENT_F(対象キャラ,変身値,"むちむち") * 25 + (CHARATALENT_F(対象キャラ,変身値,"イカ腹") == 0) * 50 + (CHARATALENT_F(対象キャラ,変身値,"スレンダー") == 0) * 100 + (TALENT:対象キャラ:ケモミミ族 > 0) * 50 + 3710) / 10000
+
+;アンダーの乱数計算
+アンダー = 身長 * (BMI * 5 + 乱数値:6 * 5 + CHARATALENT_F(対象キャラ,変身値,"むちむち") * 25 + (CHARATALENT_F(対象キャラ,変身値,"安産型") == 0 && CHARATALENT_F(対象キャラ,変身値,"スレンダー") == 0) * 15 + 3310) / 10000
+
+;25歳以上は徐々に熟女体系化
+IF 年齢値 >= 25 && 年齢値 < 30
+	LOCAL = 年齢値 - 4
+	体重 = 体重 * (1000 + LOCAL * 2 / 3) / 1000
+	胴囲 = 胴囲 * (1000 + LOCAL / 2) / 1000
+	腰囲 = 腰囲 * (1000 + LOCAL) / 1000
+ELSEIF 年齢値 >= 30 && 年齢値 < 40
+	LOCAL = 年齢値 - 4
+	体重 = 体重 * (1000 + LOCAL) / 1000
+	胴囲 = 胴囲 * (1000 + LOCAL * 2 / 3) / 1000
+	腰囲 = 腰囲 * (1000 + LOCAL) / 1000
+	アンダー = アンダー * (1000 + LOCAL / 10) / 1000
+ELSEIF 年齢値 >= 40
+	LOCAL = MIN(年齢値 - 4, 45)
+	体重 = 体重 * (1000 + LOCAL * 3 / 2) / 1000
+	胴囲 = 胴囲 * (1000 + LOCAL * 3 / 4) / 1000
+	腰囲 = 腰囲 * (1000 + LOCAL) / 1000
+	アンダー = アンダー * (1000 + LOCAL / 8) / 1000
+ENDIF
+
+;胸囲 - アンダーの乱数計算
+;カップサイズのため単独で関数化
+CALL TOP_UNDER, 対象キャラ, 変身値
+
+;体重のカップサイズ補正
+体重 = 体重 + (RESULT * 124 - 18600 * RESULT:1 / 50) / 1000
+
+;胸囲
+胸囲 = アンダー + RESULT
+
+IF CHARATALENT_F(対象キャラ,変身値,"オトコ")
+	胸囲 = -1
+	胴囲 = -1
+	腰囲 = -1
+ENDIF
+
+;各パラメータの上書き
+SIF TALENT:対象キャラ:体重指定 > 0 && 変身値 == 0
+	体重 = TALENT:対象キャラ:体重指定
+SIF TALENT:対象キャラ:変身時体重指定 > 0 && 変身値 == 1
+	体重 = TALENT:対象キャラ:変身時体重指定
+SIF TALENT:対象キャラ:胸囲指定 > 0 && 変身値 == 0
+	胸囲 = TALENT:対象キャラ:胸囲指定
+SIF TALENT:対象キャラ:変身時胸囲指定 > 0 && 変身値 == 1
+	胸囲 = TALENT:対象キャラ:変身時胸囲指定
+SIF TALENT:対象キャラ:胴囲指定 > 0 && 変身値 == 0
+	胴囲 = TALENT:対象キャラ:胴囲指定
+SIF TALENT:対象キャラ:変身時胴囲指定 > 0 && 変身値 == 1
+	胴囲 = TALENT:対象キャラ:変身時胴囲指定
+SIF TALENT:対象キャラ:腰囲指定 > 0 && 変身値 == 0
+	腰囲 = TALENT:対象キャラ:腰囲指定
+SIF TALENT:対象キャラ:変身時腰囲指定 > 0 && 変身値 == 1
+	腰囲 = TALENT:対象キャラ:変身時腰囲指定
+
+RETURN 乱数値, 成長曲線, 身長, 体重, 胸囲, 胴囲, 腰囲
+
+
+
+@TOP_UNDER, 対象キャラ, 変身値
+#DIM 対象キャラ
+#DIM 変身値
+
+#DIM 乱数値, 4
+#DIM 年齢値
+#DIM 影響値
+#DIM 最小値
+#DIM 最大値
+#DIM サイズ値
+
+乱数値 = CFLAG:対象キャラ:33
+
+;乱数値の上書きと決定
+乱数値:1 = 乱数値 % 23
+SIF TALENT:対象キャラ:胸の張り乱数 > 0 && TALENT:対象キャラ:胸の張り乱数 < 24
+	乱数値:1 = TALENT:対象キャラ:胸の張り乱数 - 1
+乱数値:2 = 乱数値 % 7
+SIF TALENT:対象キャラ:胸成長率乱数 > 0 && TALENT:対象キャラ:胸成長率乱数 < 8
+	乱数値:2 = TALENT:対象キャラ:胸成長率乱数 - 1
+乱数値:3 = 乱数値 % 53
+SIF TALENT:対象キャラ:胸サイズ補正乱数 > 0 && TALENT:対象キャラ:胸サイズ補正乱数 < 54
+	乱数値:3 = TALENT:対象キャラ:胸サイズ補正乱数 - 1
+
+;年齢値の決定
+IF 変身値 > 0
+	年齢値 = MAXBASE:対象キャラ:年齢
+ELSE
+	年齢値 = BASE:対象キャラ:年齢
+ENDIF
+年齢値 = 年齢値
+SIF 年齢値 > 22
+	年齢値 = 22
+
+;年齢値による影響度
+影響値 = (年齢値 + 10) * (乱数値:2 * 2 + 26 - 乱数値:1) / 15 + 乱数値:3 / 4
+IF 年齢値 < 5
+	影響値 += 年齢値 * 6
+ELSEIF 年齢値 < 10
+	影響値 += 24 + (年齢値 - 4) * 12
+ELSEIF 年齢値 < 15
+	影響値 += 84 + (年齢値 - 9) * 3
+ELSE
+	影響値 += 99 + (年齢値 - 14) * 1
+ENDIF
+
+;サイズを計算
+IF CHARATALENT_F(対象キャラ,変身値,"絶壁")
+	サイズ値 = -65
+	最小値 = 0
+	最大値 = 124
+ELSEIF CHARATALENT_F(対象キャラ,変身値,"貧乳")
+	サイズ値 = -40
+	最小値 = 0
+	最大値 = 149
+ELSEIF CHARATALENT_F(対象キャラ,変身値,"奇乳")
+	サイズ値 = 170
+	最小値 = 275
+	最大値 = 999
+ELSEIF CHARATALENT_F(対象キャラ,変身値,"魔乳")
+	サイズ値 = 130
+	最小値 = 250
+	最大値 = 474
+ELSEIF CHARATALENT_F(対象キャラ,変身値,"超乳")
+	サイズ値 = 90
+	最小値 = 225
+	最大値 = 399
+ELSEIF CHARATALENT_F(対象キャラ,変身値,"爆乳")
+	サイズ値 = 50
+	最小値 = 200
+	最大値 = 324
+ELSEIF CHARATALENT_F(対象キャラ,変身値,"巨乳")
+	サイズ値 = 25
+	最小値 = 175
+	最大値 = 249
+ELSE
+	サイズ値 = 0
+	最小値 = 100
+	最大値 = 174
+ENDIF
+最小値 = MAX(最小値 - 75 * MAX(15 - 年齢値, 0) / 15, 0)
+最大値 = MAX(最大値 - 75 * MAX(15 - 年齢値, 0) / 15, 0)
+サイズ値 = サイズ値 * (乱数値:3 + 50) / 50 + 影響値
+;素質補正
+サイズ値 = サイズ値 * (100 + CHARATALENT_F(対象キャラ,変身値,"むちむち") * 5) / 100
+サイズ値 = サイズ値 * (100 - CHARATALENT_F(対象キャラ,変身値,"イカ腹") * 10) / 100
+;最小値、最大値を適用
+サイズ値 = LIMIT(サイズ値, 最小値, 最大値)
+
+SIF CHARATALENT_F(対象キャラ,変身値,"オトコ")
+	サイズ値 = -1
+
+RETURN サイズ値, 影響値
+
+
+@CUP_SIZE, ARG
+IF ARG < 25
+	RESULTS = ―
+ELSEIF ARG < 75
+	RESULTS = AAA
+ELSEIF ARG < 100
+	RESULTS = AA
+ELSEIF ARG < 125
+	RESULTS = A
+ELSEIF ARG < 150
+	RESULTS = B
+ELSEIF ARG < 175
+	RESULTS = C
+ELSEIF ARG < 200
+	RESULTS = D
+ELSEIF ARG < 225
+	RESULTS = E
+ELSEIF ARG < 250
+	RESULTS = F
+ELSEIF ARG < 275
+	RESULTS = G
+ELSEIF ARG < 300
+	RESULTS = H
+ELSEIF ARG < 325
+	RESULTS = I
+ELSEIF ARG < 350
+	RESULTS = J
+ELSEIF ARG < 375
+	RESULTS = K
+ELSEIF ARG < 400
+	RESULTS = L
+ELSEIF ARG < 425
+	RESULTS = M
+ELSEIF ARG < 450
+	RESULTS = N
+ELSEIF ARG < 475
+	RESULTS = O
+ELSEIF ARG < 500
+	RESULTS = P
+ELSEIF ARG < 525
+	RESULTS = Q
+ELSEIF ARG < 550
+	RESULTS = R
+ELSEIF ARG < 575
+	RESULTS = S
+ELSEIF ARG < 600
+	RESULTS = T
+ELSE
+	RESULTS = U
+ENDIF
+
+RETURN 0
+
+
+
+;成長曲線の設定
+@GENERATE_BODYLINE, 対象キャラ
+#DIM LCOUNT, 2
+
+#DIM 対象キャラ
+#DIM 乱数値
+#DIM 成長曲線
+#DIM 成長値, 15
+
+#DIM CAL_VAR
+#DIM DEV_VAR, 15
+#DIM RAN_VAR, 2
+
+VARSET 成長値
+
+;乱数値の設定
+乱数値 = RAND:(11 * 31 * 59 * 15 * 16 * 13 * 23 * 7 * 53)
+
+;11	最低身長
+;31	身長
+;59	体重(BMI)
+;15	胴囲
+;16	腰囲
+;13	アンダー
+;23	カップ最低値
+;7	カップ最高値
+;53	カップ基準値
+
+;乱数値の上書き
+SIF TALENT:対象キャラ:体型乱数値指定 > 0
+	乱数値 = TALENT:対象キャラ:体型乱数値指定
+
+DEV_VAR:0 = 83
+DEV_VAR:1 = 80
+DEV_VAR:2 = 75
+DEV_VAR:3 = 83
+DEV_VAR:4 = 113
+DEV_VAR:5 = 108
+DEV_VAR:6 = 50
+DEV_VAR:7 = 40
+DEV_VAR:8 = 30
+DEV_VAR:9 = 20
+DEV_VAR:10 = 10
+DEV_VAR:11 = 10
+DEV_VAR:12 = 10
+DEV_VAR:13 = 8
+DEV_VAR:14 = 6
+
+VARSET RAN_VAR
+FOR LCOUNT:0, 0, 15
+	RAN_VAR:0 += DEV_VAR:(LCOUNT:0)
+NEXT
+
+FOR LCOUNT:0, 0, 4 * 15
+	CAL_VAR = RAND:(RAN_VAR:0)
+	RAN_VAR:1 = 0
+	FOR LCOUNT:1, 0, 15
+		RAN_VAR:1 += DEV_VAR:(LCOUNT:1)
+		SIF CAL_VAR < RAN_VAR:1
+			BREAK
+	NEXT
+	IF 成長値:(LCOUNT:1 - 1) >= 9
+		LCOUNT:0 -= 1
+		CONTINUE
+	ENDIF
+	成長値:(LCOUNT:1 - 1) += 1
+NEXT
+
+VARSET LCOUNT
+FOR LCOUNT, 0, 15
+	LCOUNT:1 *= 10
+	LCOUNT:1 += 成長値:(14 - LCOUNT)
+NEXT
+成長曲線 = LCOUNT:1
+
+;成長曲線の上書き
+SIF TALENT:対象キャラ:体型成長曲線指定 > 0
+	成長曲線 = TALENT:対象キャラ:体型成長曲線指定
+
+
+CFLAG:対象キャラ:33 = 乱数値
+CFLAG:対象キャラ:34 = 成長曲線
+
+RETURN 0
+

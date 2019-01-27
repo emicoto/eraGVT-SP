@@ -1,0 +1,436 @@
+
+;-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+;キャラの変身能力の設定
+@FIRSTSETTING_CHARA_TRANSABILITY, ARG
+PRINTFORML {ARG}人目のキャラ 『%CALLNAME:ARG%』 の戦闘能力を設定してください
+PRINTL ･････････････････････････････････････････････････････
+PRINTFORML [0]変身能力あり
+PRINTFORML [1]変身能力なし、戦闘能力あり
+PRINTFORML [2]非戦闘員
+$INPUT_LOOP
+INPUT
+IF RESULT == 0
+	TALENT:ARG:変身能力 = 1
+	MAXBASE:ARG:空中ダッシュ = LIMIT(CSVBASE_F(NO:ARG,22), 0, 5)
+	BASE:ARG:空中ダッシュ = MAXBASE:ARG:空中ダッシュ
+
+	CALL GENERATE_CHAR_SIZE, ARG, 1
+	MAXBASE:ARG:身長 = RESULT:2
+	MAXBASE:ARG:体重 = RESULT:3
+	MAXBASE:ARG:胸囲 = RESULT:4
+	MAXBASE:ARG:胴囲 = RESULT:5
+	MAXBASE:ARG:腰囲 = RESULT:6
+
+	PRINTFORML 戦闘能力を 『変身能力あり』 に設定しました
+ELSEIF RESULT == 1
+	TALENT:ARG:変身能力 = 0
+	MAXBASE:ARG:空中ダッシュ = LIMIT(CSVBASE_F(NO:ARG,22), 0, 5)
+	BASE:ARG:空中ダッシュ = MAXBASE:ARG:空中ダッシュ
+
+	CALL GENERATE_CHAR_SIZE, ARG, 1
+	MAXBASE:ARG:身長 = RESULT:2
+	MAXBASE:ARG:体重 = RESULT:3
+	MAXBASE:ARG:胸囲 = RESULT:4
+	MAXBASE:ARG:胴囲 = RESULT:5
+	MAXBASE:ARG:腰囲 = RESULT:6
+
+	TALENT:ARG:変身時ＴＳ = 0
+	PRINTFORML 戦闘能力を 『変身能力なし、戦闘能力あり』 に設定しました
+ELSEIF RESULT == 2
+	TALENT:ARG:変身能力 = -1
+	MAXBASE:ARG:空中ダッシュ = LIMIT(CSVBASE_F(NO:ARG,22) - 1, 0, 5)
+	BASE:ARG:空中ダッシュ = MAXBASE:ARG:空中ダッシュ
+
+	CALL GENERATE_CHAR_SIZE, ARG, 1
+	MAXBASE:ARG:身長 = RESULT:2
+	MAXBASE:ARG:体重 = RESULT:3
+	MAXBASE:ARG:胸囲 = RESULT:4
+	MAXBASE:ARG:胴囲 = RESULT:5
+	MAXBASE:ARG:腰囲 = RESULT:6
+
+	TALENT:ARG:変身時ＴＳ = 0
+	PRINTFORML 戦闘能力を 『非戦闘員』 に設定しました
+ELSE
+	GOTO INPUT_LOOP
+ENDIF
+PRINTW 
+PRINTL 
+
+;-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+;キャラの変身後名の設定
+@FIRSTSETTING_CHARA_TRANSAFTERNAME, ARG
+#DIMS STR_UP
+#DIMS STR_DOWN
+RESULTS = 
+;変身後名に関する設定値
+;CSTR:ARG:0 = %STRCLEAR()%
+;上の句と下の句が既に保存されているなら記録しておく
+STR_UP = %CSTR:ARG:201%
+STR_DOWN = %CSTR:ARG:202%
+;初期化
+CSTR:ARG:201 = %STRCLEAR()%
+CSTR:ARG:202 = %STRCLEAR()%
+LOCAL:0 = 0
+
+PRINTFORML {ARG:0}人目のキャラ 『%CALLNAME:ARG%』 の変身後名を設定してください
+PRINTL （変身中の正式なキャラ名です。一部の地の文やステータス表示などに使用されます）
+PRINTL ･････････････････････････････････････････････････････
+PRINTL [0]設定しない
+PRINTL [1]自分で設定
+PRINTL [2]ランダム にする
+PRINTFORML [3]『%CALLNAME:ARG%』とランダムの組み合わせにする
+IF FLAG:6 == 1
+	PRINTFORML [4]『%SAVESTR:11%』とランダムの組み合わせにする
+	PRINTFORML [5]『%SAVESTR:11%%CALLNAME:ARG%』 にする
+	PRINTFORML [6]『%CALLNAME:ARG%%SAVESTR:11%』 にする
+ENDIF
+$INPUT_LOOP
+INPUT
+LOCAL:99 = RESULT
+IF (FLAG:6 == 0 && (RESULT < 0 || RESULT > 4)) || (FLAG:6 == 1 && (RESULT < 0 || RESULT > 8))
+	GOTO INPUT_LOOP
+ELSEIF RESULT == 0
+	CFLAG:ARG:2 = 0
+	;変身後呼び名も削除
+	CFLAG:ARG:3 = 0
+	CSTR:ARG:1 = %STRCLEAR()%
+	PRINTFORML 変身後名を設定しませんでした
+ELSEIF RESULT == 1
+	CFLAG:ARG:2 = 1
+	PRINTL 変身後名を入力してください
+	SIF CSTR:ARG:0 != ""
+		PRINTFORML [999]変更しない（%CSTR:ARG:0%）
+	$INPUT_LOOP_1_2
+	INPUTS
+	IF RESULTS == ""
+		GOTO INPUT_LOOP_1_2
+	ELSEIF RESULTS == "999" && CSTR:ARG:0 != ""
+	ELSE
+		CSTR:ARG:0 = %RESULTS%
+	ENDIF
+	PRINTFORML 変身後名を 『%CSTR:ARG:0%』 に設定しました
+	;変身後名も合わせる
+	CSTR:ARG:1 = %CSTR:ARG:0%
+	CFLAG:ARG:3 = 1
+ELSEIF RESULT == 2
+	CALL FIRSTSETTING_RANDOMNAMING_ALL
+	IF RESULT == 99
+		PRINTFORML 変身後名を選ばずに戻ります
+		RETURN
+	ENDIF
+	CFLAG:ARG:2 = 1
+	CSTR:ARG:0 = %STR:(DA:0:RESULT)%%STR:(DA:1:RESULT)%
+	PRINTFORML 変身後名を 『%CSTR:ARG:0%』 に設定しました
+	CSTR:ARG:201 = %STR:(DA:0:RESULT)%
+	CSTR:ARG:202 = %STR:(DA:1:RESULT)%
+	;変身後名も合わせる
+	CSTR:ARG:1 = %CSTR:ARG:0%
+	CFLAG:ARG:3 = 1
+ELSEIF RESULT == 3
+	CFLAG:ARG:2 = 1
+	CSTR:ARG:201 = %CALLNAME:ARG%
+	PRINTL 
+	PRINT 組み合わせる単語の
+	$INPUT_LOOP_CHILD_3_0
+	CALL FIRSTSETTING_RANDOMNAMING, 1, ARG, CALLNAME:ARG
+	PRINTL 
+	SIF RESULT:1 == 1
+		GOTO INPUT_LOOP_CHILD_3_0
+	LOCAL:99 = RESULT
+	$INPUT_LOOP_CHILD_3_1
+	PRINTFORML 変身後名を 『%RESULTS%』 に設定します。よろしいですか？
+	PRINTL 
+	PRINTL [0]いいえ
+	PRINTL [1]はい
+	SIF CSTR:ARG:0 != ""
+		PRINTFORML [2]変更しない（%CSTR:ARG:0%）
+	$INPUT_LOOP_CHILD_3_2
+	INPUT
+	IF RESULT == 0
+		CSTR:ARG:201 = %STR_UP%
+		CSTR:ARG:202 = %STR_DOWN%
+		GOTO INPUT_LOOP_CHILD_3_0
+	ELSEIF RESULT == 1
+		CSTR:ARG:0 = %RESULTS%
+		PRINTFORML 変身後名を 『%CSTR:ARG:0%』 に設定しました
+		;変身後名も合わせる
+		CSTR:ARG:1 = %CSTR:ARG:0%
+		CFLAG:ARG:3 = 1
+	ELSEIF RESULT == 2
+	ELSE
+		GOTO INPUT_LOOP_CHILD_3_2
+	ENDIF
+ELSEIF RESULT == 4
+	CFLAG:ARG:2 = 1
+	CSTR:ARG:201 = %SAVESTR:11%
+	PRINTL 
+	PRINT 組み合わせる単語の
+	$INPUT_LOOP_CHILD_5_0
+	CALL FIRSTSETTING_RANDOMNAMING, 1, ARG, SAVESTR:11
+	PRINTL 
+	SIF RESULT:1 == 1
+		GOTO INPUT_LOOP_CHILD_5_0
+	LOCAL:99 = RESULT
+	$INPUT_LOOP_CHILD_5_1
+	PRINTFORML 変身後名を 『%RESULTS%』 に設定します。よろしいですか？
+	PRINTL 
+	PRINTL [0]いいえ
+	PRINTL [1]はい
+	SIF CSTR:ARG:0 != ""
+		PRINTFORML [2]変更しない（%CSTR:ARG:0%）
+	$INPUT_LOOP_CHILD_5_2
+	INPUT
+	IF RESULT == 0
+		CSTR:ARG:201 = %STR_UP%
+		CSTR:ARG:202 = %STR_DOWN%
+		GOTO INPUT_LOOP_CHILD_5_0
+	ELSEIF RESULT == 1
+		CSTR:ARG:0 = %RESULTS%
+		PRINTFORML 変身後名を 『%CSTR:ARG:0%』 に設定しました
+		;変身後名も合わせる
+		CSTR:ARG:1 = %CSTR:ARG:0%
+		CFLAG:ARG:3 = 1
+	ELSEIF RESULT == 2
+	ELSE
+		GOTO INPUT_LOOP_CHILD_5_2
+	ENDIF
+
+ELSEIF RESULT == 5
+	CFLAG:ARG:2 = 1
+	CSTR:ARG:201 = %SAVESTR:11%
+	CSTR:ARG:202 = %CALLNAME:ARG%
+	CSTR:ARG:0 = %SAVESTR:11%%CALLNAME:ARG%
+	PRINTFORML 変身後名を 『%CSTR:ARG:0%』 に設定しました
+	;変身後名も合わせる
+	CSTR:ARG:1 = %CSTR:ARG:0%
+	CFLAG:ARG:3 = 1
+ELSEIF RESULT == 6
+	CFLAG:ARG:2 = 1
+	CSTR:ARG:201 = %CALLNAME:ARG%
+	CSTR:ARG:202 = %SAVESTR:11%
+	CSTR:ARG:0 = %CALLNAME:ARG%%SAVESTR:11%
+	PRINTFORML 変身後名を 『%CSTR:ARG:0%』 に設定しました
+	;変身後名も合わせる
+	CSTR:ARG:1 = %CSTR:ARG:0%
+	CFLAG:ARG:3 = 1
+ENDIF
+PRINTL 
+PRINTL 
+
+
+;-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+;キャラの変身後呼び名の設定
+@FIRSTSETTING_CHARA_TRANSAFTERCALLNAME, ARG
+PRINTFORML {ARG:0}人目のキャラ 『%CALLNAME:ARG%』 の変身後呼び名を設定してください
+PRINTL （※ 変身中に通常の地の文などで表示されるキャラ名です）
+PRINTL ･････････････････････････････････････････････････････
+
+;変身後名を自分で設定した場合
+IF CSTR:ARG:201 == "" && CSTR:ARG:202 == ""
+	PRINTL [0]自分で設定
+	PRINTFORML [1]変身後名と同じに設定（変身後名：『%CSTR:ARG:0%』）
+	$INPUT_LOOP_1_1
+	INPUT
+	IF RESULT < 0 || RESULT > 1
+		GOTO INPUT_LOOP_1_1
+	ELSEIF RESULT == 0
+		PRINTL 変身後呼び名を入力してください
+		SIF CSTR:ARG:1 != ""
+			PRINTFORML [999]変更しない（%CSTR:ARG:1%）
+		$INPUT_LOOP_1_2
+		INPUTS
+		IF RESULTS == ""
+			GOTO INPUT_LOOP_1_2
+		ELSEIF RESULTS == "999"
+		ELSE
+			CSTR:ARG:1 = %RESULTS%
+		ENDIF
+	ELSEIF RESULT == 1
+		CSTR:ARG:1 = %CSTR:ARG:0%
+	ENDIF
+	PRINTFORML 変身後呼び名を 『%CSTR:ARG:1%』 に設定しました
+
+;両方設定されている場合
+ELSE
+	PRINTFORML [0]変身後呼び名を 『%CSTR:ARG:201%』 に設定
+	PRINTFORML [1]変身後呼び名を 『%CSTR:ARG:202%』 に設定
+	PRINTL [2]自分で設定
+	PRINTFORML [3]変身後名と同じに設定（変身後名：『%CSTR:ARG:0%』）
+	$INPUT_LOOP_4
+	INPUT
+	IF RESULT < 0 || RESULT > 3
+		GOTO INPUT_LOOP_4
+	ELSEIF RESULT == 0
+		CSTR:ARG:1 = %CSTR:ARG:201%
+	ELSEIF RESULT == 1
+		CSTR:ARG:1 = %CSTR:ARG:202%
+	ELSEIF RESULT == 2
+		PRINTL 変身後呼び名を入力してください
+		SIF CSTR:ARG:1 != ""
+			PRINTFORML [999]変更しない（%CSTR:ARG:1%）
+		$INPUT_LOOP_4_1
+		INPUTS
+		IF RESULTS == ""
+			GOTO INPUT_LOOP_4_1
+		ELSEIF RESULTS == "999"
+		ELSE
+			CSTR:ARG:1 = %RESULTS%
+		ENDIF
+	ELSEIF RESULT == 3
+		CSTR:ARG:1 = %CSTR:ARG:0%
+	ENDIF
+	PRINTFORML 変身後呼び名を 『%CSTR:ARG:1%』 に設定しました
+ENDIF
+PRINTL 
+PRINTL 
+
+;-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+;キャラの変身時のかけ声の設定
+@FIRSTSETTING_CHARA_TRANSCALL, ARG
+PRINTFORML {ARG:0}人目のキャラ 『%CALLNAME:ARG%』 の変身時のかけ声を設定しますか？
+PRINTL ･････････････････････････････････････････････････････
+
+PRINTL [0]いいえ
+PRINTL [1]ランダムに設定
+PRINTL [2]自分で設定
+SIF FLAG:7 == 1
+	PRINTFORML [3]共通のかけ声に設定
+$INPUT_LOOP
+INPUT
+IF (FLAG:7 == 0 && (RESULT < 0 || RESULT > 2)) || (FLAG:7 == 1 && (RESULT < 0 || RESULT > 3))
+	GOTO INPUT_LOOP
+ELSEIF RESULT == 0
+	CFLAG:ARG:4 = 0
+	PRINTL かけ声を設定しませんでした
+ELSEIF RESULT == 1
+	CFLAG:ARG:4 = 1
+	$INPUT_LOOP_CHILD_1_1
+	CSTR:ARG:2 = %FIRSTSETTING_CHANGINGCALL_RANDOM()%
+	PRINTFORML かけ声を 『%CSTR:ARG:2%』 とします。よろしいですか？
+	PRINTL [0]もう一度選びなおす
+	PRINTL [1]はい
+	$INPUT_LOOP_CHILD_1_2
+	INPUT
+	IF RESULT < 0 || RESULT > 1
+		GOTO INPUT_LOOP_CHILD_1_2
+	ELSEIF RESULT == 0
+		GOTO INPUT_LOOP_CHILD_1_1
+	ELSEIF RESULT == 1
+		PRINTFORML かけ声を 『%CSTR:ARG:2%』 に設定しました
+	ENDIF
+ELSEIF RESULT == 2
+	CFLAG:ARG:4 = 1
+	PRINTL かけ声を入力してください
+	$INPUT_LOOP_CHILD_2
+	INPUTS
+	IF RESULTS == ""
+		GOTO INPUT_LOOP_CHILD_2
+	ELSE
+		CSTR:ARG:2 = %RESULTS%
+		PRINTFORML かけ声を 『%CSTR:ARG:2%』 に設定しました
+	ENDIF
+ELSEIF RESULT == 3
+	CFLAG:ARG:4 = 1
+	CSTR:ARG:2 = %SAVESTR:12%
+	PRINTFORML かけ声を 『%CSTR:ARG:2%』 に設定しました
+
+ENDIF
+PRINTL 
+PRINTL 
+
+
+;-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+;キャラの名乗り口上の設定
+@FIRSTSETTING_CHARA_NANORI, ARG
+
+;キャラの性格の素質番号を取得しておく
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", ARG
+LOCAL = RESULT
+
+PRINTFORML {ARG:0}人目のキャラ 『%CALLNAME:ARG%』 の変身後の名乗り口上を設定しますか？
+PRINTL （※ 口上側で設定されている場合はそちらが優先されます）
+PRINTL ･････････････････････････････････････････････････････
+
+;変身後名を設定していない場合
+IF CFLAG:ARG:2 == 0
+	PRINTL [0]いいえ
+	PRINTL [1]自分で設定
+	$INPUT_LOOP_A
+	INPUT
+	IF RESULT < 0 || RESULT > 1
+		GOTO INPUT_LOOP_A
+	ELSEIF RESULT == 0
+		CFLAG:ARG:5 = 0
+		PRINTL 名乗り口上を設定しませんでした
+	ELSEIF RESULT == 1
+		CFLAG:ARG:5 = 1
+		PRINTL 名乗り口上を入力してください
+		$INPUT_LOOP_CHILD_1
+		INPUTS
+		IF RESULTS == ""
+			GOTO INPUT_LOOP_CHILD_1
+		ELSE
+			CSTR:ARG:3 = %RESULTS%
+			PRINTFORML 名乗り口上を 『%CSTR:ARG:3%』 に設定しました
+		ENDIF
+	ENDIF
+;変身後名を設定している場合
+ELSEIF CFLAG:ARG:2 == 1
+	PRINTL [0]いいえ
+	PRINTL [1]主題 ＋ 変身後名 ＋ 一文 の構成で自動生成
+	PRINTL [2]変身後名 ＋ 一文 の構成で自動生成
+	PRINTL [3]自分で設定
+	$INPUT_LOOP_B
+	INPUT
+	IF RESULT < 0 || RESULT > 3
+		GOTO INPUT_LOOP_B
+	ELSEIF RESULT == 0
+		CFLAG:ARG:5 = 0
+		PRINTL 名乗り口上を設定しませんでした
+	ELSEIF RESULT == 1
+		CFLAG:ARG:5 = 1
+		$INPUT_LOOP_1_1
+		CSTR:ARG:3 = %SAVESTR:10%%CSTR:ARG:0%%FIRSTSETTING_CHANGINGCALL_DETAIL(ARG:0, LOCAL)%
+		PRINTFORML 名乗り口上を 『%CSTR:ARG:3%』 とします。よろしいですか？
+		PRINTL [0]もう一度選びなおす
+		PRINTL [1]はい
+		$INPUT_LOOP_1_2
+		INPUT
+		IF RESULT < 0 || RESULT > 1
+			GOTO INPUT_LOOP_1_2
+		ELSEIF RESULT == 0
+			GOTO INPUT_LOOP_1_1
+		ELSEIF RESULT == 1
+			PRINTFORML 名乗り口上を 『%CSTR:ARG:3%』 に設定しました
+		ENDIF
+	ELSEIF RESULT == 2
+		CFLAG:ARG:5 = 1
+		$INPUT_LOOP_2_1
+		CSTR:ARG:3 = %CSTR:ARG:0%%FIRSTSETTING_CHANGINGCALL_DETAIL(ARG:0, LOCAL)%
+		PRINTFORML 名乗り口上を 『%CSTR:ARG:3%』 とします。よろしいですか？
+		PRINTL [0]もう一度選びなおす
+		PRINTL [1]はい
+		$INPUT_LOOP_2_2
+		INPUT
+		IF RESULT < 0 || RESULT > 1
+			GOTO INPUT_LOOP_2_2
+		ELSEIF RESULT == 0
+			GOTO INPUT_LOOP_2_1
+		ELSEIF RESULT == 1
+			PRINTFORML 名乗り口上を 『%CSTR:ARG:3%』 に設定しました
+		ENDIF
+	ELSEIF RESULT == 3
+		CFLAG:ARG:5 = 1
+		PRINTL 名乗り口上を入力してください
+		$INPUT_LOOP_3
+		INPUTS
+		IF RESULTS == ""
+			GOTO INPUT_LOOP_3
+		ELSE
+			CSTR:ARG:3 = %RESULTS%
+			PRINTFORML 名乗り口上を 『%CSTR:ARG:3%』 に設定しました
+		ENDIF
+	ENDIF
+ENDIF
+PRINTL 
+PRINTL 

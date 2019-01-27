@@ -1,0 +1,413 @@
+
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+; 複数のウィンドウを管理し、まとめて描画するための関数群
+;	※ 要 TagSetText.ERB
+; 
+;--------------------------------
+; 注意事項)
+;	・@WINDOW_DISPLAY_EX()の nDisplayWidth はヴァリアントの設定に応じて変更すること
+;	・ウィンドウは10個まで作成可能
+;	・ウィンドウの左上位置に負数を指定してはいけない
+;	・ウィンドウの大きさに0以下の値を指定してはいけない
+;	・枠ありにする場合は、その分ウィンドウの大きさを増やすこと（縦:+2,横:+4）
+;	・ウィンドウが重なる場合、下のウィンドウの描画位置が右に1文字分ずれることがあります
+;	・一画面に収まる程度のサイズでの使用を想定しています
+;	・等幅フォントでないフォントの使用は想定していません
+; 
+;--------------------------------
+; 使い方)
+;	以下のような流れで複数のウィンドウを生成しまとめて描画します。ウィンドウの領域が重なっていた場合、基本的には新しく生成したウィンドウが上になります
+;	ウィンドウ内に表示する文字列はタグ指定することで、色変更やボタン化を行うこともできます。詳しくはTagSetText.ERBを参照してください。
+;	----------------
+;		ウィンドウ生成 → 行数を指定して文字列を設定 → 行数を指定して文字列を設定 → 行数を指定して文字列を設定
+;		 → ウィンドウ生成 → 行数を指定して文字列を設定
+;		 → 全てのウィンドウを描画
+;		 → 生成したウィンドウを破棄
+;	----------------
+; 
+;--------------------------------
+; サンプル)
+;	以下のコードは2つのウィンドウを描画するコードです
+;		CALL WINDOW_CREATE( 0, 0, 0, 32, 10, 1 )			; ウィンドウを生成（ID=0, 左上Ｘ値=0, 左上Ｙ値=0, 幅=32, 高さ=10）
+;		CALL WINDOW_SETTEXT( 0, 0, "ウィンドウ０" )			; 「ID=0」のウィンドウの 0 行目の文字列を "ウィンドウ１" に設定
+;		CALL WINDOW_SETTEXT( 0, 1, "あいうえお" )			; 「ID=0」のウィンドウの 1 行目の文字列を "あいうえお" に設定
+;		CALL WINDOW_CREATE( 1, 36, 2, 32, 10, 1 )			; ウィンドウを生成（ID=1, 左上Ｘ値=36, 左上Ｙ値=2, 幅=32, 高さ=10）
+;		CALL WINDOW_SETTEXT( 1, 0, "ウィンドウ１" )			; 「ID=1」のウィンドウの 0 行目の文字列を "ウィンドウ２" に設定
+;		CALL WINDOW_SETTEXT( 1, 1, "かきくけこ" )			; 「ID=1」のウィンドウの 1 行目の文字列を "かきくけこ" に設定
+;		CALL WINDOW_DISPLAY()								; ウィンドウ０とウィンドウ１を描画する
+;		CALL WINDOW_DESTROY( 0 )							; ウィンドウを破棄する
+;		CALL WINDOW_DESTROY( 1 )							; ウィンドウを破棄する
+;≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡
+
+
+;================================================================
+; 生成したウィンドウを描画する
+;--------------------------------
+;	nWindowCnt				: ウィンドウ数
+;	arrDisplayPriority		: 描画優先度（ウィンドウIDを配列で指定する。ここで指定した順番でウィンドウの描画が行われる）
+;								※ 若い位置のウィンドウほど下になる
+;================================================================
+@WINDOW_DISPLAY_EX( nWindowCnt, arrDisplayPriority )
+	#DIM  nWindowCnt
+	#DIM REF arrDisplayPriority, 0
+
+	#DIM  nDisplayWidth = 84		; 画面横幅。ヴァリアントの設定に応じて変更すること
+
+	#DIMS arrDisplayText, 200
+	#DIM  nLoop
+	#DIM  nWndId
+	#DIM  nWndLine
+	#DIM  nCheckLine
+	#DIM  nMaxLine
+	#DIM  nPosX
+	#DIM  nPosY
+	#DIM  nSizeW
+	#DIM  nSizeH
+	#DIM  nBorder
+
+	nMaxLine = 0
+	VARSET arrDisplayText, ""
+
+	; 全てのウィンドウの描画内容を１行ずつタグ指定文字列にする
+	FOR nLoop, 0, nWindowCnt
+		nWndId = arrDisplayPriority:nLoop
+		SIF nWndId < 0
+			CONTINUE
+		CALL WINDOW_MGR( "EXIST", nWndId, 0, "" )
+		SIF RESULT == 0
+			CONTINUE
+
+		CALL WINDOW_MGR( "GETINFO", nWndId, 0, "" )
+		nPosX   = RESULT:0
+		nPosY   = RESULT:1
+		nSizeW  = RESULT:2
+		nSizeH  = RESULT:3
+		nBorder = RESULT:4
+		FOR nWndLine, 0, nSizeH
+			VARSET LOCALS, ""
+			nCheckLine = nPosY + nWndLine
+			SIF nCheckLine < 0
+				CONTINUE
+			IF nPosX >= 0
+				CALL CUT_TAGSET_TEXT( arrDisplayText:nCheckLine, nPosX, 0, 1 )
+				LOCALS:0 = %RESULTS:0%
+				CALL CUT_TAGSET_TEXT( arrDisplayText:nCheckLine, nPosX + nSizeW, 1, 0 )
+				LOCALS:1 = %RESULTS:1%
+				CALL WINDOW_MGR( "GETTEXT", nWndId, nWndLine, "" )
+				CALL SHAPE_TAGSET_TEXT( RESULTS, nSizeW )
+				LOCALS:2 = %RESULTS:0%
+			ELSE
+				LOCALS:0 = 
+				CALL CUT_TAGSET_TEXT( arrDisplayText:nCheckLine, MAX( 0, nPosX + nSizeW ), 1 )
+				LOCALS:1 = %RESULTS:1%
+				IF nSizeW > nPosX
+					CALL WINDOW_MGR( "GETTEXT", nWndId, nWndLine, "" )
+					CALL CUT_TAGSET_TEXT( RESULTS, ABS( nPosX ), 1, 0 )
+					LOCALS:2 = %RESULTS:1%
+				ELSE
+					LOCALS:2 = 
+				ENDIF
+			ENDIF
+			arrDisplayText:nCheckLine = %LOCALS:0%%LOCALS:2%%LOCALS:1%
+			nMaxLine = MAX( nMaxLine, nCheckLine )
+		NEXT
+	NEXT
+
+	; 全てのウィンドウの描画内容をまとめたタグ指定文字列を描画する
+	FOR nCheckLine, 0, nMaxLine + 1
+		CALL SHAPE_TAGSET_TEXT( arrDisplayText:nCheckLine, nDisplayWidth )
+		CALL PRINT_TAGSET_TEXT( RESULTS:0, 0x01 )
+	NEXT
+
+	RETURN
+
+
+;================================================================
+; 生成したウィンドウを描画する
+;--------------------------------
+;================================================================
+@WINDOW_DISPLAY()
+	#DIM  nWindowCnt = 10
+	#DIM  arrDisplayPriority = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9
+
+	CALL WINDOW_DISPLAY_EX( nWindowCnt, arrDisplayPriority )
+
+
+;================================================================
+; ウィンドウを生成する
+;--------------------------------
+; 引数
+;	nWndId		: ウィンドウＩＤ（0～9を指定する）
+;	nLocX		: ウィンドウ座標（左上Ｘ値）
+;	nLocY		: ウィンドウ座標（左上Ｙ値）
+;	nWidth		: ウィンドウサイズ（幅）
+;	nHeigth		: ウィンドウサイズ（高さ）
+;	nExFlag		: その他の設定
+;					0x01 : 枠あり（枠の分、記述できる領域が小さくなるので注意すること）
+;--------------------------------
+;================================================================
+@WINDOW_CREATE( nWndId, nLocX, nLocY, nWidth, nHeigth, nExFlag )
+	#DIM  nWndId
+	#DIM  nLocX
+	#DIM  nLocY
+	#DIM  nWidth
+	#DIM  nHeigth
+	#DIM  nExFlag
+
+	#DIM  nBorder
+
+	; 指定したウィンドウ番号のウィンドウが生成済みの場合はエラーにする
+	CALL WINDOW_MGR( "EXIST", nWndId, 0, "" )
+	IF RESULT == 1
+		THROW WINDOW_CREATE() : ウィンドウ（nWndId={nWndId}）は生成済みです
+	ENDIF
+
+	; ウィンドウを生成する
+	nBorder = (nExFlag & 0x01) ? 1 # 0
+	CALL WINDOW_MGR( "CREATE", nWndId, 0, @"{nLocX},{nLocY},{nWidth},{nHeigth},{nBorder}" )
+
+	RETURN
+
+
+;================================================================
+; ウィンドウを破棄する
+;--------------------------------
+; 引数
+;	nWndId		: ウィンドウＩＤ（0～9を指定する）
+;--------------------------------
+;================================================================
+@WINDOW_DESTROY( nWndId )
+	#DIM  nWndId
+
+	;--------------------------------
+	;※ 初期化としても使うかもしれないのでこのエラーチェックはコメントアウト
+	;	; 指定したウィンドウ番号のウィンドウが未生成の場合はエラーにする
+	;	CALL WINDOW_MGR( "EXIST", nWndId, 0, "" )
+	;	IF RESULT == 0
+	;		THROW CREATE_WINDOW() : ウィンドウ（nWndId={nWndId}）は未生成です
+	;	ENDIF
+	;--------------------------------
+
+	; ウィンドウを破棄する
+	CALL WINDOW_MGR( "DESTROY", nWndId, 0, "" )
+
+	RETURN
+
+
+;================================================================
+; ウィンドウに表示する文字列を指定する
+;--------------------------------
+; 引数
+;	nWndId		: ウィンドウＩＤ（0～9を指定する）
+;	nLine		: 文字列を設定する行位置
+;	strText		: 設定する文字列（タグ指定文字列(TagSetText.ERBを参照)で指定可能）
+;--------------------------------
+;================================================================
+@WINDOW_SETTEXT( nWndId, nLine, strText )
+	#DIM  nWndId
+	#DIM  nLine
+	#DIMS strText
+
+	; 指定したウィンドウ番号のウィンドウが未生成の場合はエラーにする
+	CALL WINDOW_MGR( "EXIST", nWndId, 0, "" )
+	IF RESULT == 0
+		THROW WINDOW_SETTEXT() : ウィンドウ（nWndId={nWndId}）は未生成です
+	ENDIF
+
+	; ウィンドウに表示する文字列を設定する
+	CALL WINDOW_MGR( "SETTEXT", nWndId, nLine, strText )
+
+	RETURN
+
+
+;================================================================
+; ウィンドウの表示位置,サイズなどを変更する
+;--------------------------------
+; 引数
+;	nWndId		: ウィンドウＩＤ（0～9を指定する）
+;	nLocX		: ウィンドウ座標（左上Ｘ値）
+;	nLocY		: ウィンドウ座標（左上Ｙ値）
+;	nWidth		: ウィンドウサイズ（幅）
+;	nHeigth		: ウィンドウサイズ（高さ）
+;	nExFlag		: その他の設定
+;					0x01 : 枠あり（枠の分、記述できる領域が小さくなるので注意すること）
+;--------------------------------
+;================================================================
+@WINDOW_RECTANGLE( nWndId, nLocX, nLocY, nWidth, nHeigth, nExFlag )
+	#DIM  nWndId
+	#DIM  nLocX
+	#DIM  nLocY
+	#DIM  nWidth
+	#DIM  nHeigth
+	#DIM  nExFlag
+
+	#DIM  nBorder
+
+	; 指定したウィンドウ番号のウィンドウが未生成の場合はエラーにする
+	CALL WINDOW_MGR( "EXIST", nWndId, 0, "" )
+	IF RESULT == 0
+		THROW WINDOW_RECTANGLE() : ウィンドウ（nWndId={nWndId}）は未生成です
+	ENDIF
+
+	; ウィンドウの表示位置などを再設定する
+	nBorder = (nExFlag & 0x01) ? 1 # 0
+	CALL WINDOW_MGR( "RECTANGLE", nWndId, 0, @"{nLocX},{nLocY},{nWidth},{nHeigth},{nBorder}" )
+
+	RETURN
+
+
+;================================================================
+;【内部処理用】
+; ウィンドウを生成する
+;--------------------------------
+; 引数
+;	strMode		: 処理内容
+;					"EXIST"		: ウィンドウが生成されているか確認する
+;					"CREATE"	: ウィンドウの生成
+;					"DESTROY"	: ウィンドウの破棄
+;					"SETTEXT"	: ウィンドウの指定した行位置に文字列を設定する
+;					"RECTANGLE"	: ウィンドウの表示位置などを再設定する
+;					"GETTEXT"	: ウィンドウの指定した行位置に設定されている文字列を取得する
+;					"GETINFO"	: ウィンドウの表示位置などの情報を取得する
+;	nWndId		: ウィンドウＩＤ（0～9を指定する）
+;	ARG:0		: 処理内容によって変化
+;	ARGS:0		: 処理内容によって変化
+;--------------------------------
+; 処理内容ごとの ARG:0,ARGS:0 の内容
+;	strMode = "EXIST"
+;		ARG:0	: 未使用
+;		ARGS:0	: 未使用
+;
+;	strMode = "CREATE", "RECTANGLE"
+;		ARG:0	: 未使用
+;		ARGS:0	: ウィンドウ情報をCSV形式で記述した文字列
+;					（"ウィンドウ座標Ｘ値", "ウィンドウ座標Ｙ値", "ウィンドウ幅", "ウィンドウ高さ", "枠設定(0=枠無し, 1=枠あり)" ）
+;
+;	strMode = "DESTROY"
+;		ARG:0	: 未使用
+;		ARGS:0	: 未使用
+;
+;	strMode = "SETTEXT"
+;		ARG:0	: 文字列を設定する行位置
+;		ARGS:0	: 設定する文字列
+;
+;	strMode = "GETTEXT"
+;		ARG:0	: 取得する行位置
+;		ARGS:0	: 未使用
+;
+;	strMode = "GETINFO"
+;		ARG:0	: 未使用
+;		ARGS:0	: 未使用
+;--------------------------------
+; 戻り値など
+;	strMode = "EXIST"の場合
+;		RESULT:0	: 0=ウィンドウが生成されていない, 1=ウィンドウが生成されている
+;
+;	strMode = "GETTEXT"の場合
+;		RESULTS:0	: 指定した行位置に設定されている文字列
+;
+;	strMode = "GETINFO"の場合
+;		RESULT:0	: ウィンドウ座標Ｘ値
+;		RESULT:1	: ウィンドウ座標Ｙ値
+;		RESULT:2	: ウィンドウ幅
+;		RESULT:3	: ウィンドウ高さ
+;		RESULT:4	: 枠設定(0=枠無し, 1=枠あり)
+;================================================================
+@WINDOW_MGR( strMode, nWndId, ARG, ARGS )
+#LOCALSIZE 8
+#LOCALSSIZE 8
+	#DIMS strMode
+	#DIM  nWndId
+
+	#DIMS arrWndTextPrint, 10, 100	; arrWndTextPrint:Ｘ:Ｙ ... Ｘ:ウィンドウ番号, Ｙ:行位置（実際に表示する整形済みのテキスト。表示処理を軽くするためにここで生成しておく）
+	#DIMS arrWndText, 10, 100		; arrWndText:Ｘ:Ｙ ... Ｘ:ウィンドウ番号, Ｙ:行位置
+	#DIM  arrWndInfo, 10, 100		; arrWndInfo:Ｘ:Ｙ ... Ｘ:ウィンドウ番号, Ｙ:
+									;											0=ウィンドウ座標Ｘ値, 1=ウィンドウ座標Ｙ値, 2=ウィンドウ幅, 3=ウィンドウ高さ, 
+									;											4=枠設定（0=枠無し, 1=枠あり, ）
+									;											99=生成済みフラグ
+	#DIM  nLoop
+
+	VARSET RESULT, 0
+
+	; ウィンドウの初期化を行う
+	SELECTCASE strMode
+		CASE "CREATE"
+			FOR nLoop, 0, 100
+				arrWndTextPrint:nWndId:nLoop =
+				arrWndText:nWndId:nLoop =
+				arrWndInfo:nWndId:nLoop = 0
+			NEXT
+			arrWndInfo:nWndId:99 = 1
+		CASE "DESTROY"
+			FOR nLoop, 0, 100
+				arrWndTextPrint:nWndId:nLoop =
+				arrWndText:nWndId:nLoop =
+				arrWndInfo:nWndId:nLoop = 0
+			NEXT
+			RETURN
+	ENDSELECT
+
+	SELECTCASE strMode
+		CASE "CREATE", "RECTANGLE"
+			VARSET LOCALS, ""
+			SPLIT ARGS, ",", LOCALS
+			FOR nLoop, 0, 5
+				SIF ISNUMERIC( LOCALS:nLoop ) == 0
+					THROW WINDOW_MGR() : 設定内容が不正です（ARGS=%ARGS%）
+				SELECTCASE nLoop
+					CASE 0, 1, 2, 3, 4
+						arrWndInfo:nWndId:nLoop = TOINT( LOCALS:nLoop )
+				ENDSELECT
+			NEXT
+			; 枠ありの場合、枠テキストをこの時点で生成する
+			IF arrWndInfo:nWndId:4 == 1
+				arrWndTextPrint:nWndId:0                         = ┏%"━" * ((arrWndInfo:nWndId:2 - 4) / 2)%┓
+				arrWndTextPrint:nWndId:(arrWndInfo:nWndId:3 - 1) = ┗%"━" * ((arrWndInfo:nWndId:2 - 4) / 2)%┛
+				FOR nLoop, 1, arrWndInfo:nWndId:3 - 1
+					CALL SHAPE_TAGSET_TEXT( arrWndText:nWndId:(nLoop - 1), (arrWndInfo:nWndId:2 - 4) )
+					arrWndTextPrint:nWndId:nLoop = %"┃"%%RESULTS:0%%"┃"%
+				NEXT
+			ELSE
+				FOR nLoop, 0, arrWndInfo:nWndId:3
+					CALL SHAPE_TAGSET_TEXT( arrWndText:nWndId:nLoop, arrWndInfo:nWndId:2 )
+					arrWndTextPrint:nWndId:nLoop = %RESULTS:0%
+				NEXT
+			ENDIF
+
+		CASE "SETTEXT"
+			arrWndText:nWndId:(ARG) = %ARGS%
+			; 枠ありの場合
+			IF arrWndInfo:nWndId:4 == 1
+				; ※ 枠を超える位置への格納はしない
+				IF ARG < arrWndInfo:nWndId:3 - 2
+					CALL SHAPE_TAGSET_TEXT( ARGS, arrWndInfo:nWndId:2 - 4 )
+					arrWndTextPrint:nWndId:(ARG + 1) = %"┃"%%RESULTS:0%%"┃"%
+				ENDIF
+			ELSE
+				CALL SHAPE_TAGSET_TEXT( ARGS, arrWndInfo:nWndId:2 )
+				arrWndTextPrint:nWndId:(ARG) = %RESULTS:0%
+			ENDIF
+
+		CASE "GETTEXT"
+			RESULTS:0 = %arrWndTextPrint:nWndId:(ARG)%
+			RETURN
+
+		CASE "GETINFO"
+			RESULT:0 = arrWndInfo:nWndId:0
+			RESULT:1 = arrWndInfo:nWndId:1
+			RESULT:2 = arrWndInfo:nWndId:2
+			RESULT:3 = arrWndInfo:nWndId:3
+			RESULT:4 = arrWndInfo:nWndId:4
+			RETURN RESULT:0
+
+		CASE "EXIST"
+			RETURN arrWndInfo:nWndId:99
+
+	ENDSELECT
+
+	RETURN
+
+
+;================================================================
+
+

@@ -1,0 +1,1895 @@
+;---------------------------------------------------------------------
+;特定の素質を持っていると仲間に夜這いを掛ける
+@YOBAI
+#DIM CCOUNT
+;昼間は判定しない
+SIF TIME == 0
+	RETURN
+;キャラが一人しかいない場合は判定しない
+SIF CHARANUM_ACTIVE() < 2
+	RETURN
+;夜這い対象にできるキャラが居ない場合は判定しない
+LOCAL = 0
+FOR CCOUNT, 0, CHARANUM
+	SIF CCOUNT == MASTER
+		CONTINUE
+	;パーティに参加していないキャラは除外
+	SIF CFLAG:CCOUNT:999 == 0
+		CONTINUE
+	;ここまで抜けたら人数にカウント
+	LOCAL ++
+NEXT
+SIF LOCAL == 0
+	RETURN
+;ここまで抜けてくれば判定を開始
+VARSET LOCAL
+SETCOLOR 96,96,96
+SIF FLAG:999 == 1
+	PRINTL ------ 夜這い判定 ------
+RESETCOLOR
+;ランダム抽選用に候補をクリア
+CALL CLEARRANDCHOOSE
+FOR CCOUNT, 0, CHARANUM
+	SIF CCOUNT == MASTER
+		CONTINUE
+	SIF CFLAG:CCOUNT:999 == 0
+		CONTINUE
+
+	TARGET = CCOUNT
+	LOCAL = 0
+
+	;淫核、淫壺、淫尻、淫乳、ふたなり、オトコの場合に発生判定を行う
+	IF (TALENT:淫核 * 3 + ABL:Ｃ感覚 >= 3) || (TALENT:淫壷 * 3 + ABL:Ｖ感覚 >= 3) || (TALENT:淫尻 * 3 + ABL:Ａ感覚 >= 3) || (TALENT:淫乳 * 3 + ABL:Ｂ感覚 >= 3) || ((TALENT:ふたなり > 0 || TALENT:変身時ふたなり > 0 || TALENT:オトコ > 0) && ABL:射精中毒 > 0)
+		;生存していないキャラは判定しない
+		SIF CFLAG:0 != 0
+			CONTINUE
+		;確率判定
+		LOCAL:1 = (TALENT:淫乱 > 0) * 2 + (TALENT:淫核 * 3 + ABL:Ｃ感覚 >= 3) + (TALENT:淫壷 * 3 + ABL:Ｖ感覚 >= 3) + (TALENT:淫尻 * 3 + ABL:Ａ感覚 >= 3) + (TALENT:淫乳 * 3 + ABL:Ｂ感覚 >= 3) + ((TALENT:ふたなり > 0 || TALENT:変身時ふたなり > 0  || TALENT:オトコ > 0) && ABL:射精中毒 > 0)
+		LOCAL:2 = MAX(ABL:欲望 + ABL:自慰中毒 + ABL:触手中毒 , 0)
+		SIF LOCAL:1
+			LOCAL = (LOCAL:1 * 2 + 22) * (125 + LOCAL:2 * 10)
+		SIF TALENT:交際相手 >= 1 && TALENT:交際相手 < 5
+			TIMES LOCAL, 0.5
+		SIF TALENT:清純派
+			TIMES LOCAL, 0.5
+		SIF TALENT:人間不信 > 0
+			TIMES LOCAL, 0.25
+		IF FLAG:999 == 1
+			SETCOLOR 96,96,96
+			PRINTFORML 実行判定　%CALLNAME:TARGET%　確率{LOCAL}
+			RESETCOLOR
+		ENDIF
+		SIF RAND:10000 < LOCAL
+			CALL ADDRANDCHOOSE,TARGET
+	ELSE
+		CONTINUE
+	ENDIF
+NEXT
+$REROLL
+;候補がある場合
+IF CHOICECOUNT_F()
+	TARGET = RANDCHOOSE_F()
+	CALL YOBAI_EVENT
+	IF RESULT == - 999
+		CALL CLEARSPECIFICCHOOSE(TARGET)
+		SETCOLOR 96,96,96
+		SIF FLAG:999 == 1
+			PRINTFORML %CALLNAME:TARGET% = -999 / REROLL
+		RESETCOLOR
+		GOTO REROLL
+	ENDIF
+	;実績
+	CALL GET_STATE_EXPUP,TARGET
+	;全キャラの変身を解除
+	FOR LOCAL, 0, CHARANUM
+		SIF LOCAL == MASTER
+			CONTINUE
+		SIF CFLAG:LOCAL:1 > 0 && CFLAG:LOCAL:0 == 0
+			CALL TRANSFORM, 0, LOCAL
+	NEXT
+ELSE
+	SETCOLOR 96,96,96
+	SIF FLAG:999 == 1
+		PRINTFORML 夜這い実行なし
+	RESETCOLOR
+ENDIF
+
+;---------------------------------------------------------------------
+;夜這いイベントの制御
+@YOBAI_EVENT
+#DIM LCOUNT
+#DIM CCOUNT
+#DIM SELECT,12
+SIF CHARANUM_ACTIVE() == 0
+	RETURN
+;初期化
+VARSET LOCAL
+VARSET GFLAG
+;現段階で対象者が居るかチェック
+;双方が変身しなかった場合
+SELECT = 0
+;対象だけが変身した場合
+SELECT:1 = 0
+;実行者だけが変身した場合
+SELECT:10 = 0
+;双方が変身した場合
+SELECT:11 = 0
+FOR CCOUNT, 0, CHARANUM
+	SIF CCOUNT == MASTER
+		CONTINUE
+	;実行者は除外
+	SIF CCOUNT == TARGET
+		CONTINUE
+	;パーティに参加していないキャラは除外
+	SIF CFLAG:CCOUNT:999 == 0
+		CONTINUE
+
+	;双方が変身しなかった場合
+	;双方がオトコでなければカウント
+	SIF CHARATALENT_F(TARGET,0,"オトコ") == 0 || CHARATALENT_F(CCOUNT,0,"オトコ") == 0
+		SELECT:0 ++
+
+	;相手だけが変身した場合
+	;双方がオトコでなければカウント
+	SIF CHARATALENT_F(TARGET,0,"オトコ") == 0 || CHARATALENT_F(CCOUNT,1,"オトコ") == 0
+		SELECT:1 ++
+
+	;実行者だけが変身した場合
+	;双方がオトコでなければカウント
+	SIF CHARATALENT_F(TARGET,1,"オトコ") == 0 || CHARATALENT_F(CCOUNT,0,"オトコ") == 0
+		SELECT:10 ++
+
+	;双方が変身した場合
+	;双方がオトコでなければカウント
+	SIF CHARATALENT_F(TARGET,1,"オトコ") == 0 || CHARATALENT_F(CCOUNT,1,"オトコ") == 0
+		SELECT:11 ++
+
+	;夜這い条件を満たしていない場合
+	SETCOLOR 96,96,96
+	IF CHARATALENT_F(TARGET,0,"ふたなり") > 0 && (TALENT:淫核 * 3 + ABL:Ｃ感覚 < 3) && (TALENT:淫壷 * 3 + ABL:Ｖ感覚 < 3) && (TALENT:淫尻 * 3 + ABL:Ａ感覚 < 3) && (TALENT:淫乳 * 3 + ABL:Ｃ感覚 < 3) && ABL:Ｃ感覚 + ABL:射精中毒 == 0
+		SELECT:0 = 0
+		SELECT:1 = 0
+	ELSEIF CHARATALENT_F(TARGET,0,"オトコ") == 0 && (TALENT:淫核 * 3 + ABL:Ｃ感覚 < 3) && (TALENT:淫壷 * 3 + ABL:Ｖ感覚 < 3) && (TALENT:淫尻 * 3 + ABL:Ａ感覚 < 3) && (TALENT:淫乳 * 3 + ABL:Ｃ感覚 < 3)
+		SELECT:0 = 0
+		SELECT:1 = 0
+	ELSEIF CHARATALENT_F(TARGET,0,"オトコ") > 0 && ABL:Ｃ感覚 + ABL:射精中毒 == 0
+		SELECT:0 = 0
+		SELECT:1 = 0
+	ENDIF
+
+	IF CHARATALENT_F(TARGET,1,"ふたなり") > 0 && (TALENT:淫核 * 3 + ABL:Ｃ感覚 < 3) && (TALENT:淫壷 * 3 + ABL:Ｖ感覚 < 3) && (TALENT:淫尻 * 3 + ABL:Ａ感覚 < 3) && (TALENT:淫乳 * 3 + ABL:Ｃ感覚 < 3) && ABL:Ｃ感覚 + ABL:射精中毒 == 0
+		SELECT:10 = 0
+		SELECT:11 = 0
+	ELSEIF CHARATALENT_F(TARGET,1,"オトコ") == 0 && (TALENT:淫核 * 3 + ABL:Ｃ感覚 < 3) && (TALENT:淫壷 * 3 + ABL:Ｖ感覚 < 3) && (TALENT:淫尻 * 3 + ABL:Ａ感覚 < 3) && (TALENT:淫乳 * 3 + ABL:Ｃ感覚 < 3)
+		SELECT:10 = 0
+		SELECT:11 = 0
+	ELSEIF CHARATALENT_F(TARGET,1,"オトコ") > 0 && ABL:Ｃ感覚 + ABL:射精中毒 == 0
+		SELECT:10 = 0
+		SELECT:11 = 0
+	ENDIF
+
+	IF CHARATALENT_F(TARGET,0,"オトコ") == 0 && CHARATALENT_F(TARGET,1,"オトコ") > 0 && TALENT:妊娠 > 0
+		SELECT:10 = 0
+		SELECT:11 = 0
+	ENDIF
+
+	IF CHARATALENT_F(CCOUNT,0,"オトコ") == 0 && CHARATALENT_F(CCOUNT,1,"オトコ") > 0 && TALENT:CCOUNT:妊娠 > 0
+		SELECT:1 = 0
+		SELECT:11 = 0
+	ENDIF
+
+	;女体受容なし
+	IF CHARATALENT_F(TARGET,0,"オトコ") > 0 && TALENT:変身時ＴＳ > 0 && TALENT:女体受容 == 0
+		SELECT:10 = 0
+		SELECT:11 = 0
+	ENDIF
+
+	;性別嗜好による選別
+	IF TALENT:CCOUNT:オトコ > 0 && TALENT:男性苦手 > 0 && TALENT:両刀 == 0 && RAND:4 == 0
+		SELECT:0 = 0
+		SELECT:1 = 0
+		SELECT:10 = 0
+		SELECT:11 = 0
+		SIF FLAG:999 == 1
+			PRINTL 男性苦手
+	ENDIF
+	IF TALENT:CCOUNT:オトコ <= 0 && TALENT:女性苦手 > 0 && TALENT:両刀 == 0 && RAND:4 == 0
+		SELECT:0 = 0
+		SELECT:1 = 0
+		SELECT:10 = 0
+		SELECT:11 = 0
+		SIF FLAG:999 == 1
+			PRINTL 女性苦手
+	ENDIF
+	RESETCOLOR
+NEXT
+;debug
+SETCOLOR 96,96,96
+SIF FLAG:999 == 1
+	PRINTFORML 夜這いプレイ内容抽選 %CALLNAME:TARGET%　{SELECT} / {SELECT:1} / {SELECT:10} / {SELECT:11}
+RESETCOLOR
+;対象人数が0人の場合、リロール
+SIF SELECT + SELECT:1 + SELECT:10 + SELECT:11 == 0
+	RETURN -999
+
+;プレイ内容の抽選
+;双方が変身しない場合
+SIF SELECT > 0
+	CALL YOBAI_SELECT_PLAY, 0
+;対象のみが変身した場合
+SIF SELECT:1 > 0
+	CALL YOBAI_SELECT_PLAY, 1
+;実行者のみが変身した場合
+SIF SELECT:10 > 0
+	CALL YOBAI_SELECT_PLAY, 10
+;双方が変身した場合
+SIF SELECT:11 > 0
+	CALL YOBAI_SELECT_PLAY, 11
+
+;キャラリスト印刷開始
+DRAWLINE
+FONTBOLD
+PRINTL （夜這い対象選択）
+FONTREGULAR
+PRINTL 
+PRINTFORML %PRINT_CALLNAME(TARGET)%は眠れぬ夜を過ごしている・・・
+;実行者がＴＳしなければ対象が居ない場合
+IF SELECT:0 + SELECT:1 == 0
+	IF TALENT:女体受容 > 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は変身で女体化できます。変身した状態で夜這いを行いますか？
+		PRINTFORML  [0]はい　[1]夜這いを行わずに終了する
+		$INPUT_LOOP_0_0
+		INPUT
+		IF RESULT == 0
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は変身した！
+			PRINTW 
+			CALL TRANSFORM, 1
+		ELSEIF RESULT == 1
+			PRINTFORML 夜這いを終了します。
+			PRINTW 
+			;残りの処理を行わずに終了
+			RETURN -1
+		ELSE
+			GOTO INPUT_LOOP_0_0
+		ENDIF
+	ELSE
+		;候補が居ないのでリロール
+		RETURN -999
+	ENDIF
+;ＴＳした際に対象が居る場合
+ELSEIF SELECT:10 + SELECT:11 > 0
+	IF (TALENT:変身時ＴＳ > 0 || TALENT:変身時ふたなり > 0) && (TALENT:オトコ == 0 || TALENT:女体受容 > 0)
+		IF TALENT:オトコ > 0
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は変身で女体化できます。変身した状態で夜這いを行いますか？
+		ELSEIF TALENT:変身時ふたなり > 0
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は変身でふたなり化できます。変身した状態で夜這いを行いますか？
+		ELSE
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は変身で男性化できます。変身した状態で夜這いを行いますか？
+		ENDIF
+		PRINTFORML 　[0]はい　　[1]いいえ
+		$INPUT_LOOP_0_1
+		INPUT
+		IF RESULT == 0
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は変身した！
+			PRINTW 
+			CALL TRANSFORM, 1
+		ELSEIF RESULT == 1
+			PRINTFORML 変身せずにそのまま夜這いを行います。
+			PRINTW 
+		ELSE
+			GOTO INPUT_LOOP_0_1
+		ENDIF
+	ENDIF
+ENDIF
+PRINTL 
+PRINTL 誰の部屋に行きますか？
+PRINTL 
+FOR LCOUNT,0,CHARANUM
+	LOCALS =
+	IF !(GETBIT(RELATION:TARGET:LCOUNT,親子) || GETBIT(RELATION:TARGET:LCOUNT,兄弟姉妹) || GETBIT(RELATION:TARGET:LCOUNT,祖父祖母孫) || GETBIT(RELATION:TARGET:LCOUNT,おじおば) || GETBIT(RELATION:TARGET:LCOUNT,甥姪) || GETBIT(RELATION:TARGET:LCOUNT,いとこ) || GETBIT(RELATION:TARGET:LCOUNT,友人) || GETBIT(RELATION:TARGET:LCOUNT,片思い) || GETBIT(RELATION:TARGET:LCOUNT,恋人) || GETBIT(RELATION:TARGET:LCOUNT,婚約者) || GETBIT(RELATION:TARGET:LCOUNT,配偶者))
+		IF GETBIT(RELATION:TARGET:LCOUNT,疎遠な) && GETBIT(RELATION:TARGET:LCOUNT,親しい)
+			LOCALS += "微妙な距離感の知人"
+		ELSEIF GETBIT(RELATION:TARGET:LCOUNT,親しい)
+			LOCALS += "親しい間柄"
+		ELSEIF GETBIT(RELATION:TARGET:LCOUNT,疎遠な)
+			LOCALS += "顔見知り"
+		ELSEIF GETBIT(RELATION:TARGET:LCOUNT,愛する) && GETBIT(RELATION:TARGET:LCOUNT,憎悪する)
+			LOCALS += "複雑な関係"
+		ELSEIF GETBIT(RELATION:TARGET:LCOUNT,愛する)
+			LOCALS += "大事な人"
+		ELSEIF GETBIT(RELATION:TARGET:LCOUNT,憎悪する)
+			LOCALS += "仇敵"
+		ENDIF
+	ELSE
+		SIF GETBIT(RELATION:TARGET:LCOUNT,生き別れ)
+			LOCALS += "生き別れの"
+		IF GETBIT(RELATION:TARGET:LCOUNT,疎遠な) && GETBIT(RELATION:TARGET:LCOUNT,親しい)
+			LOCALS += "微妙な距離感の"
+		ELSEIF GETBIT(RELATION:TARGET:LCOUNT,親しい) && GETBIT(RELATION:TARGET:LCOUNT,友人) == 0
+			LOCALS += "親しい"
+		ELSEIF GETBIT(RELATION:TARGET:LCOUNT,疎遠な)
+			LOCALS += "疎遠な"
+		ENDIF
+		IF GETBIT(RELATION:TARGET:LCOUNT,愛する) && GETBIT(RELATION:TARGET:LCOUNT,憎悪する)
+			LOCALS += "愛憎渦巻く"
+		ELSEIF GETBIT(RELATION:TARGET:LCOUNT,愛する)
+			LOCALS += "愛する"
+		ELSEIF GETBIT(RELATION:TARGET:LCOUNT,憎悪する)
+			LOCALS += "憎悪する"
+		ENDIF
+		IF GETBIT(RELATION:TARGET:LCOUNT,親子) || GETBIT(RELATION:TARGET:LCOUNT,兄弟姉妹) || GETBIT(RELATION:TARGET:LCOUNT,祖父祖母孫) || GETBIT(RELATION:TARGET:LCOUNT,おじおば) || GETBIT(RELATION:TARGET:LCOUNT,甥姪) || GETBIT(RELATION:TARGET:LCOUNT,いとこ)
+			LOCALS += "("
+			IF GETBIT(RELATION:TARGET:LCOUNT,義理の)
+				LOCALS += "義理の"
+			ELSE
+				LOCALS += "実の"
+			ENDIF
+		ENDIF
+		IF GETBIT(RELATION:TARGET:LCOUNT,親子)
+			IF TOSHIUE_F(TARGET, LCOUNT) > 0
+				IF TALENT:LCOUNT:オトコ > 0
+					LOCALS += "息子"
+				ELSE
+					LOCALS += "娘"
+				ENDIF
+			ELSE
+				IF TALENT:LCOUNT:オトコ > 0
+					LOCALS += "父親"
+				ELSE
+					LOCALS += "母親"
+				ENDIF
+			ENDIF
+			SIF GETBIT(RELATION:TARGET:LCOUNT,兄弟姉妹) || GETBIT(RELATION:TARGET:LCOUNT,祖父祖母孫) || GETBIT(RELATION:TARGET:LCOUNT,おじおば) || GETBIT(RELATION:TARGET:LCOUNT,甥姪) || GETBIT(RELATION:TARGET:LCOUNT,いとこ)
+				LOCALS += "/"
+		ENDIF
+		IF GETBIT(RELATION:TARGET:LCOUNT,兄弟姉妹)
+			IF TOSHIUE_F(TARGET, LCOUNT)
+				IF TALENT:LCOUNT:オトコ > 0
+					LOCALS += "弟"
+				ELSE
+					LOCALS += "妹"
+				ENDIF
+			ELSE
+				IF TALENT:LCOUNT:オトコ > 0
+					LOCALS += "兄"
+				ELSE
+					LOCALS += "姉"
+				ENDIF
+			ENDIF
+			SIF GETBIT(RELATION:TARGET:LCOUNT,祖父祖母孫) || GETBIT(RELATION:TARGET:LCOUNT,おじおば) || GETBIT(RELATION:TARGET:LCOUNT,甥姪) || GETBIT(RELATION:TARGET:LCOUNT,いとこ)
+				LOCALS += "/"
+		ENDIF
+		IF GETBIT(RELATION:TARGET:LCOUNT,祖父祖母孫)
+			IF TOSHIUE_F(TARGET, LCOUNT)
+				LOCALS += "孫"
+			ELSE
+				IF TALENT:LCOUNT:オトコ > 0
+					LOCALS += "祖父"
+				ELSE
+					LOCALS += "祖母"
+				ENDIF
+			ENDIF
+			SIF GETBIT(RELATION:TARGET:LCOUNT,おじおば) || GETBIT(RELATION:TARGET:LCOUNT,甥姪) || GETBIT(RELATION:TARGET:LCOUNT,いとこ)
+				LOCALS += "/"
+		ENDIF
+		IF GETBIT(RELATION:TARGET:LCOUNT,おじおば)
+			IF TALENT:LCOUNT:オトコ > 0
+				LOCALS += "おじ"
+			ELSE
+				LOCALS += "おば"
+			ENDIF
+			SIF GETBIT(RELATION:TARGET:LCOUNT,いとこ)
+				LOCALS += "/"
+		ENDIF
+		IF GETBIT(RELATION:TARGET:LCOUNT,甥姪)
+			IF TALENT:LCOUNT:オトコ > 0
+				LOCALS += "甥"
+			ELSE
+				LOCALS += "姪"
+			ENDIF
+			SIF GETBIT(RELATION:TARGET:LCOUNT,いとこ)
+				LOCALS += "/"
+		ENDIF
+		IF GETBIT(RELATION:TARGET:LCOUNT,いとこ)
+			LOCALS += "いとこ"
+		ENDIF
+		SIF (GETBIT(RELATION:TARGET:LCOUNT,親子) || GETBIT(RELATION:TARGET:LCOUNT,兄弟姉妹) || GETBIT(RELATION:TARGET:LCOUNT,祖父祖母孫) || GETBIT(RELATION:TARGET:LCOUNT,おじおば) || GETBIT(RELATION:TARGET:LCOUNT,甥姪) || GETBIT(RELATION:TARGET:LCOUNT,いとこ)) && (GETBIT(RELATION:TARGET:LCOUNT,友人) || GETBIT(RELATION:TARGET:LCOUNT,片思い) || GETBIT(RELATION:TARGET:LCOUNT,恋人) || GETBIT(RELATION:TARGET:LCOUNT,婚約者) || GETBIT(RELATION:TARGET:LCOUNT,配偶者))
+			LOCALS += "かつ"
+		IF GETBIT(RELATION:TARGET:LCOUNT,友人)
+			IF GETBIT(RELATION:TARGET:LCOUNT,親しい)
+				LOCALS += "親友"
+			ELSE
+				LOCALS += "友人"
+			ENDIF
+		ENDIF
+		SIF GETBIT(RELATION:TARGET:LCOUNT,片思い)
+			LOCALS += "片思いの相手"
+		SIF GETBIT(RELATION:TARGET:LCOUNT,恋人)
+			LOCALS += "恋人"
+		SIF GETBIT(RELATION:TARGET:LCOUNT,婚約者)
+			LOCALS += "婚約者"
+		IF GETBIT(RELATION:TARGET:LCOUNT,配偶者)
+			IF TALENT:LCOUNT:オトコ > 0
+				LOCALS += "夫"
+			ELSE
+				LOCALS += "妻"
+			ENDIF
+		ENDIF
+		SIF GETBIT(RELATION:TARGET:LCOUNT,親子) || GETBIT(RELATION:TARGET:LCOUNT,兄弟姉妹) || GETBIT(RELATION:TARGET:LCOUNT,祖父祖母孫) || GETBIT(RELATION:TARGET:LCOUNT,おじおば) || GETBIT(RELATION:TARGET:LCOUNT,甥姪)
+			LOCALS += ")"
+	ENDIF
+	;候補を表示
+	IF GFLAG:(100 + LCOUNT) > 0 || GFLAG:(200 + LCOUNT) > 0 || GFLAG:(300 + LCOUNT) > 0 || GFLAG:(400 + LCOUNT) > 0
+		IF (CFLAG:1 == 0 && GFLAG:(100 + LCOUNT) > 0) || (CFLAG:1 > 0 && GFLAG:(300 + LCOUNT) > 0)
+			PRINTFORM [{LCOUNT}] 
+		ELSE
+			SETCOLOR 96,96,96
+			PRINTPLAINFORM [{LCOUNT}] 
+			RESETCOLOR
+		ENDIF
+		IF CHARATALENT_F(LCOUNT,0,"オトコ") > 0
+			PRINT (♂)
+		ELSEIF CHARATALENT_F(LCOUNT,0,"ふたなり") > 0
+			PRINT (双)
+		ELSE
+			PRINT (♀)
+		ENDIF
+		PRINTFORM  %CALLNAME:LCOUNT,24,LEFT%　%LOCALS,24,LEFT%
+		IF ((CFLAG:1 == 0 && GFLAG:(200 + LCOUNT) > 0) || (CFLAG:1 > 0 && GFLAG:(400 + LCOUNT) > 0)) && TALENT:LCOUNT:変身時ＴＳ > 0
+			PRINTFORM 　　[{LCOUNT+100}] ＴＳ
+			IF TALENT:LCOUNT:オトコ <= 0
+				PRINT （男性化させる）
+			ELSEIF TALENT:LCOUNT:オトコ > 0 && TALENT:LCOUNT:変身時ふたなり > 0
+				PRINT （ふたなり女体化させる）
+			ELSEIF TALENT:LCOUNT:オトコ > 0
+				PRINT （女性化させる）
+			ENDIF
+		ELSEIF ((CFLAG:1 == 0 && GFLAG:(200 + LCOUNT) > 0) || (CFLAG:1 > 0 && GFLAG:(400 + LCOUNT) > 0)) && TALENT:LCOUNT:変身時ふたなり > 0
+			PRINTFORM 　　[{LCOUNT+100}] 変身（ふたなり化させる）
+		ENDIF
+		PRINTL 
+	ENDIF
+NEXT
+PRINTFORML [999]夜這いは行わない
+$INPUT_LOOP_CHARA_LIST
+INPUT
+IF RESULT == 999
+	RETURN 999
+ELSEIF RESULT > 0 && RESULT < CHARANUM && ((CFLAG:1 == 0 && GFLAG:(100 + RESULT) != 0) || (CFLAG:1 > 0 && GFLAG:(300 + RESULT)))
+	FLAG:799 = RESULT
+	;実行者がＴＳ中
+	IF CFLAG:1 > 0
+		CALL YOBAI_ACTION, GFLAG:(300 + RESULT)
+	ELSE
+		CALL YOBAI_ACTION, GFLAG:(100 + RESULT)
+	ENDIF
+ELSEIF RESULT > 100 && RESULT < CHARANUM + 100 && ((CFLAG:1 == 0 && GFLAG:(100 + RESULT) != 0) || (CFLAG:1 > 0 && GFLAG:(300 + RESULT))) && (TALENT:(RESULT - 100):変身時ＴＳ > 0 || TALENT:(RESULT - 100):変身時ふたなり > 0)
+	FLAG:799 = RESULT - 100
+	;実行者がＴＳ中
+	IF CFLAG:1 > 0
+		CALL YOBAI_ACTION, GFLAG:(300 + RESULT),1
+	ELSE
+		CALL YOBAI_ACTION, GFLAG:(100 + RESULT),1
+	ENDIF
+ELSE
+	PRINTL 正しい値を入力してください
+	GOTO INPUT_LOOP_CHARA_LIST
+ENDIF
+
+;---------------------------------------------------------------------
+;プレイ内容の抽選
+@YOBAI_SELECT_PLAY, ARG
+#DIM LCOUNT
+;実行者を判定用に変身させる
+SIF (ARG == 10 || ARG == 11)
+	CALL TRANSFORM, 1
+FOR LCOUNT, 0, CHARANUM
+	SIF LCOUNT == MASTER
+		CONTINUE
+	SIF CFLAG:LCOUNT:0 != 0 || LCOUNT == TARGET || CFLAG:LCOUNT:999 == 0
+		CONTINUE
+
+	;夜這いの内容を決める、なぜか数値をbitにしているが今のところ意味はない
+	;1Ｃ系　2Ｖ系　4Ａ系　8Ｂ系　16性交を迫る　32奉仕を迫る
+
+	;候補を全クリア
+	CALL CLEARRANDCHOOSE
+
+	;夜這い対象を判定用に変身させる
+	SIF (ARG == 1 || ARG == 11)
+		CALL TRANSFORM, 1, LCOUNT
+
+	;ペニスを持っている場合で相手がオトコではない
+	IF (TALENT:ふたなり > 0 || TALENT:オトコ > 0) && TALENT:LCOUNT:オトコ <= 0
+		LOCAL:1 = ABL:Ｃ感覚 + ABL:射精中毒
+		;恋人関係なら選択確率上昇
+		SIF LOVER_F(TARGET, LCOUNT) > 0 || LOVER_F(LCOUNT, TARGET) > 0
+			LOCAL:1 *= 2
+		REPEAT LOCAL:1
+			IF RAND:10 < (ABL:Ｃ感覚 + ABL:射精中毒)
+				;性交を迫る
+				CALL ADDRANDCHOOSE,16
+			ELSE
+				;手、口、胸による奉仕を迫る
+				CALL ADDRANDCHOOSE,32
+			ENDIF
+		REND
+	ENDIF
+	;淫核を持っているかＣ感覚Lv3以上の場合でオトコでもふたなりでもない
+	IF (TALENT:淫核 * 3 + ABL:Ｃ感覚) >= 3 && TALENT:ふたなり < 1 && TALENT:オトコ <= 0
+		LOCAL:1 = ABL:Ｃ感覚
+		REPEAT LOCAL:1
+			;Ｃ系夜這い
+			CALL ADDRANDCHOOSE,1
+		REND
+	ENDIF
+	;淫壷を持っているかＶ感覚Lv3の場合でオトコでない
+	IF (TALENT:淫壷 * 3 + ABL:Ｖ感覚) >= 3 && TALENT:オトコ <= 0
+		LOCAL:1 = ABL:Ｖ感覚
+		;相手がペニスを持っているなら選択確率上昇
+		SIF TALENT:LCOUNT:ふたなり > 0 || TALENT:LCOUNT:オトコ > 0
+			LOCAL:1 *= 2
+		REPEAT LOCAL:1
+			;Ｖ系夜這い
+			CALL ADDRANDCHOOSE,2
+		REND
+	ENDIF
+	;淫尻を持っているかＡ感覚Lv3以上の場合でオトコでない
+	IF (TALENT:淫尻 * 3 + ABL:Ａ感覚) >= 3 && TALENT:オトコ <= 0
+		LOCAL:1 = ABL:Ａ感覚
+		REPEAT LOCAL:1
+			;Ａ系夜這い
+			CALL ADDRANDCHOOSE,4
+		REND
+	ENDIF
+	;淫乳を持っているかＢ感覚Lv3以上の場合でオトコでない
+	IF (TALENT:淫乳 * 3 + ABL:Ｂ感覚) >= 3 && TALENT:オトコ <= 0
+		LOCAL:1 = ABL:Ｂ感覚
+		REPEAT LOCAL:1
+			;Ｂ系夜這い
+			CALL ADDRANDCHOOSE,8
+		REND
+	ENDIF
+
+	;候補がある場合
+	IF ARG == 1
+		LOCAL = 200
+	ELSEIF ARG == 10
+		LOCAL = 300
+	ELSEIF ARG == 11
+		LOCAL = 400
+	ELSE
+		LOCAL = 100
+	ENDIF
+	SIF CHOICECOUNT_F() > 0
+		GFLAG:(LOCAL + LCOUNT) = RANDCHOOSE_F()
+NEXT
+;全キャラの変身を解除
+FOR LOCAL, 0, CHARANUM
+	SIF LOCAL == MASTER
+		CONTINUE
+	SIF CFLAG:LOCAL:1 > 0 && CFLAG:LOCAL:0 == 0
+		CALL TRANSFORM, 0, LOCAL
+NEXT
+
+
+;---------------------------------------------------------------------
+;夜這いイベントの実行
+;ARG:1 = 0以外なら対象をＴＳさせる
+@YOBAI_ACTION, ARG, ARG:1 = 0
+#DIM LCOUNT
+#DIM CCOUNT
+VARSET LOCAL
+LCOUNT = 0
+DRAWLINE
+;ＴＳ実行
+SIF ARG:1 > 0
+	CALL TRANSFORM, 1, FLAG:799
+
+PRINTL ――
+PRINTL ――――
+PRINTW ――――――
+PRINTL 
+FONTBOLD
+PRINTFORML 夜這い（%PRINT_CALLNAME(TARGET,1)%）→（%PRINT_CALLNAME(FLAG:799,1)%）
+FONTREGULAR
+PRINTL 
+PRINTFORML %PRINT_CALLNAME(TARGET)%は身体の芯を焦がす火照りを抑えきれずに、何度も自分を慰めていた。
+PRINTFORML それでも満足できなかった%PRINT_CALLNAME(TARGET)%は夢遊病のように廊下へと彷徨い出て
+PRINTFORML 助けを求めるように%PRINT_CALLNAME(FLAG:799)%の部屋の扉をノックする・・・
+PRINTW 
+IF ABL:(FLAG:799):欲望 < 3
+	;夜這い実行者が年上の血縁の場合
+	IF INCEST_F(TARGET, FLAG:799) > 0 && TOSHIUE_F(TARGET, FLAG:799) > 0
+		PRINTFORM %PRINT_CALLNAME(FLAG:799)%は
+		IF CFLAG:1 > 0
+			PRINTFORM %PRINT_CALLNAME(TARGET)%が
+			IF TALENT:オトコ > 0
+				PRINT 男性の姿
+			ELSEIF TALENT:ふたなり > 0
+				PRINT ふたなり
+			ELSE
+				PRINT 女性の姿
+			ENDIF
+			PRINTL に変身していることに驚きながらも
+		ENDIF
+		PRINTFORM 家族と一緒の部屋で寝られる事を
+		SIF CFLAG:1 == 0
+			PRINTL 
+		PRINTFORM 無邪気に喜びながら部屋に迎え入れ
+		SIF ARG:1 > 0
+			PRINT たが
+	;夜這い実行者が年下の血縁の場合
+	ELSEIF INCEST_F(TARGET, FLAG:799) > 0 && TOSHIUE_F(TARGET, FLAG:799) == 0
+		IF CFLAG:1 > 0
+			PRINTFORM %PRINT_CALLNAME(TARGET)%が
+			IF TALENT:オトコ > 0
+				PRINT 男性の姿
+			ELSEIF TALENT:ふたなり > 0
+				PRINT ふたなり
+			ELSE
+				PRINT 女性の姿
+			ENDIF
+			PRINTL に変身していることに驚きながらも
+		ELSE
+			PRINT 突然の訪問に
+		ENDIF
+		PRINTFORML 驚いた様子の%PRINT_CALLNAME(FLAG:799)%だが、
+		PRINTFORML あまりに苦しそうに喘ぐ%PRINT_CALLNAME(TARGET)%の様子を見かねたのか
+		IF TALENT:(FLAG:799):オトコ > 0 && ARG:1 == 0
+			PRINT 血の繋がった相手の無防備な肢体にドキリとしながら部屋に迎え入れ
+		ELSEIF TALENT:(FLAG:799):オトコ > 0 || (TALENT:(FLAG:799):オトコ <= 0 && ARG:1 > 0)
+			PRINT 落ち着くまで話し相手になってやろうと部屋に迎え入れ
+		ELSE
+			PRINT 落ち着くまで添い寝してあげようと部屋に迎え入れ
+		ENDIF
+	ELSE
+		IF CFLAG:1 > 0
+			PRINTFORM %PRINT_CALLNAME(TARGET)%が
+			IF TALENT:オトコ > 0
+				PRINT 男性の姿
+			ELSEIF TALENT:ふたなり > 0
+				PRINT ふたなり
+			ELSE
+				PRINT 女性の姿
+			ENDIF
+			PRINTL に変身していることに驚きながらも
+		ELSE
+			PRINT 突然の訪問に
+		ENDIF
+		PRINTFORML 驚いた様子の%PRINT_CALLNAME(FLAG:799)%だが、
+		PRINTFORML あまりに苦しそうに喘ぐ%PRINT_CALLNAME(TARGET)%の様子を見かねたのか
+		IF TALENT:(FLAG:799):オトコ > 0
+			PRINT とりあえず部屋に迎え入れ
+		ELSE
+			PRINT イけるように手伝うだけだと釘を刺して部屋に迎え入れ
+		ENDIF
+	ENDIF
+	IF ARG:1 > 0
+		PRINTL 、
+		PRINT 懇願されて戸惑いながらも
+		IF TALENT:(FLAG:799):オトコ > 0
+			PRINT 男性の姿
+		ELSEIF TALENT:(FLAG:799):ふたなり > 0
+			PRINT ふたなり
+		ELSE
+			PRINT 女性の姿
+		ENDIF
+		PRINTL に変身した・・・
+	ELSE
+		PRINTL た・・・
+	ENDIF
+ELSEIF ABL:(FLAG:799):欲望 < 4
+	PRINTFORML そういうことは良くないと断ろうとした%PRINT_CALLNAME(FLAG:799)%だが、
+	IF CFLAG:1 > 0
+		IF TALENT:オトコ > 0
+			PRINT 男性の姿
+		ELSEIF TALENT:ふたなり > 0
+			PRINT ふたなり
+		ELSE
+			PRINT 女性の姿
+		ENDIF
+		PRINTFORM に変身した
+	ENDIF
+	PRINTFORML %PRINT_CALLNAME(TARGET)%のあられもない様子に劣情を刺激されてしまい、
+	IF TALENT:(FLAG:799):オトコ > 0
+		PRINT 胸の高鳴りを意識しながら部屋に迎え入れ
+	ELSE
+		PRINT 少しだけならばと部屋に迎え入れ
+	ENDIF
+	IF ARG:1 > 0
+		PRINTL 、
+		PRINT 自分から
+		IF TALENT:(FLAG:799):オトコ > 0
+			PRINT 男性の姿
+		ELSEIF TALENT:(FLAG:799):ふたなり > 0
+			PRINT ふたなり
+		ELSE
+			PRINT 女性の姿
+		ENDIF
+		PRINTL に変身した・・・
+	ELSE
+		PRINTL た・・・
+	ENDIF
+ELSE
+	IF ARG:1 > 0
+		PRINT 既に
+		IF TALENT:(FLAG:799):オトコ > 0
+			PRINT 男性の姿
+		ELSEIF TALENT:(FLAG:799):ふたなり > 0
+			PRINT ふたなり
+		ELSE
+			PRINT 女性の姿
+		ENDIF
+		PRINT に変身していた
+	ELSE
+		PRINT ノックに応じた
+	ENDIF
+	PRINTFORML %PRINT_CALLNAME(FLAG:799)%は言葉を交わすこともなく
+	PRINTFORML 自らも興奮を堪え切れない様子で%PRINT_CALLNAME(TARGET)%を部屋へと引き入れた。
+	PRINTFORML なりふり構わずに%PRINT_CALLNAME(TARGET)%の唇を強引に奪うと
+	PRINTFORML そのままベッドへと押し倒す・・・
+ENDIF
+PRINTW
+DRAWLINE
+PRINTFORML 暗い部屋に二人の息遣いだけが響いている・・・
+PRINTW 
+SELECTCASE ARG
+	;Ｃ夜這い
+	CASE 1
+		IF ABL:(FLAG:799):欲望 < 2 + RAND:3
+			PRINTFORML %PRINT_CALLNAME(FLAG:799)%は%PRINT_CALLNAME(TARGET)%と軽くキスを交わしながら、
+			PRINTFORML 指で%PRINT_CALLNAME(TARGET)%の秘所を愛撫した。
+			PRINTFORML 溢れ出る蜜がくちゅくちゅと卑猥な飛沫を上げて、ベッドのシーツを汚していく。
+			PRINTW 
+			PRINTFORML 濡れ光る淫肉を丁寧に撫で上げながら、
+			PRINTFORML すっかり勃起した淫核を摘まんでコリコリと弄びつつ、
+			PRINTFORML 舌先でくすぐるように舐め上げて程良い刺激を与えていく。
+			PRINTW 
+			PRINTFORML もっと強くと言われてクリトリスを弄る指先に力を込めると、
+			PRINTFORML %PRINT_CALLNAME(TARGET)%は大きく痙攣してそのまま絶頂した・・・
+			PRINTW 
+			PRINTFORML 【夜這い実行者：%PRINT_CALLNAME(TARGET,1)%】
+			;快C
+			LOCAL:0 = 50
+			;絶頂経験
+			LOCAL:122 = 1
+			;幽閉中パラメータ変動共通処理へ
+			CALL COMMON_PRISON, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, 1
+			;経験数の増加
+			FOR CCOUNT, 100, 200
+				CALL COMMON_PRISON_EXP, CCOUNT, LOCAL:CCOUNT
+			NEXT
+			CALL _ABLUP, 1
+			PRINTW 
+			PRINTFORML 【夜這い対象：%PRINT_CALLNAME(FLAG:799,1)%】
+			LCOUNT = TARGET
+			TARGET = FLAG:799
+			VARSET LOCAL
+			;近親交配経験
+			SIF INCEST_F(FLAG:799, LCOUNT) > 0
+				LOCAL:141 = 1
+			;幽閉中パラメータ変動共通処理へ
+			CALL COMMON_PRISON, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, 1
+			;経験数の増加
+			FOR CCOUNT, 100, 200
+				CALL COMMON_PRISON_EXP, CCOUNT, LOCAL:CCOUNT
+			NEXT
+			CALL _ABLUP, 1
+		;相手がペニスを持っている場合
+		ELSEIF TALENT:(FLAG:799):ふたなり > 0 || TALENT:(FLAG:799):オトコ > 0
+			PRINTFORML %PRINT_CALLNAME(TARGET)%は%PRINT_CALLNAME(FLAG:799)%のペニスを太股で挟み、
+			PRINTFORML 首に腕を回して「このまま激しくシてほしい」と囁いた。
+			PRINTFORML 挿入しなければ大丈夫だという誘惑に負け、
+			PRINTFORML %PRINT_CALLNAME(FLAG:799)%は腰を使って素股を開始した。
+			PRINTW 
+			PRINTFORML 勃起しきった怒張が先端から根元まで%PRINT_CALLNAME(TARGET)%の淫核を擦り上げ、
+			PRINTFORML 触れ合ったまま離れずに強烈な快感となって理性を焦がしていく。
+			;相手の欲望が高い場合は確率で挿入に派生してしまう
+			IF ABL:(FLAG:799):欲望 + RAND:4 >= 6
+				LCOUNT = 1
+				PRINTFORML 興奮の最高潮に達して激しさを増すばかりのピストンに愛液が絡まり
+				PRINTFORML 亀頭が%PRINT_CALLNAME(TARGET)%のワレメを押し広げて先端が膣内に入りかけている・・・
+				PRINTW 
+				IF TALENT:処女 > 0
+					PRINTFORML 「これ以上は」と言いかけた%PRINT_CALLNAME(TARGET)%の唇を口付けが塞ぎ、
+					PRINTFORML 完全に理性を失った%PRINT_CALLNAME(FLAG:799)%がペニスをワレメにあてがった。
+					PRINTFORML 目を見開いた%PRINT_CALLNAME(TARGET)%もまた挿入の悦びに抗えず、
+					PRINTFORML すぐに幸福に蕩けた表情で%PRINT_CALLNAME(FLAG:799)%の求愛にキスで応えた。
+					PRINTW 
+					PRINTFORML ズブズブとペニスが膣内に押し入ってくる感触と共に、
+					PRINTFORML つぅと破瓜の血が流れ出す・・・
+					PRINTL 
+					PRINTL 処女喪失
+					PRINTW 
+					GOTO V_LOSTVERGIN_SEX
+					;苦痛
+					LOCAL:10 = 50
+					;処女喪失の相手が愛する人かどうか
+					IF LOVER_F(TARGET, FLAG:799) > 0
+						CFLAG:206 = 5
+					ELSE
+						CFLAG:206 = 6
+					ENDIF
+				ELSE
+					PRINTFORML 完全に理性を失った%PRINT_CALLNAME(FLAG:799)%はそのままズブズブと腰を沈めてくる。
+					PRINTFORML 突然の挿入にも関わらず、とろとろに蕩けた膣肉は容易く男根を受け入れ、
+					PRINTFORML %PRINT_CALLNAME(TARGET)%もまた理性の糸が切れたように蕩けた表情でキスを求め、
+					PRINTFORML 口づけを交わしながらのなし崩しセックスに身を任せた・・・
+					PRINTW
+					GOTO V_SEX
+				ENDIF
+			ENDIF
+			PRINTFORML %PRINT_CALLNAME(TARGET)%は唇を噛みながら、何とか声を堪えている。
+			PRINTW 
+			PRINTFORML やがて絶頂が近付くと二人は口づけを交わしながら腰の動きを加速させ、
+			IF TALENT:(FLAG:799):未熟 == 1
+				PRINTFORML %PRINT_CALLNAME(FLAG:799)%と%PRINT_CALLNAME(TARGET)%は同時に絶頂した・・・
+			ELSE
+				PRINTFORML %PRINT_CALLNAME(FLAG:799)%が射精すると共に%PRINT_CALLNAME(TARGET)%も絶頂した・・・
+			ENDIF
+			PRINTW 
+			PRINTFORML 【夜這い実行者：%PRINT_CALLNAME(TARGET,1)%】
+			;快C
+			LOCAL:0 = 50
+			;挿入していた場合
+			IF LCOUNT
+				;快V
+				LOCAL:1 = 50
+				;Ｖ経験
+				LOCAL:120 = 1
+				;精液経験
+				SIF TALENT:(FLAG:799):未熟 != 1
+					LOCAL:123 = 1
+			ENDIF
+			;絶頂経験
+			LOCAL:122 = 1
+			;近親交配経験
+			SIF INCEST_F(TARGET, FLAG:799) > 0
+				LOCAL:141 = 1
+			;幽閉中パラメータ変動共通処理へ
+			CALL COMMON_PRISON, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, 1
+			;経験数の増加
+			FOR CCOUNT, 100, 200
+				CALL COMMON_PRISON_EXP, CCOUNT, LOCAL:CCOUNT
+			NEXT
+			CALL _ABLUP, 1
+			;妊娠判定
+			SIF (TALENT:TARGET:淫乱 > 0 || LOVER_F(FLAG:799, TARGET) > 0) && LOCAL:123 > 0 && TALENT:TARGET:未熟 == 0
+				CALL NINSIN_HANTEI, LOCAL:123, 400, CFLAG:(FLAG:799):240 * -1 - 100
+			PRINTW 
+			PRINTFORML 【夜這い対象：%PRINT_CALLNAME(FLAG:799,1)%】
+			LCOUNT = TARGET
+			TARGET = FLAG:799
+			VARSET LOCAL
+			;快C
+			LOCAL:0 = 50
+			;絶頂経験
+			LOCAL:122 = 1
+			;近親交配経験
+			SIF INCEST_F(FLAG:799, LCOUNT) > 0
+				LOCAL:141 = 1
+			;射精経験
+			SIF TALENT:(FLAG:799):未熟 != 1
+				LOCAL:153 = 1
+			;幽閉中パラメータ変動共通処理へ
+			CALL COMMON_PRISON, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, 1
+			;経験数の増加
+			FOR CCOUNT, 100, 200
+				CALL COMMON_PRISON_EXP, CCOUNT, LOCAL:CCOUNT
+			NEXT
+			CALL _ABLUP, 1
+			;アフターピル
+			CALL AFTER_PILL, LCOUNT, 75, CFLAG:(TARGET):240 * -1 - 100
+		ELSE
+			PRINTFORML %PRINT_CALLNAME(FLAG:799)%は自らの秘所を%PRINT_CALLNAME(TARGET)%と重ね合わせ、
+			PRINTFORML 口づけを交わしながら淫貝を擦り合わせた。
+			PRINTFORML 膣肉が絡み合ってぐじゅぐじゅと卑猥な音を立て、否応にも背徳感を煽り立てる。
+			PRINTW 
+			PRINTFORML やがて絶頂が近付くと二人は互いのクリトリスを指で刺激しながら腰の動きを加速させ、
+			PRINTFORML そのまま一気に二人で果てた・・・
+			PRINTW 
+			PRINTFORML 【夜這い実行者：%PRINT_CALLNAME(TARGET,1)%】
+			;快C
+			LOCAL:0 = 50
+			;絶頂経験
+			LOCAL:122 = 1
+			;近親交配経験
+			SIF INCEST_F(TARGET, FLAG:799) > 0
+				LOCAL:141 = 1
+			;幽閉中パラメータ変動共通処理へ
+			CALL COMMON_PRISON, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, 1
+			;経験数の増加
+			FOR CCOUNT, 100, 200
+				CALL COMMON_PRISON_EXP, CCOUNT, LOCAL:CCOUNT
+			NEXT
+			CALL _ABLUP, 1
+			PRINTW 
+			PRINTFORML 【夜這い対象：%PRINT_CALLNAME(FLAG:799,1)%】
+			LCOUNT = TARGET
+			TARGET = FLAG:799
+			VARSET LOCAL
+			;快C
+			LOCAL:0 = 50
+			;絶頂経験
+			LOCAL:122 = 1
+			;近親交配経験
+			SIF INCEST_F(FLAG:799, LCOUNT) > 0
+				LOCAL:141 = 1
+			;幽閉中パラメータ変動共通処理へ
+			CALL COMMON_PRISON, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, 1
+			;経験数の増加
+			FOR CCOUNT, 100, 200
+				CALL COMMON_PRISON_EXP, CCOUNT, LOCAL:CCOUNT
+			NEXT
+			CALL _ABLUP, 1
+		ENDIF
+	;Ｖ夜這い
+	CASE 2
+		IF (TALENT:(FLAG:799):ふたなり < 1 && TALENT:(FLAG:799):オトコ <= 0) || ABL:(FLAG:799):欲望 < 2 + RAND:3
+			PRINTFORML %PRINT_CALLNAME(FLAG:799)%は%PRINT_CALLNAME(TARGET)%の股間に顔をうずめ、
+			PRINTFORML 口で%PRINT_CALLNAME(TARGET)%の秘所を愛撫した。
+			PRINTFORML 丁寧に舌で肉穴をほぐし、溢れ出る愛蜜を吸い上げていく。
+			PRINTW 
+			PRINTFORML %PRINT_CALLNAME(FLAG:799)%の攻めに%PRINT_CALLNAME(TARGET)%は身体を震わせて反応しつつ
+			PRINTFORML 大腿で顔を挟み込むようにしながら%PRINT_CALLNAME(FLAG:799)%の髪に指を絡めて愛しそうに撫でている。
+			PRINTFORML やがて%PRINT_CALLNAME(FLAG:799)%の吸引が激しさを増していく。
+			PRINTW 
+			PRINTFORML 強く膣口を吸い上げられて%PRINT_CALLNAME(TARGET)%が痺れたように身を捩り、
+			PRINTFORML 本気の膣イキに恍惚としながら絶頂に達した・・・
+			PRINTW 
+			PRINTFORML 【夜這い実行者：%PRINT_CALLNAME(TARGET,1)%】
+			;快V
+			LOCAL:1 = 50
+			;Ｖ経験
+			LOCAL:120 = 1
+			;絶頂経験
+			LOCAL:122 = 1
+			;近親交配経験
+			SIF INCEST_F(TARGET, FLAG:799) > 0
+				LOCAL:141 = 1
+			;幽閉中パラメータ変動共通処理へ
+			CALL COMMON_PRISON, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, 1
+			;経験数の増加
+			FOR CCOUNT, 100, 200
+				CALL COMMON_PRISON_EXP, CCOUNT, LOCAL:CCOUNT
+			NEXT
+			CALL _ABLUP, 1
+			PRINTW 
+			PRINTFORML 【夜這い対象：%PRINT_CALLNAME(FLAG:799,1)%】
+			LCOUNT = TARGET
+			TARGET = FLAG:799
+			VARSET LOCAL
+			;近親交配経験
+			SIF INCEST_F(FLAG:799, LCOUNT) > 0
+				LOCAL:141 = 1
+			;幽閉中パラメータ変動共通処理へ
+			CALL COMMON_PRISON, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, 1
+			;経験数の増加
+			FOR CCOUNT, 100, 200
+				CALL COMMON_PRISON_EXP, CCOUNT, LOCAL:CCOUNT
+			NEXT
+			CALL _ABLUP, 1
+		ELSEIF TALENT:処女 > 0
+			PRINTFORML 瞳を潤わせて「犯して欲しい」と懇願する%PRINT_CALLNAME(TARGET)%の誘惑に耐えきれず、
+			PRINTFORML %PRINT_CALLNAME(FLAG:799)%は%PRINT_CALLNAME(TARGET)%のワレメに自らのペニスをあてがった。
+			PRINTFORML 痛がらないようにゆっくりと亀頭を挿入し、ずぶずぶと押し込んでいくと、
+			PRINTFORML 自ら受け入れるように%PRINT_CALLNAME(TARGET)%が脚を絡めて抱き寄せた。
+			PRINTW 
+			PRINTFORML ペニスを半ばまで挿入したところで膜の破れる感触と共に破瓜の証がつぅと滲み出るが、
+			PRINTFORML %PRINT_CALLNAME(TARGET)%は涙を浮かべながらも幸せそうな表情をしている・・・
+			PRINTL 
+			PRINTL 処女喪失
+			PRINTW 
+			$V_LOSTVERGIN_SEX
+			PRINTFORML パンパンと肉と肉のぶつかる音と荒い息遣いが部屋の空気を震わせる。
+			PRINTFORML 激しくはないが情熱的なピストンに膣内を抉られ、
+			PRINTFORML %PRINT_CALLNAME(TARGET)%は痛みよりも快楽のほうが勝っている様子で声を堪えている。
+			PRINTW 
+			IF TALENT:(FLAG:799):未熟 == 1
+				PRINTFORML 限界に達した%PRINT_CALLNAME(FLAG:799)%が恍惚の表情を浮かべて絶頂するのと、
+				PRINTFORML 初めての挿入にも関わらず%PRINT_CALLNAME(TARGET)%がアクメを迎えたのは同時だった・・・
+			ELSEIF TALENT:TARGET:淫乱 > 0 || LOVER_F(FLAG:799, TARGET) > 0
+				PRINTFORML 限界に達した%PRINT_CALLNAME(FLAG:799)%が腰を引こうとすると、
+				PRINTFORML %PRINT_CALLNAME(TARGET)%は足を絡めて無言で中出しを懇願した。
+				PRINTFORML 初めての挿入にも関わらず二人は同時に絶頂し、勢いよく精液が膣内へと注ぎこまれていった・・・
+			ELSE
+				PRINTFORML 限界に達した%PRINT_CALLNAME(FLAG:799)%がペニスを引き抜いて射精するのと、
+				PRINTFORML 初めての挿入にも関わらず%PRINT_CALLNAME(TARGET)%が絶頂したのは同時だった・・・
+			ENDIF
+			PRINTW 
+			PRINTFORML 【夜這い実行者：%PRINT_CALLNAME(TARGET,1)%】
+			;快V
+			LOCAL:1 = 50
+			;苦痛
+			LOCAL:10 = 50
+			;Ｖ経験
+			LOCAL:120 = 2
+			;絶頂経験
+			LOCAL:122 = 1
+			;精液経験
+			SIF TALENT:(FLAG:799):未熟 != 1
+				LOCAL:123 = 1
+			;近親交配経験
+			SIF INCEST_F(TARGET, FLAG:799) > 0
+				LOCAL:141 = 1
+			;処女を失う
+			TALENT:処女 = -1
+			;処女喪失の相手が愛する人かどうか
+			IF LOVER_F(TARGET, FLAG:799) > 0
+				CFLAG:206 = 5
+			ELSE
+				CFLAG:206 = 6
+			ENDIF
+			;幽閉中パラメータ変動共通処理へ
+			CALL COMMON_PRISON, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, 1
+			;経験数の増加
+			FOR CCOUNT, 100, 200
+				CALL COMMON_PRISON_EXP, CCOUNT, LOCAL:CCOUNT
+			NEXT
+			CALL _ABLUP, 1
+			;妊娠判定
+			SIF (TALENT:TARGET:淫乱 > 0 || LOVER_F(FLAG:799, TARGET) > 0) && LOCAL:123 > 0 && TALENT:TARGET:未熟 == 0
+				CALL NINSIN_HANTEI, LOCAL:123, 400, CFLAG:(FLAG:799):240 * -1 - 100
+			PRINTW 
+			PRINTFORML 【夜這い対象：%PRINT_CALLNAME(FLAG:799,1)%】
+			LCOUNT = TARGET
+			TARGET = FLAG:799
+			VARSET LOCAL
+			;快C
+			LOCAL:0 = 50
+			;絶頂経験
+			LOCAL:122 = 1
+			;近親交配経験
+			SIF INCEST_F(FLAG:799, LCOUNT) > 0
+				LOCAL:141 = 1
+			;射精経験
+			SIF TALENT:(FLAG:799):未熟 != 1
+				LOCAL:153 = 1
+			;幽閉中パラメータ変動共通処理へ
+			CALL COMMON_PRISON, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, 1
+			;経験数の増加
+			FOR CCOUNT, 100, 200
+				CALL COMMON_PRISON_EXP, CCOUNT, LOCAL:CCOUNT
+			NEXT
+			CALL _ABLUP, 1
+			;アフターピル
+			CALL AFTER_PILL, LCOUNT, 75, CFLAG:(TARGET):240 * -1 - 100
+		ELSE
+			IF TALENT:(FLAG:799):未熟 == 1
+				PRINTFORML %PRINT_CALLNAME(TARGET)%は%PRINT_CALLNAME(FLAG:799)%に覆いかぶさると、
+				PRINTFORML 濡れそぼったヴァギナで勃起したペニスの先端に口づけをした。
+				PRINTFORML そのままゆっくり腰を降ろして膣奥まで飲み込んでいくと、
+				PRINTFORML 至福の表情を浮かべながら抽送を開始した・・・
+			ELSE
+				PRINTFORML %PRINT_CALLNAME(FLAG:799)%は%PRINT_CALLNAME(TARGET)%に覆いかぶさると、
+				PRINTFORML 勃起しきったペニスを膣奥に根元まで挿入して深い抽送を開始した。
+				PRINTFORML すでに濡れきっていた%PRINT_CALLNAME(TARGET)%は痛がる様子も無く、
+				PRINTFORML むしろ快楽を貪るようにして互いの口づけを求め合う・・・
+			ENDIF
+			PRINTW 
+			$V_SEX
+			IF TALENT:(FLAG:799):未熟 == 1
+				PRINTFORML まるで逆レイプするかのように騎乗位で腰を振り続ける%PRINT_CALLNAME(TARGET)%に、
+				PRINTFORML %PRINT_CALLNAME(FLAG:799)%もまた未熟な男根を膣肉にシゴき上げられる快楽に我を忘れている。
+				PRINTFORML どちらともなく唇を交わして唾液交換の美酒に酔いしれながら、
+				PRINTFORML パンパンと打ちつける淫音が響くたびに快楽が増幅されていく。
+			ELSE
+				PRINTFORML %PRINT_CALLNAME(TARGET)%を抑えつけて激しく腰を振る%PRINT_CALLNAME(FLAG:799)%・・・
+				PRINTFORML 「これは性交ではなく、仲間の悩みに応えているだけ」
+				PRINTFORML そんな言い訳はとうにどこかへと吹き飛んでしまっていた。
+				PRINTFORML 一夜限りの契りという免罪符が逆に枷を取り払ってしまったかの如く、
+				PRINTFORML パンパンと打ちつける淫音が響くたびに快楽が増幅されていく。
+			ENDIF
+			PRINTW 
+			IF TALENT:(FLAG:799):未熟 == 1
+				PRINTFORML やがて%PRINT_CALLNAME(FLAG:799)%がほどなく限界に達し、%PRINT_CALLNAME(TARGET)%もまた絶頂を迎えた。
+				PRINTFORML 膣内にペニスを受け入れたまま倒れかかった%PRINT_CALLNAME(TARGET)%の表情は
+			ELSEIF TALENT:TARGET:淫乱 > 0 || LOVER_F(FLAG:799, TARGET) > 0
+				PRINTFORML 辛うじて残っていた理性が中出しだけは回避しなければと警告するが、
+				PRINTFORML %PRINT_CALLNAME(TARGET)%は%PRINT_CALLNAME(FLAG:799)%の腰に足を絡めて放さない。
+				PRINTFORML それどころか「出して、膣内に出して」と懇願されては誘惑に耐えきれるはずもなく、
+				PRINTFORML 昂った欲情の中で%PRINT_CALLNAME(FLAG:799)%は内奥で子種を一気に放出した。
+				PRINTFORML ドクドクと精液を子宮で受け止める%PRINT_CALLNAME(TARGET)%の表情は
+			ELSE
+				PRINTFORML 辛うじて残っていた理性が中出しだけは回避しなければと警告する。
+				PRINTFORML 絶頂を迎えた%PRINT_CALLNAME(TARGET)%から爆発寸前のペニスが引き抜かれると、
+				PRINTFORML 軽くフェラチオをしてから%PRINT_CALLNAME(FLAG:799)%を口の中で射精させる。
+				PRINTFORML ごくごくと精液を飲み干していく%PRINT_CALLNAME(TARGET)%の表情は
+				LOCAL:324 = 1
+			ENDIF
+			PRINTFORML まるで普段とは別人のように恍惚としている・・・
+			PRINTW 
+			PRINTFORML 【夜這い実行者：%PRINT_CALLNAME(TARGET,1)%】
+			;快V
+			LOCAL:1 = 50
+			;Ｖ経験
+			LOCAL:120 = 2
+			;絶頂経験
+			LOCAL:122 = 1
+			;精液経験
+			SIF TALENT:(FLAG:799):未熟 != 1
+				LOCAL:123 = 1
+			;フェラ経験
+			LOCAL:124 = LOCAL:324
+			;近親交配経験
+			SIF INCEST_F(TARGET, FLAG:799) > 0
+				LOCAL:141 = 1
+			;幽閉中パラメータ変動共通処理へ
+			CALL COMMON_PRISON, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, 1
+			;経験数の増加
+			FOR CCOUNT, 100, 200
+				CALL COMMON_PRISON_EXP, CCOUNT, LOCAL:CCOUNT
+			NEXT
+			CALL _ABLUP, 1
+			;妊娠判定
+			SIF (TALENT:TARGET:淫乱 > 0 || LOVER_F(FLAG:799, TARGET) > 0) && LOCAL:123 > 0 && TALENT:TARGET:未熟 == 0
+				CALL NINSIN_HANTEI, LOCAL:123, 400, CFLAG:(FLAG:799):240 * -1 - 100
+			PRINTW 
+			PRINTFORML 【夜這い対象：%PRINT_CALLNAME(FLAG:799,1)%】
+			LCOUNT = TARGET
+			TARGET = FLAG:799
+			VARSET LOCAL
+			;快C
+			LOCAL:0 = 50
+			;絶頂経験
+			LOCAL:122 = 1
+			;近親交配経験
+			SIF INCEST_F(FLAG:799, LCOUNT) > 0
+				LOCAL:141 = 1
+			;射精経験
+			SIF TALENT:(FLAG:799):未熟 != 1
+				LOCAL:153 = 1
+			;幽閉中パラメータ変動共通処理へ
+			CALL COMMON_PRISON, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, 1
+			;経験数の増加
+			FOR CCOUNT, 100, 200
+				CALL COMMON_PRISON_EXP, CCOUNT, LOCAL:CCOUNT
+			NEXT
+			CALL _ABLUP, 1
+			;アフターピル
+			CALL AFTER_PILL, LCOUNT, 75, CFLAG:(TARGET):240 * -1 - 100
+		ENDIF
+	;Ａ夜這い
+	CASE 4
+		IF (TALENT:(FLAG:799):ふたなり < 1 && TALENT:(FLAG:799):オトコ <= 0) || ABL:(FLAG:799):欲望 < 2 + RAND:3
+			PRINTFORML %PRINT_CALLNAME(FLAG:799)%は%PRINT_CALLNAME(TARGET)%と口付けし、
+			PRINTFORML 腰に腕を回して尻穴を丁寧に愛撫した。
+			PRINTFORML 十分にほぐれたアヌスに指を挿入していき、くちゅくちゅと前後に動かしていく。
+			PRINTW 
+			PRINTFORML 指だけでは物足りないのか、菊穴はくっぽりと良い具合に口を開いている。
+			PRINTFORML 期待に目を潤わせる%PRINT_CALLNAME(TARGET)%に%PRINT_CALLNAME(FLAG:799)%がアナルバイブを挿入すると、
+			PRINTFORML 尻穴を押し広げられる悦びに%PRINT_CALLNAME(TARGET)%の興奮が最高潮に達する。
+			PRINTW 
+			PRINTFORML 完全に性感帯として開発された尻穴がもたらす快楽は大きく、
+			PRINTFORML 絶頂に達した%PRINT_CALLNAME(TARGET)%は涎を垂らしながら痙攣している・・・
+			PRINTW 
+			PRINTFORML 【夜這い実行者：%PRINT_CALLNAME(TARGET,1)%】
+			;快A
+			LOCAL:2 = 50
+			;Ａ経験
+			LOCAL:121 = 1
+			;絶頂経験
+			LOCAL:122 = 1
+			;近親交配経験
+			SIF INCEST_F(TARGET, FLAG:799) > 0
+				LOCAL:141 = 1
+			;幽閉中パラメータ変動共通処理へ
+			CALL COMMON_PRISON, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, 1
+			;経験数の増加
+			FOR CCOUNT, 100, 200
+				CALL COMMON_PRISON_EXP, CCOUNT, LOCAL:CCOUNT
+			NEXT
+			CALL _ABLUP, 1
+			PRINTW 
+			PRINTFORML 【夜這い対象：%PRINT_CALLNAME(FLAG:799,1)%】
+			LCOUNT = TARGET
+			TARGET = FLAG:799
+			VARSET LOCAL
+			;近親交配経験
+			SIF INCEST_F(FLAG:799, LCOUNT) > 0
+				LOCAL:141 = 1
+			;幽閉中パラメータ変動共通処理へ
+			CALL COMMON_PRISON, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, 1
+			;経験数の増加
+			FOR CCOUNT, 100, 200
+				CALL COMMON_PRISON_EXP, CCOUNT, LOCAL:CCOUNT
+			NEXT
+			CALL _ABLUP, 1
+		ELSE
+			PRINTFORML %PRINT_CALLNAME(TARGET)%は後ろの穴を犯して欲しいと言い、
+			PRINTFORML 自ら尻を突き出して%PRINT_CALLNAME(FLAG:799)%を誘惑した。
+			PRINTW 
+			PRINTFORML 「後ろの穴ならセックスじゃない」
+			PRINTFORML そう言い聞かせる言葉は目の前の魅力的な肉穴の前にすぐに霧散してしまい、
+			PRINTFORML %PRINT_CALLNAME(FLAG:799)%は%PRINT_CALLNAME(TARGET)%に覆いかぶさった。
+			PRINTFORML 勃起しきったペニスをアヌスに挿入していくと、
+			PRINTFORML 尻肉がまるで女性器を犯しているかのように絡み付いてくる・・・
+			PRINTW 
+			PRINTFORML %PRINT_CALLNAME(TARGET)%を抑えつけて激しく腰を振る%PRINT_CALLNAME(FLAG:799)%・・・
+			PRINTFORML 「これは性交ではなく、仲間の悩みに応えているだけ」
+			PRINTFORML そんな言い訳はとうにどこかへと吹き飛んでしまっていた。
+			PRINTFORML 一夜限りの契りという免罪符が逆に枷を取り払ってしまったかの如く、
+			PRINTFORML パンパンと打ちつける淫音が響くたびに快楽が増幅されていく。
+			PRINTW 
+			IF TALENT:(FLAG:799):未熟 == 1
+				PRINTFORML やがて二人同時に絶頂を迎えた%PRINT_CALLNAME(TARGET)%の表情は
+			ELSE
+				PRINTFORML %PRINT_CALLNAME(TARGET)%が絶頂を迎えるのと同時に、
+				PRINTFORML 我慢できずに達した%PRINT_CALLNAME(FLAG:799)%が直腸内に精を放った。
+				PRINTFORML ビュルッビュルッと注がれる精液を尻穴で絞り取る%PRINT_CALLNAME(TARGET)%の表情は
+			ENDIF
+			PRINTFORML まるで普段とは別人のように恍惚としている・・・
+			PRINTW 
+			PRINTFORML 【夜這い実行者：%PRINT_CALLNAME(TARGET,1)%】
+			;快A
+			LOCAL:2 = 50
+			;Ａ経験
+			LOCAL:121 = 2
+			;絶頂経験
+			LOCAL:122 = 1
+			;精液経験
+			SIF TALENT:(FLAG:799):未熟 != 1
+				LOCAL:123 = 1
+			;近親交配経験
+			SIF INCEST_F(TARGET, FLAG:799) > 0
+				LOCAL:141 = 1
+			;幽閉中パラメータ変動共通処理へ
+			CALL COMMON_PRISON, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, 1
+			;経験数の増加
+			FOR CCOUNT, 100, 200
+				CALL COMMON_PRISON_EXP, CCOUNT, LOCAL:CCOUNT
+			NEXT
+			CALL _ABLUP, 1
+			PRINTW 
+			PRINTFORML 【夜這い対象：%PRINT_CALLNAME(FLAG:799,1)%】
+			LCOUNT = TARGET
+			TARGET = FLAG:799
+			VARSET LOCAL
+			;快C
+			LOCAL:0 = 50
+			;絶頂経験
+			LOCAL:122 = 1
+			;近親交配経験
+			SIF INCEST_F(FLAG:799, LCOUNT) > 0
+				LOCAL:141 = 1
+			;射精経験
+			SIF TALENT:(FLAG:799):未熟 != 1
+				LOCAL:153 = 1
+			;幽閉中パラメータ変動共通処理へ
+			CALL COMMON_PRISON, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, 1
+			;経験数の増加
+			FOR CCOUNT, 100, 200
+				CALL COMMON_PRISON_EXP, CCOUNT, LOCAL:CCOUNT
+			NEXT
+			CALL _ABLUP, 1
+		ENDIF
+	;Ｂ夜這い
+	CASE 8
+		IF ABL:(FLAG:799):欲望 < 2 + RAND:3
+			PRINTFORML %PRINT_CALLNAME(FLAG:799)%は%PRINT_CALLNAME(TARGET)%の乳房を揉みながら、
+			PRINTFORML 口で%PRINT_CALLNAME(TARGET)%の乳首を愛撫した。
+			PRINTW 
+			PRINTFORML 柔らかな双丘は手のひらで包み込むと弾力を返し、
+			PRINTFORML そっと舌で曲線を舐め上げると敏感に反応した%PRINT_CALLNAME(TARGET)%が細い声を漏らす。
+			IF TALENT:母乳体質
+				PRINTFORML 乳首を刺激するとじわりと先端から母乳が滲み出し、
+				PRINTFORML %PRINT_CALLNAME(FLAG:799)%が乳頭を甘噛みすると母乳が止め処なく流れ出てくる。
+				PRINTW 
+				PRINTFORML やがて%PRINT_CALLNAME(TARGET)%が大きく痙攣して絶頂すると母乳が噴き出し、
+				PRINTFORML 乳頭に吸い付いた%PRINT_CALLNAME(FLAG:799)%がそれを飲み干していく・・・
+			ELSE
+				PRINTFORML たちまち充血して勃起した乳頭に吸い付き、
+				PRINTFORML 激しく揉み上げながら舌と唇で敏感な先端を丹念にねぶっていく。
+				PRINTW 
+				PRINTFORML %PRINT_CALLNAME(FLAG:799)%が乳房を揉みながら乳首に歯を立てて甘噛みしていくと、
+				PRINTFORML 限界に達した%PRINT_CALLNAME(TARGET)%が涎を垂らしながら大きく痙攣した・・・
+			ENDIF
+			PRINTW 
+			PRINTFORML 【夜這い実行者：%PRINT_CALLNAME(TARGET,1)%】
+			;快B
+			LOCAL:3 = 50
+			;絶頂経験
+			LOCAL:122 = 1
+			;近親交配経験
+			SIF INCEST_F(TARGET, FLAG:799) > 0
+				LOCAL:141 = 1
+			;噴乳経験
+			SIF TALENT:母乳体質
+				LOCAL:154 = 1
+			;幽閉中パラメータ変動共通処理へ
+			CALL COMMON_PRISON, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, 1
+			;経験数の増加
+			FOR CCOUNT, 100, 200
+				CALL COMMON_PRISON_EXP, CCOUNT, LOCAL:CCOUNT
+			NEXT
+			CALL _ABLUP, 1
+			PRINTW 
+			PRINTFORML 【夜這い対象：%PRINT_CALLNAME(FLAG:799,1)%】
+			LCOUNT = TARGET
+			TARGET = FLAG:799
+			VARSET LOCAL
+			;近親交配経験
+			SIF INCEST_F(FLAG:799, LCOUNT) > 0
+				LOCAL:141 = 1
+			;幽閉中パラメータ変動共通処理へ
+			CALL COMMON_PRISON, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, 1
+			;経験数の増加
+			FOR CCOUNT, 100, 200
+				CALL COMMON_PRISON_EXP, CCOUNT, LOCAL:CCOUNT
+			NEXT
+			CALL _ABLUP, 1
+		ELSE
+			PRINTFORML %PRINT_CALLNAME(FLAG:799)%と%PRINT_CALLNAME(TARGET)%は互いの胸を揉みながら、
+			PRINTFORML 唇を重ねて絡み合った。
+			PRINTFORML 指や舌を交えながら互いの乳房と乳首を愛撫していく。
+			PRINTW 
+			IF TALENT:母乳体質 && TALENT:(FLAG:799):母乳体質
+				PRINTFORML やがて絶頂が近付くと二人は同時に乳首から母乳を噴出し、
+			ELSEIF TALENT:母乳体質
+				PRINTFORML やがて絶頂が近付くと%PRINT_CALLNAME(TARGET)%が乳首から母乳を噴出し、
+			ELSEIF TALENT:(FLAG:799):母乳体質
+				PRINTFORML やがて絶頂が近付くと%PRINT_CALLNAME(FLAG:799)%が乳首から母乳を噴出し、
+			ELSE
+				PRINTFORML やがて絶頂が近付くと互いの胸を鷲掴みするように痙攣し、
+			ENDIF
+			PRINTFORML そのまま一気に二人で果てた・・・
+			PRINTW 
+			PRINTFORML 【夜這い実行者：%PRINT_CALLNAME(TARGET,1)%】
+			;快B
+			LOCAL:3 = 50
+			;絶頂経験
+			LOCAL:122 = 1
+			;近親交配経験
+			SIF INCEST_F(TARGET, FLAG:799) > 0
+				LOCAL:141 = 1
+			;噴乳経験
+			SIF TALENT:母乳体質
+				LOCAL:154 = 1
+			;幽閉中パラメータ変動共通処理へ
+			CALL COMMON_PRISON, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, 1
+			;経験数の増加
+			FOR CCOUNT, 100, 200
+				CALL COMMON_PRISON_EXP, CCOUNT, LOCAL:CCOUNT
+			NEXT
+			CALL _ABLUP, 1
+			PRINTW 
+			PRINTFORML 【夜這い対象：%PRINT_CALLNAME(FLAG:799,1)%】
+			LCOUNT = TARGET
+			TARGET = FLAG:799
+			VARSET LOCAL
+			;快B
+			LOCAL:3 = 50
+			;絶頂経験
+			LOCAL:122 = 1
+			;近親交配経験
+			SIF INCEST_F(FLAG:799, LCOUNT) > 0
+				LOCAL:141 = 1
+			;噴乳経験
+			SIF TALENT:(FLAG:799):母乳体質
+				LOCAL:154 = 1
+			;幽閉中パラメータ変動共通処理へ
+			CALL COMMON_PRISON, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, 1
+			;経験数の増加
+			FOR CCOUNT, 100, 200
+				CALL COMMON_PRISON_EXP, CCOUNT, LOCAL:CCOUNT
+			NEXT
+			CALL _ABLUP, 1
+		ENDIF
+	;性交を迫る
+	CASE 16
+		;欲望が足りないと断られる
+		IF ABL:(FLAG:799):欲望 < 2
+			PRINTFORML %PRINT_CALLNAME(TARGET)%は%PRINT_CALLNAME(FLAG:799)%に勃起しきったペニスを見せて
+			PRINTFORML もう我慢できない、挿入させて欲しいと頼み込んだが、
+			PRINTFORML さすがにエッチするのは・・・と断られてしまった。
+			IF RAND:2 == 0 && TALENT:(FLAG:799):巨乳 > 0
+				PRINTFORML 代わりに胸で抜いてあげるから、と%PRINT_CALLNAME(FLAG:799)%が慰めると
+				PRINTFORML %PRINT_CALLNAME(TARGET)%の表情がぱっと明るくなった・・・
+				PRINTW 
+				CALL YOBAI_HOUSHI_3
+			ELSEIF RAND:2 == 0
+				PRINTFORML 代わりに口で抜いてあげるから、と%PRINT_CALLNAME(FLAG:799)%が慰めると
+				PRINTFORML %PRINT_CALLNAME(TARGET)%は頬を染めながら頷いた・・・
+				PRINTW 
+				CALL YOBAI_HOUSHI_2
+			ELSE
+				PRINTFORML 代わりに手で抜いてあげるから、と%PRINT_CALLNAME(FLAG:799)%が慰めると
+				PRINTFORML %PRINT_CALLNAME(TARGET)%は渋々引き下がった・・・
+				PRINTW 
+				CALL YOBAI_HOUSHI_1
+			ENDIF
+		;処女Ａ性交
+		ELSEIF TALENT:(FLAG:799):処女 > 0 && ABL:(FLAG:799):欲望 < 4
+			PRINTFORML %PRINT_CALLNAME(TARGET)%は%PRINT_CALLNAME(FLAG:799)%に勃起しきったペニスを見せて
+			PRINTFORML もう我慢できない、挿入させて欲しいと頼み込むと%PRINT_CALLNAME(FLAG:799)%は
+			PRINTFORML 処女なので前の穴での本番は駄目だが、アナルなら・・・と頷いた。
+			PRINTW 
+			CALL YOBAI_HOUSHI_5
+		;処女Ｖ性交
+		ELSEIF TALENT:(FLAG:799):処女 > 0
+			PRINTFORML %PRINT_CALLNAME(TARGET)%は%PRINT_CALLNAME(FLAG:799)%に勃起しきったペニスを見せて
+			PRINTFORML もう我慢できない、挿入させて欲しいと頼み込むと
+			PRINTFORML %PRINT_CALLNAME(FLAG:799)%は欲情に上気した顔で処女を貰ってほしい、と応えた・・・
+			PRINTW 
+			CALL YOBAI_HOUSHI_4
+		;Ａ性交
+		ELSEIF RAND:2 == 0
+			PRINTFORML %PRINT_CALLNAME(TARGET)%は%PRINT_CALLNAME(FLAG:799)%に勃起しきったペニスを見せて
+			PRINTFORML もう我慢できない、挿入させて欲しいと頼み込むと
+			PRINTFORML %PRINT_CALLNAME(FLAG:799)%は頬を染めながらアナルでして欲しい、と応えた・・・
+			PRINTW 
+			CALL YOBAI_HOUSHI_5
+		;Ｖ性交
+		ELSE
+			PRINTFORML %PRINT_CALLNAME(TARGET)%は%PRINT_CALLNAME(FLAG:799)%に勃起しきったペニスを見せて
+			PRINTFORML もう我慢できない、挿入させて欲しいと頼み込むと
+			PRINTFORML %PRINT_CALLNAME(FLAG:799)%は頬を染めながら頷いた・・・
+			PRINTW 
+			CALL YOBAI_HOUSHI_4
+		ENDIF
+
+
+	;奉仕を迫る
+	CASE 32
+		PRINTFORML %PRINT_CALLNAME(TARGET)%は%PRINT_CALLNAME(FLAG:799)%に勃起しきったペニスを見せて
+		PRINTFORML 抜かせて欲しいと頼み込んだ。
+		IF ABL:(FLAG:799):欲望 < 2 + RAND:3
+			PRINTFORML 見るからに限界に達しつつあるペニスを見て%PRINT_CALLNAME(FLAG:799)%は
+			IF RAND:8 == 0 && TALENT:(FLAG:799):巨乳 > 0
+				PRINTFORML 胸で抜いてあげることにしたようだ・・・
+				PRINTW 
+				CALL YOBAI_HOUSHI_3
+			ELSEIF RAND:4 == 0
+				PRINTFORML 口で抜いてあげることにしたようだ・・・
+				PRINTW 
+				CALL YOBAI_HOUSHI_2
+			ELSE
+				PRINTFORML 手で抜いてあげることにしたようだ・・・
+				PRINTW 
+				CALL YOBAI_HOUSHI_1
+			ENDIF
+		ELSE
+			PRINTFORML 見るからに限界に達しつつあるペニスを見て%PRINT_CALLNAME(FLAG:799)%は
+			IF RAND:4 == 0 && TALENT:(FLAG:799):巨乳 > 0
+				PRINTFORML 胸で抜いてあげることにしたようだ。
+				CALL YOBAI_HOUSHI_3
+			ELSEIF RAND:8 == 0
+				PRINTFORML 手で抜いてあげることにしたようだ。
+				CALL YOBAI_HOUSHI_1
+			ELSE
+				PRINTFORML 口で抜いてあげることにしたようだ。
+				CALL YOBAI_HOUSHI_2
+			ENDIF
+		ENDIF
+ENDSELECT
+;珠の取得へ
+CALL _ABLUP, 1
+PRINTW 
+
+
+
+;手で奉仕させる
+@YOBAI_HOUSHI_1
+#DIM LCOUNT
+#DIM CCOUNT
+VARSET LOCAL
+LCOUNT = 0
+PRINTFORML %PRINT_CALLNAME(FLAG:799)%は%PRINT_CALLNAME(TARGET)%のペニスを手で握り、
+PRINTFORML ゆっくりと上下に動かし始めた。
+PRINTFORML すでに限界まで勃起したかに見えたペニスが掌の柔らかな感触に反応して
+PRINTFORML さらに怒張を強く硬く反り返らせる・・・
+PRINTW 
+IF TALENT:TARGET:未熟 == 1 && TALENT:(FLAG:799):オトコ <= 0
+	PRINTFORML 快楽にあえぐ%PRINT_CALLNAME(TARGET)%に応えて%PRINT_CALLNAME(FLAG:799)%が乳房を露出させると、
+	PRINTFORML %PRINT_CALLNAME(TARGET)%は陶酔した表情で夢中で乳首に吸い付いた。
+	PRINTFORML 優しく髪を撫でられる%PRINT_CALLNAME(TARGET)%が全身を痙攣させて絶頂するまで
+	PRINTFORML 背徳的な授乳手コキは続けられた・・・
+ELSEIF TALENT:TARGET:未熟 == 1
+	PRINTFORML ほどなくして%PRINT_CALLNAME(TARGET)%は全身を痙攣させて絶頂した・・・
+ELSE
+	PRINTFORML 上下のストロークと共に先走り汁が噴き出してくる。
+	PRINTFORML そのまま一気に加速すると%PRINT_CALLNAME(TARGET)%は大きく痙攣し、
+	PRINTFORML %PRINT_CALLNAME(FLAG:799)%の身体に大量の精液を放った・・・
+ENDIF
+PRINTW 
+PRINTFORML 【夜這い実行者：%PRINT_CALLNAME(TARGET,1)%】
+;快C
+LOCAL:0 = 100
+;絶頂経験
+LOCAL:122 = 1
+;近親交配経験
+SIF INCEST_F(TARGET, FLAG:799) > 0
+	LOCAL:141 = 1
+;射精経験
+SIF TALENT:TARGET:未熟 != 1
+	LOCAL:153 = 2
+;幽閉中パラメータ変動共通処理へ
+CALL COMMON_PRISON, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, 1
+;経験数の増加
+FOR CCOUNT, 100, 200
+	CALL COMMON_PRISON_EXP, CCOUNT, LOCAL:CCOUNT
+NEXT
+CALL _ABLUP, 1
+PRINTW 
+PRINTFORML 【夜這い対象：%PRINT_CALLNAME(FLAG:799,1)%】
+LCOUNT = TARGET
+TARGET = FLAG:799
+VARSET LOCAL
+;精液経験
+SIF TALENT:LCOUNT:未熟 != 1
+	LOCAL:123 = 2
+;近親交配経験
+SIF INCEST_F(FLAG:799, LCOUNT) > 0
+	LOCAL:141 = 1
+;幽閉中パラメータ変動共通処理へ
+CALL COMMON_PRISON, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, 1
+;経験数の増加
+FOR CCOUNT, 100, 200
+	CALL COMMON_PRISON_EXP, CCOUNT, LOCAL:CCOUNT
+NEXT
+CALL _ABLUP, 1
+
+
+;口で奉仕させる
+@YOBAI_HOUSHI_2
+#DIM LCOUNT
+#DIM CCOUNT
+VARSET LOCAL
+LCOUNT = 0
+PRINTFORML %PRINT_CALLNAME(FLAG:799)%は%PRINT_CALLNAME(TARGET)%の怒張に舌を這わせ、
+PRINTFORML ゆっくりと口の中に飲み込んでいった。
+PRINTFORML %PRINT_CALLNAME(FLAG:799)%が前後に動きながらペニスを唇で締め上げ、
+PRINTFORML 舌で亀頭の先端やカリ裏を細かく刺激していった・・・
+PRINTW 
+PRINTFORML やがて限界に近付いていることを察した%PRINT_CALLNAME(FLAG:799)%がフィニッシュとばかりに
+PRINTFORML ジュルジュルと音を立ててペニスを吸い上げると、%PRINT_CALLNAME(TARGET)%は大きく痙攣し、
+IF TALENT:TARGET:未熟 == 1
+	PRINTFORML 至福の表情を浮かべながら絶頂を迎えた・・・
+ELSE
+	PRINTFORML そのまま%PRINT_CALLNAME(FLAG:799)%の口内に大量の精液を放った・・・
+ENDIF
+PRINTW 
+PRINTFORML 【夜這い実行者：%PRINT_CALLNAME(TARGET,1)%】
+;快C
+LOCAL:0 = 100
+;絶頂経験
+LOCAL:122 = 1
+;近親交配経験
+SIF INCEST_F(TARGET, FLAG:799) > 0
+	LOCAL:141 = 1
+;射精経験
+SIF TALENT:TARGET:未熟 != 1
+	LOCAL:153 = 2
+;幽閉中パラメータ変動共通処理へ
+CALL COMMON_PRISON, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, 1
+;経験数の増加
+FOR CCOUNT, 100, 200
+	CALL COMMON_PRISON_EXP, CCOUNT, LOCAL:CCOUNT
+NEXT
+CALL _ABLUP, 1
+PRINTW 
+PRINTFORML 【夜這い対象：%PRINT_CALLNAME(FLAG:799,1)%】
+LCOUNT = TARGET
+TARGET = FLAG:799
+VARSET LOCAL
+;精液経験
+SIF TALENT:LCOUNT:未熟 != 1
+	LOCAL:123 = 2
+;フェラ経験
+LOCAL:124 = 1
+;近親交配経験
+SIF INCEST_F(FLAG:799, LCOUNT) > 0
+	LOCAL:141 = 1
+;幽閉中パラメータ変動共通処理へ
+CALL COMMON_PRISON, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, 1
+;経験数の増加
+FOR CCOUNT, 100, 200
+	CALL COMMON_PRISON_EXP, CCOUNT, LOCAL:CCOUNT
+NEXT
+CALL _ABLUP, 1
+
+
+;胸で奉仕させる
+@YOBAI_HOUSHI_3
+#DIM LCOUNT
+#DIM CCOUNT
+VARSET LOCAL
+LCOUNT = 0
+PRINTFORML %PRINT_CALLNAME(FLAG:799)%は豊満な胸で%PRINT_CALLNAME(TARGET)%のペニスを包み込み、
+PRINTFORML 手で谷間を押しつけてゆっくりとシゴきながら、先端からはみ出した亀頭に舌を這わせた。
+PRINTFORML 乳房の柔らかな感触と先端を舐め上げる舌と唇の温かさ、
+PRINTFORML そして乳首のコリコリした感触に刺激されて
+PRINTFORML %PRINT_CALLNAME(TARGET)%の脳内を快楽物質が駆け巡る・・・
+PRINTW 
+PRINTFORML やがて限界に近付いていることを察した%PRINT_CALLNAME(FLAG:799)%がフィニッシュとばかりに
+PRINTFORML ジュルジュルと音を立ててペニスを吸い上げると、%PRINT_CALLNAME(TARGET)%は大きく痙攣し、
+IF TALENT:TARGET:未熟 == 1
+	PRINTFORML 至福の表情を浮かべながら絶頂を迎えた・・・
+ELSE
+	PRINTFORML そのまま%PRINT_CALLNAME(FLAG:799)%の胸と口内に大量の精液を放った・・・
+ENDIF
+PRINTW 
+PRINTFORML 【夜這い実行者：%PRINT_CALLNAME(TARGET,1)%】
+;快C
+LOCAL:0 = 100
+;絶頂経験
+LOCAL:122 = 1
+;近親交配経験
+SIF INCEST_F(TARGET, FLAG:799) > 0
+	LOCAL:141 = 1
+;射精経験
+SIF TALENT:TARGET:未熟 != 1
+	LOCAL:153 = 2
+;幽閉中パラメータ変動共通処理へ
+CALL COMMON_PRISON, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, 1
+;経験数の増加
+FOR CCOUNT, 100, 200
+	CALL COMMON_PRISON_EXP, CCOUNT, LOCAL:CCOUNT
+NEXT
+CALL _ABLUP, 1
+PRINTW 
+PRINTFORML 【夜這い対象：%PRINT_CALLNAME(FLAG:799,1)%】
+LCOUNT = TARGET
+TARGET = FLAG:799
+VARSET LOCAL
+;快B
+LOCAL:3 = 80
+;精液経験
+SIF TALENT:LCOUNT:未熟 != 1
+	LOCAL:123 = 2
+;フェラ経験
+LOCAL:124 = 1
+;近親交配経験
+SIF INCEST_F(FLAG:799, LCOUNT) > 0
+	LOCAL:141 = 1
+;幽閉中パラメータ変動共通処理へ
+CALL COMMON_PRISON, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, 1
+;経験数の増加
+FOR CCOUNT, 100, 200
+	CALL COMMON_PRISON_EXP, CCOUNT, LOCAL:CCOUNT
+NEXT
+CALL _ABLUP, 1
+
+
+
+;Ｖ性交を迫る
+@YOBAI_HOUSHI_4
+#DIM LCOUNT
+#DIM CCOUNT
+VARSET LOCAL
+LCOUNT = 0
+IF TALENT:(FLAG:799):処女 > 0
+	PRINTFORML %PRINT_CALLNAME(TARGET)%は%PRINT_CALLNAME(FLAG:799)%のワレメに自らのペニスをあてがうと、
+	PRINTFORML 痛がらないようにゆっくりと亀頭を挿入し、ずぶずぶと押し込んでいった。
+	PRINTFORML 自ら受け入れるように%PRINT_CALLNAME(FLAG:799)%が脚を絡めて抱き寄せる。
+	PRINTW 
+	PRINTFORML ペニスを半ばまで挿入したところで膜の破れる感触と共に破瓜の証がつぅと滲み出るが、
+	PRINTFORML %PRINT_CALLNAME(FLAG:799)%は涙を浮かべながらも幸せそうな表情をしている・・・
+	PRINTL 
+	PRINTL 処女喪失
+	PRINTW 
+	PRINTFORML パンパンと肉と肉のぶつかる音と荒い息遣いが部屋の空気を震わせる。
+	PRINTFORML 激しくはないが情熱的なピストンに膣内を抉られ、
+	PRINTFORML %PRINT_CALLNAME(FLAG:799)%は痛みよりも快楽のほうが勝っている様子で声を堪えている。
+	PRINTW 
+	IF TALENT:TARGET:未熟 == 1
+		PRINTFORML 限界に達した%PRINT_CALLNAME(TARGET)%が恍惚の表情を浮かべて絶頂するのと、
+		PRINTFORML 初めての挿入にも関わらず%PRINT_CALLNAME(FLAG:799)%がアクメを迎えたのは同時だった・・・
+	ELSEIF TALENT:TARGET:淫乱 > 0 || LOVER_F(FLAG:799, TARGET) > 0
+		PRINTFORML 限界に近付いた%PRINT_CALLNAME(TARGET)%が中に出しても良いかと問うと、
+		PRINTFORML %PRINT_CALLNAME(FLAG:799)%は足を絡めて無言で中出しを許可した。
+		PRINTFORML 初めての挿入にも関わらず二人は同時に絶頂し、勢いよく精液が膣内へと注ぎこまれていった・・・
+	ELSE
+		PRINTFORML 限界に達した%PRINT_CALLNAME(TARGET)%がペニスを引き抜いて射精するのと、
+		PRINTFORML 初めての挿入にも関わらず%PRINT_CALLNAME(FLAG:799)%が絶頂したのは同時だった・・・
+	ENDIF
+	PRINTW 
+	PRINTFORML 【夜這い実行者：%PRINT_CALLNAME(TARGET,1)%】
+	;快C
+	LOCAL:0 = 100
+	;絶頂経験
+	LOCAL:122 = 1
+	;近親交配経験
+	SIF INCEST_F(TARGET, FLAG:799) > 0
+		LOCAL:141 = 1
+	;射精経験
+	SIF TALENT:TARGET:未熟 != 1
+		LOCAL:153 = 2
+	;幽閉中パラメータ変動共通処理へ
+	CALL COMMON_PRISON, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, 1
+	;経験数の増加
+	FOR CCOUNT, 100, 200
+		CALL COMMON_PRISON_EXP, CCOUNT, LOCAL:CCOUNT
+	NEXT
+	CALL _ABLUP, 1
+	PRINTW 
+	PRINTFORML 【夜這い対象：%PRINT_CALLNAME(FLAG:799,1)%】
+	LCOUNT = TARGET
+	TARGET = FLAG:799
+	VARSET LOCAL
+	;快V
+	LOCAL:1 = 100
+	;苦痛
+	LOCAL:10 = 50
+	;Ｖ経験
+	LOCAL:120 = 2
+	;絶頂経験
+	LOCAL:122 = 1
+	;精液経験
+	SIF TALENT:LCOUNT:未熟 != 1
+		LOCAL:123 = 2
+	;近親交配経験
+	SIF INCEST_F(FLAG:799, LCOUNT) > 0
+		LOCAL:141 = 1
+	;処女を失う
+	TALENT:処女 = -1
+	;処女喪失の相手が愛する人かどうか
+	IF LOVER_F(LCOUNT, FLAG:799) > 0
+		CFLAG:LCOUNT:206 = 5
+	ELSE
+		CFLAG:LCOUNT:206 = 6
+	ENDIF
+	;幽閉中パラメータ変動共通処理へ
+	CALL COMMON_PRISON, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, 1
+	;経験数の増加
+	FOR CCOUNT, 100, 200
+		CALL COMMON_PRISON_EXP, CCOUNT, LOCAL:CCOUNT
+	NEXT
+	;妊娠判定
+	SIF (TALENT:LCOUNT:淫乱 > 0 || LOVER_F(LCOUNT, TARGET) > 0) && LOCAL:123 > 0 && TALENT:LCOUNT:未熟 == 0
+		CALL NINSIN_HANTEI, LOCAL:123, 400, CFLAG:LCOUNT:240 * -1 - 100
+	CALL _ABLUP, 1
+	;アフターピル
+	CALL AFTER_PILL, TARGET, 75, CFLAG:LCOUNT:240 * -1 - 100
+ELSE
+	PRINTFORML %PRINT_CALLNAME(TARGET)%は%PRINT_CALLNAME(FLAG:799)%に覆いかぶさると、
+	PRINTFORML 勃起しきったペニスを膣奥に根元まで挿入して深い抽送を開始した。
+	PRINTFORML すでに濡れきっていた%PRINT_CALLNAME(FLAG:799)%は痛がる様子も無く、
+	PRINTFORML むしろ快楽を貪るようにして互いの口づけを求め合う・・・
+	PRINTW 
+	PRINTFORML %PRINT_CALLNAME(FLAG:799)%を抑えつけて激しく腰を振る%PRINT_CALLNAME(TARGET)%・・・
+	PRINTFORML 一夜限りの契りという免罪符が逆に枷を取り払ってしまったかの如く、
+	PRINTFORML パンパンと打ちつける淫音が響くたびに快楽が増幅されていく。
+	PRINTW 
+	IF TALENT:TARGET:未熟 == 1
+		PRINTFORML やがて%PRINT_CALLNAME(TARGET)%がほどなく限界に達し、%PRINT_CALLNAME(FLAG:799)%もまた絶頂を迎えた。
+		PRINTFORML %PRINT_CALLNAME(FLAG:799)%に抱き付いたまま余韻に蕩けきった%PRINT_CALLNAME(TARGET)%の表情は
+	ELSEIF (TALENT:TARGET:淫乱 > 0 || LOVER_F(TARGET, FLAG:799) > 0) && (TALENT:(FLAG:799):淫乱 > 0 || LOVER_F(FLAG:799, TARGET) > 0)
+		PRINTFORML 膣内に出したい、と%PRINT_CALLNAME(TARGET)%が言うと%PRINT_CALLNAME(FLAG:799)%は紅潮した顔で頷き、
+		PRINTFORML 口づけを交わしながら%PRINT_CALLNAME(TARGET)%の背に手足を絡めて引き寄せた。
+		PRINTFORML 激しくなっていくピストンが限界に達すると子宮の内奥に昂った欲情が一気に放出され、
+		PRINTFORML 同時に絶頂して精液を子宮で受け止める%PRINT_CALLNAME(FLAG:799)%の表情は
+	ELSEIF (TALENT:TARGET:淫乱 > 0 || LOVER_F(TARGET, FLAG:799) > 0)
+		PRINTFORML 膣内に出したい、と%PRINT_CALLNAME(TARGET)%が言うと%PRINT_CALLNAME(FLAG:799)%は咄嗟に首を横に振ったが、
+		PRINTFORML もはや欲望の虜になっている%PRINT_CALLNAME(TARGET)%が中出しの誘惑に耐えきれるはずもなく、
+		PRINTFORML 限界に達すると子宮の内奥に腰を突き入れて昂った欲情を一気に放出した。
+		PRINTFORML 同時に絶頂して精液を子宮で受け止める%PRINT_CALLNAME(FLAG:799)%の表情は
+	ELSE
+		PRINTFORML 辛うじて残っていた理性が中出しだけは回避しなければと警告する。
+		PRINTFORML 絶頂を迎えた%PRINT_CALLNAME(FLAG:799)%から爆発寸前のペニスが引き抜かれると、
+		PRINTFORML 軽くフェラチオをしてから%PRINT_CALLNAME(TARGET)%を口の中で射精させる。
+		PRINTFORML ビュルビュルと射精を続ける%PRINT_CALLNAME(TARGET)%の表情は
+		LOCAL:324 = 1
+	ENDIF
+	PRINTFORML まるで普段とは別人のように恍惚としている・・・
+	PRINTW 
+	PRINTFORML 【夜這い実行者：%PRINT_CALLNAME(TARGET,1)%】
+	;快C
+	LOCAL:0 = 100
+	;絶頂経験
+	LOCAL:122 = 1
+	;近親交配経験
+	SIF INCEST_F(TARGET, FLAG:799) > 0
+		LOCAL:141 = 1
+	;射精経験
+	SIF TALENT:TARGET:未熟 != 1
+		LOCAL:153 = 2
+	;幽閉中パラメータ変動共通処理へ
+	CALL COMMON_PRISON, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, 1
+	;経験数の増加
+	FOR CCOUNT, 100, 200
+		CALL COMMON_PRISON_EXP, CCOUNT, LOCAL:CCOUNT
+	NEXT
+	CALL _ABLUP, 1
+	PRINTW 
+	PRINTFORML 【夜這い対象：%PRINT_CALLNAME(FLAG:799,1)%】
+	LCOUNT = TARGET
+	TARGET = FLAG:799
+	VARSET LOCAL
+	;快V
+	LOCAL:1 = 100
+	;Ｖ経験
+	LOCAL:120 = 2
+	;絶頂経験
+	LOCAL:122 = 1
+	;精液経験
+	SIF TALENT:LCOUNT:未熟 != 1
+		LOCAL:123 = 2
+	;フェラ経験
+	LOCAL:124 = LOCAL:324
+	;近親交配経験
+	SIF INCEST_F(FLAG:799, LCOUNT) > 0
+		LOCAL:141 = 1
+	;幽閉中パラメータ変動共通処理へ
+	CALL COMMON_PRISON, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, 1
+	;経験数の増加
+	FOR CCOUNT, 100, 200
+		CALL COMMON_PRISON_EXP, CCOUNT, LOCAL:CCOUNT
+	NEXT
+	;妊娠判定
+	SIF (TALENT:LCOUNT:淫乱 > 0 || LOVER_F(LCOUNT, TARGET) > 0) && LOCAL:123 > 0 && TALENT:LCOUNT:未熟 == 0
+		CALL NINSIN_HANTEI, LOCAL:123, 400, CFLAG:LCOUNT:240 * -1 - 100
+	CALL _ABLUP, 1
+	;アフターピル
+	CALL AFTER_PILL, TARGET, 75, CFLAG:LCOUNT:240 * -1 - 100
+ENDIF
+
+
+
+;Ａ性交を迫る
+@YOBAI_HOUSHI_5
+#DIM LCOUNT
+#DIM CCOUNT
+VARSET LOCAL
+LCOUNT = 0
+PRINTFORML %PRINT_CALLNAME(TARGET)%は%PRINT_CALLNAME(FLAG:799)%に覆いかぶさり
+PRINTFORML 勃起しきったペニスをアヌスに挿入していくと、
+PRINTFORML 尻肉がまるで女性器を犯しているかのように絡み付いてくる・・・
+PRINTW 
+PRINTFORML %PRINT_CALLNAME(FLAG:799)%を抑えつけて激しく腰を振る%PRINT_CALLNAME(TARGET)%・・・
+PRINTFORML 一夜限りの契りという免罪符が逆に枷を取り払ってしまったかの如く、
+PRINTFORML パンパンと打ちつける淫音が響くたびに快楽が増幅されていく。
+PRINTW 
+IF TALENT:TARGET:未熟 == 1
+	PRINTFORML やがて二人同時に絶頂を迎えた%PRINT_CALLNAME(TARGET)%の表情は
+ELSE
+	PRINTFORML %PRINT_CALLNAME(FLAG:799)%が絶頂を迎えるのと同時に、
+	PRINTFORML 我慢できずに達した%PRINT_CALLNAME(TARGET)%が直腸内に精を放った。
+	PRINTFORML ビュルッビュルッと尻穴に精液を注ぎ込む%PRINT_CALLNAME(TARGET)%の表情は
+ENDIF
+PRINTFORML まるで普段とは別人のように恍惚としている・・・
+PRINTW 
+PRINTFORML 【夜這い実行者：%PRINT_CALLNAME(TARGET,1)%】
+;快C
+LOCAL:0 = 100
+;絶頂経験
+LOCAL:122 = 1
+;近親交配経験
+SIF INCEST_F(TARGET, FLAG:799) > 0
+	LOCAL:141 = 1
+;射精経験
+SIF TALENT:TARGET:未熟 != 1
+	LOCAL:153 = 2
+;幽閉中パラメータ変動共通処理へ
+CALL COMMON_PRISON, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, 1
+;経験数の増加
+FOR CCOUNT, 100, 200
+	CALL COMMON_PRISON_EXP, CCOUNT, LOCAL:CCOUNT
+NEXT
+CALL _ABLUP, 1
+PRINTW 
+PRINTFORML 【夜這い対象：%PRINT_CALLNAME(FLAG:799,1)%】
+LCOUNT = TARGET
+TARGET = FLAG:799
+VARSET LOCAL
+;快A
+LOCAL:2 = 100
+;Ａ経験
+LOCAL:121 = 2
+;絶頂経験
+LOCAL:122 = 1
+;精液経験
+SIF TALENT:LCOUNT:未熟 != 1
+	LOCAL:123 = 2
+;近親交配経験
+SIF INCEST_F(FLAG:799, LCOUNT) > 0
+	LOCAL:141 = 1
+;幽閉中パラメータ変動共通処理へ
+CALL COMMON_PRISON, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, 1
+;経験数の増加
+FOR CCOUNT, 100, 200
+	CALL COMMON_PRISON_EXP, CCOUNT, LOCAL:CCOUNT
+NEXT
+CALL _ABLUP, 1
+

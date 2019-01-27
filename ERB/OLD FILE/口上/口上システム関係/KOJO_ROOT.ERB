@@ -1,0 +1,96 @@
+
+;--------------------------------------------------
+;口上共通ルート処理
+@KOJO_ROOT(C_NO, CODE)
+#DIM C_NO
+#DIMS CODE
+;気絶の場合は口上なし
+IF (TCVAR:12 & 気絶)
+	;ランダム分岐フラグをリセット
+	FLAG:900 = 0
+	RETURN 0
+ENDIF
+;結界で防がれた場合は口上なし
+IF BASE:Ｃ結界耐久力 > 0 && (STRFIND(CODE, "SEX_COM0") != -1 || STRFIND(CODE, "SEX_COM1") != -1 || STRFIND(CODE, "SPCOM0") != -1)
+	;ランダム分岐フラグをリセット
+	FLAG:900 = 0
+	RETURN 0
+ENDIF
+IF BASE:Ｖ結界耐久力 > 0 && (STRFIND(CODE, "SEX_COM2") != -1 || STRFIND(CODE, "SEX_COM3") != -1 || STRFIND(CODE, "SPCOM1") != -1)
+	;ランダム分岐フラグをリセット
+	FLAG:900 = 0
+	RETURN 0
+ENDIF
+IF BASE:Ａ結界耐久力 > 0 && (STRFIND(CODE, "SEX_COM4") != -1 || STRFIND(CODE, "SEX_COM5") != -1 || STRFIND(CODE, "SPCOM2") != -1)
+	;ランダム分岐フラグをリセット
+	FLAG:900 = 0
+	RETURN 0
+ENDIF
+IF BASE:Ｂ結界耐久力 > 0 && (STRFIND(CODE, "SEX_COM6") != -1 || STRFIND(CODE, "SEX_COM7") != -1 || STRFIND(CODE, "SPCOM3") != -1 || STRFIND(CODE, "SPCOM5") != -1)
+	;ランダム分岐フラグをリセット
+	FLAG:900 = 0
+	RETURN 0
+ENDIF
+
+;口上色設定
+;----------------------------------------------
+IF C_NO == 0 || C_NO == 1
+	IF STRFIND(CODE, "OTHER_") == -1
+		TRYCALLFORM KOJO_{C_NO}_COLOR_{SEIKAKU_CHECK_F(TARGET)}
+		FLAG:62 = 0
+	ELSE
+		TRYCALLFORM KOJO_{C_NO}_OTHER_COLOR_{SEIKAKU_CHECK_F(FLAG:111)}
+		FLAG:62 = 1
+	ENDIF
+ELSE
+	IF STRFIND(CODE, "OTHER_") == -1
+		TRYCALLFORM KOJO_{C_NO}_COLOR
+		FLAG:62 = 0
+	ELSE
+		TRYCALLFORM KOJO_{C_NO}_OTHER_COLOR
+		FLAG:62 = 1
+	ENDIF
+ENDIF
+
+;口上呼び出し
+;----------------------------------------------
+IF C_NO == 0 || C_NO == 1
+	IF STRFIND(CODE, "OTHER_") == -1
+		TRYCCALLFORM KOJO_{C_NO}_%CODE%_{SEIKAKU_CHECK_F(TARGET)}
+		FLAG:62 = 0
+		CATCH
+			RESETCOLOR
+			;ランダム分岐フラグをリセット
+			FLAG:900 = 0
+			RETURN -1
+		ENDCATCH
+	ELSE
+		TRYCCALLFORM KOJO_{C_NO}_%CODE%_{SEIKAKU_CHECK_F(FLAG:111)}
+		FLAG:62 = 1
+		CATCH
+			RESETCOLOR
+			;ランダム分岐フラグをリセット
+			FLAG:900 = 0
+			RETURN -1
+		ENDCATCH
+	ENDIF
+ELSE
+	TRYCCALLFORM KOJO_{C_NO}_%CODE%
+	CATCH
+		RESETCOLOR
+		;ランダム分岐フラグをリセット
+		FLAG:900 = 0
+		RETURN -1
+	ENDCATCH
+ENDIF
+
+;終了処理
+;----------------------------------------------
+RESETCOLOR
+;ランダム分岐フラグをリセット
+FLAG:900 = 0
+SIF RESULT == 999
+	RETURN 999
+
+
+

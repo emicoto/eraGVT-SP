@@ -1,0 +1,100 @@
+;**********************************************************
+;基本ルール
+;加筆修正は、自由に行ってください
+;ただし、前の方が書いた文章は勝手に消さないでください
+;書き込む順番は、クドくなり過ぎないように3要素と部位で表現します
+;【実況】汁に濡れている、寄生されている、触手拘束具などを装着など
+;【形状】大きさ、深さなど、
+;【動作】開閉している、うごめいているなど、動きを表現
+;【部位呼称】淫乱や発情や性格で下品な書き方に
+;
+;増やして欲しい隠語は、アウトプットしてリクエストなりしましょう
+;未登録の中に放り込むなり、掲示板にアップするなりすれば、
+;実装される可能性があります
+;
+;by 雑魚の人 2018/02/01
+;**********************************************************
+;eXample(例)の淫語
+@SLANG_XXXX(ARG)
+
+
+
+
+
+;**********************************************************
+;触手拘束具を着ている場合
+;**********************************************************
+IF CFLAG:42 == 400
+	SLANGWORD_XXXX+=""
+ENDIF
+
+
+
+
+
+;**********************************************************
+;射精・母乳でスラングを切り替えるためテンプレ
+;**********************************************************
+
+STAIN:0;口 || STAIN:3:膣、ワレメ || STAIN:4:アナル
+IF (STAIN:0 & 4) || (STAIN:3 & 4) || (STAIN:4 & 4)
+	SLANGWORD_XXXX += %SLANG_SEMEN(TARGET)%
+	SELECTCASE RAND:2
+		CASE 1
+			SLANGWORD_XXXX = %SLANGWORD_XXXX%%SLANG_Semen(TARGET)%で溢れている
+		CASEELSE
+			SLANGWORD_XXXX = %SLANGWORD_XXXX%%SLANG_Semen(TARGET)%が滴り落ちている
+	ENDSELECT
+ENDIF
+
+;STAIN:1:ぶっかけ、手、身体 || STAIN:2:胸
+IF (STAIN:1 & 4) || (STAIN:2 & 4)
+	SLANGWORD_XXXX += %SLANG_SEMEN(TARGET)%
+	SELECTCASE RAND:2
+		CASE 1
+			SLANGWORD_XXXX = %SLANGWORD_XXXX%%SLANG_Semen(TARGET)%が掛かっている
+		CASEELSE
+			SLANGWORD_XXXX = %SLANGWORD_XXXX%%SLANG_Semen(TARGET)%がたれている
+	ENDSELECT
+ENDIF
+
+
+
+
+;**********************************************************
+;潤滑でスラングを切り替えるためテンプレ
+;**********************************************************
+;戦闘状況の場合
+;*************************
+IF (TCVAR:12 & べとべと)
+	SLANGWORD_XXXX+=""
+ENDIF
+
+
+
+;*************************
+;ステータスの場合
+;*************************
+IF PALAM:潤滑 >= 2000
+	SLANGWORD_XXXX+=""
+ELSEIF PALAM:潤滑 < 2000
+	SLANGWORD_XXXX+=""
+ELSEIF PALAM:潤滑 < 1000
+	SLANGWORD_XXXX+=""
+ELSEIF PALAM:潤滑 < 200
+	SLANGWORD_XXXX+=""
+ELSE
+	SLANGWORD_XXXX+=""
+ENDIF
+
+;*************************
+;素質の場合
+;*************************
+IF TALENT:濡れやすい
+	SLANGWORD_XXXX+="濡れやすい"
+ENDIF
+IF TALENT:濡れやすい
+	SLANGWORD_XXXX+="濡れにくい"
+ENDIF
+
+

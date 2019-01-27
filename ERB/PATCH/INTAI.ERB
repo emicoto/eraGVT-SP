@@ -1,0 +1,152 @@
+@CHARA_INTAI
+	PRINTL 一度引退したキャラ二度と現場復帰できません。本当によろしいですか？
+	PRINTL [0]はい
+	PRINTL [1]いいえ
+	CALL INPUT_ROOP,2
+	IF RESULT == 0
+		PRINTL 本当の本当によろしいですか？
+		PRINTL [0]いいえ
+		PRINTL [1]はい
+		CALL INPUT_ROOP,2
+		IF RESULT == 1
+			CALL OLD_GIRL
+		ENDIF
+	ENDIF
+
+
+@OLD_GIRL
+
+
+
+;価値基準
+LOCAL:0=((BASE:体力基礎+BASE:気力基礎)/10+(+BASE:性耐性基礎+BASE:攻撃+BASE:防御+BASE:敏捷))*ABL:レベル
+;防衛力に追加
+CFLAG:852 += LOCAL:0
+;現状防衛力の存在価値が低いのでボーナス
+MONEY += LOCAL:0 *15
+ CALL MASSAGE_INTAI
+DELCHARA TARGET
+PRINTFORML 防衛力が{LOCAL:0}上がった！！
+PRINTFORML 資金{LOCAL:0*15}を得た！！
+
+@INPUT_ROOP,ARG
+$INPUT_LOOP_FUNC
+INPUT
+IF RESULT < 0 || RESULT > ARG
+	GOTO INPUT_LOOP_FUNC
+ELSE
+	RETURN RESULT
+ENDIF
+
+
+@MASSAGE_INTAI
+;フラグ用
+LOCAL:0 = 1
+;筋力>他二つ
+IF BASE:攻撃 > MAX(BASE:防御,BASE:敏捷)
+	PRINTFORM 攻撃力に優れ
+;防御>他二つ
+ELSEIF BASE:防御 > MAX(BASE:攻撃,BASE:敏捷)
+	PRINTFORM 防御力に優れ
+;敏捷>他二つ
+ELSEIF BASE:敏捷 > MAX(BASE:攻撃,BASE:防御)
+	PRINTFORM 敏捷性に優れ
+ENDIF
+IF TALENT:近距離得意
+	PRINT 近接戦闘を得意とし
+ELSEIF TALENT:中距離得意
+	PRINT 付かず離れずの戦闘を得意とし
+ELSEIF TALENT:遠距離得意
+	PRINT 一方的な狙撃を得意とし
+ENDIF
+PRINTFORM た%CALLNAME%であったが
+;えちぃ
+;完全開発済み
+IF MIN(ABL:Ｃ感覚,ABL:Ｖ感覚,ABL:Ａ感覚,ABL:Ｂ感覚) == 5
+	PRINTFORML この世の快楽全てを%STR:2500%によって刻み込まれた
+;全身開発済み
+ELSEIF ABL:Ｃ感覚 + ABL:Ｖ感覚 + ABL:Ａ感覚 + ABL:Ｂ感覚 > 14
+	PRINTFORML %STR:2500%に執拗に嬲られ、全身が敏感極まりない性感帯にされた
+;一部位MAX
+ELSEIF MAX(ABL:Ｃ感覚,ABL:Ｖ感覚,ABL:Ａ感覚,ABL:Ｂ感覚) == 5
+	PRINTFORM %STR:2500%による度重なる凌辱により
+	IF ABL:Ａ感覚 == 5
+		PRINTFORML %CALLNAME%の菊門は性器以上に敏感に作り替えられた
+	ELSEIF ABL:Ｖ感覚 == 5
+		PRINTFORML %CALLNAME%は雌穴に挿入される度、イキ狂うようになった
+	ELSEIF ABL:Ｂ感覚 == 5
+		PRINTL 乳首は収まることなく屹立し続ける
+	ELSEIF ABL:Ｃ感覚 == 5
+		PRINTL 陰核を絶頂スイッチに改造された
+	ENDIF
+ELSEIF MAX(ABL:Ｃ感覚,ABL:Ｖ感覚,ABL:Ａ感覚,ABL:Ｂ感覚) > 2
+	PRINTFORM %STR:2500%に玩具にされた結果、
+	IF ABL:Ａ感覚 > 2
+		PRINTL アナル絶頂の味を覚えさせられた
+	ELSEIF ABL:Ｖ感覚 > 2
+		PRINTL 雌穴が触手壺と呼べるほどに蹂躙された
+	ELSEIF ABL:Ｂ感覚 > 2
+		PRINTFORML 常に%CALLNAME%の乳房は快楽を貪るようになった
+	ELSEIF ABL:Ｃ感覚 > 2
+		PRINTL 陰核を発情スイッチに改造された
+	ENDIF
+ELSE
+	LOCAL:0 += 1
+ENDIF
+
+IF LOCAL:0 == 0
+	PRINT ために、もはや
+ELSEIF MAX(ABL:従順,ABL:欲望,ABL:奉仕精神,ABL:マゾっ気) > 3
+	PRINTFORM %STR:2500%と相対するうちに、やがて
+ENDIF
+;各種属性
+IF ABL:従順 > 3
+	PRINTFORM %STR:2500%に逆らえなくな
+ELSEIF ABL:欲望 > 3
+	PRINTFORM %STR:2500%を見るだけで発情し始め
+;ELSEIF ABL:技巧 > 3
+ELSEIF ABL:奉仕精神 > 3
+	PRINTFORM %STR:2500%に逆らえなくな
+;ELSEIF ABL:露出癖 > 3
+	
+ELSEIF ABL:マゾっ気 > 3
+	PRINTFORM あらゆる%STR:2500%の責めに喜びを覚え
+ELSE
+	LOCAL:0 += 2
+ENDIF
+
+;感覚もその他も3以下で中毒持ちってあるのかな
+IF LOCAL:0 == 3 && (ABL:触手中毒 || ABL:自慰中毒 || ABL:精液中毒)
+	PRINTFORM もともとの素質が淫乱だったのか%CALLNAME%は
+ELSEIF LOCAL:0 == 2 && (ABL:触手中毒 || ABL:自慰中毒 || ABL:精液中毒)
+	PRINTFORM 結果、
+ELSEIF LOCAL:0 == 1 && (ABL:触手中毒 || ABL:自慰中毒 || ABL:精液中毒)
+	PRINTFORM ると同時に
+ELSEIF (ABL:触手中毒 || ABL:自慰中毒 || ABL:精液中毒)
+	PRINTFORML てしまうようになった。
+	PRINTFORML さんざん開発された%CALLNAME%は
+ELSE
+
+ENDIF
+;各種中毒
+IF ABL:触手中毒
+	PRINTFORM 触手のことしか考えられなくなって
+ELSEIF ABL:自慰中毒
+	PRINTFORM 自慰のことしか考えられなくなって
+ELSEIF ABL:精液中毒
+	PRINTFORM ザーメンのことしか考えられなくなって
+ELSEIF ABL:噴乳中毒
+ELSEIF ABL:射精中毒
+ELSE
+	LOCAL:0 += 4
+ENDIF
+
+
+IF LOCAL:0 > 6
+	PRINTFORM 自分が戦闘には向かないのではないかと思うようになり引退を決意した
+ELSEIF LOCAL:0 > 3
+	PRINTFORM 後方に下がり治療を受けることになった
+ELSE
+	PRINTFORM %STR:2500%との戦闘は困難と判断され後方支援へと回された
+ENDIF
+PRINTFORMW  

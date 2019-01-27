@@ -1,0 +1,773 @@
+
+
+;@SELF_CALL(オプション, 伸ばす長さ, キャラNO)
+;標準の一人称を返す式中関数
+
+;@SELF_CALL_SINGLE(位置指定, オプション, 伸ばす長さ, キャラNO)
+;一人称のうち、指定した1音を返す式中関数
+
+;@SELF_CALL_SUBSTRING(開始位置, 文字数, オプション, 伸ばす長さ, キャラNO)
+;一人称のうち、指定した部分の文字列を返す式中関数
+;
+;@SELF_CALL_LENGTH(キャラNO)
+;一人称の音数（文字数ではない）を返す式中関数
+
+;オプション
+;1：濁音　2：濁音（強）　3：呂律　4：ひらがな　5：カタカナ　6：かなカナ反転　7：読み（SELF_CALLのみ）
+;それぞれオプションで指定した形式の文字列が返される
+
+;伸ばす長さ
+;「私ぃぃいい」の「ぃぃいい」の部分の長さを指定できる
+;これにもオプションが適用される
+;省略するとなし
+
+;キャラNO
+;省略するとTARGETのものを返す
+
+
+;SELF_LENGTH	伸ばす長さ
+;SELF_OPTION	オプション
+;SELF_TARGET	キャラNO
+@SELF_CALL(SELF_OPTION, SELF_LENGTH, SELF_TARGET)
+#FUNCTIONS
+#DIM SELF_LENGTH
+#DIM SELF_OPTION
+#DIM SELF_TARGET
+
+#DIM PRN_VAR
+#DIM SHW_VAR
+#DIM CAL_VAR
+#DIMS SELFCALL_STR
+
+VARSET SELFCALL_STR
+
+;対象のキャラNOが0（=MASTER）の場合、対象をTARGETに変更
+SIF SELF_TARGET == 0
+	SELF_TARGET = TARGET
+
+PRN_VAR = CFLAG:SELF_TARGET:8 / 5 % 20
+SHW_VAR = CFLAG:SELF_TARGET:8 % 5
+
+IF SELF_OPTION == 0
+	;オプションなしならCSTRをそのまま返す
+	IF CSTR:SELF_TARGET:4 != ""
+		SELFCALL_STR = %CSTR:SELF_TARGET:4%
+	ELSE
+		IF PRN_VAR == 0
+			IF SHW_VAR == 0
+				SELFCALL_STR = 私
+			ELSEIF SHW_VAR == 1
+				SELFCALL_STR = わたし
+			ELSEIF SHW_VAR == 2
+				SELFCALL_STR = ワタシ
+			ENDIF
+		ELSEIF PRN_VAR == 1
+			IF SHW_VAR == 0
+				SELFCALL_STR = 私
+			ELSEIF SHW_VAR == 1
+				SELFCALL_STR = わたくし
+			ELSEIF SHW_VAR == 2
+				SELFCALL_STR = ワタクシ
+			ENDIF
+		ELSEIF PRN_VAR == 2
+			IF SHW_VAR == 0
+				SELFCALL_STR = 私
+			ELSEIF SHW_VAR == 1
+				SELFCALL_STR = あたし
+			ELSEIF SHW_VAR == 2
+				SELFCALL_STR = アタシ
+			ENDIF
+		ELSEIF PRN_VAR == 3
+			IF SHW_VAR == 0
+				SELFCALL_STR = 私
+			ELSEIF SHW_VAR == 1
+				SELFCALL_STR = あたい
+			ELSEIF SHW_VAR == 2
+				SELFCALL_STR = アタイ
+			ENDIF
+		ELSEIF PRN_VAR == 4
+			IF SHW_VAR == 0
+				SELFCALL_STR = 妾
+			ELSEIF SHW_VAR == 1
+				SELFCALL_STR = わらわ
+			ELSEIF SHW_VAR == 2
+				SELFCALL_STR = ワラワ
+			ENDIF
+		ELSEIF PRN_VAR == 5
+			IF SHW_VAR == 0
+				SELFCALL_STR = 僕
+			ELSEIF SHW_VAR == 1
+				SELFCALL_STR = ぼく
+			ELSEIF SHW_VAR == 2
+				SELFCALL_STR = ボク
+			ENDIF
+		ELSEIF PRN_VAR == 6
+			IF SHW_VAR == 0
+				SELFCALL_STR = 俺
+			ELSEIF SHW_VAR == 1
+				SELFCALL_STR = おれ
+			ELSEIF SHW_VAR == 2
+				SELFCALL_STR = オレ
+			ENDIF
+		ENDIF
+	ENDIF
+	SIF SELF_LENGTH
+		SELFCALL_STR = %SELFCALL_STR%%SELF_CALL_SUBSTRING(-1, 0, SELF_OPTION, SELF_LENGTH, SELF_TARGET)%
+	RETURNF SELFCALL_STR
+ENDIF
+
+SELFCALL_STR = %SELF_CALL_SUBSTRING(0, SELF_CALL_LENGTH(SELF_TARGET), SELF_OPTION, SELF_LENGTH, SELF_TARGET)%
+
+RETURNF SELFCALL_STR
+
+
+
+;S_ST	開始位置
+;SELF_LENGTH	伸ばす長さ
+;SELF_OPTION	オプション
+;SELF_TARGET	TARGET
+@SELF_CALL_SINGLE(S_ST, SELF_OPTION, SELF_LENGTH, SELF_TARGET)
+#FUNCTIONS
+#DIM S_ST
+#DIM SELF_LENGTH
+#DIM SELF_OPTION
+#DIM SELF_TARGET
+#DIMS SELFCALL_STR
+
+;対象のキャラNOが0（=MASTER）の場合、対象をTARGETに変更
+SIF SELF_TARGET == 0
+	SELF_TARGET = TARGET
+
+SELFCALL_STR = %SELF_CALL_SUBSTRING(S_ST, 1, SELF_OPTION, SELF_LENGTH, SELF_TARGET)%
+
+RETURNF SELFCALL_STR
+
+
+
+;S_ST	開始位置
+;S_ED	文字数
+;SELF_LENGTH	伸ばす長さ
+;SELF_OPTION	オプション
+;SELF_TARGET	TARGET
+@SELF_CALL_SUBSTRING(S_ST, S_ED, SELF_OPTION, SELF_LENGTH, SELF_TARGET)
+#FUNCTIONS
+#DIM LCOUNT
+#DIM S_ST
+#DIM S_ED
+#DIM SELF_LENGTH
+#DIM SELF_OPTION
+#DIM SELF_TARGET
+
+#DIM PRN_VAR
+#DIM SHW_VAR
+#DIM CHR_VAR
+#DIM C_ROW
+#DIM CAL_VAR
+#DIM CONST PRN_MAX = 4
+#DIMS SELFCALL_STR
+
+;切り取り用変数正規化
+SIF S_ST < -1
+	S_ST = SELF_CALL_LENGTH(SELF_TARGET) - 1
+
+;最大音数
+SIF S_ST > PRN_MAX - 1
+	S_ST = PRN_MAX - 1
+
+SIF S_ED < -1
+	S_ED = -1
+
+SIF S_ED > PRN_MAX
+	S_ED = SELF_CALL_LENGTH(SELF_TARGET)
+
+;対象のキャラNOが0（=MASTER）の場合、対象をTARGETに変更
+SIF SELF_TARGET == 0
+	SELF_TARGET = TARGET
+
+PRN_VAR = CFLAG:SELF_TARGET:8 / 5 % 20
+SHW_VAR = CFLAG:SELF_TARGET:8 % 5
+
+VARSET CHR_VAR
+VARSET SELFCALL_STR
+
+SIF SHW_VAR == 2
+	CHR_VAR = 1
+
+IF PRN_VAR == 0
+	;わたし
+	CAL_VAR = 22031086
+ELSEIF PRN_VAR == 1
+	;わたくし
+	CAL_VAR = 22013031086
+ELSEIF PRN_VAR == 2
+	;あたし
+	CAL_VAR = 22031001
+ELSEIF PRN_VAR == 3
+	;あたい
+	CAL_VAR = 2031001
+ELSEIF PRN_VAR == 4
+	;わらわ
+	CAL_VAR = 86081086
+ELSEIF PRN_VAR == 5
+	;ぼく
+	CAL_VAR = 13060
+ELSEIF PRN_VAR == 6
+	;おれ
+	CAL_VAR = 084005
+ELSEIF PRN_VAR == 19
+	CAL_VAR = CFLAG:SELF_TARGET:8 / 100
+	SIF SHW_VAR == 3
+		CHR_VAR = 1
+ENDIF
+
+IF S_ED == 0
+	C_ROW = CAL_VAR / POWER(1000, SELF_CALL_LENGTH(SELF_TARGET) - 1) % 1000
+ENDIF
+
+FOR LCOUNT, 0, S_ST + S_ED
+	C_ROW = CAL_VAR % 1000
+	IF LCOUNT >= S_ST
+		;呼び出しの最後かつ文字が長音記号かつ伸ばす場合
+		IF LCOUNT == S_ST + S_ED - 1 && C_ROW == 95 && SELF_LENGTH > 0
+			SELFCALL_STR = %SELFCALL_STR%―
+		ELSE
+			SELFCALL_STR = %SELFCALL_STR%%CHAR_LIB(C_ROW, CHR_VAR, SELF_OPTION)%
+		ENDIF
+	ENDIF
+	CAL_VAR /= 1000
+NEXT
+IF C_ROW == 92
+	;撥音
+	IF CHR_VAR
+		LOCALS:0 = ン
+		LOCALS:1 = ン
+	ELSE
+		LOCALS:0 = ん
+		LOCALS:1 = ん
+	ENDIF
+	;強制濁音
+	IF SELF_OPTION == 2
+		LOCALS:0 = %LOCALS:0%゛
+		LOCALS:1 = %LOCALS:1%゛
+	ENDIF
+ELSEIF C_ROW == 93
+	;促音
+	LOCALS:0 = ―
+	LOCALS:1 = ―
+ELSEIF C_ROW == 95
+	;長音
+	LOCALS:0 = ―
+	LOCALS:1 = ―
+ELSE
+	IF C_ROW % 5 == 1
+		IF CHR_VAR
+			LOCALS:0 = ァ
+			LOCALS:1 = ア
+		ELSE
+			LOCALS:0 = ぁ
+			LOCALS:1 = あ
+		ENDIF
+	ELSEIF C_ROW % 5 == 2
+		IF CHR_VAR
+			LOCALS:0 = ィ
+			LOCALS:1 = イ
+		ELSE
+			LOCALS:0 = ぃ
+			LOCALS:1 = い
+		ENDIF
+	ELSEIF C_ROW % 5 == 3
+		IF CHR_VAR
+			LOCALS:0 = ゥ
+			LOCALS:1 = ウ
+		ELSE
+			LOCALS:0 = ぅ
+			LOCALS:1 = う
+		ENDIF
+	ELSEIF C_ROW % 5 == 4
+		IF CHR_VAR
+			LOCALS:0 = ェ
+			LOCALS:1 = エ
+		ELSE
+			LOCALS:0 = ぇ
+			LOCALS:1 = え
+		ENDIF
+	ELSEIF C_ROW % 5 == 0
+		IF CHR_VAR
+			LOCALS:0 = ォ
+			LOCALS:1 = オ
+		ELSE
+			LOCALS:0 = ぉ
+			LOCALS:1 = お
+		ENDIF
+	ENDIF
+	;強制濁音
+	IF SELF_OPTION == 2
+		LOCALS:0 = %LOCALS:0%゛
+		LOCALS:1 = %LOCALS:1%゛
+	ENDIF
+ENDIF
+
+FOR CAL_VAR, 0, SELF_LENGTH
+	IF CAL_VAR > SELF_LENGTH / 2
+		SELFCALL_STR = %SELFCALL_STR%%LOCALS:1%
+	ELSE
+		SELFCALL_STR = %SELFCALL_STR%%LOCALS:0%
+	ENDIF
+NEXT
+
+RETURNF SELFCALL_STR
+
+
+
+@SELF_CALL_LENGTH(SELF_TARGET)
+#FUNCTION
+#DIM CAL_VAR
+#DIM SELF_TARGET
+
+;対象のキャラNOが0（=MASTER）の場合、対象をTARGETに変更
+SIF SELF_TARGET == 0
+	SELF_TARGET = TARGET
+
+CAL_VAR = CFLAG:SELF_TARGET:8 / 5 % 20
+
+IF CAL_VAR == 0
+	RETURNF 3
+ELSEIF CAL_VAR == 1
+	RETURNF 4
+ELSEIF CAL_VAR == 2
+	RETURNF 3
+ELSEIF CAL_VAR == 3
+	RETURNF 3
+ELSEIF CAL_VAR == 4
+	RETURNF 3
+ELSEIF CAL_VAR == 5
+	RETURNF 2
+ELSEIF CAL_VAR == 6
+	RETURNF 2
+ENDIF
+
+STRLENFORMU CSTR:SELF_TARGET:4
+
+RETURNF (RESULT - 2) / 3 + ((RESULT - 2) % 3 > 0)
+
+
+
+@SELF_CALL_ANALYSIS, ARGS
+#DIM LCOUNT
+#DIM PRN_VAR, 10
+#DIM PRN_LEN
+#DIM INP_LEN
+#DIM PRE_VAR
+#DIMS PRN_STR, 10
+
+STRLENFORMU %ARGS%
+INP_LEN = RESULT
+SIF INP_LEN > 10
+	;読みが多すぎます
+	RETURN -3
+VARSET PRN_VAR
+VARSET PRN_LEN
+VARSET PRN_STR
+LOCAL = 99
+FOR LCOUNT, 0, INP_LEN
+	SUBSTRINGU ARGS, LCOUNT, 1
+	PRN_STR:LCOUNT = %RESULTS%
+	CALL CHECK_SINGLE_SOUND, PRN_STR:LCOUNT
+	IF RESULT < 0
+		;規定外の文字があります
+		RETURN -1
+	ENDIF
+	;かなORカナ判定
+	IF LOCAL > 10 && RESULT:2 < 2
+		LOCAL = RESULT:2
+	ELSE
+		IF LOCAL != RESULT:2 && RESULT:2 != 2
+			;ひらがなとカタカナが混在しています
+			RETURN -2
+		ENDIF
+	ENDIF
+
+	PRN_VAR:PRN_LEN = RESULT:0
+	IF LCOUNT > 0 && RESULT:1 == 0
+		CALL CHECK_DIPHTHONG, PRN_STR:(LCOUNT - 1), PRN_STR:LCOUNT
+		IF RESULT > 0
+			PRN_VAR:PRN_LEN = 0
+			PRN_LEN -= 1
+			PRN_VAR:PRN_LEN = RESULT
+		ELSE
+		ENDIF
+	ENDIF
+
+	PRE_VAR = RESULT:1
+	PRN_LEN += 1
+NEXT
+
+SIF LOCAL > 10
+	LOCAL = 1
+
+IF PRN_LEN > 4
+	;読みが多すぎます
+	RETURN -3
+ENDIF
+RETURN LOCAL, PRN_VAR:0, PRN_VAR:1, PRN_VAR:2, PRN_VAR:3
+
+
+
+@CHECK_SINGLE_SOUND, ARGS
+#DIM LCOUNT
+
+SIF ARGS == "　"
+	RETURN -1
+
+FOR LCOUNT, 0, 5
+	IF LCOUNT == 0
+		LOCALS = あいうえお　　　　　かきくけこがぎぐげご
+	ELSEIF LCOUNT == 1
+		LOCALS = さしすせそざじずぜぞたちつてとだぢづでど
+	ELSEIF LCOUNT == 2
+		LOCALS = なにぬねの　　　　　はひふへほばびぶべぼ
+	ELSEIF LCOUNT == 3
+		LOCALS = まみむめもぱぴぷぺぽや　ゆ　よ
+	ELSEIF LCOUNT == 4
+		LOCALS = らりるれろわゐ　ゑをゎんっ
+	ENDIF
+	STRFINDU LOCALS, ARGS
+
+	SIF RESULT >= 0
+		RETURN RESULT + LCOUNT * 20 + 1, 1, 0
+NEXT
+
+LOCALS = ぁぃぅぇぉ
+STRFINDU LOCALS, ARGS
+SIF RESULT >= 0
+	RETURN RESULT + 6, 0, 0
+
+LOCALS = ゃ　ゅ　ょ
+STRFINDU LOCALS, ARGS
+SIF RESULT >= 0
+	RETURN RESULT + 76, 0, 0
+
+FOR LCOUNT, 0, 5
+	IF LCOUNT == 0
+		LOCALS = アイウエオ　　　　　カキクケコガギグゲゴ
+	ELSEIF LCOUNT == 1
+		LOCALS = サシスセソザジズゼゾタチツテトダヂヅデド
+	ELSEIF LCOUNT == 2
+		LOCALS = ナニヌネノ　　　　　ハヒフヘホバビブベボ
+	ELSEIF LCOUNT == 3
+		LOCALS = マミムメモパピプペポヤ　ユ　ヨ
+	ELSEIF LCOUNT == 4
+		LOCALS = ラリルレロワヰ　ヱヲヮンッ
+	ENDIF
+	STRFINDU LOCALS, ARGS
+
+	SIF RESULT >= 0
+		RETURN RESULT + LCOUNT * 20 + 1, 1, 1
+NEXT
+
+LOCALS = ァィゥェォ
+STRFINDU LOCALS, ARGS
+SIF RESULT >= 0
+	RETURN RESULT + 6, 0, 1
+
+LOCALS = ャ　ュ　ョ
+STRFINDU LOCALS, ARGS
+SIF RESULT >= 0
+	RETURN RESULT + 76, 0, 1
+
+SIF ARGS == "ヴ"
+	RETURN 94, 1, 2
+SIF ARGS == "ー"
+	RETURN 95, 1, 2
+
+
+RETURN -1
+
+
+
+@CHECK_DIPHTHONG, ARGS:0, ARGS:1
+#DIM LCOUNT
+#DIMS CAL_STR
+
+CAL_STR = %ARGS:0%%ARGS:1%
+FOR LCOUNT, 0, 13
+	IF LCOUNT == 0
+		LOCALS = 　　 　　 　　 いぇ 　　 うぁ うぃ 　　 うぇ うぉ
+	ELSEIF LCOUNT == 1
+		LOCALS = ヴぁ ヴぃ 　　 ヴぇ ヴぉ くぁ 　　 　　 　　 　　
+	ELSEIF LCOUNT == 2
+		LOCALS = ぐぁ 　　 　　 　　 　　 きゃ 　　 きゅ 　　 きょ
+	ELSEIF LCOUNT == 3
+		LOCALS = ぎゃ 　　 ぎゅ 　　 ぎょ しゃ 　　 しゅ しぇ しょ
+	ELSEIF LCOUNT == 4
+		LOCALS = じゃ 　　 じゅ じぇ じょ 　　 すぃ 　　 　　 　　
+	ELSEIF LCOUNT == 5
+		LOCALS = 　　 ずぃ 　　 　　 　　 ちゃ 　　 ちゅ ちぇ ちょ
+	ELSEIF LCOUNT == 6
+		LOCALS = ぢゃ 　　 ぢゅ ぢぇ ぢょ つぁ つぃ 　　 つぇ つぉ
+	ELSEIF LCOUNT == 7
+		LOCALS = づぁ づぃ 　　 づぇ づぉ 　　 てぃ てゅ 　　 　　
+	ELSEIF LCOUNT == 8
+		LOCALS = 　　 でぃ でゅ 　　 　　 　　 　　 とぅ 　　 　　
+	ELSEIF LCOUNT == 9
+		LOCALS = 　　 　　 どぅ 　　 　　 にゃ 　　 にゅ 　　 にょ
+	ELSEIF LCOUNT == 10
+		LOCALS = ひゃ 　　 ひゅ 　　 ひょ びゃ 　　 びゅ 　　 びょ
+	ELSEIF LCOUNT == 11
+		LOCALS = ぴゃ 　　 ぴゅ 　　 ぴょ ふぁ ふぃ ふゅ ふぇ ふぉ
+	ELSEIF LCOUNT == 12
+		LOCALS = みゃ 　　 みゅ 　　 みょ りゃ 　　 りゅ りぇ りょ
+	ENDIF
+	STRFINDU LOCALS, CAL_STR
+
+	SIF RESULT >= 0
+		RETURN RESULT / 3 + LCOUNT * 10 + 101
+NEXT
+
+FOR LCOUNT, 0, 13
+	IF LCOUNT == 0
+		LOCALS = 　　 　　 　　 イェ 　　 ウァ ウィ 　　 ウェ ウォ
+	ELSEIF LCOUNT == 1
+		LOCALS = ヴァ ヴィ 　　 ヴェ ヴォ クァ 　　 　　 　　 　　
+	ELSEIF LCOUNT == 2
+		LOCALS = グァ 　　 　　 　　 　　 キャ 　　 キュ 　　 キョ
+	ELSEIF LCOUNT == 3
+		LOCALS = ギャ 　　 ギュ 　　 ギョ シャ 　　 シュ シェ ショ
+	ELSEIF LCOUNT == 4
+		LOCALS = ジャ 　　 ジュ ジェ ジョ 　　 スィ 　　 　　 　　
+	ELSEIF LCOUNT == 5
+		LOCALS = 　　 ズィ 　　 　　 　　 チャ 　　 チュ チェ チョ
+	ELSEIF LCOUNT == 6
+		LOCALS = ヂャ 　　 ヂュ ヂェ ヂョ ツァ ツィ 　　 ツェ ツォ
+	ELSEIF LCOUNT == 7
+		LOCALS = ヅァ ヅィ 　　 ヅェ ヅォ 　　 ティ テュ 　　 　　
+	ELSEIF LCOUNT == 8
+		LOCALS = 　　 ディ デュ 　　 　　 　　 　　 トゥ 　　 　　
+	ELSEIF LCOUNT == 9
+		LOCALS = 　　 　　 ドゥ 　　 　　 ニャ 　　 ニュ 　　 ニョ
+	ELSEIF LCOUNT == 10
+		LOCALS = ヒャ 　　 ヒュ 　　 ヒョ ビャ 　　 ビュ 　　 ビョ
+	ELSEIF LCOUNT == 11
+		LOCALS = ピャ 　　 ピュ 　　 ピョ ファ フィ フュ フェ フォ 
+	ELSEIF LCOUNT == 12
+		LOCALS = ミャ 　　 ミュ 　　 ミョ リャ 　　 リュ リェ リョ
+	ENDIF
+	STRFINDU LOCALS, CAL_STR
+
+	SIF RESULT >= 0
+		RETURN RESULT / 3 + LCOUNT * 10 + 101
+NEXT
+
+RETURN -1
+
+
+
+;ARG:0	文字指定変数
+;ARG:1	かなORカナ
+;ARG:2	オプション
+@CHAR_LIB, ARG:0, ARG:1, ARG:2
+#FUNCTIONS
+#DIM CAL_VAR
+;行
+#DIM C_COL
+;段
+#DIM C_ROW
+;濁音フラグ
+#DIM D_FLAG
+
+#DIMS CAL_STR, 2
+
+VARSET D_FLAG
+VARSET LOCALS
+SIF ARG:0 == 0
+	RETURNF LOCALS
+
+IF ARG:0 < 100
+	CAL_VAR = 1
+	C_COL = (ARG:0 - 1) / 5
+	C_ROW = (ARG:0 - 1) % 5
+
+	;オプション：通常の濁音
+	IF ARG:2 == 1 || ARG:2 == 2
+		;かさたは
+		IF C_COL == 2 || C_COL == 4 || C_COL == 6 || C_COL == 10
+			C_COL += 1
+			D_FLAG = 1
+		;ぱ
+		ELSEIF C_COL == 13
+			C_COL -= 2
+			D_FLAG = 1
+		ENDIF
+	ENDIF
+
+	;オプション：呂律
+	IF ARG:2 == 3
+		;さ行（し以外）→しゃ行
+		IF C_COL == 4 && C_ROW != 1
+			C_COL = 99
+			C_ROW = 99
+			ARG:0 = C_ROW + 135
+		;「な」→「にゃ」
+		ELSEIF C_COL == 8 && C_ROW == 0
+			C_COL = 99
+			C_ROW = 99
+			ARG:0 = 195
+		;た行（ち、つ以外）→ら行
+		ELSEIF C_COL == 6 && C_ROW != 1 && C_ROW != 2
+			C_COL = 16
+		;だ行（ぢ、づ以外）→ら行
+		ELSEIF C_COL == 7 && C_ROW != 1 && C_ROW != 2
+		;「し」→「ひ」
+		ELSEIF C_COL == 4 && C_ROW == 1
+			C_COL = 10
+		;ら行→ぁ行
+		ELSEIF C_COL == 16
+			C_COL = 1
+		ENDIF
+	ENDIF
+
+	;オプション：ひらがな化
+	SIF ARG:2 == 4
+		ARG:1 = 0
+
+	;オプション：カタカナ化
+	SIF ARG:2 == 5
+		ARG:1 = 0
+
+	;オプション：かなカナ反転
+	SIF ARG:2 == 6
+		INVERTBIT ARG:1, 0
+
+	IF ARG:1 == 0
+		IF C_COL >= 0 && C_COL < 4
+			LOCALS = あいうえおぁぃぅぇぉかきくけこがぎぐげご
+		ELSEIF C_COL >= 4 && C_COL < 8
+			LOCALS = さしすせそざじずぜぞたちつてとだぢづでど
+		ELSEIF C_COL >= 8 && C_COL < 12
+			LOCALS = なにぬねの　　　　　はひふへほばびぶべぼ
+		ELSEIF C_COL >= 12 && C_COL < 16
+			LOCALS = まみむめもぱぴぷぺぽや　ゆ　よゃ　ゅ　ょ
+		ELSEIF C_COL >= 16 && C_COL < 20
+			LOCALS = らりるれろわゐ　ゑをゎんっ　ー
+		ENDIF
+	ELSE
+		IF C_COL >= 0 && C_COL < 4
+			LOCALS = アイウエオァィゥェォカキクケコガギグゲゴ
+		ELSEIF C_COL >= 4 && C_COL < 8
+			LOCALS = サシスセソザジズゼゾタチツテトダヂヅデド
+		ELSEIF C_COL >= 8 && C_COL < 12
+			LOCALS = ナニヌネノ　　　　　ハヒフヘホバビブベボ
+		ELSEIF C_COL >= 12 && C_COL < 16
+			LOCALS = マミムメモパピプペポヤ　ユ　ヨャ　ュ　ョ
+		ELSEIF C_COL >= 16 && C_COL < 20
+			LOCALS = ラリルレロワヰ　ヱヲヮンッヴー
+		ENDIF
+	ENDIF
+
+	SUBSTRINGU LOCALS, (C_COL % 4) * 5 + C_ROW, 1
+
+	;ひらがな+う+濁点
+	SIF  ARG:1 == 0 && C_COL == 18 && C_ROW == 3
+		RESULTS = %UNICODE(0x3094)%
+
+	;濁音（強）かつ濁点未処理
+	SIF ARG:2 == 2 && D_FLAG == 0
+		RESULTS = %RESULTS%゛
+ENDIF
+
+IF ARG:0 >= 100
+	CAL_VAR = 2
+	C_COL = (ARG:0 - 101) / 5
+	C_ROW = (ARG:0 - 101) % 5 * 2
+
+	;通常の濁音
+	IF ARG:2 == 1 || ARG:2 == 2
+		;ヴぁくぁきゃしゃすぃちゃつぁてぃとぅひゃ
+		IF C_COL == 1 || C_COL == 3 || C_COL == 5 || C_COL == 7 || C_COL == 9 || C_COL == 11 || C_COL == 13 || C_COL == 15 || C_COL == 17 || C_COL == 20
+			C_COL += 1
+			D_FLAG = 1
+		ENDIF
+		;ぴゃ
+		IF C_COL == 22
+			C_COL -= 1
+			D_FLAG = 1
+		ENDIF
+	ENDIF
+
+	IF ARG:1 == 0
+		IF C_COL >= 0 && C_COL < 2
+			LOCALS = 　　　　　　いぇ　　うぁうぃ　　うぇうぉ
+		ELSEIF C_COL >= 2 && C_COL < 4
+			LOCALS = ヴぁヴぃ　　ヴぇヴぉくぁ　　　　　　　　
+		ELSEIF C_COL >= 4 && C_COL < 6
+			LOCALS = ぐぁ　　　　　　　　きゃ　　きゅ　　きょ
+		ELSEIF C_COL >= 6 && C_COL < 8
+			LOCALS = ぎゃ　　ぎゅ　　ぎょしゃ　　しゅしぇしょ
+		ELSEIF C_COL >= 8 && C_COL < 10
+			LOCALS = じゃ　　じゅじぇじょ　　すぃ　　　　　　
+		ELSEIF C_COL >= 10 && C_COL < 12
+			LOCALS = 　　ずぃ　　　　　　ちゃ　　ちゅちぇちょ
+		ELSEIF C_COL >= 12 && C_COL < 14
+			LOCALS = ぢゃ　　ぢゅぢぇぢょつぁつぃ　　つぇつぉ
+		ELSEIF C_COL >= 14 && C_COL < 16
+			LOCALS = づぁづぃ　　づぇづぉ　　てぃてゅ　　　　
+		ELSEIF C_COL >= 16 && C_COL < 18
+			LOCALS = 　　でぃでゅ　　　　　　　　とぅ　　　　
+		ELSEIF C_COL >= 18 && C_COL < 20
+			LOCALS = 　　　　どぅ　　　　にゃ　　にゅ　　にょ
+		ELSEIF C_COL >= 20 && C_COL < 22
+			LOCALS = ひゃ　　ひゅ　　ひょびゃ　　びゅ　　びょ
+		ELSEIF C_COL >= 22 && C_COL < 24
+			LOCALS = ぴゃ　　ぴゅ　　ぴょふぁふぃふゅふぇふぉ
+		ELSEIF C_COL >= 24 && C_COL < 26
+			LOCALS = みゃ　　みゅ　　みょりゃ　　りゅりぇりょ
+		ENDIF
+	ELSE
+		IF C_COL >= 0 && C_COL < 2
+			LOCALS = 　　　　　　イェ　　ウァウィ　　ウェウォ
+		ELSEIF C_COL >= 2 && C_COL < 4
+			LOCALS = ヴァヴィ　　ヴェヴォクァ　　　　　　　　
+		ELSEIF C_COL >= 4 && C_COL < 6
+			LOCALS = グァ　　　　　　　　キャ　　キュ　　キョ
+		ELSEIF C_COL >= 6 && C_COL < 8
+			LOCALS = ギャ　　ギュ　　ギョシャ　　シュシェショ
+		ELSEIF C_COL >= 8 && C_COL < 10
+			LOCALS = ジャ　　ジュジェジョ　　スィ　　　　　　
+		ELSEIF C_COL >= 10 && C_COL < 12
+			LOCALS = 　　ズィ　　　　　　チャ　　チュチェチョ
+		ELSEIF C_COL >= 12 && C_COL < 14
+			LOCALS = ヂャ　　ヂュヂェヂョツァツィ　　ツェツォ
+		ELSEIF C_COL >= 14 && C_COL < 16
+			LOCALS = ヅァヅィ　　ヅェヅォ　　ティテュ　　　　
+		ELSEIF C_COL >= 16 && C_COL < 18
+			LOCALS = 　　ディデュ　　　　　　　　トゥ　　　　
+		ELSEIF C_COL >= 18 && C_COL < 20
+			LOCALS = 　　　　ドゥ　　　　ニャ　　ニュ　　ニョ
+		ELSEIF C_COL >= 20 && C_COL < 22
+			LOCALS = ヒャ　　ヒュ　　ヒョビャ　　ビュ　　ビョ
+		ELSEIF C_COL >= 22 && C_COL < 24
+			LOCALS = ピャ　　ピュ　　ピョファフィフュフェフォ
+		ELSEIF C_COL >= 24 && C_COL < 26
+			LOCALS = ミャ　　ミュ　　ミョリャ　　リュリェリョ
+		ENDIF
+	ENDIF
+	SUBSTRINGU LOCALS, (C_COL % 2) * 10 + C_ROW, 2
+
+	;ひらがな+う+濁点
+	IF  ARG:1 == 0 && C_COL == 2 && C_ROW != 2
+		LOCALS = ぁぃ　ぇぉ
+		SUBSTRINGU LOCALS, C_ROW, 1
+		RESULTS = %UNICODE(0x3094)%%RESULTS%
+	ENDIF
+
+	;オプション：濁音（強）かつ濁点未処理
+	IF ARG:2 == 2 && D_FLAG == 0
+		CAL_STR:0 = %RESULTS%
+		SUBSTRINGU CAL_STR:0, 0, 1
+		CAL_STR:1 = %RESULTS%
+		SUBSTRINGU CAL_STR:0, 1, 1
+		RESULTS = %CAL_STR:1%゛%RESULTS%゛
+	ENDIF
+ENDIF
+
+RETURNF RESULTS

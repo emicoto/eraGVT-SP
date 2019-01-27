@@ -1,0 +1,3836 @@
+;--------------------------------------------------
+;触手から受けるコマンドに関する地の文
+;C=ARG&1 V=ARG&2 A=ARG&4 B=ARG&8
+;--------------------------------------------------
+
+;COM0：C攻め弱
+@MESSAGE_SEX_COM0, ARG:0, ARG:1
+FONTBOLD
+PRINT Ｃ攻め弱
+FONTREGULAR
+CALL MESSAGE_SEX_STATE, ARG:0, ARG:1, Ｃ
+PRINTL 
+
+IF (FLAG:110 == 0)
+	CALL TENTACLE_ACCESS, "NAME"
+ELSEIF (FLAG:110 == 1)
+	PRINTFORM %PRINT_TRANSCALLNAME(FLAG:111)%
+ENDIF
+IF RAND:2 == 0 && (ARG & Ｃ) && (ARG & Ｖ)
+	PRINT は
+	IF FLAG:110 && (TALENT:(FLAG:111):寄生 == 0 || FILTER_CHECK_F(13) > 0)
+		PRINTFORML %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の唇を奪うと股間に手を伸ばし、
+		SIF CLOTH_INNER_PER > CLOTH_INNER_DEF
+			PRINT 下着の上から
+		PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%の
+	ELSE
+		SIF CLOTH_INNER_PER > CLOTH_INNER_DEF
+			PRINT 下着の上から
+		PRINTFORM ブラシ状の触手で%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の
+	ENDIF
+	IF TALENT:ふたなり > 0 || TALENT:オトコ > 0
+		PRINT ペニス
+	ELSE
+		PRINT クリトリス
+	ENDIF
+	IF TALENT:主観視点 > 0
+		PRINTFORML を撫で上げてきた。
+	ELSE
+		PRINTFORML を撫で上げた。
+	ENDIF
+	IF FLAG:110 && (TALENT:(FLAG:111):寄生 == 0 || FILTER_CHECK_F(13) > 0)
+		PRINTFORM そのまま卑猥な音を立てながら激しく秘部を責め立てられ
+	ELSE
+		PRINTFORM と同時に、触手の表面を覆う細かな突起を大陰唇の表面に擦りつけられ
+	ENDIF
+	IF (ARG & Ｂ) == 0 && (ARG & Ａ) == 0
+		IF (TCVAR:12 & 気絶)
+			IF PALAM < 2000 && TALENT:触手の虜 == 0 && TALENT:主観視点 > 0
+				PRINTL 、
+				PRINTFORM %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%は快感に体を震わせてしまう
+			ELSEIF PALAM < 2000 && TALENT:触手の虜 == 0
+				PRINTL 、
+				PRINTFORM %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%は、それでも体を震わせている
+			ELSE
+				PRINTL 、
+				PRINTFORM 痺れるような熱が%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の意識を包み込んでいく
+			ENDIF
+		ELSE
+			IF PALAM < 2000 && TALENT:触手の虜 == 0
+				PRINTL 、
+				PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%の背筋に痺れるような感覚が走る
+			ELSE
+				PRINTL 、
+				PRINTFORM 痺れるような熱が%PRINT_TRANSCALLNAME(TARGET)%の理性を揺さぶる
+			ENDIF
+		ENDIF
+	ELSE
+		PRINTFORM る
+	ENDIF
+ELSEIF TALENT:ふたなり > 0 || TALENT:オトコ > 0
+	IF (ARG & Ｃ) == 0
+		PRINTFORM は%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%のペニスに触
+		IF FLAG:110 && (TALENT:(FLAG:111):寄生 == 0 || FILTER_CHECK_F(13) > 0)
+			PRINTL れようとしたが
+			PRINTFORML 結界に阻まれ、指先が押し戻された
+		ELSE
+			PRINTFORML 手を伸ばしたが、
+			PRINTFORML 結界に阻まれて触れることができないでいる
+		ENDIF
+	ELSEIF FLAG:110
+		PRINTFORML は%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の股間に手を伸ばし、
+		PRINTFORM 怪しげな手つきで%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の
+		IF PALAM < 2000 && TALENT:触手の虜 == 0
+			PRINTFORML 亀頭の皮をそっと指先で剥きながら
+		ELSE
+			PRINTFORML 勃起したペニスを焦らすように掌で包むと
+		ENDIF
+		IF ABL:(FLAG:111):技巧 >= 2
+			PRINTFORM 的確なテンポで
+		ELSE
+			PRINTFORM 不器用な指使いで
+		ENDIF
+		IF PALAM < 2000 && TALENT:触手の虜 == 0
+			PRINTFORM 上下に激しく
+		ELSE
+			PRINTFORM 上下にゆっくりと
+		ENDIF
+		PRINTFORM ストロークを開始した
+		IF (TCVAR:12 & 気絶) == 0
+			PRINTL 。
+			PRINTL 
+			PRINTFORML 上目遣いで%PRINT_TRANSCALLNAME(TARGET)%を見上げながら頬笑み、
+			PRINTFORM %PRINT_TRANSCALLNAME(FLAG:111)%は卑猥な言葉を口にしている
+		ELSE
+			PRINTL 。
+			PRINTL 
+			PRINTFORM %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の
+			IF (MESSAGE_BRANCH_F(TARGET) & 堕落) && TALENT:主観視点 > 0
+				PRINTFORML 愛らしく蕩けきった顔に、
+			ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && TALENT:主観視点 > 0
+				PRINTFORML 朦朧としながらも頬を上気させる様に、
+			ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+				PRINTFORML 意識も無いのに表情が満足気に緩む様に、
+			ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗)
+				PRINTFORML 気絶したままで頬を上気させる様に、
+			ELSE
+				PRINTFORML 目をつむったまま苦しげに顔をゆがめる様に、
+			ENDIF
+			PRINTFORM %PRINT_TRANSCALLNAME(FLAG:111)%は楽しそうな表情で指先に力を込めた
+		ENDIF
+	ELSE
+		PRINTFORM は細い触手を%PRINT_SWOON()%%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%のペニスに巻きつけ、上下に動かし始めた
+	ENDIF
+ELSE
+	IF FLAG:110 && (TALENT:(FLAG:111):寄生 == 0 || FILTER_CHECK_F(13) > 0)
+		PRINTFORM は%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の秘部に手を伸ば
+		IF (ARG & Ｖ)
+			PRINTL すと、
+			IF CLOTH_INNER_PER > CLOTH_INNER_DEF
+				IF TALENT:主観視点 > 0
+					PRINTFORM 下着の上から敏感なところを撫で上げてきた
+				ELSE
+					PRINTFORM 下着の上から敏感なところを撫で上げた
+				ENDIF
+			ELSE
+				PRINTFORM 指先で大陰唇をくぱぁと開いてみせた
+			ENDIF
+		ELSEIF (ARG & Ｃ) == 0
+			PRINTL したが結界に阻まれた
+		ELSE
+			PRINTL し、
+			SIF CLOTH_INNER_PER > CLOTH_INNER_DEF
+				PRINTFORM 下着の上から
+			IF TALENT:主観視点 > 0
+				PRINTFORM 指先でクリトリスを弄んできた
+			ELSE
+				PRINTFORM 指先でクリトリスを弄んだ
+			ENDIF
+		ENDIF
+	ELSE
+		PRINTFORM は触手を%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の秘部に擦りつけながら
+		IF (ARG & Ｖ)
+			PRINTL 、
+
+			IF CLOTH_INNER_PER > CLOTH_INNER_DEF
+				IF TALENT:主観視点 > 0
+					PRINTFORM 下着の上から敏感なところを撫で上げてきた
+				ELSE
+					PRINTFORM 下着の上から敏感なところを撫で上げた
+				ENDIF
+			ELSE
+				PRINTFORM 大陰唇をくぱぁと開いたり閉じたりを繰り返した
+			ENDIF
+		ELSEIF (ARG & Ｃ) == 0
+			PRINTL 
+			PRINTFORM 先端でクリトリスを弄ぼうとしたが、結界に阻まれて触れることができないでいる
+		ELSE
+			PRINT 、
+			IF CLOTH_INNER_PER > CLOTH_INNER_DEF
+				PRINTFORM 下着越しに
+			ELSE
+				PRINTFORM 先端で
+			ENDIF
+			IF TALENT:主観視点 > 0
+				PRINTFORM クリトリスを弄んできた
+			ELSE
+				PRINTFORM クリトリスを弄んだ
+			ENDIF
+		ENDIF
+	ENDIF
+ENDIF
+IF (ARG & Ｃ) == 0 && (ARG & Ｖ) == 0
+	IF (ARG & Ｂ) || (ARG & Ａ)
+		PRINTL 。
+		IF (ARG & Ｂ) == 0 && (MESSAGE_BRANCH_F(TARGET) & 堕落) && !(TCVAR:12 & 気絶)
+			PRINTFORM どこか物足りない表情の%PRINT_TRANSCALLNAME(TARGET)%に応えるかのように、
+		ELSEIF (ARG & Ｂ) == 0 && (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && !(TCVAR:12 & 気絶)
+			PRINTFORM 快楽に抗おうとする%PRINT_TRANSCALLNAME(TARGET)%に追い討ちをかけるように、
+		ELSEIF (ARG & Ｂ) == 0
+			PRINTFORM しかしそれだけで終わるはずもないということか、
+		ENDIF
+	ELSE
+		PRINTFORML ・・・
+		PRINTW 
+	ENDIF
+ELSEIF (ARG & Ｂ) == 0 && (ARG & Ａ) == 0
+	PRINTL 。
+	IF (TCVAR:12 & 気絶)
+		PRINTFORM %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%は
+		IF FLAG:110 && (TALENT:(FLAG:111):寄生 == 0 || FILTER_CHECK_F(13) > 0)
+			IF TALENT:主観視点 > 0
+				PRINTFORM %PRINT_TRANSCALLNAME(FLAG:111)%の丁寧な愛撫に色付いた吐息を洩らしてしまう
+			ELSE
+				PRINTFORM %PRINT_TRANSCALLNAME(FLAG:111)%の丁寧な愛撫に色付いた吐息を洩らしている
+			ENDIF
+		ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落) && (ARG & Ｃ) && TALENT:主観視点 > 0
+			PRINTFORM 朦朧とした意識のまま、触手の丁寧な愛撫を受けて色付いた吐息を洩らしてしまう
+		ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落) && (ARG & Ｃ)
+			PRINTFORM 瞼を閉じたまま、触手の丁寧な愛撫に色付いた吐息を洩らしている
+		ELSE
+			IF (MESSAGE_BRANCH_F(TARGET) & 性抵抗)
+				PRINTFORM ピクピクと体を震わせ、悦楽に染め上げられていく
+			ELSE
+				PRINTFORM 無防備に責められ続けている
+			ENDIF
+		ENDIF
+	ELSE
+		IF ((MESSAGE_BRANCH_F(TARGET) & 堕落) || (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)) && (ARG & Ｃ)
+			PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%は触手の丁寧な愛撫に応えるかのように身を捩っている
+		ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗)
+			PRINTFORM ふるふると首を左右に振り、快感に抗っている
+		ELSE
+			IF TALENT:臆病 || TALENT:悲観的 || TALENT:恥ずかしがり屋
+				IF (MESSAGE_BRANCH_F(TARGET) & 性抵抗)
+					PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%は恐怖心も忘れて、頬を紅潮させている
+				ELSEIF TALENT:主観視点 > 0
+					PRINTFORM 恐怖に駆られた%PRINT_TRANSCALLNAME(TARGET)%は、気を抜くと涙を零してしまいそうだ
+				ELSE
+					PRINTFORM 恐怖に駆られた%PRINT_TRANSCALLNAME(TARGET)%は、目の端に涙を溜めている
+				ENDIF
+			ELSEIF TALENT:おっとり || TALENT:楽天家 || TALENT:かるい性格
+				IF (MESSAGE_BRANCH_F(TARGET) & 性抵抗)
+					PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%は余裕を装いきれずに甘い声をもらしている
+				ELSE
+					PRINTFORM 余裕を装う%PRINT_TRANSCALLNAME(TARGET)%だが、その頬は紅潮している
+				ENDIF
+			ELSE
+				IF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && TALENT:主観視点 > 0
+					PRINTFORM 口では反発しつつも、期待感に%PRINT_TRANSCALLNAME(TARGET)%の胸が高まっていく
+				ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗)
+					PRINTFORM 口では反発しつつも、%PRINT_TRANSCALLNAME(TARGET)%は明らかに期待している素振りだ
+				ELSEIF (MESSAGE_BRANCH_F(TARGET) & 絶望)
+					PRINTFORM 心が折れかけた%PRINT_TRANSCALLNAME(TARGET)%は睨み返すことすらできない
+				ELSEIF TALENT:感情乏しい > 0 && TALENT:主観視点 > 0
+					PRINTFORM 快楽こそ感じているものの、%PRINT_TRANSCALLNAME(TARGET)%はポーカーフェイスを保てているようだ
+				ELSEIF TALENT:感情乏しい > 0
+					PRINTFORM 快楽は感じているはずだが、%PRINT_TRANSCALLNAME(TARGET)%はポーカーフェイスを崩さない
+				ELSEIF TALENT:主観視点 > 0
+					PRINTFORM キッと睨み返す%PRINT_TRANSCALLNAME(TARGET)%だが、頬が紅潮してしまっている
+				ELSE
+					PRINTFORM キッと睨み返す%PRINT_TRANSCALLNAME(TARGET)%だが、その頬は紅潮している
+				ENDIF
+			ENDIF
+		ENDIF
+	ENDIF
+	PRINTFORML ・・・
+	PRINTW 
+ELSE
+	PRINTFORML 。
+	PRINTL 
+ENDIF
+IF (ARG & Ｂ)
+	IF (TCVAR:12 & 気絶)
+		PRINTFORM %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%
+		IF ABL:Ｃ感覚 >= 4 && (ARG & Ｃ)
+			PRINTFORML の無防備に突き出された乳首に
+			PRINTFORM 別の触手が３点責めの様相で追い打ちをかけ
+		ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗)
+			PRINTFORML が唇の端から、甘い嬌声を洩らすと、
+			PRINTFORM 今度は別の触手が無防備に晒された胸を責め立て
+		ELSE
+			PRINTFORML は身をよじり悦楽を逃れようとするが
+			PRINTFORM 別の触手が無防備になった胸を責め立て
+		ENDIF
+	ELSE
+		IF ABL:Ｃ感覚 >= 4 && (ARG & Ｃ)
+			PRINTFORML 思わず仰け反った%PRINT_TRANSCALLNAME(TARGET)%の突き出された乳首に
+			PRINTFORM 別の触手が３点責めの様相で追い打ちをかけ
+		ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗)
+			IF TALENT:感情乏しい > 0
+				PRINT 僅かに頬を紅潮させた
+			ELSEIF TALENT:臆病 || TALENT:悲観的 || TALENT:恥ずかしがり屋
+				PRINT 恐怖心も忘れて
+			ELSEIF TALENT:おっとり || TALENT:楽天家 || TALENT:かるい性格
+				PRINT 余裕を装いきれずに
+			ELSE
+				PRINT 口では反発しつつも
+			ENDIF
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%が唇の端から嬌声を洩らすと、
+			PRINTFORM 今度は別の触手が無防備に晒された胸を責め立て
+		ELSEIF (MESSAGE_BRANCH_F(TARGET) & 苦戦)
+			PRINTFORML 抵抗できずにいる%PRINT_TRANSCALLNAME(TARGET)%を触手で包み込むと、
+			PRINTFORM 胸に絡みついた触手が乳首を責め立て
+		ELSE
+			IF TALENT:感情乏しい > 0
+				PRINT 無表情のまま
+			ELSEIF TALENT:臆病 || TALENT:悲観的 || TALENT:恥ずかしがり屋
+				PRINT 恐怖に駆られた
+			ELSEIF TALENT:おっとり || TALENT:楽天家 || TALENT:かるい性格
+				PRINT 余裕を装って
+			ELSE
+				PRINT キッと睨み返す
+			ENDIF
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%が股間の触手を掴もうとするも、
+			PRINTFORM 今度は別の触手が無防備になった胸を責め立て
+		ENDIF
+	ENDIF
+	;続く描写がある場合
+	IF (ARG & Ａ)
+		PRINTL る。
+		IF (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け) || (MESSAGE_BRANCH_F(TARGET) & 絶望)
+			PRINTFORM 碌な抵抗もできずに
+		ELSE
+			PRINTFORM その隙を見逃さず
+		ENDIF
+	ELSE
+		PRINT 、
+		IF (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け) || (MESSAGE_BRANCH_F(TARGET) & 絶望)
+			PRINTFORML 快楽を肌に刷り込んでくる・・・
+		ELSE
+			PRINTFORML 抵抗する気力を削いでくる・・・
+		ENDIF
+		PRINTW 
+	ENDIF
+ENDIF
+IF (ARG & Ａ)
+	PRINTFORML 別の細い触手が%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の尻を撫でまわし、
+	IF ABL:Ａ感覚 < 2
+		PRINTFORM まだきつく閉じられたままの
+	ELSE
+		PRINTFORM すっかり性感帯にされてしまった
+	ENDIF
+	PRINTFORML 菊穴の具合を解きほぐしていった・・・
+	PRINTW 
+ENDIF
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEX_COM0")
+PRINTL 
+;動画撮影フラグの処理
+IF FLAG:71
+	;愛撫されたところを見られた
+	SIF (ARG & Ｃ) || (ARG & Ｖ) || (ARG & Ａ) || (ARG & Ｂ)
+		SETBIT TFLAG:21,1
+ENDIF
+
+;--------------------------------------------------
+;COM1：C攻め強
+@MESSAGE_SEX_COM1, ARG:0, ARG:1
+FONTBOLD
+PRINT Ｃ攻め強
+FONTREGULAR
+CALL MESSAGE_SEX_STATE, ARG:0, ARG:1, Ｃ
+PRINTL 
+
+IF (FLAG:110 == 0)
+	CALL TENTACLE_ACCESS, "NAME"
+ELSEIF (FLAG:110 == 1)
+	PRINTFORM %PRINT_TRANSCALLNAME(FLAG:111)%
+ENDIF
+IF (TCVAR:12 & 気絶)
+	IF TALENT:ふたなり > 0 || TALENT:オトコ > 0
+		IF (ARG & Ｃ)
+			IF FLAG:110
+				PRINTFORM は%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%のペニスに舌を這わせると、
+			ELSE
+				PRINTFORML は先端が口のように開いた触手で%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%のペニスを飲み込み、
+			ENDIF
+			IF TALENT:主観視点 > 0
+				PRINTFORML 緩急を付けながら激しく吸い上げてきた。
+			ELSE
+				PRINTFORML 緩急を付けながら激しく吸い上げた。
+			ENDIF
+			IF BASE:射精 >= 5000
+				PRINTFORM すでに射精寸前だった%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の体は、激しく痙攣しながら腰を上下させている
+			ELSE
+				PRINTFORM じゅぽじゅぽと音を立てて吸われる快楽に、%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の体はビクビクと震えている
+			ENDIF
+		ELSE
+			IF FLAG:110
+				PRINTFORML は結界に阻まれて%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%のペニスに触れることができない
+			ELSE
+				PRINTFORML は先端が口のように開いた触手で%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%のペニスを飲み込もうとしたが
+				PRINTFORM 結界に阻まれて触れることができない
+			ENDIF
+		ENDIF
+		IF (ARG & Ｖ) || (ARG & Ａ) || (ARG & Ｂ)
+			PRINTL 。
+			IF (ARG & Ｃ)
+				PRINT すると同時に
+			ELSE
+				PRINT しかし同時に
+			ENDIF
+		ELSE
+			PRINTFORML ・・・
+			PRINTW 
+		ENDIF
+	ELSEIF (ARG & Ｖ)
+		IF FLAG:110 && (TALENT:(FLAG:111):ふたなり > 0 || TALENT:(FLAG:111):オトコ > 0 || TALENT:(FLAG:111):寄生 == 0 || FILTER_CHECK_F(13) > 0)
+			IF TALENT:(FLAG:111):ふたなり > 0 || TALENT:(FLAG:111):オトコ > 0
+				PRINTFORML は毒々しい青筋を浮かべたペニスを勃起させて
+				PRINTFORM %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の股間にあてが
+			ELSE
+				PRINTFORML ペニスバンド状の触手を身につけて
+				PRINTFORM %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の股間にあてが
+			ENDIF
+		ELSE
+			PRINTFORM は無数のイボに覆われた長い触手を%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の股間にあてが
+			IF TENTACLE_NUM:0:1 == 1
+				CALL SET_TENTACLE_SIZE_BY_MESSAGE,"Ｖ","","たくさん"
+			ENDIF
+		ENDIF
+		PRINTFORML い、
+		PRINTFORML 素股の要領で前後に激しく動き始めた。
+		IF (ARG & Ｃ)
+			PRINTFORM %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%
+			IF (MESSAGE_BRANCH_F(TARGET) & 堕落) || (MESSAGE_BRANCH_F(TARGET) & 性抵抗) || TCVAR:2 == 体勢：奉仕する
+				PRINTL は
+			ELSE
+				PRINTL だが、
+			ENDIF
+			PRINTFORM 敏感なクリトリスを
+			IF FLAG:110 && (TALENT:(FLAG:111):ふたなり > 0 || TALENT:(FLAG:111):オトコ > 0)
+				PRINTFORM 亀頭の先端で
+			ELSE
+				PRINTFORM 触手のイボに
+			ENDIF
+			IF (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け) && TALENT:主観視点 > 0
+				PRINTFORM ゴリゴリと抉られる快楽に、甘い声を漏らしてしまう
+			ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && TALENT:主観視点 > 0
+				PRINTFORM ゴリゴリと抉られる快楽に、全身が熱く火照っていく
+			ELSEIF TALENT:主観視点 > 0
+				PRINTFORM 容赦なくゴリゴリと蹂躙され、苦しげに表情をゆがませてしまう
+			ELSEIF (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)
+				PRINTFORM ゴリゴリと抉られる快楽に、気を失いながらも甘い声を上げている
+			ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗)
+				PRINTFORM ゴリゴリと抉られる快楽に、気を失ったまま頬を赤らめている
+			ELSE
+				PRINTFORM 容赦なくゴリゴリと蹂躙され、気絶したまま苦しげに表情をゆがませている
+			ENDIF
+		ELSE
+			PRINTFORM %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の秘裂は、
+			IF FLAG:110 && (TALENT:(FLAG:111):ふたなり > 0 || TALENT:(FLAG:111):オトコ > 0)
+				PRINTFORM 亀頭の先端で
+			ELSE
+				PRINTFORM 触手のイボに
+			ENDIF
+			IF (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け) && TALENT:主観視点 > 0
+				PRINTFORM でゴリゴリと抉られ、愛蜜をだらだらと垂れ流してしまっている
+			ELSEIF (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)
+				PRINTFORM でゴリゴリと抉られ、意思がないにも関わらず愛蜜をだらだらと垂れ流している
+			ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && TALENT:主観視点 > 0
+				PRINTFORM にグニグニとこすられ、愛液をとろりと溢れさせている
+			ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗)
+				PRINTFORM にグニグニとこすられ、気絶しているにもかかわらず愛液がとろりとあふれている
+			ELSEIF TALENT:主観視点 > 0
+				PRINTFORM を容赦なくグリュグリュと押し付けられ、刺激に体が跳ね上がってしまう
+			ELSE
+				PRINTFORM を容赦なくグリュグリュと押し付けられ、気を失いながらも体を痙攣させている
+			ENDIF
+		ENDIF
+		IF (ARG & Ａ) || (ARG & Ｂ)
+			PRINTL 。
+			PRINTL 
+			PRINT 同時に
+		ELSE
+			PRINTFORML ・・・
+			PRINTW 
+		ENDIF
+	ELSEIF RAND:2 == 0 && (ARG & Ｃ) && (FLAG:110 == 0 || (TALENT:(FLAG:111):寄生 && FILTER_CHECK_F(13) == 0))
+		PRINTFORML は多数の細い触手を器用に%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%のクリトリスに巻き付け、
+		IF TALENT:主観視点 > 0
+			PRINTFORML 絶妙な力加減で様々な方向へ引っ張りながら愛撫してきた。
+		ELSE
+			PRINTFORML 絶妙な力加減で様々な方向へ引っ張りながら愛撫した。
+		ENDIF
+		IF PALAM:快Ｃ >= 1000
+			PRINTFORM 既に充血しているクリトリスを強く刺激されて
+			IF TALENT:主観視点 > 0
+				PRINTFORM %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%は、ひくんひくんと腰を上下させてしまう
+			ELSE
+				PRINTFORM %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%は、ひくんひくんと腰を上下させている
+			ENDIF
+		ELSE
+			PRINTFORM %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%のクリトリスは刺激で
+			PRINTFORM あっという間に充血してしまう
+		ENDIF
+		IF (ARG & Ａ) || (ARG & Ｂ)
+			PRINTL 。
+			PRINTL 
+			PRINT 同時に
+		ELSE
+			PRINTFORML ・・・
+			PRINTW 
+		ENDIF
+	ELSEIF (ARG & Ｃ)
+		IF TALENT:主観視点 > 0
+			PRINTFORML は内側に微細な触手が生えたリングを
+			PRINTFORML %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%のクリトリスに押し付けてきた。
+			PRINTFORM リングに生えた触手がクリトリスを全方位から舐り回してくる
+		ELSE
+			PRINTFORML は内側に極小触手の生えたリングを
+			PRINTFORML %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%のクリトリスに押し付けた。
+			PRINTFORM リングの生えた触手がクリトリスを全方位から舐り回す
+		ENDIF
+		IF (ARG & Ａ) || (ARG & Ｂ)
+			PRINTL 。
+			PRINTL 
+			PRINT 同時に
+		ELSE
+			PRINTFORML ・・・
+			PRINTW 
+		ENDIF
+	ELSE
+		IF FLAG:110 && (TALENT:(FLAG:111):寄生 == 0 || FILTER_CHECK_F(13) > 0)
+			PRINTFORM は指先を
+		ELSE
+			PRINTFORM は多数の細い触手を
+		ENDIF
+		PRINTFORM %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の股間に伸ばしたが、
+		PRINTFORM 結界に阻まれて触れることができない
+		IF (ARG & Ａ) || (ARG & Ｂ)
+			PRINTL 。
+			PRINTL 
+			PRINT しかし同時に
+		ELSE
+			PRINTFORML ・・・
+			PRINTW 
+		ENDIF
+	ENDIF
+ELSE
+	IF TALENT:ふたなり > 0 || TALENT:オトコ > 0
+		IF (ARG & Ｃ)
+			IF FLAG:110
+				PRINTFORML は膝立ちになって%PRINT_TRANSCALLNAME(TARGET)%のペニスに舌を這わせると、
+			ELSE
+				PRINTFORML は先端が口のように開いた触手で%PRINT_TRANSCALLNAME(TARGET)%のペニスを飲み込み、
+			ENDIF
+			IF TALENT:主観視点 > 0
+				PRINTFORML 緩急を付けながら激しく吸い上げてきた。
+			ELSE
+				PRINTFORML 緩急を付けながら激しく吸い上げた。
+			ENDIF
+			IF BASE:射精 >= 5000
+				PRINTFORM すでに射精寸前だった%PRINT_TRANSCALLNAME(TARGET)%の理性が真っ白に染められていく
+			ELSEIF TALENT:主観視点 > 0
+				PRINTFORM じゅぽじゅぽと音を立てて吸われる快楽に%PRINT_TRANSCALLNAME(TARGET)%は必死に抵抗する
+			ELSE
+				PRINTFORM じゅぽじゅぽと音を立てて吸われる快楽に%PRINT_TRANSCALLNAME(TARGET)%は必死に耐えている
+			ENDIF
+		ELSE
+			IF FLAG:110
+				PRINTFORML は結界に阻まれて%PRINT_TRANSCALLNAME(TARGET)%のペニスに触れることができない
+			ELSE
+				PRINTFORML は先端が口のように開いた触手で%PRINT_TRANSCALLNAME(TARGET)%のペニスを飲み込もうとしたが
+				PRINTFORM 結界に阻まれて触れることができない
+			ENDIF
+		ENDIF
+		IF (ARG & Ｖ) || (ARG & Ａ) || (ARG & Ｂ)
+			PRINTL 。
+			PRINTL 
+			IF (ARG & Ｃ)
+				PRINT すると同時に
+			ELSE
+				PRINT しかし同時に
+			ENDIF
+		ELSE
+			PRINTFORML ・・・
+			PRINTW 
+		ENDIF
+	ELSEIF (ARG & Ｖ)
+		IF FLAG:110 && (TALENT:(FLAG:111):ふたなり > 0 || TALENT:(FLAG:111):オトコ > 0 || TALENT:(FLAG:111):寄生 == 0 || FILTER_CHECK_F(13) > 0)
+			IF TALENT:(FLAG:111):ふたなり > 0 || TALENT:(FLAG:111):オトコ > 0
+				PRINTFORML は毒々しい青筋を浮かべたペニスを勃起させて
+				PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%の股間にあてが
+			ELSE
+				PRINTFORML ペニスバンド状の触手を身に纏って
+				PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%の股間にあてが
+			ENDIF
+		ELSE
+			PRINTFORM は無数のイボに覆われた長い触手を%PRINT_TRANSCALLNAME(TARGET)%の股間にあてが
+			IF TENTACLE_NUM:0:1 == 1
+				CALL SET_TENTACLE_SIZE_BY_MESSAGE,"Ｖ","","たくさん"
+			ENDIF
+		ENDIF
+		IF TCVAR:2 == 体勢：Ｖ防御
+			IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+				PRINTFORML い、
+				PRINTFORML 意地悪く脚を閉じて焦らす%PRINT_TRANSCALLNAME(TARGET)%に求愛しつつ
+			ELSE
+				PRINTFORML うと、
+				PRINTFORML 脚を閉じて対抗しようとする%PRINT_TRANSCALLNAME(TARGET)%を無視して
+			ENDIF
+		ELSE
+			PRINTFORML い、
+		ENDIF
+		PRINTFORML 素股の要領で前後に激しく動き始めた。
+		PRINTL 
+		IF (TCVAR:12 & 気絶) && TALENT:主観視点 > 0
+			PRINT 朦朧としている
+		ELSEIF (TCVAR:12 & 気絶)
+			PRINT 気絶したままの
+		ELSEIF  (MESSAGE_BRANCH_F(TARGET) & 堕落) || TCVAR:2 == 体勢：奉仕する
+			PRINT 太股から顔を覗かせるイチモツの先端に指を絡めて扱き上げながら、
+		ELSEIF (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)
+			PRINT 無意識に自らも腰を振って快楽を貪る
+		ELSEIF (MESSAGE_BRANCH_F(TARGET) & 苦戦)
+			PRINT 抵抗する気概を失いつつある
+		ELSEIF TALENT:臆病 || TALENT:悲観的 || TALENT:恥ずかしがり屋
+			PRINT 恐怖に目を閉じて涙を浮かべる
+		ELSEIF TALENT:勝気 || TALENT:古風 || TALENT:乱暴者
+			PRINT 罵倒の言葉を繰り返す
+		ELSE
+			PRINT 動きを止めようと
+			IF FLAG:110 && (TALENT:(FLAG:111):ふたなり > 0 || TALENT:(FLAG:111):オトコ > 0 || TALENT:(FLAG:111):寄生 == 0 || FILTER_CHECK_F(13) > 0)
+				PRINT する
+			ELSE
+				PRINT 触手を掴む
+			ENDIF
+		ENDIF
+		IF (ARG & Ｃ)
+			PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%
+			IF (MESSAGE_BRANCH_F(TARGET) & 堕落) || (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け) || (MESSAGE_BRANCH_F(TARGET) & 苦戦) || TCVAR:2 == 体勢：奉仕する
+				PRINTL は
+			ELSE
+				PRINTL だが、
+			ENDIF
+			PRINTFORM 敏感なクリトリスを
+			IF FLAG:110 && (TALENT:(FLAG:111):ふたなり > 0 || TALENT:(FLAG:111):オトコ > 0)
+				PRINTFORM 亀頭の先端で
+			ELSE
+				PRINTFORM 触手のイボに
+			ENDIF
+			IF (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け) && TALENT:主観視点 > 0
+				PRINTFORM ゴリゴリと抉られる快楽に幸福を感じてしまっている
+			ELSEIF (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)
+				PRINTFORM ゴリゴリと抉られる快楽に幸福そうな表情を浮かべている
+			ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗)
+				PRINTFORM グニグニとこすられる快楽にだらしなく表情を弛緩させている
+			ELSE
+				PRINTFORM 容赦なくグリュグリュと蹂躙され、身も蓋も無い嬌声を上げてしまう
+			ENDIF
+		ELSE
+			PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%の秘裂を
+			IF FLAG:110 && (TALENT:(FLAG:111):ふたなり > 0 || TALENT:(FLAG:111):オトコ > 0)
+				PRINTFORM 亀頭の先端で
+			ELSE
+				PRINTFORM 触手のイボに
+			ENDIF
+			IF (MESSAGE_BRANCH_F(TARGET) & 堕落) && TALENT:主観視点 > 0
+				PRINTFORM ゴリゴリと抉られる快楽に幸福を感じてしまっている
+			ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+				PRINTFORM ゴリゴリと抉る快楽に幸福そうな表情を浮かべている
+			ELSEIF (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)
+				PRINTFORM ぐにぐにと抉られる快楽にだらしなく表情を弛緩させている
+			ELSE
+				PRINTFORM 容赦なくグリュグリュと蹂躙され、思わず全身を仰け反らせてしまう
+			ENDIF
+		ENDIF
+		IF (ARG & Ａ) || (ARG & Ｂ)
+			PRINTL 。
+			PRINTL 
+			PRINT 同時に
+		ELSE
+			PRINTFORML ・・・
+			PRINTW 
+		ENDIF
+	ELSEIF RAND:2 == 0 && (ARG & Ｃ) && (FLAG:110 == 0 || (TALENT:(FLAG:111):寄生 && FILTER_CHECK_F(13) == 0))
+		PRINTFORML は多数の細い触手を器用に%PRINT_TRANSCALLNAME(TARGET)%のクリトリスに巻き付け、
+		IF TALENT:主観視点 > 0
+			PRINTFORML 絶妙な力加減で様々な方向へ引っ張りながら愛撫してきた。
+		ELSE
+			PRINTFORML 絶妙な力加減で様々な方向へ引っ張りながら愛撫した。
+		ENDIF
+		IF PALAM:快Ｃ >= 1000
+			PRINTFORML 既に充血しているクリトリスを強く刺激されて
+			PRINTFORM %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の脳裏に電流が走る
+		ELSE
+			PRINTFORML %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%のクリトリスは刺激で
+			PRINTFORM あっという間に充血してしまう
+		ENDIF
+		IF (ARG & Ａ) || (ARG & Ｂ)
+			PRINTL 。
+			PRINTL 
+			PRINT 同時に
+		ELSE
+			PRINTFORML ・・・
+			PRINTW 
+		ENDIF
+	ELSEIF (ARG & Ｃ)
+		IF TALENT:主観視点 > 0
+			PRINTFORML は内側に微細な触手が生えたリングを
+			PRINTFORML %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%のクリトリスに押し付けてきた。
+			PRINTFORM リングに生えた触手がクリトリスを全方位から舐り回してくる
+		ELSE
+			PRINTFORML は内側に極小触手の生えたリングを
+			PRINTFORML %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%のクリトリスに押し付けた。
+			PRINTFORM リングの生えた触手がクリトリスを全方位から舐り回す
+		ENDIF
+		IF (ARG & Ａ) || (ARG & Ｂ)
+			PRINTL 。
+			PRINTL 
+			PRINT 同時に
+		ELSE
+			PRINTFORML ・・・
+			PRINTW 
+		ENDIF
+	ELSE
+		IF FLAG:110 && (TALENT:(FLAG:111):寄生 == 0 || FILTER_CHECK_F(13) > 0)
+			PRINTFORM は指先を
+		ELSE
+			PRINTFORM は多数の細い触手を
+		ENDIF
+		PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%の股間に伸ばしたが、
+		PRINTFORM 結界に阻まれて触れることができない
+		IF (ARG & Ａ) || (ARG & Ｂ)
+			PRINTL 。
+			PRINTL 
+			PRINT しかし同時に
+		ELSE
+			PRINTFORML ・・・
+			PRINTW 
+		ENDIF
+	ENDIF
+ENDIF
+IF (ARG & Ｂ)
+	PRINTFORM 胸に別の触手が取りついて
+	IF (ARG & Ｃ) && !(TCVAR:12 & 気絶)
+		PRINT ひたすら
+	ELSE
+		PRINT 無防備な
+	ENDIF
+	PRINTFORM 乳首を愛撫して
+	IF (ARG & Ａ) == 0
+		IF TALENT:主観視点 > 0
+			PRINTL くる・・・
+		ELSE
+			PRINTL いる・・・
+		ENDIF
+		PRINTW 
+	ELSE
+		PRINTL おり、
+	ENDIF
+ENDIF
+IF TALENT:ふたなり > 0 && (ARG & Ｖ) && (ARG & Ａ)
+	PRINTFORML ドリル状に回転する触手が%PRINT_TRANSCALLNAME(TARGET)%の
+	PRINTFORML 膣口と尻穴に浅く挿入されていく・・・
+	PRINTW 
+ELSEIF TALENT:ふたなり > 0 && (ARG & Ｖ)
+	PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%の
+	IF PALAM:潤滑 < 2000
+		PRINT まだ濡れ切っていない
+	ELSE
+		PRINT 濡れそぼった
+	ENDIF
+	IF TALENT:主観視点 > 0
+		PRINTFORML 膣口では
+		PRINTFORML ドリル状に回転する触手が浅く出這い入りを繰り返している・・・
+	ELSE
+		PRINTFORML 膣口には
+		PRINTFORML ドリル状に回転する触手が浅く出這入りを繰り返している・・・
+	ENDIF
+	PRINTW 
+ELSEIF (ARG & Ａ)
+	PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%の
+	IF ABL:Ａ感覚 < 2
+		PRINTFORM 未開発の
+	ELSE
+		PRINTFORM 開発済みの
+	ENDIF
+	PRINTFORML 尻穴には
+	PRINTFORML ドリル状に回転する触手が浅く出這入りを繰り返している・・・
+	PRINTW 
+ENDIF
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEX_COM1")
+PRINTL 
+;動画撮影フラグの処理
+IF FLAG:71
+	;愛撫されたところを見られた
+	SIF (ARG & Ｃ) || (ARG & Ｖ) || (ARG & Ａ) || (ARG & Ｂ)
+		SETBIT TFLAG:21,1
+ENDIF
+
+;--------------------------------------------------
+;COM2：V攻め弱
+@MESSAGE_SEX_COM2, ARG:0, ARG:1
+FONTBOLD
+PRINT Ｖ攻め弱
+FONTREGULAR
+CALL MESSAGE_SEX_STATE, ARG:0, ARG:1, Ｖ
+PRINTL 
+
+IF (FLAG:110 == 0)
+	CALL TENTACLE_ACCESS, "NAME"
+	LOCALS = 触手
+	CALL TENTACLE_ACCESS, "GETNAME"
+	LOCALS:1 = %RESULTS%
+ELSEIF (FLAG:110 == 1)
+	PRINTFORM %PRINT_TRANSCALLNAME(FLAG:111)%
+	IF (TALENT:(FLAG:111):寄生 == 0 || FILTER_CHECK_F(13) > 0) && (TALENT:(FLAG:111):ふたなり > 0 || TALENT:(FLAG:111):オトコ > 0)
+		LOCALS = ペニス
+	ELSE
+		LOCALS = 触手
+	ENDIF
+	LOCALS:1 = 
+ENDIF
+IF FLAG:110 && (TALENT:(FLAG:111):寄生 == 0 || FILTER_CHECK_F(13) > 0)
+	PRINTFORML は\@ (TCVAR:12 & 気絶) ? 倒れ込んでいる #  \@%PRINT_TRANSCALLNAME(TARGET)%の股間に顔をうずめ、
+	SIF CLOTH_INNER_PER > CLOTH_INNER_DEF
+		PRINT 下着越しに
+	PRINTFORML 舌で膣口を愛撫し始めた。
+	PRINTL 
+	IF (ARG & Ｖ)
+		IF RAND:2 == 0
+			PRINTFORML 時折クリトリスに軽くキスをしながら、
+		ELSE
+			PRINTFORML わざとジュルジュルと水音を立てて吸いつき、
+		ENDIF
+		IF TALENT:主観視点 > 0
+			PRINTFORML まるで甘い蜜を啜るかのように%PRINT_TRANSCALLNAME(TARGET)%の愛液を貪りつつ
+			PRINTFORML 舌を軽く挿入して\@ (TCVAR:12 & 気絶) ? 無意識に #  \@ひくつく膣口を解きほぐしていく・・・
+		ELSE
+			PRINTFORML まるで\@ (TCVAR:12 & 気絶) ? 気を失った #  \@%PRINT_TRANSCALLNAME(TARGET)%の愛液が甘い蜜であるかのように貪りつつ
+			PRINTFORML 舌を軽く挿入して\@ (TCVAR:12 & 気絶) ? 無意識に #  \@ひくつく膣口を解きほぐしていく・・・
+		ENDIF
+		PRINTW 
+	ELSE
+		PRINTFORML 結界に阻まれて触れられてこそいないが、
+		PRINTFORML %PRINT_TRANSCALLNAME(FLAG:111)%の怪しげな舌使いが結界の表面を撫でるたびに
+		PRINTFORML 結界の光が弱まっていく・・・
+		PRINTW 
+	ENDIF
+	;ランダム分岐フラグ
+	FLAG:900 = 1
+ELSEIF RAND:4 == 0 && (ARG & Ｃ)
+	PRINT は
+	SIF CLOTH_INNER_PER > CLOTH_INNER_DEF
+		PRINT 下着越しに
+	IF TALENT:主観視点 > 0
+		PRINTFORML \@ (TCVAR:12 & 気絶) ? 無抵抗な #  \@%PRINT_TRANSCALLNAME(TARGET)%の膣を広げ、
+	ELSE
+		PRINTFORML \@ (TCVAR:12 & 気絶) ? 気絶している #  \@%PRINT_TRANSCALLNAME(TARGET)%の膣を広げ、
+	ENDIF
+	SIF (ARG & Ｖ)
+		PRINT 膣口と
+	IF TALENT:主観視点 > 0
+		PRINTFORML \@TALENT:ふたなり == 1 ? ペニス # クリトリス \@を無数の小さな舌で舐めまわしてきた。
+	ELSE
+		PRINTFORML \@TALENT:ふたなり == 1 ? ペニス # クリトリス \@を無数の小さな舌で舐めまわした。
+	ENDIF
+	PRINTFORM すっかり愛液で濡れた\@ (TCVAR:12 & 気絶) ? 倒れ込む #  \@%PRINT_TRANSCALLNAME(TARGET)%のスリットが
+	PRINTFORML ひくひくと痙攣している・・・
+	PRINTW 
+	;ランダム分岐フラグ
+	FLAG:900 = 1
+ELSEIF RAND:3 == 0 && (ARG & Ｃ)
+	PRINTFORML は\@ (TCVAR:12 & 気絶) ? 倒れ込んでいる #  \@%PRINT_TRANSCALLNAME(TARGET)%の全身を軽々と持ちあげ、
+	PRINTFORML 多数の突起が付いた太い触手に跨らせた。
+	PRINTW 
+	PRINTFORM 自分自身の体重で股間が突起に押し付けられ、
+	IF (TCVAR:12 & 気絶)
+			SIF CLOTH_INNER_PER > CLOTH_INNER_DEF
+				PRINT 下着越しに
+			PRINTFORML 股間をぐりぐりとこすられ
+			PRINTFORM 意識もなく無抵抗なままに、
+	ELSE
+		IF (MESSAGE_BRANCH_F(TARGET) & 性抵抗)
+			PRINTL 
+			PRINTFORM 敏感な部分を貫く快楽の強さに
+		ELSEIF (MESSAGE_BRANCH_F(TARGET) & 苦戦)
+			PRINTFORML まともに抵抗することもできず、
+		ELSE
+			PRINTFORML 腰を浮かそうとしても引き摺り下ろされ、
+		ENDIF
+	ENDIF
+	IF TALENT:主観視点 > 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は身を悶えさせてしまう・・・
+	ELSE
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は身を悶えさせている・・・
+	ENDIF
+	PRINTW 
+	;ランダム分岐フラグ
+	FLAG:900 = 2
+ELSE
+	PRINT は
+	SIF CLOTH_INNER_PER > CLOTH_INNER_DEF
+		PRINT 下着越しに
+	IF TALENT:主観視点 > 0
+		PRINTFORML 男性器の形をした触手を%PRINT_TRANSCALLNAME(TARGET)%の膣に擦りつけてきた。
+	ELSE
+		PRINTFORML 男性器の形をした触手を%PRINT_TRANSCALLNAME(TARGET)%の膣に擦りつけた。
+	ENDIF
+	PRINTW 
+	IF (ARG & Ｖ)
+		PRINT 先端が少しずつ膣内にめり込んでいくが、
+		IF CLOTH_INNER_PER > CLOTH_INNER_DEF
+			PRINT 下着の布地に阻まれて
+		ELSE
+			PRINT 膣圧で押し出されて
+		ENDIF
+		PRINTL 完全な挿入には至らない。
+		IF (MESSAGE_BRANCH_F(TARGET) & 堕落) && (TCVAR:12 & 気絶) == 0
+			PRINTFORM 挿入への期待に目にハートマークを浮かべる%PRINT_TRANSCALLNAME(TARGET)%の股間
+		ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && (MESSAGE_BRANCH_F(TARGET) & 絶望) == 0 && (TCVAR:12 & 気絶) == 0
+			PRINTFORM 快楽に抗うのに必死な%PRINT_TRANSCALLNAME(TARGET)%の股間
+		ELSE
+			PRINTFORM ひたすら膣口を弄ばれ続ける%PRINT_TRANSCALLNAME(TARGET)%の股間
+		ENDIF
+		IF (CLOTH_CHECK(TARGET) & 1) > 0
+			PRINTFORML には
+			PRINTFORM ヌメヌメした先走り汁で汚れた下着がぴったりと肌に張り付いて
+			IF (ARG & 1)
+				PRINTFORML おり、
+				PRINTFORM 薄布の下に潜り込んだ細い触手が\@TALENT:ふたなり > 0 ? ペニス # クリトリス \@を好き勝手に弄り回して
+			ENDIF
+			IF TALENT:主観視点 > 0
+				PRINTFORML くる・・・
+			ELSE
+				PRINTFORML いる・・・
+			ENDIF
+			PRINTW 
+		ELSE
+			PRINTFORML からはヌメヌメした先走り汁が
+			PRINTFORM 糸を引いて地面に垂れて
+			IF (ARG & Ｃ)
+				PRINTFORML おり、
+				PRINTFORML 敏感な\@TALENT:ふたなり > 0 ? ペニス # クリトリス \@は細い触手に好き勝手な方向に引っ張られて
+				PRINTFORM 充血しきって
+			ENDIF
+			PRINTFORML いる・・・
+			PRINTW 
+		ENDIF
+		;射精値 100
+		CALL TENTACLE_SYASEI_UP, 100
+		;例外的にこの行動のみ確率で射精箇所フラグを立てる
+		TFLAG:4 = TFLAG:4 | ワレメ
+		SIF RAND:100 < 10
+			TFLAG:4 = 0
+	ELSEIF (ARG & Ｃ)
+		PRINTFORML 結界に阻まれて挿入には至らないものの、
+		PRINTFORML 敏感な\@TALENT:ふたなり > 0 ? ペニス # クリトリス \@はゴリゴリと刺激されて充血しきっている・・・
+		PRINTW 
+	ELSE
+		PRINTFORML 結界に阻まれているので触れられてこそいないが、
+		PRINTFORM ミシミシと結界に押し付けられる触手の先端からヌメヌメした先走り汁が噴き出し
+		IF (TCVAR:12 & 気絶)
+			PRINTL ている・・・
+		ELSE
+			PRINTL 、
+			IF (MESSAGE_BRANCH_F(TARGET) & 堕落) && TALENT:主観視点 > 0
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は倒錯的な期待感に胸を高鳴らせてしまう・・・
+			ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は倒錯的な期待感に胸を高鳴らせている・・・
+			ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗)
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は無意識に胸が高鳴ってしまう・・・
+			ELSE
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の恐怖心を煽る・・・
+			ENDIF
+		ENDIF
+		PRINTW 
+	ENDIF
+	;ランダム分岐フラグ
+	FLAG:900 = 3
+	IF TENTACLE_SIZE:0:快Ｖ < 40
+		CALL SET_TENTACLE_SIZE_BY_MESSAGE,"Ｖ","普通","単数"
+	ELSEIF TENTACLE_SIZE:0:快Ｖ >= 60
+		CALL SET_TENTACLE_SIZE_BY_MESSAGE,"Ｖ","普通","複数"
+	ENDIF
+ENDIF
+IF (ARG & Ａ)
+	PRINTFORM 同時にアナルを別の触手に撫でまわされ
+	IF (ARG & Ｂ)
+		PRINTFORML ながら、
+	ELSEIF (TCVAR:12 & 気絶)
+		PRINTFORML 、
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は気絶したまま快楽に頬を染めている・・・
+	ELSE
+		SIF TALENT:感情乏しい > 0
+			PRINT るも
+		PRINTFORML 、
+		PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%は
+		IF (MESSAGE_BRANCH_F(TARGET) & 堕落) || (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)
+			IF TALENT:主観視点 > 0
+				PRINTFORML 愉悦に身を震わせてしまう・・・
+			ELSE
+				PRINTFORML 愉悦に身を震わせている・・・
+			ENDIF
+		ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && TALENT:主観視点 > 0
+			PRINTFORML 快楽に耐えるのに必死だ・・
+		ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗)
+			PRINTFORML 快楽に耐えるのに必死な様子だ・・
+		ELSEIF (MESSAGE_BRANCH_F(TARGET) & 絶望)
+			PRINTFORML 為すすべなく好き放題にされている・・・
+		ELSEIF TALENT:感情乏しい > 0
+			PRINTFORML 無表情を貫いている・・・
+		ELSEIF TALENT:主観視点 > 0
+			PRINTFORML 屈辱に顔を歪めてしまう・・・
+		ELSE
+			PRINTFORML 屈辱に顔を歪めている・・・
+		ENDIF
+		PRINTW 
+	ENDIF
+ENDIF
+IF (ARG & Ａ) == 0 && (ARG & Ｂ)
+	IF TALENT:貧乳 > 0
+		PRINTFORM 同時に%PRINT_TRANSCALLNAME(TARGET)%の乳首にも触手が吸い付いており、
+	ELSE
+		PRINTFORM 同時に%PRINT_TRANSCALLNAME(TARGET)%の胸も玩具のように触手に揉みくちゃにされて、
+	ENDIF
+	PRINTL 
+	IF (TCVAR:12 & 気絶) && TALENT:主観視点 > 0
+		PRINTFORML 無抵抗な%PRINT_TRANSCALLNAME(TARGET)%の体は完全に人形のように扱われている・・・
+	ELSEIF (TCVAR:12 & 気絶)
+		PRINTFORML 意識の無い%PRINT_TRANSCALLNAME(TARGET)%の体は完全に人形のように扱われている・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落) || (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)
+		IF TALENT:主観視点 > 0
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はビクビクと快楽に身を震わせてしまう・・・
+		ELSE
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はビクビクと快楽に身を震わせている・・・
+		ENDIF
+	ELSEIF TCVAR:2 == 体勢：受け入れる
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は快楽に翻弄されるしかない・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗)
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は快楽と恥辱に歯を食いしばっている・・・
+	ELSEIF TALENT:感情乏しい > 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は僅かに不快感に表情を歪めた・・・
+	ELSEIF TALENT:臆病 || TALENT:悲観的 || TALENT:恥ずかしがり屋
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はあまりの羞恥心に顔を真っ赤にしている・・・
+	ELSEIF TALENT:勝気 || TALENT:古風 || TALENT:乱暴者
+		PRINTFORML さすがの%PRINT_TRANSCALLNAME(TARGET)%も悔しさに涙を浮かべるしかない・・・
+	ELSE
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は嫌悪感と屈辱に歯を食いしばっている・・・
+	ENDIF
+	PRINTW 
+ELSEIF (ARG & Ｂ)
+	PRINTFORM 乳房に取りついたキャップ状触手には
+	IF TALENT:貧乳 > 0
+		PRINTFORM 乳首をちゅうちゅうと吸われ
+	ELSE
+		PRINTFORM 胸まで玩具のように触手に揉みくちゃにされ
+	ENDIF
+	IF (TCVAR:12 & 気絶) && TALENT:主観視点 > 0
+		PRINTFORML てしまっており、
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は無抵抗のまま弄ばれている・・・
+	ELSEIF (TCVAR:12 & 気絶)
+		PRINTFORML てしまっており、
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は気絶したまま頬を染めている・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落) || (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)
+		PRINTFORML てしまい、
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はビクビクと快楽に身を震わせている・・・
+	ELSEIF TCVAR:2 == 体勢：受け入れる
+		PRINTFORML ることを受け入れてしまっており、
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は快楽に翻弄されるしかない・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && TALENT:主観視点 > 0
+		PRINTFORML てしまい、
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は快楽に抗おうと歯を食いしばった・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗)
+		PRINTFORML てしまい、
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は快楽に抗おうと歯を食いしばっている・・・
+	ELSEIF TALENT:感情乏しい > 0
+		PRINTFORML てしまっている・・・
+	ELSEIF TALENT:臆病 || TALENT:悲観的 || TALENT:恥ずかしがり屋
+		PRINTFORML てしまい、
+		IF TALENT:主観視点 > 0
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はあまりの羞恥心に顔が真っ赤に染まっていく・・・
+		ELSE
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はあまりの羞恥心に顔を真っ赤にしている・・・
+		ENDIF
+	ELSEIF TALENT:勝気 || TALENT:古風 || TALENT:乱暴者
+		PRINTFORML っては、
+		PRINTFORML さすがの%PRINT_TRANSCALLNAME(TARGET)%も悔しさに涙を浮かべるしかない・・・
+	ELSEIF TALENT:主観視点 > 0
+		PRINTFORML てしまい、
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の表情が嫌悪感と屈辱に歪んでいく・・・
+	ELSE
+		PRINTFORML てしまい、
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は嫌悪感と屈辱に表情を歪めている・・・
+	ENDIF
+	PRINTW 
+ENDIF
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEX_COM2")
+PRINTL 
+;射精判定
+IF FLAG:15 >= FLAG:14 && LOCALS:1 == "Ａ触手"
+	PRINTFORML 半透明なＡ触手の臓器から白濁した精液がせり上がってくる様子が見える。
+	PRINTFORML おそらく射精が近いだろう・・・
+	PRINTW 
+ENDIF
+IF FLAG:15 >= FLAG:14 && (TFLAG:4 & ワレメ)
+	IF TCVAR:2 == 体勢：Ｖ防御
+		IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+			PRINT 焦らすように
+		ELSEIF TCVAR:2 == 体勢：奉仕する
+			PRINT 自ら奉仕していた
+		ELSE
+			PRINT 挿入を防ぐために
+		ENDIF
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%がパンパンに膨れた%LOCALS%を掴むと勢いよく精液が噴き出し、
+		PRINTFORML そのまま全身が白濁液で汚されていった・・・
+		PRINTW 
+		IF (MESSAGE_BRANCH_F(TARGET) & 堕落) && TALENT:主観視点 > 0
+			PRINTFORML その様子に%PRINT_TRANSCALLNAME(TARGET)%は少し物足りなさを感じてしまう・・・
+		ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+			PRINTFORML その様子に%PRINT_TRANSCALLNAME(TARGET)%はやや物足りなさそうな表情をしている・・・
+		ELSEIF (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け) && TALENT:主観視点 > 0
+			PRINTFORML 理性を溶かされつつある%PRINT_TRANSCALLNAME(TARGET)%は濃厚な臭気に晒され
+			PRINTFORML 目の焦点を合わせることもできない・・・
+		ELSEIF (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)
+			PRINTFORML 理性を溶かされつつある%PRINT_TRANSCALLNAME(TARGET)%は濃厚な臭気に晒され
+			PRINTFORML 目の焦点が合っていない・・・
+		ELSEIF TALENT:感情乏しい > 0 && TALENT:主観視点 > 0
+			PRINTFORML その様子に流石の%PRINT_TRANSCALLNAME(TARGET)%も不快感を隠しきれない・・・
+		ELSEIF TALENT:感情乏しい > 0
+			PRINTFORML その様子に%PRINT_TRANSCALLNAME(TARGET)%は不快感をあらわにした・・・
+		ELSEIF TALENT:主観視点 > 0
+			PRINTFORML その様子に%PRINT_TRANSCALLNAME(TARGET)%は顔面蒼白になってしまう・・・
+		ELSE
+			PRINTFORML その様子に%PRINT_TRANSCALLNAME(TARGET)%は顔面蒼白になっている・・・
+		ENDIF
+		PRINTW 
+		;ワレメ射精フラグを折り、手と胸に射精させる
+		TFLAG:4 = TFLAG:4 - ワレメ
+		TFLAG:4 = TFLAG:4 | 手
+		SIF FLAG:15 >= FLAG:14 * 2
+			TFLAG:4 = TFLAG:4 | 胸
+	ELSE
+		PRINT 限界に達した
+		IF (FLAG:110 == 0)
+			CALL TENTACLE_ACCESS, "NAME"
+		ELSEIF (FLAG:110 == 1)
+			PRINTFORM %PRINT_TRANSCALLNAME(FLAG:111)%
+		ENDIF
+		PRINTFORML は%PRINT_TRANSCALLNAME(TARGET)%の膣口に浅く挿入したまま鈴口を固定し、
+		IF TALENT:主観視点 > 0
+			PRINTFORML そのまま勢いよくワレメに射精してきた・・・
+		ELSE
+			PRINTFORML そのまま勢いよくワレメに射精した・・・
+		ENDIF
+		PRINTW 
+		PRINTFORML 大半はそのまま膣外へと噴き出していったが、
+		PRINTFORML 固定された鈴口から幾らか精液が膣内に注ぎ込まれてしまっている。
+		IF (TCVAR:12 & 気絶) && TALENT:主観視点 > 0
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はぼんやりとした意識で
+			PRINTFORML 自分が膣内射精されている様子を眺めた・・・
+		ELSEIF (TCVAR:12 & 気絶)
+			PRINTFORML 気絶している%PRINT_TRANSCALLNAME(TARGET)%は
+			PRINTFORML 自分が膣内射精されていることに気付いていない・・・
+		ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落) || ABL:精液中毒 >= 3
+			IF TALENT:主観視点 > 0
+				PRINTFORML その光景に%PRINT_TRANSCALLNAME(TARGET)%は恍惚感を感じてしまう・・・
+			ELSE
+				PRINTFORML その様子に%PRINT_TRANSCALLNAME(TARGET)%はどこか恍惚としている・・・
+			ENDIF
+		ELSEIF (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け) && TALENT:主観視点 > 0
+			PRINTFORML 理性を溶かされつつある%PRINT_TRANSCALLNAME(TARGET)%は
+			PRINTFORML 自分が膣内射精されている様子をぼんやりと見つめた・・・
+		ELSEIF (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)
+			PRINTFORML 理性を溶かされつつある%PRINT_TRANSCALLNAME(TARGET)%は
+			PRINTFORML 自分が膣内射精されていることに気付いていない・・・
+		ELSEIF (TALENT:勝気 || TALENT:古風 || TALENT:乱暴者) && (MESSAGE_BRANCH_F(TARGET) & 絶望) == 0
+			PRINTFORML 嫌悪感に表情を歪める罵倒する%PRINT_TRANSCALLNAME(TARGET)%は
+			IF TALENT:主観視点 > 0
+				PRINTFORML 太ももに伝う精液の感触に、自分が膣内射精されたことを教えられる・・・
+			ELSE
+				PRINTFORML 自分が膣内射精されていることに気付いていない・・・
+			ENDIF
+		ELSEIF TALENT:感情乏しい > 0
+			PRINTFORML 不快感に表情を歪める%PRINT_TRANSCALLNAME(TARGET)%は
+			PRINTFORML 自分が膣内射精されていることに気付いていない・・・
+		ELSE
+			PRINTFORML 蒼白になってその様子を見ているしかない%PRINT_TRANSCALLNAME(TARGET)%は
+			IF TALENT:主観視点 > 0
+				PRINTFORML 自分が膣内射精されていることに気付くことができない・・・
+			ELSE
+				PRINTFORML 自分が膣内射精されていることに気付いていない・・・
+			ENDIF
+		ENDIF
+		PRINTW 
+
+		;例外的に妊娠することがある
+		IF FLAG:15 >= FLAG:14 * 2
+			CALL NINSIN_HANTEI,2,50
+		ELSE
+			CALL NINSIN_HANTEI,1,10
+		ENDIF
+	ENDIF
+ENDIF
+;動画撮影フラグの処理
+IF FLAG:71
+	;愛撫されたところを見られた
+	SIF (ARG & Ｃ) || (ARG & Ｖ) || (ARG & Ａ) || (ARG & Ｂ)
+		SETBIT TFLAG:21,1
+ENDIF
+
+;--------------------------------------------------
+;COM3：V攻め強
+@MESSAGE_SEX_COM3, ARG:0, ARG:1
+FONTBOLD
+PRINT Ｖ攻め強
+FONTREGULAR
+CALL MESSAGE_SEX_STATE, ARG:0, ARG:1, Ｖ
+PRINTL 
+
+IF (FLAG:110 == 0)
+	CALL TENTACLE_ACCESS, "NAME"
+	LOCALS = 触手
+	CALL TENTACLE_ACCESS, "GETNAME"
+	LOCALS:1 = %RESULTS%
+ELSEIF (FLAG:110 == 1)
+	PRINTFORM %PRINT_TRANSCALLNAME(FLAG:111)%
+	IF (TALENT:(FLAG:111):寄生 == 0 || FILTER_CHECK_F(13) > 0) && (TALENT:(FLAG:111):ふたなり > 0 || TALENT:(FLAG:111):オトコ > 0)
+		LOCALS = ペニス
+	ELSE
+		LOCALS = 触手
+	ENDIF
+	LOCALS:1 = 
+ENDIF
+IF FLAG:110 && (TALENT:(FLAG:111):ふたなり > 0 || TALENT:(FLAG:111):オトコ > 0) && (TALENT:(FLAG:111):寄生 == 0 || FILTER_CHECK_F(13) > 0)
+	PRINTFORML は大きく勃起したペニスを何度も擦りつけながら
+	PRINTFORM %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の膣に
+	SIF TCVAR:2 != 体勢：Ｖ防御 && (ARG & Ｖ)
+		PRINT 根元まで
+	PRINT 挿入し
+	IF TCVAR:2 == 体勢：Ｖ防御 || (ARG & Ｖ) == 0
+		PRINTFORML ようとしたが、
+		IF (ARG & Ｖ) == 0
+			PRINTFORML 結界に阻まれて挿入には至らなかった。
+		ELSE
+			IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+				PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%が焦らすように身を捩ったため
+			ELSE
+				PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%が咄嗟に身を捩ったため
+			ENDIF
+			PRINTFORML 小陰唇の表面を撫でるだけで終わった。
+		ENDIF
+	ELSE
+		PRINTFORML 、
+		IF TALENT:主観視点 > 0
+			PRINTFORML 濃厚なキスを交わしながら大きく腰を振る。
+			PRINTFORML 次第にペースを上げながら、子宮口を打ちつける深いストロークで%PRINT_TRANSCALLNAME(TARGET)%を責め立ててくる。
+		ELSE
+			PRINTFORML 濃厚なキスを交わしながら大きく腰を振った。
+			PRINTFORML 次第にペースを上げながら、子宮口を打ちつける深いストロークで責め立てる。
+		ENDIF
+		PRINTL 
+		IF (TCVAR:12 & 気絶)
+			PRINTFORML %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の体をしっかり抱きしめ腰を打ち付ける%PRINT_TRANSCALLNAME(FLAG:111)%
+			PRINTFORML 膣腔を締め付け精液を催願する%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%に、%PRINT_TRANSCALLNAME(FLAG:111)%はにやりと笑う
+			PRINTFORML ギュッと抱きしめたまま、%PRINT_TRANSCALLNAME(FLAG:111)%が腰の動きを早めていく・・・
+		ELSE
+			PRINTFORML 妖しげに%PRINT_TRANSCALLNAME(FLAG:111)%の瞳が輝くと、
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の意志に反して膣壁が収縮を繰り返し、
+			PRINTFORML 精液を絞り取ろうと自らペニスに絡みついていく・・・
+		ENDIF
+	ENDIF
+ELSEIF LOCALS:1 == "Ｃ触手"
+	PRINTFORML は胴体の中ほどにある部分から細かい毛の生えた異形のペニスを伸ばし、
+	PRINTFORM %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%を押\@ (TCVAR:12 & 気絶) ? さえつけて # し倒して \@種付け
+	IF TCVAR:2 == 体勢：Ｖ防御 || (ARG & Ｖ) == 0
+		PRINTFORML しようとしたが、
+		IF (ARG & Ｖ) == 0
+			PRINTFORML 結界に阻まれて挿入には至らなかった。
+		ELSE
+			IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+				PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%が焦らすように身を捩ったため
+			ELSE
+				PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%が咄嗟に身を捩ったため
+			ENDIF
+			PRINTFORML うまく行かなかった。
+		ENDIF
+	ELSE
+		PRINTFORML を開始した。
+		PRINTW 
+		IF (TCVAR:12 & 気絶)
+			PRINTFORML 巨大な芋虫そのものの外見のＣ触手に抱きつかれている事態に
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の意識があれば、悲鳴の一つも上がったであろうが
+			PRINTFORML 身じろぎ一つしない%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の全身に
+			PRINTFORML 念入りに触手が巻き付けられていく。
+		ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+			PRINTFORML 巨大な芋虫そのものの外見のＣ触手に抱きつかれ求愛されることに
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は嫌悪感を感じるどころか
+			PRINTFORML 両目にハートマークを浮かべながら無意識に脚を開いて受け入れる体勢になった。
+		ELSEIF (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)
+			PRINTFORML 既に快楽の虜になっている%PRINT_TRANSCALLNAME(TARGET)%は
+			PRINTFORML 巨大な芋虫そのものの外見のＣ触手の体重を跳ね除けることもできずに
+			PRINTFORML あっさりと種付け交尾の体勢で固定されてしまった。
+		ELSEIF (MESSAGE_BRANCH_F(TARGET) & 絶望)
+			PRINTFORML ろくに抵抗もできずに覆い被さられた%PRINT_TRANSCALLNAME(TARGET)%は
+			PRINTFORML 巨大な芋虫そのものの外見のＣ触手の体重を跳ね除けることもできずに
+			PRINTFORML あっさりと種付け交尾の体勢で固定されてしまった。
+		ELSEIF TALENT:感情乏しい > 0
+			PRINTFORML 巨大な芋虫そのものの外見のＣ触手に抱きつかれ求愛される%PRINT_TRANSCALLNAME(TARGET)%は
+			PRINTFORML 何とか相手を押し退けようとするものの、体重差のあるＣ触手はビクともしない。
+		ELSE
+			PRINTFORML 巨大な芋虫そのものの外見のＣ触手に抱きつかれ求愛される生理的嫌悪感が
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の神経を恐怖で染め上げ、
+			PRINTFORML 半狂乱になって押し退けようとするものの体重差のあるＣ触手はビクともしない。
+		ENDIF
+		PRINTW 
+		PRINTFORML 完全に身動きを封じたＣ触手は%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の深くへと分け入り
+		PRINTFORML パンパンと腰を使ってピストンし始めた・・・
+	ENDIF
+ELSEIF LOCALS:1 == "Ａ触手"
+	PRINTFORM は変形して%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%に取り付
+	IF TCVAR:2 == 体勢：Ｖ防御 || (ARG & Ｖ) == 0
+		PRINTFORML こうとしたが、
+		IF (ARG & Ｖ) == 0
+			PRINTFORML 結界に阻まれて挿入には至らなかった。
+		ELSE
+			IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+				PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%が焦らすように身を捩ったため
+			ELSE
+				PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%が咄嗟に身を捩ったため
+			ENDIF
+			PRINTFORML うまく行かなかった。
+		ENDIF
+	ELSE
+		PRINTFORML き、下半身をまるごと取り込んでしまった。
+		PRINTFORML ひんやりとした感触がぴったりとヴァギナに吸い付くと、
+		PRINTFORML 外部からは大きく押し広げられた大陰唇が丸見えになってしまっている。
+		PRINTW 
+		IF (TCVAR:12 & 気絶)
+			PRINTFORML そのまま自在に%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の手足を動かし、
+			PRINTFORML 両足を大きく割り開くようにして無防備な体勢に固定した。
+		ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+			PRINTFORML これから種付けするつもりだと理解した%PRINT_TRANSCALLNAME(TARGET)%は
+			PRINTFORML 両目にハートマークを浮かべながら無意識に脚を開いて挿入を受け入れる体勢になった。
+		ELSEIF (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)
+			PRINTFORML 快楽に理性を溶かされつつある%PRINT_TRANSCALLNAME(TARGET)%は
+			PRINTFORML ろくに抵抗もできずＡ触手に取り込まれていく。
+		ELSEIF (MESSAGE_BRANCH_F(TARGET) & 絶望)
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は犯される身の危険を感じながらも
+			PRINTFORML ろくに抵抗もできずＡ触手に取り込まれていく。
+		ELSE
+			PRINTFORML 身の危険を感じた%PRINT_TRANSCALLNAME(TARGET)%がＡ触手を押しのけようとするが、
+			PRINTFORML 流動する半液体状のＡ触手を引き離すことができない。
+		ENDIF
+		PRINTW 
+		PRINTFORML 完全に身動きを封じたＡ触手はヴァギナの手前で全体を大きく膨らませると、
+		PRINTFORML 勢いを付けて自身をワレメに叩き込んだ・・・
+	ENDIF
+ELSEIF RAND:5 == 0
+	PRINTFORM は先端が無数の繊毛に枝分かれしたイソギンチャク触手を%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の膣に深く挿入し
+	IF TCVAR:2 == 体勢：Ｖ防御 || (ARG & Ｖ) == 0
+		PRINTFORML ようとしたが、
+		IF (ARG & Ｖ) == 0
+			PRINTFORML 結界に阻まれて挿入には至らなかった。
+		ELSE
+			IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+				PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%が焦らすように身を捩ったため
+			ELSE
+				PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%が咄嗟に身を捩ったため
+			ENDIF
+			PRINTFORML 小陰唇の表面を撫でるだけで終わった。
+		ENDIF
+	ELSE
+		PRINTFORML 、
+		IF TALENT:主観視点 > 0
+			PRINTFORML 力強いストロークで責め立ててきた。
+		ELSE
+			PRINTFORML 力強いストロークで責め立てた。
+		ENDIF
+		PRINTFORML 突き上げられる快感と同時に繊毛触手が一斉に蠢いて膣壁に絡み付いて撫でまわし、
+		PRINTFORML %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の淫肉を激しく責め立ててくる・・・
+	ENDIF
+ELSEIF RAND:4 == 0
+	PRINTFORM は無数の突起が付いた触手を%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の膣に深く挿入し
+	IF TCVAR:2 == 体勢：Ｖ防御 || (ARG & Ｖ) == 0
+		PRINTFORML ようとしたが、
+		IF (ARG & Ｖ) == 0
+			PRINTFORML 結界に阻まれて挿入には至らなかった。
+		ELSE
+			IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+				PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%が焦らすように身を捩ったため
+			ELSE
+				PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%が咄嗟に身を捩ったため
+			ENDIF
+			PRINTFORML 小陰唇の表面を撫でるだけで終わった。
+		ENDIF
+	ELSE
+		PRINTFORML 、
+		IF TALENT:主観視点 > 0
+			PRINTFORML 力強いストロークで責め立ててきた。
+		ELSE
+			PRINTFORML 力強いストロークで責め立てた。
+		ENDIF
+		PRINTFORML 突起の一つひとつが%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の膣壁をゴリゴリと抉り、
+		PRINTFORML 強烈な快感となって理性に焼き付いてくる・・・
+	ENDIF
+ELSEIF RAND:3 == 0
+	PRINTFORM は無数のヒダが付いた触手を%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の膣に深く挿入し
+	IF TCVAR:2 == 体勢：Ｖ防御 || (ARG & Ｖ) == 0
+		PRINTFORML ようとしたが、
+		IF (ARG & Ｖ) == 0
+			PRINTFORML 結界に阻まれて挿入には至らなかった。
+		ELSE
+			IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+				PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%が焦らすように身を捩ったため
+			ELSE
+				PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%が咄嗟に身を捩ったため
+			ENDIF
+			PRINTFORML 小陰唇の表面を撫でるだけで終わった。
+		ENDIF
+	ELSE
+		PRINTFORML 、
+		PRINTFORML 力強いストロークで責め立てた。
+		PRINTFORML ヒダの一つ一つが%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の膣内を隅々まで擦り上げる・・・
+	ENDIF
+ELSEIF RAND:2 == 0
+	PRINTFORM の複数の触手が%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の膣に殺到
+	IF (TCVAR:2 == 体勢：Ｖ防御 || (ARG & Ｖ) == 0) && !(TCVAR:12 & 気絶)
+		PRINTFORML するが、
+		IF (ARG & Ｖ) == 0
+			PRINTFORM 結界が盾になったおかげで
+		ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+			PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%はするりと身を躱して
+		ELSE
+			PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%は激しく暴れることで
+		ENDIF
+		IF (MESSAGE_BRANCH_F(TARGET) & 堕落) && TCVAR:2 == 体勢：Ｖ防御
+			PRINTL お預けを宣言した。
+		ELSEIF TALENT:処女 > 0
+			PRINTL 何とか処女だけは守り通した。
+		ELSE
+			PRINTL 何とか挿入だけは避けることができた。
+		ENDIF
+	ELSE
+		PRINTFORML し、次々と挿入されていく。
+		PRINTFORML それぞれが独立した動きで膣内を刺激しながら、
+		PRINTFORML 予測不能なテンポで快楽を連打する・・・
+	ENDIF
+	IF TENTACLE_SIZE:0:快Ｖ >= 155
+		CALL SET_TENTACLE_SIZE_BY_MESSAGE,"Ｖ","普通","たくさん"
+	ELSE
+		CALL SET_TENTACLE_SIZE_BY_MESSAGE,"Ｖ","","たくさん"
+	ENDIF
+ELSE
+	PRINTFORML は男性器の形をした触手で%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の膣をほぐし、
+	IF TCVAR:2 == 体勢：Ｖ防御 || (ARG & Ｖ) == 0
+		PRINTFORM 回転を加えて潜り込もうとしたが、
+		IF (ARG & Ｖ) == 0
+			PRINTFORML 結界に阻まれて挿入には至らなかった。
+		ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+			PRINTL 
+			PRINTFORM お預けを宣言した%PRINT_TRANSCALLNAME(TARGET)%に触手を掴まれて
+			PRINTFORML 先端が侵入するだけで終わった。
+		ELSE
+			PRINTL 
+			PRINTFORM 触手を掴んだ%PRINT_TRANSCALLNAME(TARGET)%の必死の抵抗に遭い
+			PRINTFORML 先端が侵入するだけで終わった。
+		ENDIF
+	ELSE
+		IF TALENT:主観視点 > 0
+			PRINTFORML 蛇行しながら潜り込むようにして貫く。
+			PRINTFORML 回転と捻りを加えながらもカリで内側を抉るという、
+			PRINTFORML 人間業ではありえない動きでテンポよく突き上げてくる・・・
+		ELSE
+			PRINTFORML 蛇行しながら潜り込むようにして貫いた。
+			PRINTFORML 回転と捻りを加えながらもカリで内側を抉るという、
+			PRINTFORML 人間業ではありえない動きでテンポよく突き上げていく・・・
+		ENDIF
+	ENDIF
+	IF TENTACLE_SIZE:0:快Ｖ < 40
+		CALL SET_TENTACLE_SIZE_BY_MESSAGE,"Ｖ","普通","単数"
+	ELSEIF TENTACLE_SIZE:0:快Ｖ >= 60
+		CALL SET_TENTACLE_SIZE_BY_MESSAGE,"Ｖ","普通","複数"
+	ENDIF
+ENDIF
+PRINTW 
+;口上
+TRYCCALLFORM KOJO_ROOT(CFLAG:6, "SEX_COM3")
+	PRINTL 
+CATCH
+ENDCATCH
+IF TCVAR:2 != 体勢：Ｖ防御 && (ARG & Ｖ)
+	IF RAND:4 == 0 && (TCVAR:12 & 気絶) == 0
+		PRINTFORM 立ったまま脚を持ちあげられて犯される
+	ELSEIF RAND:3 == 0
+		PRINTFORM 後背位で犯される
+	ELSEIF RAND:2
+		PRINTFORM 騎乗位で犯される
+	ELSE
+		PRINTFORM 正常位で犯される
+	ENDIF
+	PRINTFORML %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の\@ TALENT:貧乳 > 0 ? 薄い胸 # 乳房 \@が
+	PRINT ピストンのたびに
+	IF TALENT:貧乳 > 0
+		SELECTCASE RAND:3
+			CASE 2
+				PRINT ふゆふゆと
+			CASE 1
+				PRINT ぷるぷると
+			CASE 0
+				PRINT 乳首が
+		ENDSELECT
+	ELSEIF TALENT:巨乳 > 0
+		SELECTCASE RAND:3
+			CASE 2
+				PRINT ゆっさゆっさと
+			CASE 1
+				PRINT ぶるんぶるんと
+			CASE 0
+				PRINT たゆんたゆんと
+		ENDSELECT
+	ELSE
+		SELECTCASE RAND:3
+			CASE 2
+				PRINT 上下に
+			CASE 1
+				PRINT 左右に
+			CASE 0
+				PRINT 複雑に
+		ENDSELECT
+	ENDIF
+	PRINTFORML 揺れ、抽送の速度はどんどん加速していく。
+ENDIF
+IF TCVAR:2 == 体勢：Ｖ防御 || (ARG & Ｖ) == 0
+ELSEIF (TCVAR:12 & 気絶) || TALENT:感情乏しい > 0
+	PRINTFORML 好き勝手に肉穴を使われる%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%は
+	PRINTFORML 完全にオナホ扱いされてしまっている・・・
+	PRINTW 
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+	PRINTFORML 愛液滴る膣肉が淫靡な音を立てて触手を受け入れていき、
+	PRINTFORML 待ちに待った挿入の幸福感に満たされながら%PRINT_TRANSCALLNAME(TARGET)%は
+	IF EX:Ｖ絶頂 < 1 && TALENT:主観視点 > 0
+		PRINTFORML 膣壁を抉る快感に恍惚としてしまう・・・
+	ELSEIF EX:Ｖ絶頂 < 1
+		PRINTFORML 膣壁を抉る快感に恍惚としている・・・
+	ELSEIF TALENT:主観視点 > 0
+		PRINTFORML まだイキ足りないと言わんばかりに自ら腰を振り、快楽を貪ってしまう・・・
+	ELSE
+		PRINTFORML まだイキ足りないと言わんばかりに自ら腰を振り、快楽を貪っている・・・
+	ENDIF
+	PRINTW 
+ELSEIF ABL:Ｖ感覚 < 1
+	PRINTFORML まだ性交に不慣れな膣壁を蹂躙される%PRINT_TRANSCALLNAME(TARGET)%はまったく身動きできない・・・
+	PRINTW 
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) || ABL:Ｖ感覚 >= 4
+	PRINTFORML 愛液滴る膣肉が淫靡な音を立てて触手を受け入れていき、
+	PRINTFORML 女としての悦びが%PRINT_TRANSCALLNAME(TARGET)%の理性を、
+	PRINTFORML 使命感を塗りつぶしていく・・・
+	PRINTW 
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 絶望)
+	PRINTFORML 戦意を喪失しつつある%PRINT_TRANSCALLNAME(TARGET)%はろくに抵抗もできず
+	PRINTFORML 哀れな雌穴として為すすべもなく凌辱を受け入れるしかない・・・
+	PRINTW 
+ELSE
+	IF FLAG:110
+		PRINTFORML %PRINT_TRANSCALLNAME(FLAG:111)%の凌辱から逃れようとする%PRINT_TRANSCALLNAME(TARGET)%だが、
+	ELSE
+		PRINTFORML 触手を掴んで引き抜こうとする%PRINT_TRANSCALLNAME(TARGET)%だが、
+	ENDIF
+	PRINTFORML ひと突きされるたびに快楽が抵抗する意志を鈍らせていく・・・
+	PRINTW 
+ENDIF
+IF (ARG & Ｃ) || (ARG & Ａ) || (ARG & Ｂ)
+	IF TCVAR:2 == 体勢：Ｖ防御 || (ARG & Ｖ) == 0
+		IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+			PRINTL しかし相手が引き下がるわけもなく、
+		ELSE
+			PRINTL しかし挿入を防いだことに安心する間もなく、
+		ENDIF
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落) && (TCVAR:12 & 気絶) == 0
+		PRINTFORML 更なる快楽を求める%PRINT_TRANSCALLNAME(TARGET)%の懇願を受けて、
+	ELSE
+		PRINT 追い打ちをかけるように
+	ENDIF
+ENDIF
+IF (ARG & Ｃ)
+	IF RAND:2 == 0
+		PRINT リング
+		IF TALENT:ふたなり > 0
+			PRINTFORM が結合しオナホと化した触手がペニス
+		ELSE
+			PRINTFORM の生えた触手がクリトリス
+		ENDIF
+		PRINTFORM を全方位から舐り回
+		IF (ARG & Ａ) || (ARG & Ｂ)
+			PRINTL し、
+		ELSE
+			PRINTFORML す・・・
+			PRINTW 
+		ENDIF
+	ELSEIF TALENT:ふたなり > 0 || TALENT:オトコ > 0
+		PRINTFORM 先端が口のように開いた触手が%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%のペニスを飲み込んで激しく吸い上げ
+		IF (ARG & Ａ) || (ARG & Ｂ)
+			PRINT ながら、
+		ELSE
+			PRINTFORML られる・・・
+			PRINTW 
+		ENDIF
+	ELSE
+		PRINTFORM 多数の細い触手が%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%のクリトリスをコリコリと刺激し
+		IF (ARG & Ａ) || (ARG & Ｂ)
+			PRINTL 、
+		ELSE
+			IF TALENT:主観視点 > 0
+				PRINTFORML てくる・・・
+			ELSE
+				PRINTFORML ていく・・・
+			ENDIF
+			PRINTW 
+		ENDIF
+	ENDIF
+ENDIF
+IF (ARG & Ａ)
+	IF TCVAR:2 == 体勢：Ｖ防御
+		PRINT 無防備なアナルに
+	ELSE
+		PRINT アナルにも
+	ENDIF
+	PRINTFORML 触手が挿入されて、
+	PRINTFORM 激しいストロークを内臓に叩きつけられ
+	IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+		PRINT る
+	ELSE
+		PRINT てしまう
+	ENDIF
+	IF (ARG & Ｂ)
+		PRINTL 。
+		PRINTL 
+	ELSE
+		PRINTFORML ・・・
+		PRINTW 
+	ENDIF
+ENDIF
+IF (ARG & Ｂ)
+	IF (TCVAR:12 & 気絶)
+		PRINTFORM 意識を取り戻す様子のない%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落) || (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)
+		PRINTFORM 欲情を抑えきれない様子の%PRINT_TRANSCALLNAME(TARGET)%の
+	ELSE
+		PRINTFORM 下半身に気を取られた%PRINT_TRANSCALLNAME(TARGET)%の
+	ENDIF
+	IF TALENT:貧乳 > 0
+		PRINTFORML 乳首にも細い触手が群がり、
+	ELSE
+		PRINTFORML 乳房にも触手が巻きついて、
+	ENDIF
+	IF TALENT:主観視点 > 0
+		PRINTFORML 息を整える間すら与えずに、連続的に責め立ててくる・・・
+	ELSE
+		PRINTFORML 息を整える間を与えずに連続的に責め立てている・・・
+	ENDIF
+	PRINTW 
+ENDIF
+;射精判定
+IF FLAG:15 >= FLAG:14 && LOCALS:1 == "Ａ触手"
+	PRINTFORML 半透明なＡ触手の臓器から白濁した精液がせり上がってくる様子が見える。
+	PRINTFORML おそらく射精が近いだろう・・・
+	PRINTW 
+ENDIF
+IF FLAG:15 >= FLAG:14 && TFLAG:4 > 0
+	IF TCVAR:2 == 体勢：Ｖ防御 || (ARG & Ｖ) == 0
+		PRINTFORML 限界に達した%LOCALS%が%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の口に突き込まれ、
+		PRINTFORM 深くストロークしたかと思うと喉
+		SIF (ARG & Ａ)
+			PRINT とアナルの
+		PRINTL 奥へ精が放たれた・・・
+		PRINTW 
+		IF (TCVAR:12 & 気絶) && TALENT:主観視点 > 0
+			PRINTFORML %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%は朦朧としたまま喉を鳴らして飲み下していたが
+			PRINTFORML 収まりきらなかった精液に咳き込み、口元から一気に逆流した・・・
+		ELSEIF (TCVAR:12 & 気絶)
+			PRINTFORML %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%は気絶したまま喉を鳴らして飲み下していたが
+			PRINTFORML 収まりきらなかった精液に咳き込み、口元から一気に逆流した・・・
+		ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はむせながらも喉を鳴らして精液を飲み干し、
+			SIF (ARG & Ａ)
+				PRINT 腸の中を逆流してくる精液の感触に充実感を覚えながら
+			PRINTFORML 余剰の白濁を垂らしながら口元から引き抜かれた%LOCALS%の先端に、
+			PRINTFORML 小さくキスをした・・・
+		ELSEIF TCVAR:2 == 体勢：奉仕する
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はむせながらも喉を鳴らして精液を飲み干し、
+			SIF (ARG & Ａ)
+				PRINT 腸の中を逆流してくる精液の異物感に耐えながら
+			PRINTFORML 涙目で咳き込んでいる・・・
+		ELSE
+			PRINTFORML 秘所を守るので精一杯な%PRINT_TRANSCALLNAME(TARGET)%は思いっきりむせてしまい、
+			SIF (ARG & Ａ)
+				PRINT 腸の中を逆流してくる精液の異物感に耐えながら
+			PRINTFORML 涙目で咳き込んでいる・・・
+		ENDIF
+		PRINTW 
+	ELSEIF (TCVAR:12 & 気絶)
+		PRINT 限界に達した
+		IF (FLAG:110 == 0)
+			CALL TENTACLE_ACCESS, "NAME"
+		ELSEIF (FLAG:110 == 1)
+			PRINTFORM %PRINT_TRANSCALLNAME(FLAG:111)%
+		ENDIF
+		PRINTFORML は一気にピストンを加速させると、
+		PRINTFORML そのまま%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の一番奥へと勢いよく射精した・・・
+		PRINTW 
+		PRINTFORML %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%のヴァギナから%LOCALS%が抜き取られると
+		PRINTFORML ドロリと膣内射精された精液が流れ出してきた・・・
+		PRINTW 
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+		PRINTFORML 射精が近いことを察した%PRINT_TRANSCALLNAME(TARGET)%が期待を瞳に浮かべると、
+		PRINTFORML ひときわ深くまで突き入れられた%LOCALS%から精が放たれた・・・
+		PRINTW 
+		PRINTFORM ピクピク痙攣しながら最後の一滴まで子種を
+		PRINT 子宮
+		SIF (ARG & Ａ)
+			PRINT とアナル
+		PRINTFORML に注ぎこもうとする%LOCALS%を、
+		IF TALENT:触手の虜 > 0 && TALENT:主観視点 > 0
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は愛おしそうに見つめてしまう・・・
+		ELSEIF TALENT:触手の虜 > 0
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は愛おしそうに見つめている・・・
+		ELSEIF TALENT:主観視点 > 0
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は満足げに受け入れる・・・
+		ELSE
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は満足げに見つめている・・・
+		ENDIF
+		PRINTW 
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)
+		PRINTFORML 小刻みに加速していく動きに%PRINT_TRANSCALLNAME(TARGET)%は全身を仰け反らせて歯を食いしばり
+		PRINTFORML 奥深くまで突き入れられた濃厚な欲望の迸りを子宮で受け止めた・・・
+		PRINTW 
+		PRINT 子宮
+		SIF (ARG & Ａ)
+			PRINT とアナル
+		IF TALENT:主観視点 > 0
+			PRINTFORML にたっぷりと精液を注がれ、%PRINT_TRANSCALLNAME(TARGET)%は恍惚を感じてしまう・・・
+		ELSE
+			PRINTFORML にたっぷりと精液を注がれながら%PRINT_TRANSCALLNAME(TARGET)%は恍惚としている・・・
+		ENDIF
+		PRINTW 
+	ELSE
+		PRINTFORML 小刻みに加速していく動きに%PRINT_TRANSCALLNAME(TARGET)%は射精の気配を察して抵抗するが、
+		PRINTFORML 無情にもひときわ深くまで突き入れられた%LOCALS%から精が放たれた・・・
+		PRINTW 
+		IF (TALENT:勝気 || TALENT:古風 || TALENT:乱暴者) && (MESSAGE_BRANCH_F(TARGET) & 絶望) == 0
+			PRINTFORML 頬を上気させた%PRINT_TRANSCALLNAME(TARGET)%は歯を食いしばりながら、
+			PRINT 子宮
+			SIF (ARG & Ａ)
+				PRINT とアナル
+			IF TALENT:主観視点 > 0
+				PRINTFORML に子種を注ぎ続ける%LOCALS%を睨みつけた・・・
+			ELSE
+				PRINTFORML に子種を注ぎ続ける%LOCALS%を睨みつけている・・・
+			ENDIF
+		ELSEIF TALENT:感情乏しい > 0
+			PRINTFORM 無表情のまま開脚させられた%PRINT_TRANSCALLNAME(TARGET)%の膣内
+			SIF (ARG & Ａ)
+				PRINT とアナル
+			PRINTL に
+			PRINTFORML ビュルビュルと容赦なく子種が注ぎ込まれていく・・・
+		ELSE
+			PRINTFORM 容赦なく膣内
+			SIF (ARG & Ａ)
+				PRINT とアナル
+			PRINTFORML に放たれた子種に
+			IF TALENT:主観視点 > 0
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の顔は青ざめていく・・・
+			ELSE
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は顔面蒼白となっている・・・
+			ENDIF
+		ENDIF
+		PRINTW 
+	ENDIF
+ENDIF
+;動画撮影フラグの処理
+IF FLAG:71
+	;愛撫されたところを見られた
+	SIF (ARG & Ｃ) || (ARG & Ｂ)
+		SETBIT TFLAG:21,1
+	;挿入されたところを見られた
+	SIF (ARG & Ｖ) || (ARG & Ａ)
+		SETBIT TFLAG:21,3
+	;口を犯されたところを見られた
+	SIF (ARG & Ｖ) == 0
+		SETBIT TFLAG:21,2
+ENDIF
+
+;--------------------------------------------------
+;COM4：A攻め弱
+@MESSAGE_SEX_COM4, ARG:0, ARG:1
+FONTBOLD
+PRINT Ａ攻め弱
+FONTREGULAR
+CALL MESSAGE_SEX_STATE, ARG:0, ARG:1, Ａ
+PRINTL 
+
+IF (FLAG:110 == 0)
+	CALL TENTACLE_ACCESS, "NAME"
+ELSEIF (FLAG:110 == 1)
+	PRINTFORM %PRINT_TRANSCALLNAME(FLAG:111)%
+ENDIF
+IF FLAG:110 && (TALENT:(FLAG:111):寄生 == 0 || FILTER_CHECK_F(13) > 0)
+	PRINTFORM は%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の全身を抱きよせて
+	IF (ARG & Ａ) == 0
+		PRINTFORML 
+		PRINTFORML アナルに手を伸ばしたが、結界に阻まれて直接触れることはできなかった
+	ELSE
+		PRINTFORML 、
+		PRINTFORML 指先で尻穴をほぐしていった。
+		PRINTL 
+		IF (TCVAR:12 & 気絶)
+			PRINTFORM %PRINT_SWOON()%
+		ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+			PRINTFORM 愛欲に身を震わせる
+		ELSEIF ABL:Ａ感覚 < 3
+			PRINTFORM 苦痛の声を漏らす
+		ELSE
+			SIF TALENT:感情乏しい == 0
+				PRINT 恥辱に
+			PRINT 顔を紅潮させる
+		ENDIF
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の首筋に舌を這わせながら、
+		PRINTFORM 穴を広げて指を中へと沈ませていく
+	ENDIF
+ELSEIF RAND:2 == 0 && (ARG & Ａ)
+	PRINTFORML のペニスのような形状の触手が%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%のアナルに擦りつけられ、
+	PRINTFORM 先端が浅く挿入されていく
+	IF (ARG & Ｂ)
+		PRINTFORML 。
+		PRINTL 
+		IF (TCVAR:12 & 気絶)
+			PRINTFORM %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の無防備に晒され
+		ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落) || (MESSAGE_BRANCH_F(TARGET) & 性抵抗)
+			PRINTFORM 思わず仰け反った%PRINT_TRANSCALLNAME(TARGET)%が突きだし
+		ELSE
+			PRINTFORM 驚き仰け反った%PRINT_TRANSCALLNAME(TARGET)%が迂闊にも突きだし
+		ENDIF
+		PRINTFORML た胸にはまた別の触手が取り付き、
+		PRINTFORM 乳首を刺激しながら撫でまわしている
+	ELSE
+		PRINTFORML 。
+		PRINTL 
+		IF (TCVAR:12 & 気絶)
+			PRINTFORM %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%は無抵抗のまま好き勝手されている
+		ELSE
+			PRINTFORM その感触に%PRINT_TRANSCALLNAME(TARGET)%は
+			IF (MESSAGE_BRANCH_F(TARGET) & 堕落) && TALENT:主観視点 > 0
+				PRINTFORM 悦び、愛欲に身を震わせる
+			ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+				PRINTFORM 悦び、愛欲に身を震わせている
+			ELSEIF ABL:Ａ感覚 < 3 && TALENT:主観視点 > 0
+				PRINTFORM 耐え切れずに、苦痛の声を漏らしてしまう
+			ELSEIF ABL:Ａ感覚 < 3
+				PRINTFORM 耐え切れずに、苦痛の声を漏らしている
+			ELSE
+				SIF TALENT:感情乏しい == 0
+					PRINT 恥辱に
+				PRINT 顔を紅潮させている
+			ENDIF
+		ENDIF
+	ENDIF
+	IF TENTACLE_SIZE:0:快Ａ < 40
+		CALL SET_TENTACLE_SIZE_BY_MESSAGE,"Ｖ","普通","単数"
+	ELSEIF TENTACLE_SIZE:0:快Ａ >= 60
+		CALL SET_TENTACLE_SIZE_BY_MESSAGE,"Ｖ","普通","複数"
+	ENDIF
+ELSEIF (ARG & Ａ)
+	IF TALENT:主観視点 > 0
+		PRINTFORML は回転するドリルのような触手を%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%のアナルに突き入れてきた。
+	ELSE
+		PRINTFORML は回転するドリルのような触手を%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%のアナルに突き入れた。
+	ENDIF
+	PRINTL 
+	IF (TCVAR:12 & 気絶)
+		PRINTFORM 無意識に体を揺らす
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+		PRINTFORM 愛欲に身を震わせる
+	ELSEIF ABL:Ａ感覚 < 3
+		PRINTFORM 苦痛の声を漏らす
+	ELSE
+		SIF TALENT:感情乏しい == 0
+			PRINT 恥辱に
+		PRINT 顔を紅潮させる
+	ENDIF
+	PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%
+	IF (ARG & Ｂ)
+		PRINTFORML の胸に掌状の触手が集まり、
+		PRINTFORM 乱暴に揉み上げられる
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落) || PALAM:潤滑 >= 2000
+		IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+			PRINT の
+		ELSE
+			PRINT だが、その
+		ENDIF
+		PRINTFORM 股間はじっとりと快楽に濡れている
+	ELSEIF (TCVAR:12 & 気絶) && TALENT:主観視点 > 0
+		PRINTFORM だが、体を動かすことはできない
+	ELSEIF (TCVAR:12 & 気絶)
+		PRINTFORM だが、意識が戻る様子はない
+	ELSE
+		PRINTFORM は、じっと凌辱が終わるのを待つしかない
+	ENDIF
+ELSE
+	PRINTFORML は%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の尻穴に触手を伸ばしたが、
+	PRINTFORM 結界に阻まれて触れることができなかった
+	IF (ARG & Ｂ)
+		PRINTFORML 。
+		PRINTL 
+		IF (TCVAR:12 & 気絶)
+			PRINTFORML すると%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の胸に、口の開いた触手が取り付き、
+			PRINTFORM 乳首を刺激しながら吸い付いていく
+		ELSE
+			IF (MESSAGE_BRANCH_F(TARGET) & 堕落) && TALENT:主観視点 > 0
+				PRINT 物足りなさを感じていた
+			ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+				PRINT 心なしか残念そうにしていた
+			ELSE
+				PRINT しかし安心したのも束の間、
+			ENDIF
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の胸に口の開いた触手が取り付き、
+			PRINTFORM 乳首を刺激しながら吸い付いていく
+			SIF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+				PRINT と、小さく笑みを浮かべた
+		ENDIF
+	ENDIF
+ENDIF
+IF (ARG & Ｃ) || (ARG & Ｖ)
+	PRINTL 。
+	IF (ARG & Ａ) || (ARG & Ｂ)
+		IF RAND:3 == 0
+			PRINT 更に
+		ELSEIF RAND:2 == 0
+			PRINT それだけでなく
+		ELSE
+			PRINT 追い打ちをかけるように
+		ENDIF
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落) == 0
+		PRINT しかし
+	ENDIF
+ELSE
+	PRINTFORML ・・・
+	PRINTW 
+ENDIF
+IF (ARG & Ｃ) && (ARG & Ｖ)
+	PRINTFORML ブラシ状の触手がヴァギナと\@TALENT:ふたなり > 0 ? ペニス # クリトリス \@を撫で付けながら、
+	PRINTFORML 時折小刻みな振動を与えて%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の肉体に快楽を擦り込んでいく・・・
+	PRINTW 
+ELSEIF (ARG & Ｃ)
+	IF TALENT:ふたなり > 0 || TALENT:オトコ > 0
+		SIF PALAM:潤滑 >= 2000
+			PRINT 勃起しきった
+		PRINTFORML ペニスには触手が巻き付き、上下に動いてコキ上げている・・・
+		PRINTW 
+	ELSE
+		PRINTFORML クリトリスには細い触手が巻きついており、
+		PRINTFORML 好き勝手な方向に引っ張りまわしている・・・
+		PRINTW 
+	ENDIF
+ELSEIF (ARG & Ｖ)
+	PRINTFORM 細い触手が%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の
+	SIF PALAM:潤滑 >= 2000
+		PRINT 濡れそぼった
+	PRINTFORML ヴァギナを焦らすように撫でつけ、
+	PRINTFORML 粘液を擦り込んでいる・・・
+	PRINTW 
+ENDIF
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEX_COM4")
+PRINTL 
+;動画撮影フラグの処理
+IF FLAG:71
+	;愛撫されたところを見られた
+	SIF (ARG & Ｃ) || (ARG & Ｖ) || (ARG & Ａ) || (ARG & Ｂ)
+		SETBIT TFLAG:21,1
+ENDIF
+
+
+;--------------------------------------------------
+;COM5：A攻め強
+@MESSAGE_SEX_COM5, ARG:0, ARG:1
+FONTBOLD
+PRINT Ａ攻め強
+FONTREGULAR
+CALL MESSAGE_SEX_STATE, ARG:0, ARG:1, Ａ
+PRINTL 
+
+IF (FLAG:110 == 0)
+	CALL TENTACLE_ACCESS, "NAME"
+	LOCALS = 触手
+	LOCALS:1 = %RESULTS%
+ELSEIF (FLAG:110 == 1)
+	PRINTFORM %PRINT_TRANSCALLNAME(FLAG:111)%
+	IF (TALENT:(FLAG:111):寄生 == 0 || FILTER_CHECK_F(13) > 0) && (TALENT:(FLAG:111):ふたなり > 0 || TALENT:(FLAG:111):オトコ > 0)
+		LOCALS = ペニス
+	ELSE
+		LOCALS = 触手
+	ENDIF
+	LOCALS:1 = 
+ENDIF
+IF FLAG:110 && (TALENT:(FLAG:111):寄生 == 0 || FILTER_CHECK_F(13) > 0)
+	IF TALENT:(FLAG:111):ふたなり > 0 || TALENT:(FLAG:111):オトコ > 0
+		PRINTFORML はペニスを%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%のアナルにあてがい、
+		PRINTFORM 後背位でそのまま一気に貫
+		IF (ARG & Ａ) == 0
+			PRINTFORML こうとしたが、結界に阻まれて挿入には至らなかった・・・
+		ELSE
+			PRINTFORML いた。
+			IF (TCVAR:12 & 気絶) && TALENT:主観視点 > 0
+				PRINTFORML 朦朧としながらも尻穴を締め付ける%PRINT_TRANSCALLNAME(TARGET)%。
+				PRINTFORML その様に%PRINT_TRANSCALLNAME(FLAG:111)%は満足気な笑みを浮かべながら腰の動きを加速させ、
+				PRINTFORML ぐぷぬぷと卑猥な音を周囲に響き渡らせた。
+			ELSEIF (TCVAR:12 & 気絶)
+				PRINTFORML 気絶しながらも尻穴を締め付ける%PRINT_TRANSCALLNAME(TARGET)%。
+				PRINTFORML その様に%PRINT_TRANSCALLNAME(FLAG:111)%は満足気な笑みを浮かべながら腰の動きを加速させ、
+				PRINTFORML ぐぷぬぷと卑猥な音を周囲に響き渡らせた。
+			ELSE
+				PRINTFORML 根元までペニスを挿入した%PRINT_TRANSCALLNAME(FLAG:111)%は快楽に表情を蕩けさせ、
+				PRINTFORML 大きく腰を振りながら淫靡な息遣いを加速させていく。
+			ENDIF
+		ENDIF
+	ENDIF
+ELSEIF RAND:3 == 0 && (ARG & Ａ)
+	IF TALENT:主観視点 > 0
+		PRINTFORML は小さな瘤が連なった触手を%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%のアナルにあてがい、貫く―――
+	ELSE
+		PRINTFORML は小さな瘤が連なった触手を%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%のアナルにあてがい、貫いた。
+	ENDIF
+	PRINTFORML 本来刺激されることのないはずの穴の内壁を瘤がボコボコと通過していく。
+ELSEIF RAND:2 == 0 && (ARG & Ａ)
+	IF TALENT:主観視点 > 0
+		PRINTFORML は触手を%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の尻穴に一気に挿入する。
+	ELSE
+		PRINTFORML は触手を%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の尻穴に一気に挿入した。
+	ENDIF
+	PRINTFORML 直腸内を進む触手で腹部が異様な形状に膨れていく。
+ELSEIF (ARG & Ａ)
+	PRINTFORML は触手を%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%のアナルに挿入し、ピストンを開始した。
+	PRINTFORML 動きに連動した空気の抜けるような下品な音が\@ (TCVAR:12 & 気絶) ? 周囲に響き渡 # 否応にも羞恥心を煽 \@っていく。
+ELSE
+	PRINTFORM が伸ばした無数の触手は%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の結界に阻まれ
+	IF (TCVAR:12 & 気絶)
+		PRINTL たが、
+		PRINTL そのままミシミシと押し付けられていく・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+		PRINTL 、
+		IF TALENT:主観視点 > 0
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は少し残念に感じてしまう・・・
+		ELSE
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は少しばかり残念そうだ・・・
+		ENDIF
+	ELSE
+		PRINTL たが、
+		PRINTFORML アナルに直接触れることすらできないでいるにも関わらず、
+		IF TALENT:感情乏しい > 0
+			PRINTFORML 蠢きながら結界をミシミシと圧迫する様子を
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は無感動に見つめている・・・
+		ELSE
+			PRINTFORML 蠢きながら結界をミシミシと圧迫する様子に%PRINT_TRANSCALLNAME(TARGET)%は
+			PRINTFORML 恐怖心を感じずには居られない・・・
+		ENDIF
+	ENDIF
+ENDIF
+IF (TCVAR:12 & 気絶) && (ARG & Ａ)
+	PRINTFORML 無抵抗の%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%のアナルがズンズンと突き上げられ、
+	PRINTFORML ピストンを受け止める度に弛緩した手足がぶらぶらと揺れる・・・
+ELSEIF ABL:Ａ感覚 < 2 && (ARG & Ａ)
+	IF (MESSAGE_BRANCH_F(TARGET) & 堕落) || (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は内臓を突き上げられる強烈な異物感と同時に、
+		PRINTFORM 未知の快楽を受け止めるのに必死になって
+	ELSE
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は内臓を突き上げられる強烈な異物感に苛まれ、
+		PRINTFORM 嘔吐感を我慢するのに必死になって
+	ENDIF
+	IF (ARG & Ｂ)
+		PRINTFORML おり、
+		PRINTFORML 完全にお留守になっている胸は責められ放題だ・・・
+	ELSEIF TALENT:主観視点 > 0
+		PRINTFORML しまう・・・
+	ELSE
+		PRINTFORML いる・・・
+	ENDIF
+ELSEIF ABL:Ａ感覚 < 4 && (ARG & Ａ)
+	IF (MESSAGE_BRANCH_F(TARGET) & 堕落) || (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)
+		PRINTFORML 内臓を犯される感触に悦楽を感じつつある
+	ELSEIF TALENT:感情乏しい > 0
+		PRINTFORML 表情こそ乏しいものの
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 絶望)
+		PRINTFORML 恐怖で身を強張らせながらも
+	ELSE
+		PRINTFORML 屈辱に顔を歪ませながらも
+	ENDIF
+	PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%の口元からは抑えきれない嬌声が漏れ出して
+	IF (ARG & Ｂ)
+		PRINTFORML おり、
+		PRINTFORML 胸を責め立てる触手によって快楽はさらに加速していく・・・
+	ELSEIF TALENT:主観視点 > 0
+		PRINTFORML しまう・・・
+	ELSE
+		PRINTFORML いる・・・
+	ENDIF
+ELSEIF (ARG & Ａ)
+	PRINTFORML すでに開発済みの尻穴はたやすく触手を飲み込み、
+	SIF (ARG & Ｂ)
+		PRINTFORM 好機とばかりに胸を責め立てられて
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の脳裏に
+	PRINTFORML 快感が電流のように走る・・・
+ENDIF
+PRINTW 
+IF (ARG & Ｖ)
+	IF TCVAR:2 == 体勢：Ｖ防御
+		PRINTFORML 前の穴にも挿入しようとする触手を
+		PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%は両手で掴んで
+		SIF (MESSAGE_BRANCH_F(TARGET) & 堕落) == 0 && TALENT:感情乏しい > 0
+			PRINT 必死に
+		PRINTFORML 阻止しようとするが、
+		SIF (ARG & Ｃ)
+			PRINTFORML \@TALENT:ふたなり > 0 ? ペニス # クリトリス \@に巻き付いた触手から間断なく与えられる快感と
+		PRINTFORML アナルを突き上げられる衝撃で、気が緩むたびに先端がワレメに食い込んでいく・・・
+	ELSE
+		;処女なら地の文を表示
+		SIF TALENT:処女 > 0
+			CALL LOSTVIRGIN
+		PRINTFORML アナルだけでは飽き足らず、同時に触手が前の穴にも深く挿入される。
+		PRINTFORM アナルと膣の二本同時に責め立て
+		IF (ARG & Ｃ)
+			PRINTFORML る触手の根本には太めの突起があり、
+			PRINTFORML %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の\@TALENT:ふたなり > 0 ? ペニス # クリトリス \@にグリグリと押し付けられる・・・
+		ELSE
+			PRINTFORML られ、
+			IF (TCVAR:12 & 気絶)
+				PRINTFORML %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%は人形のように揺さぶられている・・・
+			ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落) || (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は快楽に理性を溶かされてガクガクと揺さぶられるしかない・・・
+			ELSE
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は人形のようにガクガクと揺さぶられるしかない・・・
+			ENDIF
+		ENDIF
+	ENDIF
+	PRINTW 
+ENDIF
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEX_COM5")
+PRINTL 
+;射精判定
+IF FLAG:15 >= FLAG:14 && LOCALS:1 == "Ａ触手"
+	PRINTFORML 半透明なＡ触手の臓器から白濁した精液がせり上がってくる様子が見える。
+	PRINTFORML おそらく射精が近いだろう・・・
+	PRINTW 
+ENDIF
+IF FLAG:15 >= FLAG:14 && ((ARG & Ａ) || (ARG & Ｖ)) && TFLAG:4 > 0
+	IF (TCVAR:12 & 気絶)
+		PRINT 限界に達した
+		IF (FLAG:110 == 0)
+			CALL TENTACLE_ACCESS, "NAME"
+		ELSEIF (FLAG:110 == 1)
+			PRINTFORM %PRINT_TRANSCALLNAME(FLAG:111)%
+		ENDIF
+		PRINTFORML は一気にピストンを加速させると、
+		PRINTFORML そのまま%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の一番奥へと勢いよく射精した・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+		PRINTFORML 射精が近いことを察した%PRINT_TRANSCALLNAME(TARGET)%が期待を瞳に浮かべると、
+		PRINTFORML ひときわ深くまで突き入れられた%LOCALS%から精が放たれた・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)
+		PRINTFORML 小刻みに加速していく動きに%PRINT_TRANSCALLNAME(TARGET)%は全身を仰け反らせて歯を食いしばり
+		PRINTFORML 奥深くまで突き入れられた濃厚な欲望の迸りをアナルで受け止めた・・・
+	ELSE
+		PRINTFORML 小刻みに加速していく動きに%PRINT_TRANSCALLNAME(TARGET)%は射精の気配を察して抵抗するものの、
+		PRINTFORML 無情にもひときわ深くまで突き入れられた%LOCALS%から精が放たれた・・・
+	ENDIF
+	PRINTW 
+	IF (ARG & Ｖ) && TCVAR:2 != 体勢：Ｖ防御
+		IF (TCVAR:12 & 気絶)
+			PRINTFORML ドクドクと脈打ちながら精液を注ぎ込まれ、
+			PRINTFORML 前後の穴の結合部から胎内に収まりきらない白濁を交互に噴き出させながら、
+			PRINTFORML %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%は弛緩した表情を晒している・・・
+		ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+			PRINTFORML ドクドクと脈打ちながら精液を注ぎ込まれ、
+			PRINTFORML 前後の穴の結合部からは胎内に収まりきらない白濁が交互に噴き出す様子を見つめながら、
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はだらしない表情で幸福感に酔いしれている・・・
+		ELSEIF (TALENT:勝気 || TALENT:古風 || TALENT:乱暴者) && (MESSAGE_BRANCH_F(TARGET) & 絶望) == 0
+			PRINTFORML 頬を上気させた%PRINT_TRANSCALLNAME(TARGET)%は歯を食いしばりながら、
+			PRINTFORML 膣とアナルに子種を注ぎ続ける%LOCALS%を睨みつけている・・・
+		ELSEIF TALENT:感情乏しい > 0
+			PRINTFORML 無表情のまま開脚させられた%PRINT_TRANSCALLNAME(TARGET)%の膣穴とアナルに
+			PRINTFORML ドクドクと容赦なく子種が注ぎ込まれていく・・・
+		ELSEIF TALENT:主観視点 > 0
+			PRINTFORML 容赦なく膣内とアナルに放たれた子種に
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は顔面蒼白となってしまう・・・
+		ELSE
+			PRINTFORML 容赦なく膣内とアナルに放たれた子種に
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は顔面蒼白となっている・・・
+		ENDIF
+		PRINTW 
+	ELSEIF (TCVAR:12 & 気絶)
+		PRINTFORML 大量に注ぎ込まれた精液が腸内を逆流していき、
+		PRINTFORML %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の腹部がパンパンになっている・・・
+	ELSE
+		PRINTFORML 大量に注ぎ込まれ腸内を逆流する精液に
+		IF (MESSAGE_BRANCH_F(TARGET) & 堕落) && TALENT:主観視点 > 0
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は満足感と恍惚に浸る・・・
+		ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は満足げな表情で恍惚としている・・・
+		ELSEIF RAND:2 == 0
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は堪えきれずに口から白濁液を吐き出してしまった・・・
+		ELSE
+			PRINTFORML 思わず吐きそうになった%PRINT_TRANSCALLNAME(TARGET)%は何とか堪えた・・・
+		ENDIF
+		PRINTW 
+	ENDIF
+ENDIF
+;動画撮影フラグの処理
+IF FLAG:71
+	;愛撫されたところを見られた
+	SIF (ARG & Ｃ) || (ARG & Ｂ)
+		SETBIT TFLAG:21,1
+	;挿入されたところを見られた
+	SIF (ARG & Ｖ) || (ARG & Ａ)
+		SETBIT TFLAG:21,3
+ENDIF
+
+
+;--------------------------------------------------
+;COM6：B攻め弱
+@MESSAGE_SEX_COM6, ARG:0, ARG:1
+FONTBOLD
+PRINT Ｂ攻め弱
+FONTREGULAR
+CALL MESSAGE_SEX_STATE, ARG:0, ARG:1, Ｂ
+PRINTL 
+
+IF (FLAG:110 == 0)
+	CALL TENTACLE_ACCESS, "NAME"
+ELSEIF (FLAG:110 == 1)
+	PRINTFORM %PRINT_TRANSCALLNAME(FLAG:111)%
+ENDIF
+IF FLAG:110 && (TALENT:(FLAG:111):寄生 == 0 || FILTER_CHECK_F(13) > 0)
+	IF (ARG & Ｂ) == 0
+		PRINTFORML は%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の胸に
+		PRINTFORML 手を伸ばしたが、結界に阻まれて触れることができなかった・・・
+	ELSE
+		PRINTFORML は%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%\@ (TCVAR:12 & 気絶) ? に絡みつき # を押さえつけ \@、
+		PRINTFORML \@ (TCVAR:12 & 気絶) ? 無防備に晒された # 身動きを封じながら \@胸を愛撫した。
+		IF TALENT:オトコ > 0
+			PRINTFORM 引き締まった%PRINT_TRANSCALLNAME(TARGET)%の胸
+		ELSEIF TALENT:巨乳 > 3
+			PRINTFORM はちきれんばかりの%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の乳房
+		ELSEIF TALENT:巨乳 > 2
+			PRINTFORM たわわに実った%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の乳房
+		ELSEIF TALENT:巨乳 > 0
+			PRINTFORM 豊満な%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の乳房
+		ELSEIF TALENT:貧乳 > 0
+			PRINTFORM %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の愛らしい小ぶりな胸
+		ELSE
+			PRINTFORM %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の形のいい乳房
+		ENDIF
+		PRINTFORML を弄り回しながら、クスクスと\@ (TCVAR:12 & 気絶) ? 愉悦の # 挑発的な \@笑みを浮かべている・・・
+	ENDIF
+	;ランダム分岐フラグ
+	FLAG:900 = 1
+ELSEIF RAND:4 == 0 && TALENT:巨乳 > 0 && (ARG & Ｂ)
+	PRINTFORML が触手で%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の胸を撫でると、
+	IF TALENT:巨乳 > 3
+		PRINTFORML はちきれんばかりの乳房がぶるんと揺れた・・・
+	ELSEIF TALENT:巨乳 > 2
+		PRINTFORML たわわに実った乳房がぶるんと揺れた・・・
+	ELSE
+		PRINTFORML 豊満な乳房がぶるんと揺れた・・・
+	ENDIF
+	;ランダム分岐フラグ
+	FLAG:900 = 1
+ELSEIF RAND:2 == 0 && (ARG & Ｂ)
+	PRINTFORM はブラシ状の触手で%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の
+	IF TALENT:貧乳 > 0
+		PRINT 控えめな
+	ELSEIF TALENT:巨乳 > 0
+		PRINT 豊満な
+	ELSE
+		PRINT 形のいい
+	ENDIF
+	IF TALENT:主観視点 > 0
+		PRINTFORML 胸を撫で回してきた・・・
+	ELSE
+		PRINTFORML 胸を撫で回した・・・
+	ENDIF
+	;ランダム分岐フラグ
+	FLAG:900 = 1
+ELSEIF (ARG & Ｂ)
+	PRINTFORML は細い触手で%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の乳首を摘み、
+	PRINTFORML 左右交互に引っ張った・・・
+	;ランダム分岐フラグ
+	FLAG:900 = 2
+ELSE
+	PRINTFORML が%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の胸に触手を巻きつけようとするが、
+	PRINTFORML 結界に阻まれて触れることができないでいる・・・
+ENDIF
+PRINTW 
+IF ((ARG & Ｃ) || (ARG & Ｖ) || (ARG & Ａ)) && (ARG & Ｂ)
+	IF (MESSAGE_BRANCH_F(TARGET) & 堕落) || (TCVAR:12 & 気絶)
+		PRINTFORML %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の胸と下半身に触手が集まり、
+		PRINTFORML 全身を包み込んで丁寧な愛撫を始めた。
+		PRINTL 
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け) || (MESSAGE_BRANCH_F(TARGET) & 絶望)
+		PRINTFORML 胸だけでなく下半身にも触手が集まり、
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の全身を覆いつくしていく。
+		PRINTL 
+	ELSE
+		PRINTFORML 胸を庇おうとする%PRINT_TRANSCALLNAME(TARGET)%だが、
+		PRINTFORML 下半身に取りついた触手を抑えるのに精いっぱいで手が回らない。
+		PRINTL 
+		PRINT それをいいことに
+	ENDIF
+	IF TALENT:オトコ <= 0
+		PRINTFORML 乳首を刺激する触手の数はどんどん増えていき、
+	ELSEIF RAND:2 == 0
+		PRINTFORML 今度はイソギンチャク型の触手が乳房に取りつき、
+	ELSE
+		PRINTFORML 乳房を弄る触手の動きがより大胆になっていき、
+	ENDIF
+	PRINTFORML \@ (MESSAGE_BRANCH_F(TARGET) & 堕落) || (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け) || (MESSAGE_BRANCH_F(TARGET) & 絶望) || (TCVAR:12 & 気絶) ? されるがままになっている # 抵抗しきれない \@%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の胸の感触を存分に堪能しながら
+	PRINTFORML 分泌した媚薬粘液を念入りに擦り込んでいく。
+ELSEIF (ARG & Ｂ) && (FLAG:110 == 0 || (FLAG:110 && TALENT:(FLAG:111):寄生 && FILTER_CHECK_F(13) == 0))
+	IF (TCVAR:12 & 気絶)
+		PRINTFORML %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の胸を
+		PRINTFORML 触手が玩具でも弄るかのように揉みくちゃにしている。
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落) || TCVAR:2 == 体勢：奉仕する
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は自分から身を差し出すように胸を突き出し、
+		PRINTFORML 近くの触手を掴んで手コキするような動きで愛撫し返している。
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け) || (MESSAGE_BRANCH_F(TARGET) & 絶望)
+		PRINTFORML 抵抗らしい抵抗をしない%PRINT_TRANSCALLNAME(TARGET)%の胸を
+		PRINTFORML 揉みくちゃにする触手の動きが、次第に大胆さを増していく。
+	ELSE
+		PRINTFORML 胸を庇おうと触手を掴んで引き離した%PRINT_TRANSCALLNAME(TARGET)%だったが、
+		PRINTFORML すぐに別の触手が胸を責め始め、
+		PRINTFORML 手に握った触手のほうも前後に動いて手コキの様相を呈してしまっている。
+	ENDIF
+ENDIF
+IF (ARG & Ｂ)
+	IF (TCVAR:12 & 気絶)
+		PRINTFORML 無抵抗なのをいいことに愛撫が過激さを増していく・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落) && TALENT:主観視点 > 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は立場も忘れて愛撫を受け入れてしまいそうになる・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は立場も忘れて愛撫を受け入れてしまっている様子だ・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 絶望) || TALENT:感情乏しい > 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は無防備を晒し、ひたすら愛撫に翻弄されている・・・
+	ELSE
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は手も足も出ないことに唇を噛みながら、ひたすら凌辱に耐えている・・・
+	ENDIF
+ENDIF
+PRINTW 
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEX_COM6")
+PRINTL 
+;動画撮影フラグの処理
+IF FLAG:71
+	;愛撫されたところを見られた
+	SIF (ARG & Ｃ) || (ARG & Ｖ) || (ARG & Ａ) || (ARG & Ｂ)
+		SETBIT TFLAG:21,1
+ENDIF
+
+
+;--------------------------------------------------
+;COM7：B攻め強
+@MESSAGE_SEX_COM7, ARG:0, ARG:1
+FONTBOLD
+PRINT Ｂ攻め強
+FONTREGULAR
+CALL MESSAGE_SEX_STATE, ARG:0, ARG:1, Ｂ
+PRINTL 
+
+IF (FLAG:110 == 0)
+	CALL TENTACLE_ACCESS, "NAME"
+ELSEIF (FLAG:110 == 1)
+	PRINTFORM %PRINT_TRANSCALLNAME(FLAG:111)%
+ENDIF
+IF FLAG:110 && (TALENT:(FLAG:111):寄生 == 0 || FILTER_CHECK_F(13) > 0)
+	IF (ARG & Ｂ) == 0
+		PRINTFORML は%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の胸を
+		PRINTFORM 責めようとしたが、結界に阻まれて触れることができない
+	ELSEIF TALENT:オトコ > 0
+		PRINTFORML は%PRINT_TRANSCALLNAME(TARGET)%に抱きつくと
+		PRINTFORM キスを交わしながら乳首に舌を這わせた
+		;ランダム分岐フラグ
+		FLAG:900 = 1
+	ELSEIF RAND:2 == 0
+		PRINTFORML は\@ (TCVAR:12 & 気絶) ? 座らせた # 立っている \@%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の胸を
+		PRINTFORML 背後から鷲掴みにすると、耳元に舌を這わせながら揉み上げた。
+		IF (TCVAR:12 & 気絶)
+			PRINTFORML 身を震わせながらも目を覚まさない%PRINT_TRANSCALLNAME(TARGET)%に、満足げに笑う%PRINT_TRANSCALLNAME(FLAG:111)%
+			PRINTFORM 乳首をくりくりと弄りながら、唇を重ね存分に%PRINT_TRANSCALLNAME(TARGET)%の舌を味わっている
+		ELSE
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の反応を見ながら指先で乳首を摘み、
+			PRINTFORM 強引に唇を重ねて舌を絡めてくる
+		ENDIF
+		;ランダム分岐フラグ
+		FLAG:900 = 2
+	ELSE
+		IF (TCVAR:12 & 気絶)
+			PRINTFORML は、横たわっている%PRINT_TRANSCALLNAME(TARGET)%にのしかかりながら
+			PRINTFORML 無防備に晒されている乳首に吸い付いた
+			PRINTFORM 小さく肩を震わせ僅かに甘い寝息を立てるが、%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%は目を覚まさない
+		ELSE
+			PRINTFORML は%PRINT_TRANSCALLNAME(TARGET)%の両腕を押さえながら
+			PRINTFORML 無防備になった胸に吸いついた。
+			PRINTFORM 挑戦的な目つきでこちらを見上げながら乳首を甘噛みしていく
+			IF TALENT:母乳体質 && (ARG & Ｂ) && FLAG:110 == 0
+				PRINTFORML と、
+				PRINTFORML 先端からは薄っすらと母乳が滲み出してくる。
+				PRINTFORML ここぞとばかりに%PRINT_TRANSCALLNAME(FLAG:111)%が乳首を吸い上げ、
+				PRINTFORM %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の\@ (TCVAR:12 & 気絶) ? ミルクを存分に味わう # 羞恥心を煽りたてる \@
+			ENDIF
+		ENDIF
+		;ランダム分岐フラグ
+		FLAG:900 = 1
+	ENDIF
+ELSEIF (ARG & Ｂ)
+	IF (TCVAR:12 & 気絶)
+		PRINTFORM %PRINT_SWOON()%
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落) || (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)
+		PRINT は完全に無防備になっている
+	ELSE
+		PRINT は犯されまいと下半身に気を取られている
+	ENDIF
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の胸を揉みしだいた。
+	IF (TCVAR:12 & 気絶)
+		PRINT 気が付く様子のない
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+		PRINT 期待に瞳を濡らす
+	ELSE
+		PRINT 不意打ちを食らった
+	ENDIF
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の乳首に触手が擦りつけられると、
+	PRINTFORML 触手の先端がぐちゃりと糸を引きながら開いていく。
+	PRINTW 
+	IF (TCVAR:12 & 気絶)
+		PRINTFORML そのまま触手は%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の乳首に吸い付き、
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+		PRINTFORML 媚びるような声を洩らす%PRINT_TRANSCALLNAME(TARGET)%の乳首に触手が吸い付き、
+	ELSE
+		PRINTFORML 制止する%PRINT_TRANSCALLNAME(TARGET)%の声を無視して触手が乳首に吸い付き、
+	ENDIF
+	PRINTFORM 乳房を包みこむように掴んで引っ張るようにヴァキュームをかけていく
+	;ランダム分岐フラグ
+	FLAG:900 = 3
+ELSE
+	PRINTFORM は結界で守られている%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の胸を執拗に責め立て
+	IF (ARG & Ｃ) || (ARG & Ｖ) || (ARG & Ａ)
+		PRINTFORML ながら、
+		PRINTFORM 下半身にも触手を忍び寄らせている
+	ELSE
+		PRINT ている
+	ENDIF
+ENDIF
+IF TALENT:母乳体質 && (ARG & Ｂ) && FLAG:110 == 0
+	PRINTFORML と、
+	PRINTFORML 薄っすらと母乳が滲み出してきた・・・
+ELSE
+	PRINTFORML ・・・
+ENDIF
+PRINTW
+IF (ARG & Ｃ) || (ARG & Ｖ) || (ARG & Ａ)
+	IF (ARG & Ｂ)
+		IF (TCVAR:12 & 気絶)
+			PRINTFORM 微かに頬を上気させている
+		ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落) || (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)
+			PRINTFORM 極上の快楽に表情を蕩けさせる
+		ELSEIF (MESSAGE_BRANCH_F(TARGET) & 絶望)
+			PRINTFORM すっかり抵抗することを諦めた
+		ELSEIF TALENT:臆病 || TALENT:悲観的 || TALENT:恥ずかしがり屋
+			PRINTFORM 驚きの声を上げる
+		ELSEIF TALENT:勝気 || TALENT:古風 || TALENT:乱暴者
+			PRINTFORM 悔しさと恥ずかしさで唇を噛む
+		ELSE
+			PRINTFORM 頬を上気させて快楽に耐える
+		ENDIF
+	ELSE
+		PRINTFORM いつ結界が破れるか気が気でない
+	ENDIF
+	PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%
+ENDIF
+IF (ARG & Ｃ)
+	IF TALENT:ふたなり > 0 || TALENT:オトコ > 0
+		PRINTFORML の下半身には
+		PRINTFORM ペニスを根元まで飲み込んだ触手がじゅっぽじゅっぽと音を立てて吸い付いて
+	ELSE
+		PRINTFORML のクリトリスには
+		PRINTFORM イボの付いた別の触手がゴリゴリと音を立てんばかりに押し付けられて
+	ENDIF
+	PRINTFORM 
+	IF (ARG & 2) || (ARG & 4)
+		PRINTL おり、
+	ELSE
+		PRINTFORML いる・・・
+		PRINTW 
+	ENDIF
+ENDIF
+IF (ARG & Ｖ)
+	SIF (ARG & Ｃ) == 0
+		PRINT の
+	PRINTFORML 秘裂は無数の細い触手に弄られ、
+	PRINTFORM 更にはくぱぁと広げられて愛液が垂れ流しになっている
+	IF (ARG & Ａ)
+		PRINTL 。
+		PRINTW 
+	ELSE
+		PRINTFORML ・・・
+		PRINTW 
+	ENDIF
+	IF TENTACLE_SIZE:0:快Ｖ >= 40
+		IF RAND:2 == 0
+			CALL SET_TENTACLE_SIZE_BY_MESSAGE,"Ｖ","細い","たくさん"
+		ELSE
+			CALL SET_TENTACLE_SIZE_BY_MESSAGE,"Ｖ","繊毛","たくさん"
+		ENDIF
+	ENDIF
+	IF TENTACLE_NUM:0:1 == 1
+		CALL SET_TENTACLE_SIZE_BY_MESSAGE,"Ｖ","","たくさん"
+	ENDIF
+ENDIF
+IF (ARG & Ａ)
+	SIF (ARG & Ｃ) == 0 && (ARG & Ｖ) == 0
+		PRINT の
+	PRINTFORM アナルに
+	IF (ARG & Ｃ) || (ARG & Ｖ)
+		PRINT も
+	ELSE
+		PRINT は
+	ENDIF
+	PRINTFORML 半透明の触手が取りついており、
+	PRINTFORM 何やら得体のしれない液体を注入し続けながら不気味に蠢いている
+	IF (ARG & Ｃ) && (ARG & Ｖ) && (ARG & Ａ)
+		PRINTFORML 。
+		PRINTW 
+		PRINTFORML そして%PRINT_TRANSCALLNAME(TARGET)%を愛撫する触手は一つ、また一つとその数を増やし
+		PRINTFORML ついにはその全身を包みこんでいった・・・
+	ELSE
+		PRINTFORML ・・・
+	ENDIF
+	PRINTW 
+ENDIF
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEX_COM7")
+PRINTL 
+;動画撮影フラグの処理
+IF FLAG:71
+	;愛撫されたところを見られた
+	SIF (ARG & Ｃ) || (ARG & Ｖ) || (ARG & Ａ) || (ARG & Ｂ)
+		SETBIT TFLAG:21,1
+ENDIF
+
+;--------------------------------------------------
+;COM8：スパンキング
+@MESSAGE_SEX_COM8
+FONTBOLD
+PRINTL スパンキング
+FONTREGULAR
+
+IF (FLAG:110 == 0)
+	CALL TENTACLE_ACCESS, "NAME"
+ELSEIF (FLAG:110 == 1)
+	PRINTFORM %PRINT_TRANSCALLNAME(FLAG:111)%
+ENDIF
+PRINT は
+IF FLAG:110 == 0
+	PRINTFORM 鞭のようにしならせた触手を%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の
+	IF (FILTER_CHECK_F(14) > 0)
+		PRINTL 身体に何度も打ちつけた・・・
+	ELSEIF !(TCVAR:12 & 気絶)
+		SELECTCASE RAND:4
+			CASE 3
+				PRINTFORML 身体に何度も打ちつけた。
+				PRINTFORML 打たれた箇所が鬱血し痣になっている・・・
+				;ランダム分岐フラグ
+				FLAG:900 = 1
+			CASE 2
+				PRINTFORML 胸に叩きつけた。
+				PRINTFORML みるみる切り傷が出来て血が垂れはじめる・・・
+				;ランダム分岐フラグ
+				FLAG:900 = 2
+			CASE 1
+				PRINTFORML 腹部に叩きこんだ。
+				IF ABL:マゾっ気 >= 2 && TALENT:主観視点 > 0
+					PRINTFORML 目を見開いた%PRINT_TRANSCALLNAME(TARGET)%は苦痛に崩折れながらも
+					PRINTFORML 歪んだ快楽に股を愛液で濡らしてしまう・・・
+				ELSEIF ABL:マゾっ気 >= 2
+					PRINTFORML 目を見開いた%PRINT_TRANSCALLNAME(TARGET)%は苦痛に崩折れながらも
+					PRINTFORML 歪んだ快楽に股を愛液で濡らしている・・・
+				ELSE
+					PRINTFORML 目を見開いた%PRINT_TRANSCALLNAME(TARGET)%が苦痛に崩折れ
+					PRINTFORML 口から唾液が垂れるのも構わず嘔吐に苦しんでいる・・・
+				ENDIF
+				;ランダム分岐フラグ
+				FLAG:900 = 3
+			CASE 0
+				PRINTFORML 尻に何度も打ちつけた。
+				PRINTFORML 打たれた箇所が赤く腫れ上がっている・・・
+				;ランダム分岐フラグ
+				FLAG:900 = 4
+		ENDSELECT
+	ELSE
+		PRINTFORML 尻に何度も打ちつけた。
+		PRINTFORML 打たれた箇所が赤く腫れ上がっている・・・
+		;ランダム分岐フラグ
+		FLAG:900 = 4
+	ENDIF
+ELSEIF FLAG:110 == 1
+	IF (FILTER_CHECK_F(14) > 0)
+		PRINTFORML 鞭を振りかぶり、%PRINT_TRANSCALLNAME(TARGET)%の身体に何度も打ちつけた・・・
+	ELSEIF !(TCVAR:12 & 気絶)
+		SELECTCASE RAND:4
+			CASE 3
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の腹に膝を入れると、
+				PRINTFORML うずくまった%PRINT_TRANSCALLNAME(TARGET)%を何度も蹴りつけた。
+				PRINTFORML 蹴られた箇所が鬱血し痣になっている・・・
+				;ランダム分岐フラグ
+				FLAG:900 = 5
+			CASE 2
+				PRINTFORML 鞭を振りかぶり%PRINT_TRANSCALLNAME(TARGET)%の胸に叩きつけた。
+				PRINTFORML みるみる切り傷が出来て血が垂れはじめる・・・
+				;ランダム分岐フラグ
+				FLAG:900 = 2
+			CASE 1
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の腹部に拳を叩きこんだ。
+				IF ABL:マゾっ気 >= 2 && TALENT:主観視点 > 0
+					PRINTFORML 目を見開いた%PRINT_TRANSCALLNAME(TARGET)%は苦痛に崩折れながらも
+					PRINTFORML 歪んだ快楽に股を愛液で濡らしてしまう・・・
+				ELSEIF ABL:マゾっ気 >= 2
+					PRINTFORML 目を見開いた%PRINT_TRANSCALLNAME(TARGET)%は苦痛に崩折れながらも
+					PRINTFORML 歪んだ快楽に股を愛液で濡らしている・・・
+				ELSE
+					PRINTFORML 目を見開いた%PRINT_TRANSCALLNAME(TARGET)%が苦痛に崩折れ
+					PRINTFORML 口から唾液が垂れるのも構わず嘔吐に苦しんでいる・・・
+				ENDIF
+				;ランダム分岐フラグ
+				FLAG:900 = 3
+			CASE 0
+				PRINTFORML 鞭を振りかぶり%PRINT_TRANSCALLNAME(TARGET)%の尻に何度も打ちつけた。
+				PRINTFORML 打たれた箇所が赤く腫れ上がっている・・・
+				;ランダム分岐フラグ
+				FLAG:900 = 4
+		ENDSELECT
+	ELSE
+		PRINTFORML 鞭を振りかぶり%PRINT_TRANSCALLNAME(TARGET)%の尻に何度も打ちつけた。
+		PRINTFORML 打たれた箇所が赤く腫れ上がっている・・・
+		;ランダム分岐フラグ
+		FLAG:900 = 4
+	ENDIF
+ENDIF
+PRINTW 
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEX_COM8")
+PRINTL 
+;動画撮影フラグの処理
+IF FLAG:71
+	;嬲りものにされるところを見られた
+	SETBIT TFLAG:21,7
+ENDIF
+
+;--------------------------------------------------
+;COM9：針
+@MESSAGE_SEX_COM9
+FONTBOLD
+PRINTL 針刺し
+FONTREGULAR
+
+IF (FLAG:110 == 0)
+	CALL TENTACLE_ACCESS, "NAME"
+ELSEIF (FLAG:110 == 1)
+	PRINTFORM %PRINT_TRANSCALLNAME(FLAG:111)%
+ENDIF
+IF (TCVAR:12 & 気絶)
+	PRINT が
+ELSE
+	PRINT は
+ENDIF
+IF FLAG:110 == 0
+	PRINTFORM 先端を尖らせた細い触手で%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の
+ELSEIF FLAG:110 == 1
+	PRINTFORM 無数の針を取り出し、%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の
+ENDIF
+IF RAND:2 == 0
+	PRINTFORM 敏感な部分を
+	;ランダム分岐フラグ
+	FLAG:900 = 1
+ELSE
+	PRINTFORM 乳首を突き
+	;ランダム分岐フラグ
+	FLAG:900 = 2
+ENDIF
+IF (TCVAR:12 & 気絶)
+	PRINTL 刺し、
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%を意識を取り戻させた。
+ELSE
+	PRINTL 刺した。
+ENDIF
+IF ABL:マゾっ気 >= 3 && TALENT:主観視点 > 0
+	PRINTFORML あまりの痛みに%PRINT_TRANSCALLNAME(TARGET)%は泣き叫ぶが、
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は許しを請うこと自体に興奮してしまう・・・
+ELSEIF ABL:マゾっ気 >= 3
+	PRINTFORML あまりの痛みに%PRINT_TRANSCALLNAME(TARGET)%は泣き叫ぶが、
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は許しを請うこと自体に興奮しているようだ・・・
+ELSE
+	PRINTFORML あまりの痛みに%PRINT_TRANSCALLNAME(TARGET)%は泣き叫ぶが、
+	PRINTFORML 手足はがっちりと拘束されており逃れることはできない・・・
+ENDIF
+
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEX_COM9")
+PRINTL 
+;動画撮影フラグの処理
+IF FLAG:71
+	;嬲りものにされるところを見られた
+	SETBIT TFLAG:21,7
+ENDIF
+
+
+;--------------------------------------------------
+;COM10：手淫
+@MESSAGE_SEX_COM10, ARG:0, ARG:1
+FONTBOLD
+PRINT 手淫
+FONTREGULAR
+CALL MESSAGE_SEX_STATE, ARG:0, ARG:1, 0
+PRINTL 
+
+IF (FLAG:110 == 0)
+	CALL TENTACLE_ACCESS, "NAME"
+	LOCALS = 触手
+	CALL TENTACLE_ACCESS, "GETNAME"
+	LOCALS:1 = %RESULTS%
+ELSEIF (FLAG:110 == 1)
+	PRINTFORM %PRINT_TRANSCALLNAME(FLAG:111)%
+	IF (TALENT:(FLAG:111):寄生 == 0 || FILTER_CHECK_F(13) > 0) && (TALENT:(FLAG:111):ふたなり > 0 || TALENT:(FLAG:111):オトコ > 0)
+		LOCALS = ペニス
+	ELSE
+		LOCALS = 触手
+	ENDIF
+	LOCALS:1 = 
+ENDIF
+IF FLAG:110 && (TALENT:(FLAG:111):寄生 == 0 || FILTER_CHECK_F(13) > 0)
+	PRINTFORML の瞳を見てしまった%PRINT_TRANSCALLNAME(TARGET)%の身体がビクリと震える。
+	IF (MESSAGE_BRANCH_F(TARGET) & 堕落) && TALENT:主観視点 > 0
+		PRINTFORML 催眠によって理性のタガを外された%PRINT_TRANSCALLNAME(TARGET)%の体は、
+		PRINTFORML そのまま欲望に突き動かされるままに―――
+		PRINTFORML 自ら進んで膝立ちになり、ペニスに手コキを始めてしまう。
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+		PRINTFORML 自分から進んで膝立ちになり、嬉しそうにペニスに手コキを始める%PRINT_TRANSCALLNAME(TARGET)%。
+	ELSEIF TALENT:感情乏しい > 0
+		PRINTFORML 自分から進んで膝立ちになり、ペニスに手コキを始める%PRINT_TRANSCALLNAME(TARGET)%。
+	ELSE
+		PRINTFORML 自分から進んで膝立ちになり、唇を噛みながらペニスに手コキを始める%PRINT_TRANSCALLNAME(TARGET)%。
+	ENDIF
+	PRINTFORML その様子を見下ろしながら%PRINT_TRANSCALLNAME(FLAG:111)%は優越感を隠そうともせずに
+	PRINTFORML 心行くまで催眠奉仕を楽しんでいる・・・
+ELSEIF LOCALS:1 == "Ｈ触手" && TCVAR:2 != 体勢：奉仕する
+	PRINTFORML の瞳を見てしまった%PRINT_TRANSCALLNAME(TARGET)%の身体がビクリと震える。
+	IF (MESSAGE_BRANCH_F(TARGET) & 堕落) && TALENT:主観視点 > 0
+		PRINTFORML 自分から進んで膝立ちになり、手近な触手に手コキを始める%PRINT_TRANSCALLNAME(TARGET)%。
+		PRINTFORML まるで愛しい相手を扱うかのように指先で触手を包み込んでそっと亀頭に舌を這わせ、
+		PRINTFORML 丁寧に触手チンポに快楽奉仕をしていく・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+		PRINTFORML 自分から進んで膝立ちになり、嬉しそうに手近な触手に手コキを始める%PRINT_TRANSCALLNAME(TARGET)%。
+		PRINTFORML まるで愛しい相手を扱うかのように指先で触手を包み込んでそっと亀頭に舌を這わせ、
+		PRINTFORML 丁寧に触手チンポに快楽奉仕をしていく・・・
+	ELSEIF TALENT:感情乏しい > 0
+		PRINTFORML 自分から進んで膝立ちになり、手近な触手に手コキを始める%PRINT_TRANSCALLNAME(TARGET)%。
+		PRINTFORML 操られるままに無表情で奉仕を続ける%PRINT_TRANSCALLNAME(TARGET)%だが
+		PRINTFORML その唇は不快感に固く結ばれている・・・
+	ELSE
+		PRINTFORML 自分から進んで膝立ちになり、唇を噛みながら手近な触手に手コキを始める%PRINT_TRANSCALLNAME(TARGET)%。
+		PRINTFORML 意識を保ったまま身体を操られる%PRINT_TRANSCALLNAME(TARGET)%は屈辱に耐えながら、
+		PRINTFORML 顔を背けることもできずに奉仕を強制される・・・
+	ENDIF
+ELSE
+	IF RAND:3 == 0
+		PRINTFORML は触手の先端を%PRINT_TRANSCALLNAME(TARGET)%の手のひらに擦り付けるように動かした。
+	ELSE
+		PRINTFORML は%PRINT_TRANSCALLNAME(TARGET)%に掴まれた触手を前後に動かした。
+	ENDIF
+	IF (MESSAGE_BRANCH_F(TARGET) & 堕落) || TCVAR:2 == 体勢：奉仕する
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は指に適度な力を込め、
+		PRINTFORML より刺激が強くなるよう奉仕している・・・
+		PRINTW 
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の柔らかな手の感触がお気に召したのか、
+		PRINTFORM 触手の先端からは止めどなく先走り汁が噴き出している
+	ELSE
+		PRINTFORML その様子はさながら手淫をしているようにしか見えない事に、
+		IF TALENT:主観視点 > 0
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は気付いてしまう・・・
+		ELSE
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は気付いていない・・・
+		ENDIF
+		PRINTW 
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は触手を握りつぶそうと指先に力を込めるが、
+		PRINTFORM 逆効果と言わんばかりに触手の先端からは先走り汁が噴き出して顔や胸を汚していく
+	ENDIF
+	IF (ARG & Ｃ) || (ARG & Ｖ) || (ARG & Ａ) || (ARG & Ｂ)
+		PRINTL 。
+		PRINTFORM 無数の細い触手
+		IF (ARG & Ｃ)
+			PRINT が
+		ELSE
+			PRINT に
+		ENDIF
+		SIF (ARG & Ｃ)
+			PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%の
+		IF (ARG & Ｂ)
+			PRINT 胸
+			IF TENTACLE_SIZE:0:快Ｖ >= 40
+				IF RAND:2 == 0
+					CALL SET_TENTACLE_SIZE_BY_MESSAGE,"Ｂ","細い","たくさん"
+				ELSE
+					CALL SET_TENTACLE_SIZE_BY_MESSAGE,"Ｂ","繊毛","たくさん"
+				ENDIF
+			ENDIF
+			IF TENTACLE_NUM:0:1 == 1
+				CALL SET_TENTACLE_SIZE_BY_MESSAGE,"Ｂ","","たくさん"
+			ENDIF
+		ENDIF
+		SIF (ARG & Ｂ) && ((ARG & Ｖ) || (ARG & Ａ))
+			PRINT と
+		IF (ARG & Ｖ)
+			PRINT ヴァギナ
+			IF TENTACLE_SIZE:0:快Ｖ >= 40
+				IF RAND:2 == 0
+					CALL SET_TENTACLE_SIZE_BY_MESSAGE,"Ｖ","細い","たくさん"
+				ELSE
+					CALL SET_TENTACLE_SIZE_BY_MESSAGE,"Ｖ","繊毛","たくさん"
+				ENDIF
+			ENDIF
+			IF TENTACLE_NUM:0:1 == 1
+				CALL SET_TENTACLE_SIZE_BY_MESSAGE,"Ｖ","","たくさん"
+			ENDIF
+		ENDIF
+		SIF (ARG & Ｖ) && (ARG & Ａ)
+			PRINT と
+		IF (ARG & Ａ)
+			PRINT アナル
+			IF TENTACLE_SIZE:0:快Ｖ >= 40
+				IF RAND:2 == 0
+					CALL SET_TENTACLE_SIZE_BY_MESSAGE,"Ａ","細い","たくさん"
+				ELSE
+					CALL SET_TENTACLE_SIZE_BY_MESSAGE,"Ａ","繊毛","たくさん"
+				ENDIF
+			ENDIF
+			IF TENTACLE_NUM:0:1 == 1
+				CALL SET_TENTACLE_SIZE_BY_MESSAGE,"Ａ","","たくさん"
+			ENDIF
+		ENDIF
+		IF (ARG & Ｖ) || (ARG & Ａ) || (ARG & Ｂ)
+			PRINTFORM を丁寧に愛撫
+			SIF (ARG & Ｃ)
+				PRINTL しており、
+		ENDIF
+		IF (ARG & Ｃ)
+			IF TALENT:ふたなり > 0 || TALENT:オトコ > 0
+				PRINTFORML 股間のペニスには細い触手が巻きついてゆっくりと扱き上げている・・・
+			ELSE
+				PRINTFORML 秘部のクリトリスには小さな触手が吸い付いて放さない・・・
+			ENDIF
+		ELSEIF TALENT:主観視点 > 0
+			PRINTFORML され、%PRINT_TRANSCALLNAME(TARGET)%は屈辱と羞恥に頬を染めてしまう・・・
+		ELSE
+			PRINTFORML され、%PRINT_TRANSCALLNAME(TARGET)%は屈辱と羞恥に頬を染めている・・・
+		ENDIF
+	ELSE
+		PRINTL ・・・
+	ENDIF
+	;ランダム分岐フラグ
+	FLAG:900 = 2
+ENDIF
+PRINTW 
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEX_COM10")
+PRINTL 
+;動画撮影フラグの処理
+IF FLAG:71
+	;愛撫されたところを見られた
+	SIF (ARG & Ｃ) || (ARG & Ｖ) || (ARG & Ａ) || (ARG & Ｂ)
+		SETBIT TFLAG:21,1
+ENDIF
+
+;--------------------------------------------------
+;COM11：フェラ
+@MESSAGE_SEX_COM11, ARG:0, ARG:1
+FONTBOLD
+PRINT フェラチオ
+FONTREGULAR
+CALL MESSAGE_SEX_STATE, ARG:0, ARG:1, 0
+PRINTL 
+
+IF (FLAG:110 == 0)
+	CALL TENTACLE_ACCESS, "NAME"
+	LOCALS = 触手
+	LOCALS:1 = %RESULTS%
+ELSEIF (FLAG:110 == 1)
+	PRINTFORM %PRINT_TRANSCALLNAME(FLAG:111)%
+	IF (TALENT:(FLAG:111):寄生 == 0 || FILTER_CHECK_F(13) > 0) && (TALENT:(FLAG:111):ふたなり > 0 || TALENT:(FLAG:111):オトコ > 0)
+		LOCALS = ペニス
+	ELSE
+		LOCALS = 触手
+	ENDIF
+	LOCALS:1 = 
+ENDIF
+IF RAND:2 == 0
+	PRINTFORML は%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の唇をこじ開け、口内を蹂躙した。
+ELSE
+	PRINTFORML は%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の口に無理やり突っ込み、激しく前後に動いた。
+ENDIF
+IF FLAG:110 && (TALENT:(FLAG:111):寄生 == 0 || FILTER_CHECK_F(13) > 0)
+	IF (TCVAR:12 & 気絶) && TALENT:主観視点 > 0
+		PRINTFORML %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%は身動きが取れないまま髪を掴み上げられ、
+		PRINTFORML 口を性処理道具のように扱われてしまう・・・
+	ELSEIF (TCVAR:12 & 気絶)
+		PRINTFORML %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%は気絶したまま髪を掴み上げられ、
+		PRINTFORML 口を性処理道具のように扱われている・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+		PRINTFORML 乱暴に髪を掴みあげられ、強制的に口で奉仕させられる行為に
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は興奮で胸が高鳴るのを自覚した・・・
+	ELSEIF TCVAR:2 == 体勢：奉仕する && TALENT:主観視点 > 0
+		PRINTFORML 乱暴に髪を掴みあげられ、口内を犯されながらも
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は相手を満足させようと舌を使って奉仕する・・・
+	ELSEIF TCVAR:2 == 体勢：奉仕する
+		PRINTFORML 乱暴に髪を掴みあげられ、口内を犯されながらも
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は相手を満足させようと舌を使って奉仕している・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 絶望)
+		PRINTFORML もはや抵抗する気概を失いつつある%PRINT_TRANSCALLNAME(TARGET)%は
+		PRINTFORML 乱暴に髪を掴みあげられ、涙目になりながらも強制奉仕を続けるしかない・・・
+	ELSE
+		PRINTFORML 抵抗しようとすると髪を掴みあげられ、
+		IF TALENT:感情乏しい > 0
+			PRINTFORML 無理やり口による奉仕を強いられる・・・
+		ELSE
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は涙目になりながらも強制奉仕を続けるしかない・・・
+		ENDIF
+	ENDIF
+ELSE
+	IF (TCVAR:12 & 気絶)
+		PRINTFORML %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%は口内を凌辱され、
+		PRINTFORML 性処理道具のように扱われている・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+		PRINTFORML 勃起した異形の肉触手に強制的に口で奉仕させられる行為に
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は興奮で胸が高鳴るのを自覚した・・・
+	ELSEIF TCVAR:2 == 体勢：奉仕する && TALENT:主観視点 > 0
+		PRINTFORML 勃起した異形の肉触手に乱暴に口内を犯されながらも
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は触手を満足させようと舌を使って奉仕する・・・
+	ELSEIF TCVAR:2 == 体勢：奉仕する
+		PRINTFORML 勃起した異形の肉触手に乱暴に口内を犯されながらも
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は触手を満足させようと舌を使って奉仕している・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 絶望)
+		PRINTFORML もはや抵抗する気概を失いつつある%PRINT_TRANSCALLNAME(TARGET)%は
+		PRINTFORML 触手を掴むことすらできずに、涙目になりながらも強制奉仕を続けるしかない・・・
+	ELSE
+		PRINTFORML 口を犯す触手を掴もうとする%PRINT_TRANSCALLNAME(TARGET)%だが触手の動きを止めることはできず、
+		IF TALENT:感情乏しい > 0
+			PRINTFORML 無理やり奉仕を強いられてしまう・・・
+		ELSE
+			PRINTFORML 涙目になりながらも強制奉仕を続けるしかない・・・
+		ENDIF
+	ENDIF
+ENDIF
+PRINTW 
+IF (ARG & Ｂ)
+	PRINTFORML 口だけでなく%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の胸にも触手が擦りつけられ、
+	PRINTFORM 摩擦で勃起した乳首がツンと天を突いている
+	IF (ARG & Ｃ) || (ARG & Ｖ) || (ARG & Ａ)
+		PRINTL 。
+	ELSE
+		PRINTFORML ・・・
+		PRINTW 
+	ENDIF
+ENDIF
+IF (ARG & Ｃ) || (ARG & Ｖ) || (ARG & Ａ)
+	IF (TCVAR:12 & 気絶)
+		PRINT 完全に無防備の
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落) || TCVAR:2 == 体勢：奉仕する
+		PRINT 触手に舌を絡めて奉仕に努める
+	ELSE
+		PRINT 抵抗できずにいる
+	ENDIF
+	PRINTFORML %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の下半身にも無数の触手が伸び、
+	PRINTFORML 敏感な部位を容赦なく責め立てていく・・・
+	PRINTW 
+	IF ARG & Ｖ
+		IF TENTACLE_SIZE:0:快Ｖ >= 40
+			IF RAND:2 == 0
+				CALL SET_TENTACLE_SIZE_BY_MESSAGE,"Ｖ","細い","たくさん"
+			ELSE
+				CALL SET_TENTACLE_SIZE_BY_MESSAGE,"Ｖ","繊毛","たくさん"
+			ENDIF
+		ENDIF
+		IF TENTACLE_NUM:0:1 == 1
+			CALL SET_TENTACLE_SIZE_BY_MESSAGE,"Ｖ","","たくさん"
+		ENDIF
+	ENDIF
+	IF ARG & Ａ
+		IF TENTACLE_SIZE:0:快Ｖ >= 40
+			IF RAND:2 == 0
+				CALL SET_TENTACLE_SIZE_BY_MESSAGE,"Ａ","細い","たくさん"
+			ELSE
+				CALL SET_TENTACLE_SIZE_BY_MESSAGE,"Ａ","繊毛","たくさん"
+			ENDIF
+		ENDIF
+		IF TENTACLE_NUM:0:1 == 1
+			CALL SET_TENTACLE_SIZE_BY_MESSAGE,"Ａ","","たくさん"
+		ENDIF
+	ENDIF
+ENDIF
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEX_COM11")
+PRINTL 
+;射精判定
+IF FLAG:15 >= FLAG:14 && LOCALS:1 == "Ａ触手"
+	PRINTFORML 半透明なＡ触手の臓器から白濁した精液がせり上がってくる様子が見える。
+	PRINTFORML おそらく射精が近いだろう・・・
+	PRINTW 
+ENDIF
+IF FLAG:15 >= FLAG:14 && TFLAG:4 > 0
+	IF (TCVAR:12 & 気絶)
+		PRINT 限界に達した
+		IF (FLAG:110 == 0)
+			CALL TENTACLE_ACCESS, "NAME"
+		ELSEIF (FLAG:110 == 1)
+			PRINTFORM %PRINT_TRANSCALLNAME(FLAG:111)%
+		ENDIF
+		PRINTFORML は%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の喉奥深くへと突き入れると、
+		PRINTFORML そのまま勢いよく精液を放った・・・
+		PRINTW 
+		PRINTFORML 射精を終えて%LOCALS%が引き抜かれると、
+		PRINTFORML だらしなく開かれた%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の口から
+		PRINTFORML 白濁液がじゃばあと溢れ出した・・・
+	ELSE
+		IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+			PRINTFORML 射精が近いことを察した%PRINT_TRANSCALLNAME(TARGET)%が期待を瞳に浮かべると、
+			PRINTFORML 喉奥まで突き入れられた%LOCALS%から精が放たれた・・・
+		ELSEIF TCVAR:2 == 体勢：奉仕する
+			PRINTFORML 射精が近いことを察した%PRINT_TRANSCALLNAME(TARGET)%が動作を加速させると、
+			PRINTFORML 喉奥まで突き入れられた%LOCALS%から精が放たれた・・・
+		ELSE
+			PRINTFORML 小刻みに加速していく動きに%PRINT_TRANSCALLNAME(TARGET)%は射精の気配を察して抵抗するが、
+			PRINTFORML 無情にも喉奥にまで突き入れられた%LOCALS%からそのまま精が放たれた・・・
+		ENDIF
+		PRINTW 
+		IF FLAG:110 == 0 || (TALENT:(FLAG:111):寄生 && FILTER_CHECK_F(13) == 0)
+			PRINTFORML 口内だけでなく周囲の触手からも精液が同時発射され、全身を覆っていく。
+			PRINTFORML やがてズルリと白濁交じりの唾液の糸を引きながら触手が口から引き抜かれると、
+		ENDIF
+		IF (MESSAGE_BRANCH_F(TARGET) & 堕落) && TALENT:主観視点 > 0
+			PRINTFORML 満足感に浸りながら%PRINT_TRANSCALLNAME(TARGET)%は白濁液を飲み下していく・・・
+		ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+			PRINTFORML 満足げな表情を浮かべながら%PRINT_TRANSCALLNAME(TARGET)%は白濁液を飲み下していった・・・
+		ELSEIF TCVAR:2 == 体勢：奉仕する && TALENT:主観視点 > 0
+			PRINTFORML 涙目になりながらも%PRINT_TRANSCALLNAME(TARGET)%は白濁液を飲み下していく・・・
+		ELSEIF TCVAR:2 == 体勢：奉仕する
+			PRINTFORML 涙目になりながらも%PRINT_TRANSCALLNAME(TARGET)%は白濁液を飲み下していった・・・
+		ELSE
+			PRINTFORML 収まりきらなかった精液が口元からじゃばあと溢れ出した・・・
+		ENDIF
+		PRINTW 
+	ENDIF
+ENDIF
+;動画撮影フラグの処理
+IF FLAG:71
+	;愛撫されたところを見られた
+	SIF (ARG & Ｃ) || (ARG & Ｖ) || (ARG & Ａ) || (ARG & Ｂ)
+		SETBIT TFLAG:21,1
+	;口を犯されたところを見られた
+	SETBIT TFLAG:21,2
+ENDIF
+
+;--------------------------------------------------
+;COM12：イラマチオ
+@MESSAGE_SEX_COM12
+FONTBOLD
+PRINTL イラマチオ
+FONTREGULAR
+
+IF (FLAG:110 == 0)
+	CALL TENTACLE_ACCESS, "NAME"
+	LOCALS = 触手
+	LOCALS:1 = %RESULTS%
+ELSEIF (FLAG:110 == 1)
+	PRINTFORM %PRINT_TRANSCALLNAME(FLAG:111)%
+	IF (TALENT:(FLAG:111):寄生 == 0 || FILTER_CHECK_F(13) > 0) && (TALENT:(FLAG:111):ふたなり > 0 || TALENT:(FLAG:111):オトコ > 0)
+		LOCALS = ペニス
+	ELSE
+		LOCALS = 触手
+	ENDIF
+	LOCALS:1 = 
+ENDIF
+IF FLAG:110 && (TALENT:(FLAG:111):寄生 == 0 || FILTER_CHECK_F(13) > 0)
+	PRINTFORML は%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の髪を掴んで首を上に向かせると、
+	IF (MESSAGE_BRANCH_F(TARGET) & 堕落) || (MESSAGE_BRANCH_F(TARGET) & 絶望) || (TCVAR:12 & 気絶)
+		PRINTFORML %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の口内に最大まで勃起した男根を乱暴に突き入れた。
+	ELSEIF TALENT:主観視点 > 0
+		PRINTFORML 抵抗する%PRINT_TRANSCALLNAME(TARGET)%の口内に最大まで勃起した男根を乱暴に突き入れてくる。
+	ELSE
+		PRINTFORML 抵抗する%PRINT_TRANSCALLNAME(TARGET)%の口内に最大まで勃起した男根を乱暴に突き入れた。
+	ENDIF
+ELSE
+	PRINTFORML は%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の全身を縛りつけて軽々と持ち上げて身動きを封じると、
+	IF (MESSAGE_BRANCH_F(TARGET) & 堕落) || (MESSAGE_BRANCH_F(TARGET) & 絶望) || (TCVAR:12 & 気絶)
+		PRINTFORML %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の口内に太い触手を乱暴に突き入れた。
+	ELSEIF TALENT:主観視点 > 0
+		PRINTFORML 抵抗する%PRINT_TRANSCALLNAME(TARGET)%の口内に太い触手を乱暴に突き入れてくる。
+	ELSE
+		PRINTFORML 抵抗する%PRINT_TRANSCALLNAME(TARGET)%の口内に太い触手を乱暴に突き入れた。
+	ENDIF
+ENDIF
+PRINTL 
+IF (TCVAR:12 & 気絶)
+	PRINTFORML 喉を激しく犯されて%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%が咳き込み、
+	PRINTFORML その拍子に意識が戻ったものの、手足は固定され凌辱からは逃れられない・・・
+ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+	PRINTFORML 口淫と呼ぶにはあまりに暴力的な行為にも関わらず、
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はむしろ喉を使われることに喜びを見出すかのように
+	PRINTFORML 咳込みながらも自分から進んで奉仕している・・・
+ELSEIF TALENT:感情乏しい > 0
+	PRINTFORML 宙釣りで身動きもできず喉を犯される%PRINT_TRANSCALLNAME(TARGET)%は
+	PRINTFORML これでもかと言わんばかりにオナホか性処理人形か何かのように乱暴に扱われている・・・
+ELSE
+	PRINTFORML 宙釣りで身動きもできず、口淫と呼ぶにはあまりに暴力的な行為に
+	IF ABL:マゾっ気 >= 2
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はどこか恍惚とした表情で喉を犯されながら、
+	ELSE
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は涙を浮かべながら乱暴に喉を犯されることしかできず、
+	ENDIF
+	PRINTFORML 呼吸することもままならずに声にならない悲鳴を上げ続けている・・・
+ENDIF
+PRINTW 
+IF (TCVAR:12 & 気絶)
+	PRINTFORML まだ朦朧としている%PRINT_TRANSCALLNAME(TARGET)%は
+	PRINTFORML 凌辱の激しさのあまり白目を剥いている・・・
+ELSE
+	PRINTFORML 収まるどころか激しさを増していくストロークに意識が遠くなりかけ、
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は思わず白目を剥いた・・・
+ENDIF
+PRINTW 
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEX_COM12")
+PRINTL 
+;射精判定
+IF FLAG:15 >= FLAG:14 && LOCALS:1 == "Ａ触手"
+	PRINTFORML 半透明なＡ触手の臓器から白濁した精液がせり上がってくる様子が見える。
+	PRINTFORML おそらく射精が近いだろう・・・
+	PRINTW 
+ENDIF
+IF FLAG:15 >= FLAG:14 && TFLAG:4 > 0
+	IF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+		PRINTFORML 射精が近いことを察した%PRINT_TRANSCALLNAME(TARGET)%が期待を瞳に浮かべると、
+		PRINTFORML ひときわ深くまで突き入れられた%LOCALS%から精が放たれた・・・
+	ELSEIF TCVAR:2 == 体勢：奉仕する
+		PRINTFORML 射精が近いことを察した%PRINT_TRANSCALLNAME(TARGET)%が動作を加速させると、
+		PRINTFORML ひときわ深くまで突き入れられた%LOCALS%から精が放たれた・・・
+	ELSE
+		PRINTFORML 小刻みに加速していく動きに%PRINT_TRANSCALLNAME(TARGET)%は射精の気配を察して抵抗するが、
+		PRINTFORML 無情にもひときわ深くまで突き入れられた%LOCALS%から精が放たれた・・・
+	ENDIF
+	PRINTW 
+	IF (MESSAGE_BRANCH_F(TARGET) & 堕落) || TCVAR:2 == 体勢：奉仕する
+		PRINTFORML 大量に注ぎ込まれて咳き込みつつも、喉を鳴らして白濁液を飲み下していく%PRINT_TRANSCALLNAME(TARGET)%。
+		PRINTFORML なおも射精は終わらず、ついには口と鼻から精液が一気に噴き出して気絶しそうになるころ、
+	ELSE
+		PRINTFORML 喉奥に注ぎ込まれて激しく咳き込み、口と鼻からは溢れ出た精液が一気に噴き出す。
+		PRINTFORML なおも射精は終わらず、%PRINT_TRANSCALLNAME(TARGET)%の腹部が精液で膨らみ始めたころ、
+	ENDIF
+	PRINTFORML ようやく触手が引き抜かれ、栓を抜かれたように逆流した精液が口から勢いよく噴き出した。
+	IF (MESSAGE_BRANCH_F(TARGET) & 堕落) || ((MESSAGE_BRANCH_F(TARGET) & 快楽蕩け) && (MESSAGE_BRANCH_F(TARGET) & 絶望))
+		PRINTFORML 苦痛と恍惚に全身を痙攣させながら%PRINT_TRANSCALLNAME(TARGET)%は
+		IF RAND:4 == 0
+			PRINT 鼻の穴から精液を垂れ流し
+		ELSEIF RAND:2 == 0
+			PRINT 白濁液に何度も咳き込みつつ
+		ELSE
+			PRINT 焦点の合わない目で
+		ENDIF
+		PRINTFORML 無様にアヘ顔を晒している・・・
+	ELSEIF TALENT:主観視点 > 0
+		PRINTFORML 窒息しかけた%PRINT_TRANSCALLNAME(TARGET)%は陸に打ち上げられた魚のように
+		PRINTFORML ひたすらビクビクと全身を痙攣させてしまう・・・
+	ELSE
+		PRINTFORML 窒息しかけた%PRINT_TRANSCALLNAME(TARGET)%は陸に打ち上げられた魚のように
+		PRINTFORML ひたすらビクビクと全身を痙攣させている・・・
+	ENDIF
+	PRINTW 
+ENDIF
+;動画撮影フラグの処理
+IF FLAG:71
+	;口を犯されたところを見られた
+	SETBIT TFLAG:21,2
+	;嬲りものにされるところを見られた
+	SETBIT TFLAG:21,7
+ENDIF
+
+;--------------------------------------------------
+;COM13：絶頂禁止
+@MESSAGE_SEX_COM13, ARG:0, ARG:1
+FONTBOLD
+IF TCVAR:40
+	PRINT 焦らし嬲り（絶頂解放）
+ELSE
+	PRINT 焦らし嬲り（絶頂禁止）
+ENDIF
+FONTREGULAR
+SIF ARG:0
+	CALL MESSAGE_SEX_STATE, ARG:0, ARG:1, 0
+PRINTL 
+;絶頂禁止中
+IF TCVAR:40
+	IF (FLAG:110 == 0)
+		CALL TENTACLE_ACCESS, "NAME"
+	ELSEIF (FLAG:110 == 1)
+		PRINTFORM %PRINT_TRANSCALLNAME(FLAG:111)%
+	ENDIF
+	PRINT は
+	IF ARG:0 | Ｃ + Ｖ + Ａ + Ｂ
+		PRINT 全身
+	ELSEIF ARG:0 == Ｃ
+		PRINTFORML \@TALENT:ふたなり > 0 || TALENT:オトコ > 0 ? 陰茎 # 陰核 \@を
+	ELSEIF ARG:0 == Ｖ
+		PRINT ヴァギナ
+	ELSEIF ARG:0 == Ａ
+		PRINT アナル
+	ELSEIF ARG:0 == Ｂ
+		PRINT 胸
+	ELSE
+		PRINT 身体
+	ENDIF
+	PRINTL を愛撫しながら
+	PRINTFORML 再び%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の耳の中に液体を注入した。
+	IF (TCVAR:12 & 気絶)
+		PRINTL 意識が無いにもかかわらず、%PRINT_TRANSCALLNAME(TARGET)%は体をもじもじと揺らしている
+	ELSE
+		PRINTL 身体の奥底から何かが湧き上がってくるのを感じる・・・
+	ENDIF
+;絶頂禁止中ではない
+ELSE
+	IF (FLAG:110 == 0)
+		CALL TENTACLE_ACCESS, "NAME"
+	ELSEIF (FLAG:110 == 1)
+		PRINTFORM %PRINT_TRANSCALLNAME(FLAG:111)%
+	ENDIF
+	PRINT は
+	IF ARG:0
+		IF ARG:0 | Ｃ + Ｖ + Ａ + Ｂ
+			PRINT 全身
+		ELSEIF ARG:0 == Ｃ
+			PRINTFORML \@TALENT:ふたなり > 0 || TALENT:オトコ > 0 ? 陰茎 # 陰核 \@を
+		ELSEIF ARG:0 == Ｖ
+			PRINT ヴァギナ
+		ELSEIF ARG:0 == Ａ
+			PRINT アナル
+		ELSEIF ARG:0 == Ｂ
+			PRINT 胸
+		ELSE
+			PRINT 身体
+		ENDIF
+		PRINTL を愛撫しながら
+	ELSE
+		PRINTFORML %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の隙を見て
+	ENDIF
+	PRINTL 細い触手をひそやかに耳の中に差し入れ、得体の知れない液体を放った。
+	IF (TCVAR:12 & 気絶)
+		PRINTFORML 耳孔に詰められた液体がさらに深く浸入し、%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の息が上がっていく
+	ELSE
+		PRINTL 鼓膜のさらに奥まで液体が浸透していくのを感じる・・・
+	ENDIF
+ENDIF
+PRINTL 
+;口上
+TRYCALLFORM KOJO_{CFLAG:6}_SEX_COM13
+PRINTL 
+;動画撮影フラグの処理
+IF FLAG:71
+	;嬲りものにされるところを見られた
+	SETBIT TFLAG:21,7
+ENDIF
+
+
+;--------------------------------------------------
+;COM14：衣装を破く
+@MESSAGE_SEX_COM14
+FONTBOLD
+PRINTL 衣装を破く
+FONTREGULAR
+IF (FLAG:110 == 0)
+	CALL TENTACLE_ACCESS, "NAME"
+	PRINT は触手で巻き付き、
+ELSEIF (FLAG:110 == 1)
+	PRINTFORM %PRINT_TRANSCALLNAME(FLAG:111)%は
+ENDIF
+IF CLOTH_OUTER_PER >= CLOTH_OUTER_DEF || CLOTH_INNER_PER <= 0
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の%COSTUME_NAME(TARGET)%を破こうとした！
+ELSEIF CLOTH_OUTER_PER > 0 && CLOTH_INNER_PER > 0
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の%COSTUME_NAME(TARGET)%をはだけると、下着を剥ぎ取ろうとした！
+ELSE
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の%ITEMNAME:(CFLAG:42)%を剥ぎ取ろうとした！
+ENDIF
+IF CLOTH_OUTER_PER < CLOTH_OUTER_DEF && CFLAG:42 == 398
+	PRINTFORML 秘部の前貼りが今にも剥がされてしまいそうだ・・・
+	;ランダム分岐フラグ
+	FLAG:900 = 1
+ELSEIF RAND:3 == 0 && (FLAG:110 == 0 || (TALENT:(FLAG:111):寄生 && FILTER_CHECK_F(13) == 0))
+	PRINTFORML 異臭のする粘液を掛けられ、衣装がみるみる溶けていく・・・
+	;ランダム分岐フラグ
+	FLAG:900 = 2
+ELSEIF RAND:4 == 0
+	PRINTFORML まるで羞恥心を煽るように、ゆっくり布が引き裂かれていく・・・
+	;ランダム分岐フラグ
+	FLAG:900 = 1
+ELSE
+	PRINTFORML 容赦なくビリビリと布が破れる音が響き渡る・・・
+	;ランダム分岐フラグ
+	FLAG:900 = 1
+ENDIF
+PRINTL 
+
+;口上
+TRYCALLFORM KOJO_{CFLAG:6}_SEX_COM14
+PRINTL 
+
+
+;--------------------------------------------------
+;COM15：種付けピストン（Ｖ系統）
+@MESSAGE_SEX_COM15, ARG:0, ARG:1
+FONTBOLD
+PRINT 派生行動：種付けピストン
+FONTREGULAR
+CALL MESSAGE_SEX_STATE, ARG:0, ARG:1, Ｖ
+PRINTL 
+
+IF (FLAG:110 == 0)
+	LOCALS = 触手
+	CALL TENTACLE_ACCESS, "GETNAME"
+	LOCALS:1 = %RESULTS%
+ELSEIF (FLAG:110 == 1)
+	IF (TALENT:(FLAG:111):寄生 == 0 || FILTER_CHECK_F(13) > 0) && (TALENT:(FLAG:111):ふたなり > 0 || TALENT:(FLAG:111):オトコ > 0)
+		LOCALS = ペニス
+	ELSE
+		LOCALS = 触手
+	ENDIF
+	LOCALS:1 = %PRINT_TRANSCALLNAME(FLAG:111)%
+ENDIF
+PRINTFORML %LOCALS:1%は%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%を組み敷いたまま激しくピストンを続けている。
+IF RAND:2 == 0
+	IF (TCVAR:12 & 気絶) && TALENT:主観視点 > 0
+		PRINTFORML 意識の薄れた%PRINT_TRANSCALLNAME(TARGET)%は大きく脚を開いた無防備な姿勢を取らされ
+		PRINTFORML まるでオナホでも扱うかのように一方的に欲望を叩きつけられている・・・
+	ELSEIF (TCVAR:12 & 気絶)
+		PRINTFORML 意識のない%PRINT_TRANSCALLNAME(TARGET)%は大きく脚を開いた無防備な姿勢を取らされ
+		PRINTFORML まるでオナホでも扱うかのように一方的に欲望を叩きつけられている・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落) && BASE:性耐性 == 0 && TALENT:主観視点 > 0
+		PRINTFORML ズンズンと突き上げられる衝撃に揺さぶられる%PRINT_TRANSCALLNAME(TARGET)%は理性を保つこともできず
+		PRINTFORML 子宮を支配されたメスの表情になって快楽を貪るのに夢中になってしまう・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落) && BASE:性耐性 == 0
+		PRINTFORML ズンズンと突き上げられる衝撃に揺さぶられる%PRINT_TRANSCALLNAME(TARGET)%の瞳に理性の光はなく
+		PRINTFORML 子宮を支配されたメスの表情になって快楽を貪るのに夢中になっている・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落) && TALENT:主観視点 > 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は乱暴な種付け交尾に歓喜の表情を浮かべながら
+		PRINTFORML 積極的に身体を開き%LOCALS%を搾り上げるかのような腰使いで無意識に射精を促してしまっている・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は乱暴な種付け交尾に歓喜の表情を浮かべながら
+		PRINTFORML 積極的に身体を開き%LOCALS%を搾り上げるかのような腰使いで無意識に射精を促している・・・
+	ELSEIF TALENT:感情乏しい > 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は冷静に脱出のチャンスを窺っているが、
+		PRINTFORML その頬は僅かに赤く染まり、自分の意志とは無関係に甘い声が口元から漏れ出ている・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)
+		PRINTFORML もはや快楽に抗う余裕がない%PRINT_TRANSCALLNAME(TARGET)%は突き上げられる度に悦びの声を上げ、
+		PRINTFORML 自身が単なる雌穴に過ぎないことを身を持って思い知らされていく・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗)
+		PRINTFORML 頬を上気させながらも%PRINT_TRANSCALLNAME(TARGET)%は快楽に抗おうとしているが、
+		PRINTFORML 愛蜜に濡れた膣穴を%LOCALS%で深く抉られる度に上ずった声が口元から洩れ出てしまう・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 絶望)
+		PRINTFORML もはや戦意を喪失しつつある%PRINT_TRANSCALLNAME(TARGET)%は
+		PRINTFORML 強制交尾の屈辱に表情を歪めながらも翻弄されるばかりだ・・・
+	ELSEIF TFLAG:20 != 15
+		PRINTFORML 何とか状況を打開しようと考えを巡らせる%PRINT_TRANSCALLNAME(TARGET)%だが
+		PRINTFORML 子宮を突き上げられる快楽に思考が吹き飛ばされていく・・・
+	ELSEIF TALENT:主観視点 > 0
+		PRINTFORML 好き放題にレイプされる屈辱に%PRINT_TRANSCALLNAME(TARGET)%は下唇を噛み締めつつ
+		PRINTFORML 子宮を突き上げられる衝撃に耐えながらも脱出のチャンスを窺った・・・
+	ELSE
+		PRINTFORML 好き放題にレイプされる屈辱に%PRINT_TRANSCALLNAME(TARGET)%は下唇を噛み締めつつ
+		PRINTFORML 子宮を突き上げられる衝撃に耐えながらも脱出のチャンスを窺っている・・・
+	ENDIF
+ELSE
+	IF FLAG:15 >= FLAG:14 * 2
+		PRINTFORML いよいよ射精の限界が近いのか動きが速度を増していく・・・
+	ELSEIF RAND:4 == 0
+		PRINTFORML 硬く勃起した%LOCALS%のノックが%PRINT_TRANSCALLNAME(TARGET)%の子宮を抉じ開けようとしている・・・
+	ELSEIF RAND:3 == 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の意志とは無関係にヴァギナがきゅんと締まり淫肉が%LOCALS%に絡みついていく・・・
+	ELSEIF RAND:2 == 0
+		PRINTFORML パンパンと肉が肉を打つ湿った淫靡な音がテンポよく周囲に響き渡る・・・
+	ELSE
+		PRINTFORML まるで膣内の感触を楽しむように時折速度を落とし、抉りこむような動作で奥深くまで突きあげていく・・・
+	ENDIF
+ENDIF
+PRINTW 
+;口上
+TRYCCALLFORM KOJO_ROOT(CFLAG:6, "SEX_COM15")
+	PRINTL 
+CATCH
+ENDCATCH
+
+
+
+;--------------------------------------------------
+;COM16：種付けフィニッシュ（Ｖ系統）
+@MESSAGE_SEX_COM16, ARG:0, ARG:1
+FONTBOLD
+PRINT 派生行動：種付けフィニッシュ
+FONTREGULAR
+CALL MESSAGE_SEX_STATE, ARG:0, ARG:1, Ｖ
+PRINTL 
+
+IF (FLAG:110 == 0)
+	LOCALS = 触手
+	CALL TENTACLE_ACCESS, "GETNAME"
+	LOCALS:1 = %RESULTS%
+ELSEIF (FLAG:110 == 1)
+	IF (TALENT:(FLAG:111):寄生 == 0 || FILTER_CHECK_F(13) > 0) && (TALENT:(FLAG:111):ふたなり > 0 || TALENT:(FLAG:111):オトコ > 0)
+		LOCALS = ペニス
+	ELSE
+		LOCALS = 触手
+	ENDIF
+	LOCALS:1 = %PRINT_TRANSCALLNAME(FLAG:111)%
+ENDIF
+PRINTFORML 限界が近いのか、まるで秒読みをするかのようにピストンが加速していく。
+PRINTFORML ついにはボルテージが最高潮に達すると%LOCALS:1%は%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の一番奥まで%LOCALS%を無理やり押し込み、
+PRINTFORML 止めと言わんばかりに無防備な子宮へと一気に白濁とした欲望を吐き出した！
+PRINTW 
+IF LOCALS == "ペニス"
+	PRINTFORML ぴったりと子宮口に押し当てられたペニスから勢いよく精液が放たれ、
+	PRINTFORML あまりの射精量に%PRINT_TRANSCALLNAME(TARGET)%の下腹部がぽっこりと膨らんでいく・・・
+	PRINTW 
+ELSE
+	PRINTFORML まるでポンプのようにぷっくり膨らんだ触手の先端からドバァと欲望が解き放たれ、
+	PRINTFORML 堰を切ったような精液の奔流がカタマリとなって子宮に叩きつけられる！
+	PRINTFORML あまりの射精量と勢いに%PRINT_TRANSCALLNAME(TARGET)%の下腹部がボコッボコッと膨み、
+	IF (TCVAR:12 & 気絶) && TALENT:主観視点 > 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はうわごとのように声を洩らしてしまう・・・
+	ELSEIF (TCVAR:12 & 気絶)
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はうわごとのように苦しげな声を洩らしている・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落) && TALENT:主観視点 > 0
+		PRINTFORML 圧倒的な満足感に%PRINT_TRANSCALLNAME(TARGET)%は壊れたような笑顔を浮かべて陶酔する・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+		PRINTFORML 圧倒的な満足感に%PRINT_TRANSCALLNAME(TARGET)%は壊れたような笑顔を浮かべ陶酔している・・・
+	ELSEIF TALENT:感情乏しい > 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は自分が大量種付けされる様子を為すすべなく見せつけられている・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け) && TALENT:主観視点 > 0
+		PRINTFORML 既に快楽に屈している%PRINT_TRANSCALLNAME(TARGET)%は恥も外聞もなく無様なアヘ顔を晒してしまう・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)
+		PRINTFORML 既に快楽に屈している%PRINT_TRANSCALLNAME(TARGET)%は恥も外聞もなく無様なアヘ顔を晒している・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && TALENT:主観視点 > 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は理性を消し飛ばされそうになりながら快楽に悶えてしまう・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗)
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は理性を消し飛ばされそうになりながら快楽に悶えている・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 絶望) && TALENT:主観視点 > 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は半ばパニックに陥りながら苦痛に泣き叫んでしまう・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 絶望)
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は半ばパニックに陥りながら苦痛に泣き叫んでいる・・・
+	ELSE
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は歯を食いしばりながら強烈すぎる感覚に耐えている・・・
+	ENDIF
+	PRINTW 
+ENDIF
+IF (TCVAR:12 & 気絶)
+	PRINTFORML 同時に周囲の触手から大量の白濁液が幾筋も迸り、
+	PRINTFORML 気絶した%PRINT_TRANSCALLNAME(TARGET)%の全身を白く染め上げていった・・・
+ELSEIF RAND:4 == 0
+	PRINTFORML 大量に注ぎ込まれた精液で妊婦のように膨らんだ腹部に呻きながら、
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は潰れたカエルのように地面に転がりぴくぴくと痙攣している。
+	PRINTFORML 一拍遅れてダムが決壊するように膣口から白濁液が噴き出し、周囲を白く染め上げていった・・・
+ELSEIF RAND:3 == 0
+	PRINTFORML 濃厚な精液の糸を引きながら%LOCALS%がヴァギナから引き抜かれ、
+	PRINTFORML 膣口がビクビクと何度か痙攣したかと思うと数秒遅れて白濁液がどばぁと溢れ出した・・・
+ELSEIF RAND:2 == 0
+	PRINTFORML 射精はそれだけで終わらず、%PRINT_TRANSCALLNAME(TARGET)%が白目を剥き、
+	PRINTFORML びゅるっびゅるっと結合部から精液が噴き出る状態になるまで続いた・・・
+ELSE
+	PRINTFORML ようやく種付けが終わり、ピクピクと痙攣する%PRINT_TRANSCALLNAME(TARGET)%の膣から%LOCALS%が引き抜かれると、
+	PRINTFORML 栓を失った白濁液が一気にヴァギナから溢れ出し周囲に水たまりのように広がっていった・・・
+ENDIF
+PRINTW 
+;口上
+TRYCCALLFORM KOJO_ROOT(CFLAG:6, "SEX_COM16")
+	PRINTL 
+CATCH
+ENDCATCH
+
+
+;--------------------------------------------------
+;COM17：アナルピストン（Ａ系統）
+@MESSAGE_SEX_COM17, ARG:0, ARG:1
+FONTBOLD
+PRINT 派生行動：アナルピストン
+FONTREGULAR
+CALL MESSAGE_SEX_STATE, ARG:0, ARG:1, Ａ
+PRINTL 
+
+IF (FLAG:110 == 0)
+	LOCALS = 触手
+	CALL TENTACLE_ACCESS, "GETNAME"
+	LOCALS:1 = %RESULTS%
+ELSEIF (FLAG:110 == 1)
+	IF (TALENT:(FLAG:111):寄生 == 0 || FILTER_CHECK_F(13) > 0) && (TALENT:(FLAG:111):ふたなり > 0 || TALENT:(FLAG:111):オトコ > 0)
+		LOCALS = ペニス
+	ELSE
+		LOCALS = 触手
+	ENDIF
+	LOCALS:1 = %PRINT_TRANSCALLNAME(FLAG:111)%
+ENDIF
+PRINTFORML %LOCALS:1%は%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%を組み敷いたまま激しくピストンを続けている。
+IF RAND:2 == 0
+	IF (TCVAR:12 & 気絶) && TALENT:主観視点 > 0
+		PRINTFORML 意識の薄れた%PRINT_TRANSCALLNAME(TARGET)%は大きく脚を開いた無防備な姿勢を取らされ
+		PRINTFORML まるでオナホでも扱うかのように一方的に欲望を叩きつけられている・・・
+	ELSEIF (TCVAR:12 & 気絶)
+		PRINTFORML 意識のない%PRINT_TRANSCALLNAME(TARGET)%は大きく脚を開いた無防備な姿勢を取らされ
+		PRINTFORML まるでオナホでも扱うかのように一方的に欲望を叩きつけられている・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落) && BASE:性耐性 == 0 && TALENT:主観視点 > 0
+		PRINTFORML ズンズンと突き上げられる衝撃に揺さぶられる%PRINT_TRANSCALLNAME(TARGET)%は理性を保つこともできず
+		PRINTFORML 尻穴を犯される快楽を貪るのに夢中になってしまう・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落) && BASE:性耐性 == 0
+		PRINTFORML ズンズンと突き上げられる衝撃に揺さぶられる%PRINT_TRANSCALLNAME(TARGET)%の瞳に理性の光はなく
+		PRINTFORML 尻穴を犯される快楽を貪るのに夢中になっている・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はアナルを犯される感触に歓喜の表情を浮かべながら
+		PRINTFORML 積極的に身体を開き%LOCALS%を搾り上げるかのような腰使いで直腸内への射精を促している・・・
+	ELSEIF TALENT:感情乏しい > 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は冷静に脱出のチャンスを窺っているが、
+		PRINTFORML その頬は僅かに赤く染まり、自分の意志とは無関係に甘い声が口元から漏れ出ている・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)
+		PRINTFORML もはや快楽に抗う余裕がない%PRINT_TRANSCALLNAME(TARGET)%は突き上げられる度に悦びの声を上げ、
+		PRINTFORML 自身が単なる雌穴に過ぎないことを身を持って思い知らされていく・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗)
+		PRINTFORML 頬を上気させながらも%PRINT_TRANSCALLNAME(TARGET)%は快楽に抗おうとしているが、
+		PRINTFORML 尻穴を%LOCALS%で深く抉られる度に上ずった声が口元から洩れ出てしまう・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 絶望)
+		PRINTFORML もはや戦意を喪失しつつある%PRINT_TRANSCALLNAME(TARGET)%は
+		PRINTFORML 強制交尾の屈辱に表情を歪めながらも翻弄されるばかりだ・・・
+	ELSEIF TFLAG:20 != 17
+		PRINTFORML 何とか状況を打開しようと考えを巡らせる%PRINT_TRANSCALLNAME(TARGET)%だが
+		PRINTFORML アナルを突き上げられる快楽に思考が吹き飛ばされていく・・・
+	ELSE
+		PRINTFORML 好き放題にレイプされる屈辱に%PRINT_TRANSCALLNAME(TARGET)%は下唇を噛み締めつつ
+		PRINTFORML アナルを突き上げられる衝撃に耐えながらも脱出のチャンスを窺っている・・・
+	ENDIF
+ELSE
+	IF FLAG:15 >= FLAG:14 * 2
+		PRINTFORML いよいよ射精の限界が近いのか動きが速度を増していく・・・
+	ELSEIF RAND:4 == 0 && LOCALS == "触手"
+		PRINTFORML 硬く勃起した%LOCALS%が%PRINT_TRANSCALLNAME(TARGET)%の直腸内を突き上げる度に、腹部がボコボコと膨らむ・・・
+	ELSEIF RAND:3 == 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の意志とは無関係に菊門がきゅんと締まり%LOCALS%を締め上げていく・・・
+	ELSEIF RAND:2 == 0
+		PRINTFORML パンパンと肉が肉を打つ湿った淫靡な音がテンポよく周囲に響き渡る・・・
+	ELSE
+		PRINTFORML まるで直腸内の感触を楽しむように時折速度を落とし、抉りこむような動作で奥深くまで突きあげていく・・・
+	ENDIF
+ENDIF
+PRINTW 
+;口上
+TRYCCALLFORM KOJO_ROOT(CFLAG:6, "SEX_COM17")
+	PRINTL 
+CATCH
+ENDCATCH
+
+
+;--------------------------------------------------
+;COM18：アナルフィニッシュ（Ａ系統）
+@MESSAGE_SEX_COM18, ARG:0, ARG:1
+FONTBOLD
+PRINT 派生行動：アナルフィニッシュ
+FONTREGULAR
+CALL MESSAGE_SEX_STATE, ARG:0, ARG:1, Ａ
+PRINTL 
+
+IF (FLAG:110 == 0)
+	LOCALS = 触手
+	CALL TENTACLE_ACCESS, "GETNAME"
+	LOCALS:1 = %RESULTS%
+ELSEIF (FLAG:110 == 1)
+	IF (TALENT:(FLAG:111):寄生 == 0 || FILTER_CHECK_F(13) > 0) && (TALENT:(FLAG:111):ふたなり > 0 || TALENT:(FLAG:111):オトコ > 0)
+		LOCALS = ペニス
+	ELSE
+		LOCALS = 触手
+	ENDIF
+	LOCALS:1 = %PRINT_TRANSCALLNAME(FLAG:111)%
+ENDIF
+PRINTFORML 限界が近いのか、まるで秒読みをするかのようにピストンが加速していく。
+PRINTFORML ついにはボルテージが最高潮に達すると%LOCALS:1%は%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の一番奥まで%LOCALS%を無理やり押し込み、
+IF TALENT:主観視点 > 0
+	PRINTFORML 止めと言わんばかりに直腸内へと一気に白濁とした欲望を吐き出す！
+ELSE
+	PRINTFORML 止めと言わんばかりに直腸内へと一気に白濁とした欲望を吐き出した！
+ENDIF
+PRINTW 
+IF LOCALS == "ペニス"
+	PRINTFORML アナルに深々と叩きつけられたペニスから勢いよく精液が放たれ、
+	PRINTFORML あまりの射精量に%PRINT_TRANSCALLNAME(TARGET)%の下腹部がぽっこりと膨らんでいく・・・
+	PRINTW 
+ELSE
+	PRINTFORML まるでポンプのようにぷっくり膨らんだ触手の先端からドバァと欲望が解き放たれ、
+	PRINTFORML 堰を切ったような精液の奔流がカタマリとなってアナルに叩きつけられる！
+	PRINTFORML あまりの射精量と勢いに%PRINT_TRANSCALLNAME(TARGET)%の下腹部がボコッボコッと膨み、
+	IF (TCVAR:12 & 気絶) && TALENT:主観視点 > 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はうわごとのように苦悶の声を洩らしてしまう・・・
+	ELSEIF (TCVAR:12 & 気絶)
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はうわごとのように苦しげな声を洩らしている・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落) && TALENT:主観視点 > 0
+		PRINTFORML 圧倒的な満足感に%PRINT_TRANSCALLNAME(TARGET)%は壊れたような笑顔を浮かべ陶酔してしまう・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+		PRINTFORML 圧倒的な満足感に%PRINT_TRANSCALLNAME(TARGET)%は壊れたような笑顔を浮かべ陶酔している・・・
+	ELSEIF TALENT:感情乏しい > 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は自分が大量種付けされる様子を為すすべなく見せつけられている・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け) && TALENT:主観視点 > 0
+		PRINTFORML 既に快楽に屈している%PRINT_TRANSCALLNAME(TARGET)%は恥も外聞もなく無様なアヘ顔を晒してしまう・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)
+		PRINTFORML 既に快楽に屈している%PRINT_TRANSCALLNAME(TARGET)%は恥も外聞もなく無様なアヘ顔を晒している・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗) && TALENT:主観視点 > 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は理性を消し飛ばされそうになりながら快楽に悶えてしまう・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗)
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は理性を消し飛ばされそうになりながら快楽に悶えている・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 絶望) && TALENT:主観視点 > 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は半ばパニックに陥りながら苦痛に泣き叫んでしまっている・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 絶望)
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は半ばパニックに陥りながら苦痛に泣き叫んでいる・・・
+	ELSE
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は歯を食いしばりながら強烈すぎる感覚に耐えている・・・
+	ENDIF
+	PRINTW 
+ENDIF
+IF (TCVAR:12 & 気絶) && TALENT:主観視点 > 0
+	PRINTFORML 同時に周囲の触手から大量の白濁液が幾筋も迸り、
+	PRINTFORML 朦朧とした%PRINT_TRANSCALLNAME(TARGET)%の全身を白く染め上げていく・・・
+ELSEIF (TCVAR:12 & 気絶)
+	PRINTFORML 同時に周囲の触手から大量の白濁液が幾筋も迸り、
+	PRINTFORML 気絶した%PRINT_TRANSCALLNAME(TARGET)%の全身を白く染め上げていった・・・
+ELSEIF RAND:4 == 0 && LOCALS == "触手" && TALENT:主観視点 > 0
+	PRINTFORML %LOCALS%は射精しながら%PRINT_TRANSCALLNAME(TARGET)%の体内を逆走していき、
+	PRINTFORML やがて"貫通"して口から%LOCALS%の先端が姿を現したかと思うと白濁液がどばぁと噴き出す。
+	PRINTFORML 人間噴水と化した%PRINT_TRANSCALLNAME(TARGET)%は全身を汚されながら、白目を剥いて痙攣してしまう・・・
+ELSEIF RAND:4 == 0 && LOCALS == "触手"
+	PRINTFORML %LOCALS%は射精しながら%PRINT_TRANSCALLNAME(TARGET)%の体内を逆走していき、
+	PRINTFORML やがて"貫通"して口から%LOCALS%の先端が姿を現したかと思うと白濁液がどばぁと噴き出した。
+	PRINTFORML 人間噴水と化した%PRINT_TRANSCALLNAME(TARGET)%は全身を汚されながら、白目を剥いて痙攣している・・・
+ELSEIF RAND:3 == 0 && TALENT:主観視点 > 0
+	PRINTFORML 大量に注ぎ込まれた精液で腹部は妊婦のように膨らみ、ついには逆流した精液が口から噴き出した。
+	PRINTFORML さんざん嘔吐を繰り返した%PRINT_TRANSCALLNAME(TARGET)%は潰れたカエルのように地面に転がり、
+	PRINTFORML アナルからも濁った白濁を垂れ流しながらぴくぴくと痙攣してしまう・・・
+ELSEIF RAND:3 == 0
+	PRINTFORML 大量に注ぎ込まれた精液で腹部は妊婦のように膨らみ、ついには逆流した精液が口から噴き出した。
+	PRINTFORML さんざん嘔吐を繰り返した%PRINT_TRANSCALLNAME(TARGET)%は潰れたカエルのように地面に転がり、
+	PRINTFORML アナルからも濁った白濁を垂れ流しながらぴくぴくと痙攣している・・・
+ELSEIF RAND:2 == 0
+	PRINTFORML 射精はそれだけで終わらず、%PRINT_TRANSCALLNAME(TARGET)%が白目を剥き、
+	PRINTFORML びゅるっびゅるっと結合部から精液が噴き出る状態になるまで続いた・・・
+ELSE
+	PRINTFORML ようやく種付けが終わり、ピクピクと痙攣する%PRINT_TRANSCALLNAME(TARGET)%のアナルから%LOCALS%が引き抜かれると、
+	PRINTFORML 栓を失った白濁液が一気にヴァギナから溢れ出し周囲に水たまりのように広がっていった・・・
+ENDIF
+PRINTW 
+;口上
+TRYCCALLFORM KOJO_ROOT(CFLAG:6, "SEX_COM18")
+	PRINTL 
+CATCH
+ENDCATCH
+
+
+
+;--------------------------------------------------
+;COM19：両穴ピストン（ＶＡ系統）
+@MESSAGE_SEX_COM19, ARG:0, ARG:1
+FONTBOLD
+PRINT 派生行動：両穴ピストン
+FONTREGULAR
+CALL MESSAGE_SEX_STATE, ARG:0, ARG:1, Ｖ+Ａ
+PRINTL 
+
+IF (FLAG:110 == 0)
+	LOCALS = 触手
+	CALL TENTACLE_ACCESS, "GETNAME"
+	LOCALS:1 = %RESULTS%
+ELSEIF (FLAG:110 == 1)
+	IF (TALENT:(FLAG:111):寄生 == 0 || FILTER_CHECK_F(13) > 0) && (TALENT:(FLAG:111):ふたなり > 0 || TALENT:(FLAG:111):オトコ > 0)
+		LOCALS = ペニス
+	ELSE
+		LOCALS = 触手
+	ENDIF
+	LOCALS:1 = %PRINT_TRANSCALLNAME(FLAG:111)%
+ENDIF
+IF TFLAG:20 == 15 || TFLAG:20 == 3 || TFLAG:20 == 1001 || TFLAG:20 == 1011 || TFLAG:20 == 1014
+	PRINTFORML %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%のアナルにも触手が挿入され、両方の穴を交互に犯し始めた。
+ELSEIF TFLAG:20 == 17 || TFLAG:20 == 5 || TFLAG:20 == 1002
+	PRINTFORML %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の前の穴にも触手が挿入され、両方の穴を交互に犯し始めた。
+ELSE
+	PRINTFORML %LOCALS:1%は%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%を組み敷いたまま激しくピストンを続けている。
+ENDIF
+IF RAND:2 == 0
+	IF (TCVAR:12 & 気絶) && TALENT:主観視点 > 0
+		PRINTFORML 意識の朦朧とした%PRINT_TRANSCALLNAME(TARGET)%は大きく脚を開いた無防備な姿勢を取らされ
+		PRINTFORML まるでオナホでも扱うかのように一方的に欲望を叩きつけられる・・・
+	ELSEIF (TCVAR:12 & 気絶)
+		PRINTFORML 意識のない%PRINT_TRANSCALLNAME(TARGET)%は大きく脚を開いた無防備な姿勢を取らされ
+		PRINTFORML まるでオナホでも扱うかのように一方的に欲望を叩きつけられている・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落) && BASE:性耐性 == 0 && TALENT:主観視点 > 0
+		PRINTFORML ズンズンと突き上げられる衝撃に揺さぶられ、理性を溶かしつくされた%PRINT_TRANSCALLNAME(TARGET)%は
+		PRINTFORML 前後の穴を犯される快楽を貪るのに夢中になってしまっている・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落) && BASE:性耐性 == 0
+		PRINTFORML ズンズンと突き上げられる衝撃に揺さぶられる%PRINT_TRANSCALLNAME(TARGET)%の瞳に理性の光はなく
+		PRINTFORML 前後の穴を犯される快楽を貪るのに夢中になっている・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落) && TALENT:主観視点 > 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は前後の穴を犯される感触に歓喜の表情を浮かべながら
+		PRINTFORML 積極的に身体を開き%LOCALS%を搾り上げるかのような腰使いで射精を促してしまう・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は前後の穴を犯される感触に歓喜の表情を浮かべながら
+		PRINTFORML 積極的に身体を開き%LOCALS%を搾り上げるかのような腰使いで射精を促している・・・
+	ELSEIF TALENT:感情乏しい > 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は冷静に脱出のチャンスを窺っているが、
+		PRINTFORML その頬は僅かに赤く染まり、自分の意志とは無関係に甘い声が口元から漏れ出ている・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)
+		PRINTFORML もはや快楽に抗う余裕がない%PRINT_TRANSCALLNAME(TARGET)%は突き上げられる度に悦びの声を上げ、
+		PRINTFORML 自身が単なる雌穴に過ぎないことを身を持って思い知らされていく・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗)
+		PRINTFORML 頬を上気させながらも%PRINT_TRANSCALLNAME(TARGET)%は快楽に抗おうとしているが、
+		PRINTFORML 両方の穴を%LOCALS%で交互に抉られる度に上ずった声が口元から洩れ出てしまう・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 絶望)
+		PRINTFORML もはや戦意を喪失しつつある%PRINT_TRANSCALLNAME(TARGET)%は
+		PRINTFORML 強制交尾の屈辱に表情を歪めながらも翻弄されるばかりだ・・・
+	ELSEIF TFLAG:20 != 15 && TFLAG:20 != 17 && TFLAG:20 != 19
+		PRINTFORML 何とか状況を打開しようと考えを巡らせる%PRINT_TRANSCALLNAME(TARGET)%だが
+		PRINTFORML 容赦なく前後の穴を突き上げられる快楽に思考がたちまち吹き飛ばされていく・・・
+	ELSE
+		PRINTFORML 好き放題にレイプされる屈辱に%PRINT_TRANSCALLNAME(TARGET)%は下唇を噛み締めつつ
+		PRINTFORML 前後の穴を突き上げられる衝撃に耐えながらも脱出のチャンスを窺っている・・・
+	ENDIF
+ELSE
+	IF FLAG:15 >= FLAG:14 * 2
+		PRINTFORML いよいよ射精の限界が近いのか動きが速度を増していく・・・
+	ELSEIF RAND:4 == 0
+		PRINTFORML 硬く勃起した%LOCALS%が%PRINT_TRANSCALLNAME(TARGET)%の前後の穴を突き上げる度に、腹部がボコボコと膨らむ・・・
+	ELSEIF RAND:3 == 0 && TALENT:主観視点 > 0
+		PRINTFORML 両穴を交互に抉る抽送のテンポに合わせて%PRINT_TRANSCALLNAME(TARGET)%の足先が空中でがくがくと揺れていく・・・
+	ELSEIF RAND:3 == 0
+		PRINTFORML 両穴を交互に抉る抽送のテンポに合わせて%PRINT_TRANSCALLNAME(TARGET)%の足先が空中でがくがくと揺れている・・・
+	ELSEIF RAND:2 == 0
+		PRINTFORML パンパンと肉が肉を打つ湿った淫靡な音がテンポよく周囲に響き渡る・・・
+	ELSE
+		PRINTFORML まるで前後の穴の感触を楽しむように時折速度を落とし、抉りこむような動作で奥深くまで突きあげていく・・・
+	ENDIF
+ENDIF
+PRINTW 
+;口上
+TRYCCALLFORM KOJO_ROOT(CFLAG:6, "SEX_COM19")
+	PRINTL 
+CATCH
+ENDCATCH
+
+
+;--------------------------------------------------
+;COM20：両穴フィニッシュ（ＶＡ系統）
+@MESSAGE_SEX_COM20, ARG:0, ARG:1
+FONTBOLD
+PRINT 派生行動：両穴フィニッシュ
+FONTREGULAR
+CALL MESSAGE_SEX_STATE, ARG:0, ARG:1, Ｖ+Ａ
+PRINTL 
+
+IF (FLAG:110 == 0)
+	LOCALS = 触手
+	CALL TENTACLE_ACCESS, "GETNAME"
+	LOCALS:1 = %RESULTS%
+ELSEIF (FLAG:110 == 1)
+	IF (TALENT:(FLAG:111):寄生 == 0 || FILTER_CHECK_F(13) > 0) && (TALENT:(FLAG:111):ふたなり > 0 || TALENT:(FLAG:111):オトコ > 0)
+		LOCALS = ペニス
+	ELSE
+		LOCALS = 触手
+	ENDIF
+	LOCALS:1 = %PRINT_TRANSCALLNAME(FLAG:111)%
+ENDIF
+PRINTFORML 限界が近いのか、まるで秒読みをするかのようにピストンが加速していく。
+PRINTFORML ついにはボルテージが最高潮に達すると%LOCALS:1%は%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の一番奥まで%LOCALS%を無理やり押し込み、
+PRINTFORML 止めと言わんばかりに前後の穴へと同時に白濁とした欲望を吐き出した！
+PRINTW 
+IF LOCALS == "ペニス"
+	PRINTFORML ヴァギナとアナルに深々と叩きつけられたペニスから勢いよく精液が放たれ、
+	PRINTFORML あまりの射精量に%PRINT_TRANSCALLNAME(TARGET)%の下腹部がぽっこりと膨らんでいく・・・
+	PRINTW 
+ELSE
+	PRINTFORML まるでポンプのようにぷっくり膨らんだ触手の先端からドバァと欲望が解き放たれ、
+	PRINTFORML 堰を切ったような精液の奔流がカタマリとなって子宮と直腸内に叩きつけられる！
+	PRINTFORML あまりの射精量と勢いに%PRINT_TRANSCALLNAME(TARGET)%の下腹部がボコッボコッと膨み、
+	IF (TCVAR:12 & 気絶) && TALENT:主観視点 > 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はうわごとのように苦悶の声を洩らしてしまう・・・
+	ELSEIF (TCVAR:12 & 気絶)
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はうわごとのように苦しげな声を洩らしている・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落) && TALENT:主観視点 > 0
+		PRINTFORML 圧倒的な満足感に%PRINT_TRANSCALLNAME(TARGET)%の意識は壊れたように陶酔していく・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 堕落)
+		PRINTFORML 圧倒的な満足感に%PRINT_TRANSCALLNAME(TARGET)%は壊れたような笑顔を浮かべ陶酔している・・・
+	ELSEIF TALENT:感情乏しい > 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は自分が大量種付けされる様子を為すすべなく見せつけられている・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け) && TALENT:主観視点 > 0
+		PRINTFORML 既に快楽に屈している%PRINT_TRANSCALLNAME(TARGET)%は恥も外聞もなく無様なアヘ顔を晒してしまう・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)
+		PRINTFORML 既に快楽に屈している%PRINT_TRANSCALLNAME(TARGET)%は恥も外聞もなく無様なアヘ顔を晒している・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 性抵抗)
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は理性を消し飛ばされそうになりながら快楽に悶えている・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 絶望) && TALENT:主観視点 > 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は半ばパニックに陥りながら苦痛に泣き叫んでしまう・・・
+	ELSEIF (MESSAGE_BRANCH_F(TARGET) & 絶望)
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は半ばパニックに陥りながら苦痛に泣き叫んでいる・・・
+	ELSE
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は歯を食いしばりながら強烈すぎる感覚に耐えている・・・
+	ENDIF
+	PRINTW 
+ENDIF
+IF (TCVAR:12 & 気絶) && TALENT:主観視点 > 0
+	PRINTFORML 同時に周囲の触手から大量の白濁液が幾筋も迸り、
+	PRINTFORML 虚ろな意識の%PRINT_TRANSCALLNAME(TARGET)%の全身を白く染め上げていく・・・
+ELSEIF (TCVAR:12 & 気絶)
+	PRINTFORML 同時に周囲の触手から大量の白濁液が幾筋も迸り、
+	PRINTFORML 気絶した%PRINT_TRANSCALLNAME(TARGET)%の全身を白く染め上げていった・・・
+ELSEIF RAND:4 == 0
+	PRINTFORML 濃厚な精液の糸を引きながら%LOCALS%がヴァギナとアナルから引き抜かれ、
+	PRINTFORML 膣口がビクビクと何度か痙攣したかと思うと数秒遅れて白濁液がどばぁと溢れ出した・・・
+ELSEIF RAND:3 == 0
+	PRINTFORML 大量に注ぎ込まれた精液で腹部は妊婦のように膨らみ、ついには逆流した精液が口から噴き出した。
+	PRINTFORML さんざん嘔吐を繰り返した%PRINT_TRANSCALLNAME(TARGET)%は潰れたカエルのように地面に転がり、
+	PRINTFORML ヴァギナとアナルからも濁った白濁を垂れ流しながらぴくぴくと痙攣している・・・
+ELSEIF RAND:2 == 0
+	PRINTFORML 射精はそれだけで終わらず、%PRINT_TRANSCALLNAME(TARGET)%が白目を剥き、
+	PRINTFORML びゅるっびゅるっと結合部から精液が噴き出る状態になるまで続いた・・・
+ELSE
+	PRINTFORML ようやく種付けが終わり、ピクピクと痙攣する%PRINT_TRANSCALLNAME(TARGET)%の前後の穴から%LOCALS%が引き抜かれると、
+	PRINTFORML 栓を失った白濁液が一気に溢れ出し周囲に水たまりのように広がっていった・・・
+ENDIF
+PRINTW 
+;口上
+TRYCCALLFORM KOJO_ROOT(CFLAG:6, "SEX_COM20")
+	PRINTL 
+CATCH
+ENDCATCH
+

@@ -1,0 +1,1037 @@
+;eraGVT口上テンプレ
+;各関数のKOJO_早苗_の0をcsvのキャラ番号に置換して使用します
+;汎用キャラ（キャラ番号0のキャラ）の口上を作成する場合は口上テンプレ_汎用キャラ用の方をお使いください
+;
+;例：キャラ番号1のキャラで口上を作成する場合
+;    KOJO_1_HITOKUTI_SHOP
+;
+;--------------------------------------------------
+;キャラクターの性成長で分岐させる際のガイダンス
+;
+;　ABL:従順		地の文はLv3以上で分岐		初めは反発していたキャラが大人しくなります。諦めたくはありませんが、強く抵抗する気にもなれません。
+;　ABL:欲望		地の文はLv3以上で分岐		性欲に抗えなくなり、嫌悪感より快楽が勝るようになります。快楽さえ与えてもらえるなら、受け入れてしまいましょう。
+;　TALENT:触手の虜	陥落素質			身も心も触手のお嫁さんになった状態です。好きなんです。大好きです。
+;　TALENT:淫乱		陥落素質			地の文では分岐がなく、欲望Lv4以上相当の扱いです。えっちなことならもう何でも平気です。
+;
+;　BASE:Ｃ結界耐久力	結界の耐久力が残っていると、該当する部位に触手は触れません。
+;　BASE:Ｖ結界耐久力	触れられていないため快楽も感じませんが、目の前に触手があるので嫌悪感や恐怖は感じます。
+;　BASE:Ａ結界耐久力	
+;　BASE:Ｂ結界耐久力	
+;
+;　TCVAR:2 == 4		奉仕フラグが立っている状態です。望むと望まざるとに関わらず、積極的に奉仕している状態です。
+;　TCVAR:2 == 100	Ｖ挿入防御フラグが立っている状態です。Ｖに挿入できませんが、触れられているので快楽は感じます。
+;
+;--------------------------------------------------
+
+;一口メッセージ
+
+;キャラ口上色
+;--------------------------------------------------
+@KOJO_1203_COLOR
+
+CALLFORM KOJO_早苗_COLOR
+@KOJO_1213_COLOR
+
+CALLFORM KOJO_早苗_COLOR
+@KOJO_早苗_COLOR
+SETCOLOR 0x00FF7F
+
+;キャラ個別のオープニング
+;--------------------------------------------------
+@KOJO_1203_FIRST
+
+CALLFORM KOJO_早苗_FIRST
+@KOJO_1213_FIRST
+
+CALLFORM KOJO_早苗_FIRST
+@KOJO_早苗_FIRST
+;ゲーム開始時に表示されるテキストを設定します
+;キャラが戦うに至った動機の説明など
+PRINTL
+PRINTFORML 「……あれ？」
+PRINTFORMDL 懐かしい景色に、早苗は戸惑いを浮かべる
+PRINTFORMDL 幻想郷に行くとき全てを捨ててきた場所、なぜ、今更自分がそこに居るのかわからなくて
+PRINTFORMDW 周囲からの胡乱げな視線に、自分の服装を思い出して、頬を赤らめる
+PRINTFORMDL 改造巫女服は、コスプレ扱いされてもおかしくないものだと分かっているからで
+PRINTFORML 「な、なんで、どうして？」
+PRINTFORMDL 戸惑う早苗の耳に、不意に悲鳴が聞こえてきた
+PRINTFORMDW 同時、周囲にいた人々が悲鳴の聞こえてきた方向から逃げ出しはじめて
+PRINTFORML 「……っ、これ」
+PRINTFORMDL 呟く早苗の目に、ふわふわと浮かぶ雲のようなモノが映った
+PRINTFORMDL その内側から悲鳴が聞こえ、ソレから伸びた触手が少女に絡みつき引きずり込もうとしている
+PRINTFORMDW ソレを見た瞬間、ほとんど反射的に早苗は風を砲弾にして、それに打ち込む
+PRINTFORML 「妖怪とも思えませんが、人間に手を出すことは許しません！」
+PRINTFORMDL 一気に間合いを詰め、ソレを討ち滅ぼす早苗
+PRINTL
+PRINTFORMDL ……それが消え去った後、半裸の体の女性達が数人居ることに、冷や汗が浮かぶ
+PRINTFORMW 「私も、下手したら……」
+PRINTFORMDL 続きを言葉に出来ず、地に降り立つ早苗に、声がかけられた
+PRINTFORMDL 黒服の男性が、最近このようなバケモノが現れた事、ソレを退治できる者を集めていることを語りだす
+PRINTFORMDL しばらく話を聞いていた早苗は、一つうなずく
+PRINTFORMW 「はい、私に任せてください！」
+
+
+;ターン終了時の処理
+;--------------------------------------------------
+@KOJO_1203_TURNEND
+
+CALLFORM KOJO_早苗_TURNEND
+@KOJO_1213_TURNEND
+
+CALLFORM KOJO_早苗_TURNEND
+@KOJO_早苗_TURNEND
+;ターン終了時に呼び出されるキャラ専用の処理です
+
+;ショップ画面
+;--------------------------------------------------
+@KOJO_1203_HITOKUTI_SHOP
+
+CALLFORM KOJO_早苗_HITOKUTI_SHOP
+@KOJO_1213_HITOKUTI_SHOP
+
+CALLFORM KOJO_早苗_HITOKUTI_SHOP
+@KOJO_早苗_HITOKUTI_SHOP
+VARSET LOCAL
+;ショップ画面で選択されているときに一言しゃべります
+;普段の様子や体調、今の心情など
+SELECTCASE RAND:10
+CASE 9
+	PRINTFORML 「さて、今日も頑張るとしますか」
+CASE 8
+	FOR LOCAL,1,CHARANUM
+		IF CALLNAME:LOCAL == "霊夢"
+			IF !CFLAG:LOCAL:0
+				LOCAL:1 = 1
+			ELSE
+				LOCAL:1 = 2
+			ENDIF
+		ENDIF
+	NEXT
+	IF LOCAL:1 == 1
+		PRINTFORML 「霊夢さんもいることだし、ちょっと手を抜いても」
+	ELSEIF LOCAL:1 == 2
+		PRINTFORML 「霊夢さん、居なくなるなんてひどいです……」
+	ELSE
+		PRINTFORML 「はぁ、まさかこんなことになるなんて」
+	ENDIF
+CASE 7
+	FOR LOCAL,1,CHARANUM
+		IF CALLNAME:LOCAL == "魔理沙"
+			IF !CFLAG:LOCAL:0
+				LOCAL:1 = 1
+			ELSE
+				LOCAL:1 = 2
+			ENDIF
+		ENDIF
+	NEXT
+	IF LOCAL:1 == 1
+		PRINTFORML 「魔理沙さんもいるし、気楽にいけますよね」
+	ELSEIF LOCAL:1 == 2
+		PRINTFORML 「魔理沙さんが、いなくなるなんて……」
+	ELSE
+		PRINTFORML 「はぁ、まさかこんなことになるなんて」
+	ENDIF
+CASE 6
+	PRINTFORML 「スイーツ美味しい……。これだけは幻想郷にはないですしね」
+CASE 5
+	PRINTFORML 「奇跡が弱くなってる……、やっぱり外ではこうなりますよね」
+CASE 4
+	PRINTFORML 「……家、今どうなってるのかなぁ」
+CASE 3
+	PRINTFORML 「あんな触手がホントにいるなんて……」
+CASE 2
+	PRINTFORML 「……んー、早く帰りたいなぁ、神奈子様諏訪子様元気でいらっしゃると良いけど」
+CASE 1
+	PRINTFORML 「はぁしんどいなぁ」
+CASE 0
+	PRINTFORML 「いつまで触手退治しないといけないんでしょうかね」
+ENDSELECT
+
+
+;鍛錬
+
+;鍛練開始
+;--------------------------------------------------
+@KOJO_1203_TRAINING_BEGIN
+
+CALLFORM KOJO_早苗_TRAINING_BEGIN
+@KOJO_1213_TRAINING_BEGIN
+
+CALLFORM KOJO_早苗_TRAINING_BEGIN
+@KOJO_早苗_TRAINING_BEGIN
+
+;鍛練終了
+;--------------------------------------------------
+@KOJO_1203_TRAINING_END
+
+CALLFORM KOJO_早苗_TRAINING_END
+@KOJO_1213_TRAINING_END
+
+CALLFORM KOJO_早苗_TRAINING_END
+@KOJO_早苗_TRAINING_END
+
+;走りこみ
+;--------------------------------------------------
+@KOJO_1203_TRAINING_HASHIRI
+
+CALLFORM KOJO_早苗_TRAINING_HASHIRI
+@KOJO_1213_TRAINING_HASHIRI
+
+CALLFORM KOJO_早苗_TRAINING_HASHIRI
+@KOJO_早苗_TRAINING_HASHIRI
+
+;精神鍛錬
+;--------------------------------------------------
+@KOJO_1203_TRAINING_SEISHIN
+
+CALLFORM KOJO_早苗_TRAINING_SEISHIN
+@KOJO_1213_TRAINING_SEISHIN
+
+CALLFORM KOJO_早苗_TRAINING_SEISHIN
+@KOJO_早苗_TRAINING_SEISHIN
+
+;瞑想
+;--------------------------------------------------
+@KOJO_1203_TRAINING_MEISOU
+
+CALLFORM KOJO_早苗_TRAINING_MEISOU
+@KOJO_1213_TRAINING_MEISOU
+
+CALLFORM KOJO_早苗_TRAINING_MEISOU
+@KOJO_早苗_TRAINING_MEISOU
+
+;筋トレ
+;--------------------------------------------------
+@KOJO_1203_TRAINING_KINTORE
+
+CALLFORM KOJO_早苗_TRAINING_KINTORE
+@KOJO_1213_TRAINING_KINTORE
+
+CALLFORM KOJO_早苗_TRAINING_KINTORE
+@KOJO_早苗_TRAINING_KINTORE
+
+;自衛訓練
+;--------------------------------------------------
+@KOJO_1203_TRAINING_JIEI
+
+CALLFORM KOJO_早苗_TRAINING_JIEI
+@KOJO_1213_TRAINING_JIEI
+
+CALLFORM KOJO_早苗_TRAINING_JIEI
+@KOJO_早苗_TRAINING_JIEI
+
+;ダッシュ
+;--------------------------------------------------
+@KOJO_1203_TRAINING_DASH
+
+CALLFORM KOJO_早苗_TRAINING_DASH
+@KOJO_1213_TRAINING_DASH
+
+CALLFORM KOJO_早苗_TRAINING_DASH
+@KOJO_早苗_TRAINING_DASH
+
+;近距離戦闘訓練
+;--------------------------------------------------
+@KOJO_1203_TRAINING_SHORT
+
+CALLFORM KOJO_早苗_TRAINING_SHORT
+@KOJO_1213_TRAINING_SHORT
+
+CALLFORM KOJO_早苗_TRAINING_SHORT
+@KOJO_早苗_TRAINING_SHORT
+
+;中距離戦闘訓練
+;--------------------------------------------------
+@KOJO_1203_TRAINING_MIDDLE
+
+CALLFORM KOJO_早苗_TRAINING_MIDDLE
+@KOJO_1213_TRAINING_MIDDLE
+
+CALLFORM KOJO_早苗_TRAINING_MIDDLE
+@KOJO_早苗_TRAINING_MIDDLE
+
+;遠距離戦闘訓練
+;--------------------------------------------------
+@KOJO_1203_TRAINING_LONG
+
+CALLFORM KOJO_早苗_TRAINING_LONG
+@KOJO_1213_TRAINING_LONG
+
+CALLFORM KOJO_早苗_TRAINING_LONG
+@KOJO_早苗_TRAINING_LONG
+
+;戦術研究
+;--------------------------------------------------
+@KOJO_1203_TRAINING_TACTICS
+
+CALLFORM KOJO_早苗_TRAINING_TACTICS
+@KOJO_1213_TRAINING_TACTICS
+
+CALLFORM KOJO_早苗_TRAINING_TACTICS
+@KOJO_早苗_TRAINING_TACTICS
+
+;触手拘束具が鍛錬の邪魔をする
+;--------------------------------------------------
+@KOJO_1203_TRAINING_TENTACLECLOTH
+
+CALLFORM KOJO_早苗_TRAINING_TENTACLECLOTH
+@KOJO_1213_TRAINING_TENTACLECLOTH
+
+CALLFORM KOJO_早苗_TRAINING_TENTACLECLOTH
+@KOJO_早苗_TRAINING_TENTACLECLOTH
+
+
+;触手と遭遇
+
+;ザコ触手と戦闘
+;--------------------------------------------------
+@KOJO_1203_ENCOUNT_MOB
+
+CALLFORM KOJO_早苗_ENCOUNT_MOB
+@KOJO_1213_ENCOUNT_MOB
+
+CALLFORM KOJO_早苗_ENCOUNT_MOB
+@KOJO_早苗_ENCOUNT_MOB
+
+;ボス触手と戦闘
+;--------------------------------------------------
+@KOJO_1203_ENCOUNT_BOSS
+
+CALLFORM KOJO_早苗_ENCOUNT_BOSS
+@KOJO_1213_ENCOUNT_BOSS
+
+CALLFORM KOJO_早苗_ENCOUNT_BOSS
+@KOJO_早苗_ENCOUNT_BOSS
+
+;ラスボス触手と戦闘
+;--------------------------------------------------
+@KOJO_早苗_ENCOUNT_LASTBOSS
+
+;初めて洗脳キャラと対峙した
+;--------------------------------------------------
+@KOJO_1203_ENCOUNT_SENNOU_FIRST
+
+CALLFORM KOJO_早苗_ENCOUNT_SENNOU_FIRST
+@KOJO_1213_ENCOUNT_SENNOU_FIRST
+
+CALLFORM KOJO_早苗_ENCOUNT_SENNOU_FIRST
+@KOJO_早苗_ENCOUNT_SENNOU_FIRST
+
+;洗脳キャラと対峙
+;--------------------------------------------------
+@KOJO_1203_ENCOUNT_SENNOU
+
+CALLFORM KOJO_早苗_ENCOUNT_SENNOU
+@KOJO_1213_ENCOUNT_SENNOU
+
+CALLFORM KOJO_早苗_ENCOUNT_SENNOU
+@KOJO_早苗_ENCOUNT_SENNOU
+
+;始めて悪堕ちキャラと対峙した
+;--------------------------------------------------
+@KOJO_1203_ENCOUNT_AKUOTI_FIRST
+
+CALLFORM KOJO_早苗_ENCOUNT_AKUOTI_FIRST
+@KOJO_1213_ENCOUNT_AKUOTI_FIRST
+
+CALLFORM KOJO_早苗_ENCOUNT_AKUOTI_FIRST
+@KOJO_早苗_ENCOUNT_AKUOTI_FIRST
+IF CALLNAME:(FLAG:111) == "霊夢"
+	PRINTFORML 「……霊夢、さん？」
+	PRINTFORMDL 呆然とした表情で霊夢を見つめる早苗
+	PRINTFORMDL ギリギリ秘処と乳首を隠す、ヒモのような衣服に、思わず息をのむ
+	PRINTFORMDL 全身を彩る文様を見ているだけで、下腹部が疼くのを感じ、軽く頭を振った
+	PRINTFORML 「霊夢さん、早く正気に戻ってください」
+	PRINTFORMDL 符を取り出しながら告げる早苗に、霊夢はただくすくす笑っている
+ELSEIF CALLNAME:(FLAG:111) == "魔理沙"
+	PRINTFORML 「ま、魔理沙さん」
+	PRINTFORMDL 冷や汗を浮かべながら、早苗は魔理沙を見つめる
+	PRINTFORMDL 乳首と秘処だけを隠す衣装は、全て曝け出すよりも淫猥で
+	PRINTFORMDL 一瞬湧いた欲情を必死に押さえ込む
+	PRINTFORML 「魔理沙さん、正気にもどして上げますね」
+	PRINTFORMDL 符を構える早苗を、魔理沙がにやにや笑いながら見つめてきた
+ENDIF
+
+;悪堕ちキャラと対峙
+;--------------------------------------------------
+@KOJO_1203_ENCOUNT_AKUOTI
+
+CALLFORM KOJO_早苗_ENCOUNT_AKUOTI
+@KOJO_1213_ENCOUNT_AKUOTI
+
+CALLFORM KOJO_早苗_ENCOUNT_AKUOTI
+@KOJO_早苗_ENCOUNT_AKUOTI
+IF CALLNAME:(FLAG:111) == "霊夢"
+	PRINTFORML 「霊夢さん、いい加減元に戻ってください」
+	PRINTFORMDL 真正面から見つめる早苗に、霊夢はクスクス笑って答えない
+	PRINTFORMDL 扇情的な立ち姿に生唾を飲み込み、それでも早苗は符を構える
+	PRINTFORML 「全力で行きます」
+	PRINTFORMDL 余裕の笑みを浮かべる霊夢に宣言し、符を構えた
+	PRINTFORMDL 余裕の笑みを浮かべる霊夢に宣言し、符を構えた
+ELSEIF CALLNAME:(FLAG:111) == "魔理沙"
+	PRINTFORML 「魔理沙さん、一緒に帰ってもらいますから」
+	PRINTFORMDL にやにやと笑う魔理沙に声をかけ、早苗は符を取り出す
+	PRINTFORMDL 裸身に近いその姿に欲情を覚えながら、必死でソレを堪える
+	PRINTFORML 「……負けません」
+	PRINTFORMDL 決意を込めた言葉に、魔理沙は笑みを向けてくる
+ENDIF
+
+
+
+;戦闘関連の口上
+
+;キャラの行動
+
+;変身前のかけ声
+;口上オリジナルのかけ声を使用する場合のみコメントアウトを外して記述してください
+;@KOJO_早苗_BATTLE_CHARA_TRANSFORMCALL
+
+;変身後の名乗り
+;口上オリジナルの名乗りを使用する場合のみコメントアウトを外して記述してください
+;@KOJO_早苗_BATTLE_CHARA_NANORI
+
+;衣装の損傷が酷くなった関連
+
+;アウターが破れ始めた
+;--------------------------------------------------
+@KOJO_1203_BATTLE_CLOTH_OUTERDAMAGE
+
+CALLFORM KOJO_早苗_BATTLE_CLOTH_OUTERDAMAGE
+@KOJO_1213_BATTLE_CLOTH_OUTERDAMAGE
+
+CALLFORM KOJO_早苗_BATTLE_CLOTH_OUTERDAMAGE
+@KOJO_早苗_BATTLE_CLOTH_OUTERDAMAGE
+;衣装が損傷した場合に呼び出される口上です
+
+;アウターが破れた
+;--------------------------------------------------
+@KOJO_1203_BATTLE_CLOTH_OUTERBREAK
+
+CALLFORM KOJO_早苗_BATTLE_CLOTH_OUTERBREAK
+@KOJO_1213_BATTLE_CLOTH_OUTERBREAK
+
+CALLFORM KOJO_早苗_BATTLE_CLOTH_OUTERBREAK
+@KOJO_早苗_BATTLE_CLOTH_OUTERBREAK
+;衣装が完全に破壊された場合に呼び出される口上です
+
+;インナーが破れ始めた
+;--------------------------------------------------
+@KOJO_1203_BATTLE_CLOTH_INNERDAMAGE
+
+CALLFORM KOJO_早苗_BATTLE_CLOTH_INNERDAMAGE
+@KOJO_1213_BATTLE_CLOTH_INNERDAMAGE
+
+CALLFORM KOJO_早苗_BATTLE_CLOTH_INNERDAMAGE
+@KOJO_早苗_BATTLE_CLOTH_INNERDAMAGE
+
+;インナーが破れた
+;--------------------------------------------------
+@KOJO_1203_BATTLE_CLOTH_INNERBREAK
+
+CALLFORM KOJO_早苗_BATTLE_CLOTH_INNERBREAK
+@KOJO_1213_BATTLE_CLOTH_INNERBREAK
+
+CALLFORM KOJO_早苗_BATTLE_CLOTH_INNERBREAK
+@KOJO_早苗_BATTLE_CLOTH_INNERBREAK
+
+;気力が尽きて変身が強制的に解けた
+@KOJO_早苗_BATTLE_CHARA_TRANSRELEASE
+
+;撤退成功
+;--------------------------------------------------
+@KOJO_1203_BATTLE_CHARA_TETTAI_SUCCESS
+
+CALLFORM KOJO_早苗_BATTLE_CHARA_TETTAI_SUCCESS
+@KOJO_1213_BATTLE_CHARA_TETTAI_SUCCESS
+
+CALLFORM KOJO_早苗_BATTLE_CHARA_TETTAI_SUCCESS
+@KOJO_早苗_BATTLE_CHARA_TETTAI_SUCCESS
+
+;撤退失敗
+;--------------------------------------------------
+@KOJO_1203_BATTLE_CHARA_TETTAI_FALSE
+
+CALLFORM KOJO_早苗_BATTLE_CHARA_TETTAI_FALSE
+@KOJO_1213_BATTLE_CHARA_TETTAI_FALSE
+
+CALLFORM KOJO_早苗_BATTLE_CHARA_TETTAI_FALSE
+@KOJO_早苗_BATTLE_CHARA_TETTAI_FALSE
+
+;近距離攻撃
+;--------------------------------------------------
+@KOJO_1203_BATTLE_CHARA_ATTACK_RANGE_SHORT
+
+CALLFORM KOJO_早苗_BATTLE_CHARA_ATTACK_RANGE_SHORT
+@KOJO_1213_BATTLE_CHARA_ATTACK_RANGE_SHORT
+
+CALLFORM KOJO_早苗_BATTLE_CHARA_ATTACK_RANGE_SHORT
+@KOJO_早苗_BATTLE_CHARA_ATTACK_RANGE_SHORT
+
+;中距離攻撃
+;--------------------------------------------------
+@KOJO_1203_BATTLE_CHARA_ATTACK_RANGE_MIDDLE
+
+CALLFORM KOJO_早苗_BATTLE_CHARA_ATTACK_RANGE_MIDDLE
+@KOJO_1213_BATTLE_CHARA_ATTACK_RANGE_MIDDLE
+
+CALLFORM KOJO_早苗_BATTLE_CHARA_ATTACK_RANGE_MIDDLE
+@KOJO_早苗_BATTLE_CHARA_ATTACK_RANGE_MIDDLE
+
+;遠距離攻撃
+;--------------------------------------------------
+@KOJO_1203_BATTLE_CHARA_ATTACK_RANGE_LONG
+
+CALLFORM KOJO_早苗_BATTLE_CHARA_ATTACK_RANGE_LONG
+@KOJO_1213_BATTLE_CHARA_ATTACK_RANGE_LONG
+
+CALLFORM KOJO_早苗_BATTLE_CHARA_ATTACK_RANGE_LONG
+@KOJO_早苗_BATTLE_CHARA_ATTACK_RANGE_LONG
+
+;防御
+;--------------------------------------------------
+@KOJO_1203_BATTLE_CHARA_DEFENSE
+
+CALLFORM KOJO_早苗_BATTLE_CHARA_DEFENSE
+@KOJO_1213_BATTLE_CHARA_DEFENSE
+
+CALLFORM KOJO_早苗_BATTLE_CHARA_DEFENSE
+@KOJO_早苗_BATTLE_CHARA_DEFENSE
+
+;距離をとる
+;--------------------------------------------------
+@KOJO_1203_BATTLE_CHARA_TAKEAWAY
+
+CALLFORM KOJO_早苗_BATTLE_CHARA_TAKEAWAY
+@KOJO_1213_BATTLE_CHARA_TAKEAWAY
+
+CALLFORM KOJO_早苗_BATTLE_CHARA_TAKEAWAY
+@KOJO_早苗_BATTLE_CHARA_TAKEAWAY
+
+;何もしない
+;--------------------------------------------------
+@KOJO_1203_BATTLE_CHARA_NOACTION
+
+CALLFORM KOJO_早苗_BATTLE_CHARA_NOACTION
+@KOJO_1213_BATTLE_CHARA_NOACTION
+
+CALLFORM KOJO_早苗_BATTLE_CHARA_NOACTION
+@KOJO_早苗_BATTLE_CHARA_NOACTION
+
+;振り解く
+;--------------------------------------------------
+@KOJO_1203_BATTLE_CHARA_HURIHODOKU
+
+CALLFORM KOJO_早苗_BATTLE_CHARA_HURIHODOKU
+@KOJO_1213_BATTLE_CHARA_HURIHODOKU
+
+CALLFORM KOJO_早苗_BATTLE_CHARA_HURIHODOKU
+@KOJO_早苗_BATTLE_CHARA_HURIHODOKU
+
+;暴れる
+;--------------------------------------------------
+@KOJO_1203_BATTLE_CHARA_ABARERU
+
+CALLFORM KOJO_早苗_BATTLE_CHARA_ABARERU
+@KOJO_1213_BATTLE_CHARA_ABARERU
+
+CALLFORM KOJO_早苗_BATTLE_CHARA_ABARERU
+@KOJO_早苗_BATTLE_CHARA_ABARERU
+
+;耐える
+;--------------------------------------------------
+@KOJO_1203_BATTLE_CHARA_TAERU
+
+CALLFORM KOJO_早苗_BATTLE_CHARA_TAERU
+@KOJO_1213_BATTLE_CHARA_TAERU
+
+CALLFORM KOJO_早苗_BATTLE_CHARA_TAERU
+@KOJO_早苗_BATTLE_CHARA_TAERU
+;あまり調教が進んでおらず、闘志が残っている状態です
+;情報を集めるため、油断を誘うためなど、まだ諦めていないような口上が相応しいでしょう
+
+;なすがまま
+;--------------------------------------------------
+@KOJO_1203_BATTLE_CHARA_NASUGAMAMA
+
+CALLFORM KOJO_早苗_BATTLE_CHARA_NASUGAMAMA
+@KOJO_1213_BATTLE_CHARA_NASUGAMAMA
+
+CALLFORM KOJO_早苗_BATTLE_CHARA_NASUGAMAMA
+@KOJO_早苗_BATTLE_CHARA_NASUGAMAMA
+;苦痛や恐怖が高くなって翻弄されている状態です
+;余裕がなくなった様子を描写するのが良いでしょう
+
+;受け入れる
+;--------------------------------------------------
+@KOJO_1203_BATTLE_CHARA_UKEIRERU
+
+CALLFORM KOJO_早苗_BATTLE_CHARA_UKEIRERU
+@KOJO_1213_BATTLE_CHARA_UKEIRERU
+
+CALLFORM KOJO_早苗_BATTLE_CHARA_UKEIRERU
+@KOJO_早苗_BATTLE_CHARA_UKEIRERU
+;屈服で心が折れたか、快楽に流されている状態です
+;普段よりも快楽に素直になっている様子を描写するのが良いでしょう
+
+;奉仕する
+;--------------------------------------------------
+@KOJO_1203_BATTLE_CHARA_HOUSI
+
+CALLFORM KOJO_早苗_BATTLE_CHARA_HOUSI
+@KOJO_1213_BATTLE_CHARA_HOUSI
+
+CALLFORM KOJO_早苗_BATTLE_CHARA_HOUSI
+@KOJO_早苗_BATTLE_CHARA_HOUSI
+;恭順する気持ちから触手を満足させようとしている状態です
+;口では言い訳しつつ、心の底では触手のことが大好きです
+
+;Ｖ挿入防御
+;--------------------------------------------------
+@KOJO_1203_BATTLE_CHARA_ANTI_V
+
+CALLFORM KOJO_早苗_BATTLE_CHARA_ANTI_V
+@KOJO_1213_BATTLE_CHARA_ANTI_V
+
+CALLFORM KOJO_早苗_BATTLE_CHARA_ANTI_V
+@KOJO_早苗_BATTLE_CHARA_ANTI_V
+;なりふり構わず処女だけを守り通す構えです
+;調教が進むと使えなくなるのであまり調教が進んでいない状況を想定しましょう
+
+;キャラの行動の結果
+
+;攻撃がクリティカルヒット
+;--------------------------------------------------
+@KOJO_1203_BATTLE_CHARA_ATTACK_CRITICAL_HIT
+
+CALLFORM KOJO_早苗_BATTLE_CHARA_ATTACK_CRITICAL_HIT
+@KOJO_1213_BATTLE_CHARA_ATTACK_CRITICAL_HIT
+
+CALLFORM KOJO_早苗_BATTLE_CHARA_ATTACK_CRITICAL_HIT
+@KOJO_早苗_BATTLE_CHARA_ATTACK_CRITICAL_HIT
+
+;攻撃が通常ヒット
+;--------------------------------------------------
+@KOJO_1203_BATTLE_CHARA_ATTACK_HIT
+
+CALLFORM KOJO_早苗_BATTLE_CHARA_ATTACK_HIT
+@KOJO_1213_BATTLE_CHARA_ATTACK_HIT
+
+CALLFORM KOJO_早苗_BATTLE_CHARA_ATTACK_HIT
+@KOJO_早苗_BATTLE_CHARA_ATTACK_HIT
+
+;攻撃失敗
+;--------------------------------------------------
+@KOJO_1203_BATTLE_CHARA_ATTACK_FALSE
+
+CALLFORM KOJO_早苗_BATTLE_CHARA_ATTACK_FALSE
+@KOJO_1213_BATTLE_CHARA_ATTACK_FALSE
+
+CALLFORM KOJO_早苗_BATTLE_CHARA_ATTACK_FALSE
+@KOJO_早苗_BATTLE_CHARA_ATTACK_FALSE
+
+;振り解く成功
+;--------------------------------------------------
+@KOJO_1203_BATTLE_CHARA_HURIHODOKU_SUCCESS
+
+CALLFORM KOJO_早苗_BATTLE_CHARA_HURIHODOKU_SUCCESS
+@KOJO_1213_BATTLE_CHARA_HURIHODOKU_SUCCESS
+
+CALLFORM KOJO_早苗_BATTLE_CHARA_HURIHODOKU_SUCCESS
+@KOJO_早苗_BATTLE_CHARA_HURIHODOKU_SUCCESS
+
+;振り解く失敗
+;--------------------------------------------------
+@KOJO_1203_BATTLE_CHARA_HURIHODOKU_FALSE
+
+CALLFORM KOJO_早苗_BATTLE_CHARA_HURIHODOKU_FALSE
+@KOJO_1213_BATTLE_CHARA_HURIHODOKU_FALSE
+
+CALLFORM KOJO_早苗_BATTLE_CHARA_HURIHODOKU_FALSE
+@KOJO_早苗_BATTLE_CHARA_HURIHODOKU_FALSE
+
+
+
+;敵側の行動（攻撃など）
+
+;敵が攻撃
+;--------------------------------------------------
+@KOJO_1203_BATTLE_TENTACLE_ATTACK
+
+CALLFORM KOJO_早苗_BATTLE_TENTACLE_ATTACK
+@KOJO_1213_BATTLE_TENTACLE_ATTACK
+
+CALLFORM KOJO_早苗_BATTLE_TENTACLE_ATTACK
+@KOJO_早苗_BATTLE_TENTACLE_ATTACK
+
+;敵が絡みつく
+;--------------------------------------------------
+@KOJO_1203_BATTLE_TENTACLE_KARAMITUKU
+
+CALLFORM KOJO_早苗_BATTLE_TENTACLE_KARAMITUKU
+@KOJO_1213_BATTLE_TENTACLE_KARAMITUKU
+
+CALLFORM KOJO_早苗_BATTLE_TENTACLE_KARAMITUKU
+@KOJO_早苗_BATTLE_TENTACLE_KARAMITUKU
+
+;敵が体液を吐く
+;--------------------------------------------------
+@KOJO_1203_BATTLE_TENTACLE_TAIEKI
+
+CALLFORM KOJO_早苗_BATTLE_TENTACLE_TAIEKI
+@KOJO_1213_BATTLE_TENTACLE_TAIEKI
+
+CALLFORM KOJO_早苗_BATTLE_TENTACLE_TAIEKI
+@KOJO_早苗_BATTLE_TENTACLE_TAIEKI
+
+;敵が距離をとる
+;--------------------------------------------------
+@KOJO_1203_BATTLE_TENTACLE_TAKEAWAY
+
+CALLFORM KOJO_早苗_BATTLE_TENTACLE_TAKEAWAY
+@KOJO_1213_BATTLE_TENTACLE_TAKEAWAY
+
+CALLFORM KOJO_早苗_BATTLE_TENTACLE_TAKEAWAY
+@KOJO_早苗_BATTLE_TENTACLE_TAKEAWAY
+
+;敵が押し倒すを開始
+;--------------------------------------------------
+@KOJO_1203_BATTLE_TENTACLE_OSHITAOSU
+
+CALLFORM KOJO_早苗_BATTLE_TENTACLE_OSHITAOSU
+@KOJO_1213_BATTLE_TENTACLE_OSHITAOSU
+
+CALLFORM KOJO_早苗_BATTLE_TENTACLE_OSHITAOSU
+@KOJO_早苗_BATTLE_TENTACLE_OSHITAOSU
+
+
+
+;敵の行動の結果
+
+;敵の攻撃がクリティカルヒット
+;--------------------------------------------------
+@KOJO_1203_BATTLE_TENTACLE_ATTACK_CRITICAL_HIT
+
+CALLFORM KOJO_早苗_BATTLE_TENTACLE_ATTACK_CRITICAL_HIT
+@KOJO_1213_BATTLE_TENTACLE_ATTACK_CRITICAL_HIT
+
+CALLFORM KOJO_早苗_BATTLE_TENTACLE_ATTACK_CRITICAL_HIT
+@KOJO_早苗_BATTLE_TENTACLE_ATTACK_CRITICAL_HIT
+
+;敵の攻撃が通常ヒット
+;--------------------------------------------------
+@KOJO_1203_BATTLE_TENTACLE_ATTACK_HIT
+
+CALLFORM KOJO_早苗_BATTLE_TENTACLE_ATTACK_HIT
+@KOJO_1213_BATTLE_TENTACLE_ATTACK_HIT
+
+CALLFORM KOJO_早苗_BATTLE_TENTACLE_ATTACK_HIT
+@KOJO_早苗_BATTLE_TENTACLE_ATTACK_HIT
+
+;敵の攻撃を回避
+;--------------------------------------------------
+@KOJO_1203_BATTLE_TENTACLE_ATTACK_FALSE
+
+CALLFORM KOJO_早苗_BATTLE_TENTACLE_ATTACK_FALSE
+@KOJO_1213_BATTLE_TENTACLE_ATTACK_FALSE
+
+CALLFORM KOJO_早苗_BATTLE_TENTACLE_ATTACK_FALSE
+@KOJO_早苗_BATTLE_TENTACLE_ATTACK_FALSE
+
+;敵の絡みつくが成功
+;--------------------------------------------------
+@KOJO_1203_BATTLE_TENTACLE_KARAMITUKU_SUCCESS
+
+CALLFORM KOJO_早苗_BATTLE_TENTACLE_KARAMITUKU_SUCCESS
+@KOJO_1213_BATTLE_TENTACLE_KARAMITUKU_SUCCESS
+
+CALLFORM KOJO_早苗_BATTLE_TENTACLE_KARAMITUKU_SUCCESS
+@KOJO_早苗_BATTLE_TENTACLE_KARAMITUKU_SUCCESS
+
+;敵の絡みつくを回避
+;--------------------------------------------------
+@KOJO_1203_BATTLE_TENTACLE_KARAMITUKU_FALSE
+
+CALLFORM KOJO_早苗_BATTLE_TENTACLE_KARAMITUKU_FALSE
+@KOJO_1213_BATTLE_TENTACLE_KARAMITUKU_FALSE
+
+CALLFORM KOJO_早苗_BATTLE_TENTACLE_KARAMITUKU_FALSE
+@KOJO_早苗_BATTLE_TENTACLE_KARAMITUKU_FALSE
+
+;敵の体液を吐くがヒット
+;--------------------------------------------------
+@KOJO_1203_BATTLE_TENTACLE_TAIEKI_HIT
+
+CALLFORM KOJO_早苗_BATTLE_TENTACLE_TAIEKI_HIT
+@KOJO_1213_BATTLE_TENTACLE_TAIEKI_HIT
+
+CALLFORM KOJO_早苗_BATTLE_TENTACLE_TAIEKI_HIT
+@KOJO_早苗_BATTLE_TENTACLE_TAIEKI_HIT
+
+;敵の体液を吐くを回避
+;--------------------------------------------------
+@KOJO_1203_BATTLE_TENTACLE_TAIEKI_FALSE
+
+CALLFORM KOJO_早苗_BATTLE_TENTACLE_TAIEKI_FALSE
+@KOJO_1213_BATTLE_TENTACLE_TAIEKI_FALSE
+
+CALLFORM KOJO_早苗_BATTLE_TENTACLE_TAIEKI_FALSE
+@KOJO_早苗_BATTLE_TENTACLE_TAIEKI_FALSE
+
+;敵の押し倒すがヒット
+;--------------------------------------------------
+@KOJO_1203_BATTLE_TENTACLE_OSHITAOSU_SUCCESS
+
+CALLFORM KOJO_早苗_BATTLE_TENTACLE_OSHITAOSU_SUCCESS
+@KOJO_1213_BATTLE_TENTACLE_OSHITAOSU_SUCCESS
+
+CALLFORM KOJO_早苗_BATTLE_TENTACLE_OSHITAOSU_SUCCESS
+@KOJO_早苗_BATTLE_TENTACLE_OSHITAOSU_SUCCESS
+
+;敵の押し倒すを回避
+;--------------------------------------------------
+@KOJO_1203_BATTLE_TENTACLE_OSHITAOSU_FALSE
+
+CALLFORM KOJO_早苗_BATTLE_TENTACLE_OSHITAOSU_FALSE
+@KOJO_1213_BATTLE_TENTACLE_OSHITAOSU_FALSE
+
+CALLFORM KOJO_早苗_BATTLE_TENTACLE_OSHITAOSU_FALSE
+@KOJO_早苗_BATTLE_TENTACLE_OSHITAOSU_FALSE
+
+
+
+;敵から受ける性コマンド関連
+
+;COM0：C攻め弱　クリトリスを撫でる
+;--------------------------------------------------
+@KOJO_1203_SEX_COM0
+
+CALLFORM KOJO_早苗_SEX_COM0
+@KOJO_1213_SEX_COM0
+
+CALLFORM KOJO_早苗_SEX_COM0
+@KOJO_早苗_SEX_COM0
+;ふたなりの場合はペニスを愛撫されている扱いになります。
+CALL 渧泣("C")
+
+;COM1：C攻め強　クリトリスに吸い付く
+;--------------------------------------------------
+@KOJO_1203_SEX_COM1
+
+CALLFORM KOJO_早苗_SEX_COM1
+@KOJO_1213_SEX_COM1
+
+CALLFORM KOJO_早苗_SEX_COM1
+@KOJO_早苗_SEX_COM1
+;ふたなりの場合はペニスを吸われている扱いになります。
+CALL 渧泣("C")
+
+;SPCOM0：C攻めSP　クリトリスに噛み付く
+;--------------------------------------------------
+@KOJO_1203_SEX_SPCOM0
+
+CALLFORM KOJO_早苗_SEX_SPCOM0
+@KOJO_1213_SEX_SPCOM0
+
+CALLFORM KOJO_早苗_SEX_SPCOM0
+@KOJO_早苗_SEX_SPCOM0
+;媚薬を注入されて、感度を高められたまま放置されたタイミングで表示されます。
+CALL 渧泣("C")
+
+;SPCOM8：C触手専用SP　尿道責め
+;--------------------------------------------------
+@KOJO_1203_SEX_SPCOM8
+
+CALLFORM KOJO_早苗_SEX_SPCOM8
+@KOJO_1213_SEX_SPCOM8
+
+CALLFORM KOJO_早苗_SEX_SPCOM8
+@KOJO_早苗_SEX_SPCOM8
+;公開排尿なので、羞恥心を煽られる
+
+;COM2：V攻め弱　膣口を愛撫（処女は奪いません）
+;--------------------------------------------------
+@KOJO_1203_SEX_COM2
+
+CALLFORM KOJO_早苗_SEX_COM2
+@KOJO_1213_SEX_COM2
+
+CALLFORM KOJO_早苗_SEX_COM2
+@KOJO_早苗_SEX_COM2
+;今にも犯されそうな状態です。
+CALL 渧泣("V")
+
+;COM3：V攻め強　挿入
+;--------------------------------------------------
+@KOJO_1203_SEX_COM3
+
+CALLFORM KOJO_早苗_SEX_COM3
+@KOJO_1213_SEX_COM3
+
+CALLFORM KOJO_早苗_SEX_COM3
+@KOJO_早苗_SEX_COM3
+;TCVAR:2 == 100のときはＶ挿入防御状態です。
+;Ｖ感覚が0のときは苦痛が強く、Ｖ感覚が4以上なら強烈な快感を感じます。
+CALL 渧泣("V",1)
+
+;SPCOM1：V攻めSP　奥を突く
+;--------------------------------------------------
+@KOJO_1203_SEX_SPCOM1
+
+CALLFORM KOJO_早苗_SEX_SPCOM1
+@KOJO_1213_SEX_SPCOM1
+
+CALLFORM KOJO_早苗_SEX_SPCOM1
+@KOJO_早苗_SEX_SPCOM1
+;激しいピストンで子宮口を責められている場面です。
+;「少女に似合わぬ獣のような喘ぎ声を上げ続けている・・・」に続く形になるため、
+;快楽に翻弄されているような文にするのが良いでしょう。
+CALL 渧泣("VA")
+
+;SPCOM9：V触手専用SP　V拡張責め（腹ボコ系
+;--------------------------------------------------
+@KOJO_1203_SEX_SPCOM9
+
+CALLFORM KOJO_早苗_SEX_SPCOM9
+@KOJO_1213_SEX_SPCOM9
+
+CALLFORM KOJO_早苗_SEX_SPCOM9
+@KOJO_早苗_SEX_SPCOM9
+;通常なら入らない極太性器による拡張責め、V拡張経験によって地の文変化
+IF EXP:Ｖ拡張経験 < 8
+CALL 渧泣("MA")
+ELSE
+CALL 渧泣("V",1)
+ENDIF
+
+;COM4：A攻め弱　アナルを撫で回す
+;--------------------------------------------------
+@KOJO_1203_SEX_COM4
+
+CALLFORM KOJO_早苗_SEX_COM4
+@KOJO_1213_SEX_COM4
+
+CALLFORM KOJO_早苗_SEX_COM4
+@KOJO_早苗_SEX_COM4
+;軽いちょっかいを出されている段階なので、それほど危機感は感じていない場面です。
+CALL 渧泣("A")
+
+;COM5：A攻め強　アナルに挿入
+;--------------------------------------------------
+@KOJO_1203_SEX_COM5
+
+CALLFORM KOJO_早苗_SEX_COM5
+@KOJO_1213_SEX_COM5
+
+CALLFORM KOJO_早苗_SEX_COM5
+@KOJO_早苗_SEX_COM5
+;A攻め弱とは一転して激しく犯されます。
+CALL 渧泣("A",1)
+
+;SPCOM2：A攻めSP　激しくアナルを犯す
+;--------------------------------------------------
+@KOJO_1203_SEX_SPCOM2
+
+CALLFORM KOJO_早苗_SEX_SPCOM2
+@KOJO_1213_SEX_SPCOM2
+
+CALLFORM KOJO_早苗_SEX_SPCOM2
+@KOJO_早苗_SEX_SPCOM2
+;かなりハードなプレイで、アナルから入った触手が口から出て"貫通"します。
+;地の文でもアヘ顔だったり白目を剥いて泡を吹いているので、相応の描写が必要です。
+CALL 渧泣("M")
+
+;SPCOM10：A触手専用SP　A拡張攻め（腹ボコ
+;--------------------------------------------------
+@KOJO_1203_SEX_SPCOM10
+
+CALLFORM KOJO_早苗_SEX_SPCOM10
+@KOJO_1213_SEX_SPCOM10
+
+CALLFORM KOJO_早苗_SEX_SPCOM10
+@KOJO_早苗_SEX_SPCOM10
+;不定形触手による疑似浣腸による拡張　拡張経験によって地の文変化
+CALL 渧泣("A",1)
+
+;COM6：B攻め弱　胸を揉みしだく
+;--------------------------------------------------
+@KOJO_1203_SEX_COM6
+
+CALLFORM KOJO_早苗_SEX_COM6
+@KOJO_1213_SEX_COM6
+
+CALLFORM KOJO_早苗_SEX_COM6
+@KOJO_早苗_SEX_COM6
+;胸を撫でられたり、乳首を引っ張られたりします。
+;鬼畜度の低い愛撫です。
+CALL 渧泣("B")
+
+;COM7：B攻め強　乳首に吸い付く
+;--------------------------------------------------
+@KOJO_1203_SEX_COM7
+
+CALLFORM KOJO_早苗_SEX_COM7
+@KOJO_1213_SEX_COM7
+
+CALLFORM KOJO_早苗_SEX_COM7
+@KOJO_早苗_SEX_COM7
+;ややハードですが苦痛成分がないプレイです。母乳体質のアピールポイントです。
+CALL 渧泣("B")
+
+;SPCOM3：B攻めSP　媚薬ニプルファック
+;--------------------------------------------------
+@KOJO_1203_SEX_SPCOM3
+
+CALLFORM KOJO_早苗_SEX_SPCOM3
+@KOJO_1213_SEX_SPCOM3
+
+CALLFORM KOJO_早苗_SEX_SPCOM3
+@KOJO_早苗_SEX_SPCOM3
+;胸の感度を高められてニプルファックで責められます。
+CALL 渧泣("B")
+
+;SPCOM5：パイズリ
+;--------------------------------------------------
+@KOJO_1203_SEX_SPCOM5
+
+CALLFORM KOJO_早苗_SEX_SPCOM5
+@KOJO_1213_SEX_SPCOM5
+
+CALLFORM KOJO_早苗_SEX_SPCOM5
+@KOJO_早苗_SEX_SPCOM5
+;ごく普通のパイズリ…というわけではなく、無理やり奉仕させられる感が強いです。
+;触手の虜や「奉仕する」を選択している場合は普通のパイズリをしている感じになります。
+CALL 渧泣("B")
+
+;SPCOM11：B触手専用SP　甘えん坊授乳プレイ
+;--------------------------------------------------
+@KOJO_1203_SEX_SPCOM11
+
+CALLFORM KOJO_早苗_SEX_SPCOM11
+@KOJO_1213_SEX_SPCOM11
+
+CALLFORM KOJO_早苗_SEX_SPCOM11
+@KOJO_早苗_SEX_SPCOM11
+;触手の虜or欲望3以上なら受け入れ・前記条件未取得かつ従順3以上無抵抗・前記条件未取得抵抗
+CALL 渧泣("BV",1)
+
+;SPCOM6：強制自慰
+;--------------------------------------------------
+@KOJO_1203_SEX_SPCOM6
+
+CALLFORM KOJO_早苗_SEX_SPCOM6
+@KOJO_1213_SEX_SPCOM6
+
+CALLFORM KOJO_早苗_SEX_SPCOM6
+@KOJO_早苗_SEX_SPCOM6
+;このあと普通の自慰の口上も表示されるので、クドくならないように。
+
+;SPCOM7：羞恥プレイ
+;--------------------------------------------------
+@KOJO_1203_SEX_SPCOM7
+
+CALLFORM KOJO_早苗_SEX_SPCOM7
+@KOJO_1213_SEX_SPCOM7
+
+CALLFORM KOJO_早苗_SEX_SPCOM7
+@KOJO_早苗_SEX_SPCOM7
+;それぞれのキャラで反応が違うと思うので、性格ごとに描写を変化させるのが良さそうです。

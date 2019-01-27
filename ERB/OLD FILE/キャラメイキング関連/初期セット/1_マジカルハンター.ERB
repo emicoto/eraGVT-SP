@@ -1,0 +1,34 @@
+@SHOKISET_NAME_1
+PRINTL [ 1]３人：マジカルハンター
+;-----------------------------
+;マジカルハンターに対する説明
+;------------------------------
+@SHOKISET_SETUMEI_1
+PRINTL
+PRINTL 　　　魔法少女モノ
+PRINTL 　　　全員が変身前でもそれなりに戦える
+PRINTL 　　　固定砲台1,砲台1,高機動1
+PRINTL
+PRINTL 　　　多分中級者向け
+PRINTL
+;-------------------------------
+;グループの選択-マジカルハンター
+;-------------------------------
+@SHOKISET_SELECT_1
+
+FLAG:5 = 1
+SAVESTR:10=マジカルハンター
+FLAG:7 = 1
+SAVESTR:12=セットアップ!
+
+ADDCHARA 311
+FLAG:8 ++
+ADDCHARA 312
+FLAG:8 ++
+ADDCHARA 313
+FLAG:8 ++
+
+CALL SHOKISET_CSVFIX
+JUMP CHARA_MAKE_MAIN, 0
+
+

@@ -1,0 +1,332 @@
+;--------------------------------------------------------------------------------------------
+;雑魚敵専用コマンド共通ヘッダー処理
+;ARG:0 = コマンドのID
+;ARG:1  = 直接受け渡し（追加責めの部位）
+;ARG:2  = メイン部位		なし0 Ｃ1 Ｖ2 Ａ4 Ｂ8
+;ARG:3  = 油断度上昇量
+;ARG:4  = 射精フラグ		なし0 膣2 アナル4 胸8 口16 手32 ワレメ64 暴発128 （ビット演算）
+;ARG:5  = 射精ゲージ上昇量
+;ARG:6  = 服へのダメージ
+;ARG:7  = コマンドの強度	弱0 強1 SP2
+;ARG:8  = 処女喪失の有無	なし0 あり1 あり、地の文なし2
+;ARG:9  = 特殊効果		ビット演算
+;	1	Ｖ挿入防御貫通
+;	2	拡張責め
+;	4	
+;	8	
+;	16	
+;	32	
+;	64	
+;	128	
+;	256	
+;ARG:10 = 快Ｃ強度
+;ARG:11 = 快Ｖ強度
+;ARG:12 = 快Ａ強度
+;ARG:13 = 快Ｂ強度
+;ARG:14 = マゾによる屈服、恐怖影響度
+;ARG:15 = 挿入による恭順影響度
+;ARG:16 = 習得影響度
+;ARG:17 = 露出癖による欲情、恥情、恐怖影響度
+;ARG:18 = 強制奉仕による屈服影響度
+
+
+@MOB_CREATE_COM,ARG = 0,ARG:1 = 0,ARG:2,ARG:3,ARG:4,ARG:5,ARG:6,ARG:7,ARG:8,ARG:9,ARG:10,ARG:11,ARG:12,ARG:13,ARG:14,ARG:15,ARG:16,ARG:17,ARG:18
+;EX_COM	追加責め実行部位（ビット）
+;	1：Ｃ　2：Ｖ　4：Ａ　8：Ｂ
+;追加責め
+CALL SEX_COMEX_RANDOM, ARG:2, ARG:1
+EX_COM = RESULT:0
+SH_COM = RESULT:1
+
+;清純派なら１度だけ自動でＶ防御
+SIF TALENT:清純派 > 0 && TCVAR:2 != 100 && ARG:8 > 0
+	CALL AUTO_V_DEFENCE, TARGET
+
+;射精フラグ
+SIF ARG:4 > 0
+	TFLAG:4 = ARG:4
+
+;取得パラメータ計算
+;ベース値の明示的初期化
+REPEAT 12
+	LOCAL:COUNT = 0
+REND
+
+;油断度の上昇
+SIF ARG:3 > 0
+	TFLAG:3 += ARG:3
+
+;射精値
+SIF ARG:5 > 0
+	CALL TENTACLE_SYASEI_UP, ARG:5
+
+;触手サイズの設定
+CALL SET_TENTACLE_SIZE, FLAG:10, FLAG:11, FLAG:110, FLAG:111, ARG:0
+
+;地の文呼び出し
+CALLFORM MESSAGE_MOB_{FLAG:11}_COM{ARG:0}, EX_COM, SH_COM
+
+;服へのダメージ
+SIF ARG:6 > 0
+	CALL CLOTH_BATTLE_DAMAGE, ARG:6
+
+;ベースの獲得
+;ここ以降のLOCALはPALAMの上昇量として扱う
+;------------------------------------------------------------------------------------------------------------------
+VARSET LOCAL
+
+;処女喪失あり
+IF ARG:8 == 2
+	;苦痛が大量に入る
+	IF TALENT:処女 > 0 && BASE:Ｖ結界耐久力 <= 0 && (TCVAR:2 != 体勢：Ｖ防御 || (ARG:9 & 1) > 0)
+		LOCAL:10 = 10000
+		TALENT:処女 = -1
+		CFLAG:206 = 2
+		TCVAR:1 = 1
+	ELSE
+		LOCAL:10 = 0
+	ENDIF
+ELSEIF ARG:8 == 1
+	;苦痛が大量に入る
+	IF TALENT:処女 > 0 && BASE:Ｖ結界耐久力 <= 0 && (TCVAR:2 != 体勢：Ｖ防御 || (ARG:9 & 1) > 0)
+		LOCAL:10 = 10000
+		CALL LOSTVIRGIN
+	ELSE
+		LOCAL:10 = 0
+	ENDIF
+ENDIF
+
+;快Ｃ
+IF ARG:10 > 0
+	IF ARG:7 == 0
+		LOCAL:0 += MIN(ABL:Ｃ感覚 * ABL:Ｃ感覚, 25) * ARG:10 * 60 + ARG:10 * 100
+	ELSEIF ARG:7 == 1
+		LOCAL:0 += MIN(ABL:Ｃ感覚 * ABL:Ｃ感覚, 25) * ARG:10 * 150 + ARG:10 * 80
+	ELSE
+		LOCAL:0 += MIN(ABL:Ｃ感覚 * ABL:Ｃ感覚, 25) * ARG:10 * 300 + ARG:10 * 200
+	ENDIF
+	;ペニス持ちには効果大
+	SIF TALENT:オトコ > 0 || TALENT:ふたなり > 0
+		LOCAL:0 += 500 * (ARG:7 + 1)
+	;Ｃ感覚が低いと恐怖と苦痛が少し入る
+	IF ABL:Ｃ感覚 < 3
+		LOCAL:10 += ARG:7 * ARG:7 * ARG:10 * 40 / (ABL:Ｃ感覚 + 1) * (1 - (BASE:Ｃ結界耐久力 > 0))
+		LOCAL:11 += ARG:7 * ARG:7 * ARG:10 * 40 / (ABL:Ｃ感覚 + 1)
+	ENDIF
+ENDIF
+;快Ｖ
+IF ARG:11 > 0
+	;Ｖ経験
+	EXP:Ｖ経験 += 1
+	IF ARG:7 == 0
+		LOCAL:1 += MIN(ABL:Ｖ感覚 * ABL:Ｖ感覚, 25) * ARG:11 * 60 + ARG:11 * 100
+	ELSEIF ARG:7 == 1
+		LOCAL:1 += MIN(ABL:Ｖ感覚 * ABL:Ｖ感覚, 25) * ARG:11 * 150 + ARG:11 * 80
+	ELSE
+		LOCAL:1 += MIN(ABL:Ｖ感覚 * ABL:Ｖ感覚, 25) * ARG:11 * 300 + ARG:11 * 200
+	ENDIF
+	;Ｖ感覚が低いと恐怖と苦痛が少し入る
+	IF ABL:Ｖ感覚 < 3
+		LOCAL:10 += ARG:7 * ARG:7 * ARG:11 * 20 / (ABL:Ｃ感覚 + 1) * (1 - (BASE:Ｖ結界耐久力 > 0))
+		LOCAL:11 += ARG:7 * ARG:7 * ARG:11 * 20 / (ABL:Ｃ感覚 + 1) / (1 + (BASE:Ｖ結界耐久力 > 0))
+	ENDIF
+	;潤滑が低いと恐怖と苦痛が少し入る
+	IF PALAM:潤滑 < 2000
+		LOCAL:10 += ARG:7 * ARG:7 * ARG:11 * 20 / (ABL:Ｃ感覚 + 1) * (1 - (BASE:Ｖ結界耐久力 > 0))
+		LOCAL:11 += ARG:7 * ARG:7 * ARG:11 * 20 / (ABL:Ｃ感覚 + 1) / (1 + (BASE:Ｖ結界耐久力 > 0))
+	ENDIF
+	;Ｖ防御中かつ貫通なしなら快Ｖが減少
+	SIF TCVAR:2 == 体勢：Ｖ防御 && (ARG:9 & 1) == 0
+		LOCAL:1 /= 4
+	;Ｖ挿入系コマンドの場合
+	TRYCCALLFORM SEX_TYPE_MOB_{FLAG:11}_COM{ARG:0}
+		IF (RESULT & 挿入) > 0
+			;潤滑が低いと苦痛が入る
+			IF PALAM:潤滑 < 1000
+				LOCAL:10 += 5000 * (1 - (BASE:Ｖ結界耐久力 > 0))
+			ELSEIF PALAM:潤滑 < 2000
+				LOCAL:10 += 1000 * (1 - (BASE:Ｖ結界耐久力 > 0))
+			ENDIF
+			;挿入できていれば追加のＶ経験
+			IF BASE:Ｖ結界耐久力 <= 0 && (TCVAR:2 != 体勢：Ｖ防御 || (ARG:9 & 1) > 0)
+				EXP:Ｖ経験 += 1
+				;Ｖ拡張の場合
+				IF (ARG:9 & 2) > 0
+					EXP:Ｖ拡張経験 += 1
+					EXP:Ｖ経験 += 3
+				ENDIF
+			ENDIF
+		ENDIF
+	CATCH
+	ENDCATCH
+	;Ｖ拡張の場合快楽、屈服、恥情、苦痛、恐怖が入る
+	IF (ARG:9 & 2) > 0
+		IF EXP:Ｖ拡張経験 < 3
+			TIMES LOCAL:1, 0.10
+			LOCAL:8 += ARG:11 * 400 / (1 + (BASE:Ｖ結界耐久力 > 0))
+			LOCAL:9 += ARG:11 * 40 / (1 + (BASE:Ｖ結界耐久力 > 0))
+			LOCAL:10 += ARG:11 * 800 * (1 - (BASE:Ｖ結界耐久力 > 0))
+			LOCAL:11 += ARG:11 * 1600 / (1 + (BASE:Ｖ結界耐久力 > 0))
+		ELSEIF EXP:Ｖ拡張経験 < 5
+			TIMES LOCAL:1, 0.50
+			LOCAL:8 += ARG:11 * 800 / (1 + (BASE:Ｖ結界耐久力 > 0))
+			LOCAL:9 += ARG:11 * 80 / (1 + (BASE:Ｖ結界耐久力 > 0))
+			LOCAL:10 += ARG:11 * 640 * (1 - (BASE:Ｖ結界耐久力 > 0))
+			LOCAL:11 += ARG:11 * 1280 / (1 + (BASE:Ｖ結界耐久力 > 0))
+		ELSEIF EXP:Ｖ拡張経験 < 8
+			TIMES LOCAL:1, 0.80
+			LOCAL:8 += ARG:11 * 1600 / (1 + (BASE:Ｖ結界耐久力 > 0))
+			LOCAL:9 += ARG:11 * 160 / (1 + (BASE:Ｖ結界耐久力 > 0))
+			LOCAL:10 += ARG:11 * 320 * (1 - (BASE:Ｖ結界耐久力 > 0))
+			LOCAL:11 += ARG:11 * 640 / (1 + (BASE:Ｖ結界耐久力 > 0))
+		ELSE
+			LOCAL:8 += ARG:11 * 4000 / (1 + (BASE:Ｖ結界耐久力 > 0))
+			LOCAL:9 += ARG:11 * 400 / (1 + (BASE:Ｖ結界耐久力 > 0))
+			LOCAL:10 += ARG:11 * 80 * (1 - (BASE:Ｖ結界耐久力 > 0))
+			LOCAL:11 += ARG:11 * 160 / (1 + (BASE:Ｖ結界耐久力 > 0))
+		ENDIF
+	ENDIF
+ENDIF
+;快Ａ
+IF ARG:12 > 0
+	;Ａ経験
+	EXP:Ａ経験 += 1
+	IF ARG:7 == 0
+		LOCAL:2 += MIN(ABL:Ａ感覚 * ABL:Ａ感覚, 25) * ARG:12 * 60 + ARG:12 * 100
+	ELSEIF ARG:7 == 1
+		LOCAL:2 += MIN(ABL:Ａ感覚 * ABL:Ａ感覚, 25) * ARG:12 * 150 + ARG:12 * 80
+	ELSE
+		LOCAL:2 += MIN(ABL:Ａ感覚 * ABL:Ａ感覚, 25) * ARG:12 * 300 + ARG:12 * 200
+	ENDIF
+	;Ａ感覚が低いと恐怖と苦痛が少し入る
+	IF ABL:Ａ感覚 < 3
+		LOCAL:10 += ARG:7 * ARG:7 * ARG:11 * 50 / (ABL:Ａ感覚 + 1) * (1 - (BASE:Ａ結界耐久力 > 0))
+		LOCAL:11 += ARG:7 * ARG:7 * ARG:11 * 50 / (ABL:Ａ感覚 + 1) / (1 + (BASE:Ｖ結界耐久力 > 0))
+	ENDIF
+	;Ａ感覚に応じて屈服が入る
+	IF ARG:7 == 0
+		LOCAL:8 += MIN(ABL:Ａ感覚 * ABL:Ａ感覚, 25) * 120 + 100
+		SIF ABL:Ａ感覚 >= 5
+			LOCAL:8 += ABL:Ａ感覚 * 100 + 1400
+	ELSE
+		LOCAL:8 += (MIN(ABL:Ａ感覚 * ABL:Ａ感覚, 25) * 120 + 100) * 2
+		SIF ABL:Ａ感覚 >= 5
+			LOCAL:8 += (ABL:Ａ感覚 * 100 + 1400) * 2
+	ENDIF
+	;Ａ挿入系の場合
+	TRYCCALLFORM SEX_TYPE_MOB_{FLAG:11}_COM{ARG:0}
+		IF (RESULT & 挿入) > 0
+			;挿入できていれば追加のＡ経験
+			IF BASE:Ａ結界耐久力 <= 0
+				EXP:Ａ経験 += 1
+				;Ａ拡張の場合
+				IF (ARG:9 & 2) > 0
+					EXP:Ａ拡張経験 += 1
+					EXP:Ａ経験 += 3
+				ENDIF
+			ENDIF
+		ENDIF
+	CATCH
+	ENDCATCH
+	;Ａ拡張の場合快楽、屈服、恥情、苦痛、恐怖が入る
+	IF (ARG:9 & 2) > 0
+		IF EXP:Ａ拡張経験 < 3
+			TIMES LOCAL:2, 0.10
+			LOCAL:8 += ARG:12 * 400 / (1 + (BASE:Ａ結界耐久力 > 0))
+			LOCAL:9 += ARG:12 * 40 / (1 + (BASE:Ａ結界耐久力 > 0))
+			LOCAL:10 += ARG:12 * 800 * (1 - (BASE:Ａ結界耐久力 > 0))
+			LOCAL:11 += ARG:12 * 1600 / (1 + (BASE:Ａ結界耐久力 > 0))
+		ELSEIF EXP:Ａ拡張経験 < 5
+			TIMES LOCAL:2, 0.50
+			LOCAL:8 += ARG:12 * 800 / (1 + (BASE:Ａ結界耐久力 > 0))
+			LOCAL:9 += ARG:12 * 80 / (1 + (BASE:Ａ結界耐久力 > 0))
+			LOCAL:10 += ARG:12 * 640 * (1 - (BASE:Ａ結界耐久力 > 0))
+			LOCAL:11 += ARG:12 * 1280 / (1 + (BASE:Ａ結界耐久力 > 0))
+		ELSEIF EXP:Ａ拡張経験 < 8
+			TIMES LOCAL:2, 0.80
+			LOCAL:8 += ARG:12 * 1600 / (1 + (BASE:Ａ結界耐久力 > 0))
+			LOCAL:9 += ARG:12 * 160 / (1 + (BASE:Ａ結界耐久力 > 0))
+			LOCAL:10 += ARG:12 * 320 * (1 - (BASE:Ａ結界耐久力 > 0))
+			LOCAL:11 += ARG:12 * 640 / (1 + (BASE:Ａ結界耐久力 > 0))
+		ELSE
+			LOCAL:8 += ARG:12 * 4000 / (1 + (BASE:Ａ結界耐久力 > 0))
+			LOCAL:9 += ARG:12 * 400 / (1 + (BASE:Ａ結界耐久力 > 0))
+			LOCAL:10 += ARG:12 * 80 * (1 - (BASE:Ａ結界耐久力 > 0))
+			LOCAL:11 += ARG:12 * 160 / (1 + (BASE:Ａ結界耐久力 > 0))
+		ENDIF
+	ENDIF
+ENDIF
+;快Ｂ
+IF ARG:13 > 0
+	IF ARG:7 == 0
+		LOCAL:3 += MIN(ABL:Ｂ感覚 * ABL:Ｂ感覚, 25) * ARG:13 * 60 + ARG:13 * 100
+	ELSEIF ARG:7 == 1
+		LOCAL:3 += MIN(ABL:Ｂ感覚 * ABL:Ｂ感覚, 25) * ARG:13 * 150 + ARG:13 * 80
+	ELSE
+		LOCAL:3 += MIN(ABL:Ｂ感覚 * ABL:Ｂ感覚, 25) * ARG:13 * 300 + ARG:13 * 200
+	ENDIF
+ENDIF
+;マゾによる屈服、恐怖影響度
+IF ARG:14 > 0
+	LOCAL:8 += MIN(ABL:マゾっ気 * ABL:マゾっ気, 25) * ARG:14 * 150 + ARG:14 * 100
+	IF ABL:従順 < 4
+		IF ABL:マゾっ気 < 4
+			LOCAL:11 += ARG:14 * 2000
+		ELSE
+			LOCAL:11 += ARG:14 * 200
+		ENDIF
+	ELSE
+		IF ABL:マゾっ気 < 4
+			LOCAL:11 += ARG:14 * 200
+		ELSE
+			LOCAL:11 += ARG:14 * 20
+		ENDIF
+	ENDIF
+	;苦痛快楽経験
+	EXP:苦痛快楽経験 += 1
+ENDIF
+;挿入による恭順影響度
+IF ARG:15 > 0
+	LOCAL:5 += MIN(ABL:従順 * ABL:従順, 25) * ARG:15 * 15 + ARG:15 * 40
+ENDIF
+;習得影響度
+IF ARG:16 > 0
+	LOCAL:6 += MIN(ABL:奉仕精神 * ABL:奉仕精神, 25) * ARG:16 * 15 / 2 + ARG:16 * 4
+ENDIF
+;露出癖による欲情、恥情、恐怖影響度
+IF ARG:17 > 0
+	LOCAL:7 += MIN(ABL:奉仕精神 * ABL:奉仕精神, 25) * ARG:17 * 15 + ARG:17 * 10
+	LOCAL:9 += MIN(ABL:露出癖, 5) * ARG:17 * 100 + ARG:17 * 400
+	LOCAL:11 += MIN((5 - ABL:奉仕精神) * (5 - ABL:奉仕精神), 25) * ARG:17 * 15 + ARG:17 * 10
+	;露出快楽経験
+	EXP:露出快楽経験 += 1
+ENDIF
+;強制奉仕による屈服影響度
+IF ARG:18 > 0
+	LOCAL:8 += MIN(ABL:従順 * ABL:従順, 25) * ARG:18 * 40 + ARG:18 * 20
+	;奉仕精神に応じてボーナス
+	IF ABL:奉仕精神 < 3
+	ELSEIF ABL:奉仕精神 < 4
+		LOCAL:5 += 500
+		LOCAL:6 += 200
+	ELSEIF ABL:奉仕精神 < 5
+		LOCAL:5 += 1000
+		LOCAL:6 += 500
+	ELSE
+		LOCAL:5 += 2000
+		LOCAL:6 += 1000
+	ENDIF
+	;奉仕快楽経験
+	EXP:奉仕快楽経験 += 1
+ENDIF
+
+;追加責め実行
+IF EX_COM
+	CALL SEX_COMEX, ARG:2, ARG:7, EX_COM | SH_COM
+	REPEAT 12
+		LOCAL:COUNT += RESULT:COUNT
+	REND
+ENDIF
+
+;結果を返す
+RETURN LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, LOCAL:12

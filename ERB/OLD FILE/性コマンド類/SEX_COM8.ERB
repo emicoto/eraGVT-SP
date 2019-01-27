@@ -1,0 +1,102 @@
+;スパンキング
+
+;性コマンド分類
+@SEX_TYPE_COM8
+RETURN 通常
+
+@SEX_COM8,ARG = 0,ARG:1 = 0
+;追加責め
+EX_COM = 0
+SH_COM = 0
+
+;取得パラメータ計算
+;ベース値の明示的初期化
+REPEAT 12
+	LOCAL:COUNT = 0
+REND
+
+;油断度の上昇
+TFLAG:3 += 5
+
+;射精値 25
+CALL TENTACLE_SYASEI_UP, 25
+
+;触手サイズの設定
+CALL SET_TENTACLE_SIZE, FLAG:10, FLAG:11, FLAG:110, FLAG:111, 8
+
+IF FLAG:10 == 2
+	CALLFORM MESSAGE_MOB_{ARG}_COM8, EX_COM, SH_COM
+ELSE
+	;地の文：洗脳/悪堕ちキャラが操作キャラにスパンキングをした
+	SIF FLAG:110 == 1
+		CALL MESSAGE_OTHER_SEX_COM8
+	;地の文：COM8
+	CALL MESSAGE_SEX_COM8
+ENDIF
+
+;結界による触手本数の変動
+CALL SET_TENTACLE_POOL
+;服へのダメージ
+CALL CLOTH_BATTLE_DAMAGE, 15
+
+;ベース
+EXP:苦痛快楽経験 += 1
+
+;屈服　マゾっ気で変化
+IF ABL:マゾっ気 == 0
+	LOCAL:8 = 40
+ELSEIF ABL:マゾっ気 == 1
+	LOCAL:8 = 200
+ELSEIF ABL:マゾっ気 == 2
+	LOCAL:8 = 400
+ELSEIF ABL:マゾっ気 == 3
+	LOCAL:8 = 1000
+ELSEIF ABL:マゾっ気 == 4
+	LOCAL:8 = 2000
+ELSEIF ABL:マゾっ気 >= 5
+	LOCAL:8 = 4000
+ENDIF
+
+;恐怖　従順とマゾっ気で大まかに
+IF ABL:従順 < 3
+	IF ABL:マゾっ気 < 3
+		LOCAL:11 = 1000
+	ELSE
+		LOCAL:11 = 100
+	ENDIF
+ELSE
+	IF ABL:マゾっ気 < 3
+		LOCAL:11 = 100
+	ELSE
+		LOCAL:11 = 10
+	ENDIF
+ENDIF
+
+;行動予約なし
+TFLAG:17 = -1
+;触手の行動を記録
+TFLAG:20 = 8
+
+;習得基本値
+LOCAL:6 += 0
+
+;欲情基本値
+LOCAL:7 += 0
+
+;屈服基本値
+LOCAL:8 += 1000
+
+;恥情基本値
+LOCAL:9 += 100
+
+;苦痛基本値
+LOCAL:10 += 4000
+
+;恐怖基本値
+LOCAL:11 += 4000
+
+;体力消費基本値
+LOCAL:12 += 50
+
+;計算へ
+CALL PALAM_CAL, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, LOCAL:12

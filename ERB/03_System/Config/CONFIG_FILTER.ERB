@@ -1,0 +1,100 @@
+;ベースはCONFIG_S.ERB
+;FLAG:850
+;使うフラグを減らすためにバイナリ表示で
+;1 ふたなり		1
+;2 母乳体質		2
+;3 寄生			4
+;4 異形出産		8
+;5 男女平等		16
+;6 淫紋			32
+;7~12 淫紋サブ		64,128,256,512,1024,2048
+;13 悪堕ちキャラの触手	4096
+;14 グロテスク表現	8192
+;15 スカトロ表現	16384
+;16 拡張度表示		32768
+;17 極端な拡張を抑制	65536
+;---------------------------------------------
+;ARG番目のパッチがONになっているかチェック
+;---------------------------------------------
+@FILTER_CHECK,ARG
+LOCAL = GETBIT (FLAG:850,ARG)
+RETURN LOCAL
+
+;式中関数版
+@FILTER_CHECK_F(ARG)
+#FUNCTION
+LOCAL = GETBIT (FLAG:850,ARG)
+RETURNF LOCAL
+
+;---------------------------------------------
+;フィルタの処理
+;---------------------------------------------
+@CONFIG_F
+LOCAL = LINECOUNT
+$MASTER_LOOP
+PRINTL 
+DRAWLINE
+PRINTL 性嗜好フィルタ　×にした要素はゲーム中に登場しなくなります
+PRINTL
+CALL FILTER_CHECK,1
+PRINTFORML [11]ふたなりの取得　　　　　　　　　【\@RESULT?×#○\@】
+CALL FILTER_CHECK,2
+PRINTFORML [12]母乳体質の取得　　　　　　　　　【\@RESULT?×#○\@】
+CALL FILTER_CHECK,3
+PRINTFORML [13]寄生の取得　　　　　　　　　　　【\@RESULT?×#○\@】
+CALL FILTER_CHECK,4
+PRINTFORML [14]出産時の合いの子(異形)描写　　　【\@RESULT?×#○\@】
+CALL FILTER_CHECK,5
+PRINTFORML [15]男女平等(オトコも犯される)　　　【\@RESULT?×#○\@】
+CALL FILTER_CHECK,6
+PRINTFORML [16]淫紋の取得　　　　　　　　　　　【\@RESULT?×#○\@】
+IF RESULT == 0
+	CALL FILTER_CHECK,7
+	PRINTFORML [17]淫紋：複数個所の取得　　　　　　【\@RESULT?○#×\@】
+	CALL FILTER_CHECK,8
+	PRINTFORML [18]淫紋：複雑化　　　　　　　　　　【\@RESULT?○#×\@】
+	CALL FILTER_CHECK,9
+	PRINTFORML [19]淫紋：救出後も浸食が進む　　　　【\@RESULT?○#×\@】　
+	CALL FILTER_CHECK,10
+	PRINTFORML [20]淫紋：汚染度と連動する　　　　　【\@RESULT?×#○\@】
+	CALL FILTER_CHECK,11
+	PRINTFORML [21]淫紋：対応フォントの使用　　　　【\@RESULT?○#×\@】
+	CALL FILTER_CHECK,12
+	PRINTFORML [22]淫紋：Wingdingsの使用 　　　　　【\@RESULT?○#×\@】
+ENDIF
+CALL FILTER_CHECK,13
+PRINTFORML [23]寄生陥落キャラによる触手責め　　【\@RESULT?×#○\@】
+CALL FILTER_CHECK,14
+PRINTFORML [24]残酷/ハードな描写 　　　　　　　【\@RESULT?×#○\@】
+CALL FILTER_CHECK,15
+PRINTFORML [25]スカトロ系描写 　 　　　　　　　【\@RESULT?×#○\@】
+CALL FILTER_CHECK,16
+PRINTFORML [26]拡張度の表示　 　 　　　　　　　【\@RESULT?×#○\@】
+IF RESULT == 0
+	CALL FILTER_CHECK,17
+	PRINTFORML [27]極端な拡張を抑制する　　　　　　【\@RESULT?×#○\@】
+ENDIF
+
+PRINTL 
+PRINTL [200]変更を保存して戻る
+PRINTL 
+$INPUT_LOOP
+INPUT
+IF RESULT < 28 && RESULT > 10
+	INVERTBIT FLAG:850,(RESULT-10)
+	SIF GETBIT(FLAG:850, (RESULT-10)) && RESULT == 21
+		CLEARBIT FLAG:850, 12
+	SIF GETBIT(FLAG:850, (RESULT-10)) && RESULT == 22
+		CLEARBIT FLAG:850, 11
+	CLEARLINE LINECOUNT - LOCAL
+	GOTO MASTER_LOOP
+ELSEIF RESULT == 200
+	GLOBAL:4 = FLAG:850
+	SAVEGLOBAL
+	RETURN
+ELSE
+	GOTO INPUT_LOOP
+ENDIF
+
+
+

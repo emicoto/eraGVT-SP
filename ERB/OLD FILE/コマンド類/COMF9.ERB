@@ -1,0 +1,107 @@
+;暴れる
+@COM9
+#DIM HIT_FLAG
+HIT_FLAG = 1
+
+;刻印による行動制限判定　１で行動できない
+CALL ACT_LIMIT
+SIF RESULT == 1
+	RETURN 1
+
+;距離表示
+CALL PRINT_DISTANCE
+PRINTL 
+
+;地の文：暴れる
+CALL MESSAGE_BATTLE_CHARA_ABARERU
+;地の文：洗脳/悪堕ちキャラが操作キャラの暴れるを見た
+SIF FLAG:110 == 1
+	CALL MESSAGE_OTHER_BATTLE_CHARA_ABARERU
+
+;暴れるには命中判定なし　100%成功
+
+;防御フラグ判定：確率で相手を怯ませる
+IF FLAG:111 == 0
+	;触手の攻撃力を見る
+	CALL TENTACLE_ACCESS, "KOUGEKI"
+	LOCAL:0 = RESULT
+ELSE
+	;敵キャラの攻撃力
+	LOCAL:0 = MAXBASE:(FLAG:111):攻撃
+ENDIF
+;相手の油断による補正
+SIF TFLAG:2 >= 1
+	LOCAL:0 = 1
+;キャラの防御を見る
+CALL SHINKYOU_CHECK, "BOUGYO", CORRECTION_TRANS(MAXBASE:防御)
+LOCAL:1 = RESULT
+CALL CLOTH_BATTLE_HOSEI, "BOUGYO"
+LOCAL:1 = RESULT * LOCAL:1 / 100
+;「EX:防」中は防御値上昇
+SIF GETBIT(TCVAR:3, 1)
+	LOCAL:1 *= 2
+
+;行動成功率確率算出
+LOCAL:0 = LIMIT(20 * LOCAL:1 / LOCAL:0 + 5, 5, 70)
+SIF FLAG:10 == 2
+	LOCAL:0 /= 2
+IF RAND:100 < LOCAL:0
+	TCVAR:2 = 体勢：暴れる防御
+ELSE
+	TCVAR:2 = 体勢：暴れる失敗
+ENDIF
+
+;クリティカル判定
+;衣装による補正
+RESULT = 0
+CALL CLOTH_BATTLE_HOSEI, "CRITICAL"
+IF RAND:100 < 5 + RESULT
+	LOCAL:0 = 15
+	;直撃フラグ
+	HIT_FLAG = 2
+	;地の文：攻撃がクリティカルヒット
+	CALL MESSAGE_BATTLE_CHARA_ATTACK_CRITICAL_HIT
+	;地の文：洗脳/悪堕ちキャラが操作キャラの攻撃をクリティカルヒットされた
+	SIF FLAG:110 == 1
+		CALL MESSAGE_OTHER_BATTLE_CHARA_ATTACK_CRITICAL_HIT
+	;クリティカルした場合、相手を怯ませる
+	TCVAR:2 = 体勢：暴れるクリティカル
+ELSE
+	LOCAL:0 = 10
+	;地の文：攻撃が通常ヒット
+	CALL MESSAGE_BATTLE_CHARA_ATTACK_HIT
+	;地の文：洗脳/悪堕ちキャラが操作キャラの攻撃を通常ヒットされた
+	SIF FLAG:110 == 1
+		CALL MESSAGE_OTHER_BATTLE_CHARA_ATTACK_HIT
+	
+ENDIF
+
+;ダメージ計算
+CALL DAMAGE, "ABARERU"
+
+FLAG:13 -= RESULT * LOCAL:0 / 10
+FONTBOLD
+PRINTFORML {RESULT * LOCAL:0 / 10}のダメージを与えた！
+FONTREGULAR
+PRINTW 
+
+;服へのダメージ
+CALL CLOTH_BATTLE_DAMAGE, 4
+
+;行動ポイントを+3
+EX:行動ポイント += 3
+
+;サディストの効果
+IF TALENT:サド気質 > 0 && HIT_FLAG > 0
+	;気力が微量に回復
+	LOCAL:1 = RAND:(MAXBASE:気力 * HIT_FLAG * 8 / 100) + 10
+	SIF BASE:気力 + LOCAL:1 >= MAXBASE:気力
+		LOCAL:1 = MAXBASE:気力 - BASE:気力
+	BASE:気力 += LOCAL:1
+	;欲情が微量に増加
+	COMMON_PALAM:7 += LOCAL:1 * 10
+	SIF LOCAL:1 > 0
+		PRINTFORML サディスティックな快楽で%BASENAME:1%が{LOCAL:1}回復した
+ENDIF
+
+RETURN 1

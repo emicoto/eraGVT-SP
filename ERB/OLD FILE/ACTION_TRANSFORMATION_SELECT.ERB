@@ -1,0 +1,158 @@
+;**********************************************************
+;行動開始時の変身に関する処理
+@ACTION_TRANSFORMATION_SELECT, ARG, ARGS
+#DIMS ACTION_NAME,2
+IF ARGS == "特別活動"
+	ACTION_NAME:0 = 変身した状態で特別活動に行きますか？
+	ACTION_NAME:1 = 変身せずにそのまま特別活動に行きます。
+ELSEIF ARGS == "情報収集"
+	ACTION_NAME:0 = 変身した状態で情報収集を行いますか？
+	ACTION_NAME:1 = 変身せずにそのまま情報収集を行います。
+ELSEIF ARGS == "気晴らし"
+	ACTION_NAME:0 = 変身した状態で気晴らしに行きますか？
+	ACTION_NAME:1 = 変身せずにそのまま気晴らしに行きます。
+ENDIF
+
+;変身可能キャラは変身状態になるか選べる
+;妊娠が発覚している場合、男体化ＴＳ変身キャラは変身できない
+IF TALENT:ARG:変身能力 > 0
+  IF GLOBAL:50 == 1
+       IF ARGS == "特別活動" && CFLAG:ARG:101 != 0
+	      RESULT = CFLAG:ARG:101 - 1
+		  GOTO SKIPSELECT
+
+	   ELSEIF ARGS == "情報収集" && CFLAG:ARG:102 != 0
+	      RESULT = CFLAG:ARG:102 - 1
+	      GOTO SKIPSELECT
+
+	   ELSEIF ARGS == "気晴らし" && CFLAG:ARG:103 != 0
+	      RESULT = CFLAG:ARG:103 - 1
+		  GOTO SKIPSELECT
+
+	   ELSE
+	   GOTO SELECTION
+	   ENDIF
+
+  ELSEIF GLOBAL:50 == 0
+    IF ARGS == "特別活動"
+	     IF TALENT:ARG:オトコ > 0 && TALENT:ARG:変身時ＴＳ > 0 && GLOBAL:52 != 0
+	    	RESULT = (GLOBAL:52) - 1
+		    GOTO SKIPSELECT
+
+	     ELSEIF TALENT:ARG:オトコ == 0 && TALENT:ARG:変身時ＴＳ > 0  && GLOBAL:53 != 0
+		    RESULT = (GLOBAL:53) - 1
+		    GOTO SKIPSELECT
+
+	     ELSEIF TALENT:ARG:変身時ＴＳ == 0 && GLOBAL:51 != 0
+	    	RESULT = (GLOBAL:51) - 1
+	    	GOTO SKIPSELECT
+	    ELSE
+            GOTO SELECTION
+
+	    ENDIF
+
+	   ELSEIF ARGS == "情報収集"
+    	   IF TALENT:ARG:オトコ > 0 && TALENT:ARG:変身時ＴＳ > 0 && GLOBAL:55 != 0
+            RESULT = (GLOBAL:55) - 1
+			GOTO SKIPSELECT
+
+    	   ELSEIF TALENT:ARG:オトコ == 0 && TALENT:ARG:変身時ＴＳ > 0  && GLOBAL:56 != 0
+			RESULT = (GLOBAL:56) - 1
+			GOTO SKIPSELECT
+
+    	   ELSEIF TALENT:ARG:変身時ＴＳ == 0 && GLOBAL:54 != 0
+		    RESULT = (GLOBAL:54) - 1
+		    GOTO SKIPSELECT
+
+    	   ELSE
+		    GOTO SELECTION
+
+    	   ENDIF
+
+	 ELSEIF ARGS == "気晴らし"
+    	   IF TALENT:ARG:オトコ > 0 && TALENT:ARG:変身時ＴＳ > 0 && GLOBAL:58 != 0
+		    RESULT = (GLOBAL:58) - 1
+			GOTO SKIPSELECT
+
+    	    ELSEIF TALENT:ARG:オトコ == 0 && TALENT:ARG:変身時ＴＳ > 0  && GLOBAL:59 != 0
+			 RESULT = (GLOBAL:59) - 1
+			 GOTO SKIPSELECT
+
+    	    ELSEIF TALENT:ARG:変身時ＴＳ == 0 && GLOBAL:57 != 0
+			 RESULT = (GLOBAL:57) - 1
+			 GOTO SKIPSELECT
+    	    ELSE
+			 GOTO SELECTION
+    	   ENDIF
+
+	ENDIF
+
+  ENDIF
+
+	  $SELECTION
+    	IF TALENT:ARG:オトコ > 0 && TALENT:ARG:変身時ＴＳ > 0 
+			PRINTFORM %PRINT_TRANSCALLNAME(ARG)%は変身で女体化できます。%ACTION_NAME:0%
+		ELSEIF TALENT:ARG:オトコ == 0 && TALENT:ARG:変身時ＴＳ > 0  
+			PRINTFORM %PRINT_TRANSCALLNAME(ARG)%は変身で男性化できます。%ACTION_NAME:0%
+		ELSE
+			PRINTFORM %PRINT_TRANSCALLNAME(ARG)%は変身できます。%ACTION_NAME:0%
+		ENDIF
+		PRINTL 
+		PRINTFORML 　[0]はい　　[1]いいえ
+		$INPUT_LOOP_0_0
+		INPUT
+
+		
+      $SKIPSELECT
+
+	IF RESULT == 0
+		;妊娠している場合、男体化ＴＳ変身キャラは変身に失敗
+		IF CHARATALENT_F(ARG,0,"オトコ") == 0 && CHARATALENT_F(ARG,1,"オトコ") > 0 && TALENT:ARG:妊娠 > 0
+			PRINTFORML しかし、%PRINT_TRANSCALLNAME(ARG)%の変身は失敗した！
+			PRINTFORML いつものように変身しようとした筈なのに、なぜか何も起こらない…
+			PRINTFORM 仕方ないので、%ACTION_NAME:1%
+			IF TALENT:ARG:オトコ > 0
+				PRINT (♂)
+			ELSEIF TALENT:ARG:ふたなり
+				PRINT (ふたなり)
+			ELSE
+				PRINT (♀)
+			ENDIF
+			PRINTL
+		ELSE
+			PRINTFORM %PRINT_TRANSCALLNAME(ARG)%は変身した！
+			IF CHARATALENT_F(ARG,0,"オトコ") != CHARATALENT_F(ARG,1,"オトコ")
+				IF TALENT:ARG:オトコ > 0
+					PRINT (♂)→
+				ELSEIF TALENT:ARG:ふたなり
+					PRINT (ふたなり)→
+				ELSE
+					PRINT (♀)→
+				ENDIF
+			ENDIF
+			CALL TRANSFORM, 1
+			IF TALENT:ARG:オトコ > 0
+				PRINT (♂)
+			ELSEIF TALENT:ARG:ふたなり
+				PRINT (ふたなり)
+			ELSE
+				PRINT (♀)
+			ENDIF
+		ENDIF
+		PRINTL
+	ELSEIF RESULT == 1
+		PRINTFORM %ACTION_NAME:1%
+		IF TALENT:ARG:オトコ > 0
+			PRINT (♂)
+		ELSEIF TALENT:ARG:ふたなり
+			PRINT (ふたなり)
+		ELSE
+			PRINT (♀)
+		ENDIF
+		PRINTL
+	ELSE
+		GOTO INPUT_LOOP_0_0
+	ENDIF
+	PRINTW 
+	DRAWLINE
+ENDIF

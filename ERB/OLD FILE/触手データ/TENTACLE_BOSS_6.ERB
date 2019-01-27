@@ -1,0 +1,234 @@
+;--------------------------------------------------
+;ボス触手6 P触手
+;↓触手の存在確認用関数　何も処理しない
+@TENTACLE_BOSS_6
+;--------------------------------------------------
+;名前
+@TENTACLE_BOSS_6_GETNAME
+RESULTS = Ｐ触手
+
+;--------------------------------------------------
+;名前
+@TENTACLE_BOSS_6_DEFENITION
+;PLANT
+PRINTFORML （蔦のごとく触手を生やした食虫植物のような姿のボス触手）
+PRINTFORML （ウツボカズラ状の胴体には得体のしれない液体が蓄えられている）
+
+;--------------------------------------------------
+;HP
+@TENTACLE_BOSS_6_HP
+LOCAL = 10000
+CALL TENTACLE_STATUS_HOSEI, LOCAL,2500
+RETURN RESULT
+
+;--------------------------------------------------
+;射精限界値
+@TENTACLE_BOSS_6_SYASEI
+CALL TENTACLE_LEVEL
+LOCAL = 700 + RESULT * 25
+RETURN LOCAL
+
+;--------------------------------------------------
+;搾精ダメージ補正
+@TENTACLE_BOSS_6_SAKUSEI
+LOCAL = 60
+RETURN LOCAL
+
+;--------------------------------------------------
+;油断度閾値
+@TENTACLE_BOSS_6_YUDAN
+LOCAL = 1560
+RETURN LOCAL
+
+;--------------------------------------------------
+;攻撃
+@TENTACLE_BOSS_6_KOUGEKI
+LOCAL = 150
+CALL TENTACLE_STATUS_HOSEI, LOCAL
+RETURN RESULT
+
+;--------------------------------------------------
+;防御
+@TENTACLE_BOSS_6_BOUGYO
+LOCAL = 175
+CALL TENTACLE_STATUS_HOSEI, LOCAL
+RETURN RESULT
+
+;--------------------------------------------------
+;敏捷
+@TENTACLE_BOSS_6_BINSYOU
+LOCAL = 85
+CALL TENTACLE_STATUS_HOSEI, LOCAL
+RETURN RESULT
+
+;--------------------------------------------------
+;知性
+@TENTACLE_BOSS_6_CHISEI
+LOCAL = 80
+CALL TENTACLE_STATUS_HOSEI, LOCAL,10
+RETURN RESULT
+
+;--------------------------------------------------
+;近距離
+@TENTACLE_BOSS_6_SHORT
+RESULT = 110
+RETURN RESULT
+
+;--------------------------------------------------
+;中距離
+@TENTACLE_BOSS_6_MIDDLE
+RESULT = 140
+RETURN RESULT
+
+;--------------------------------------------------
+;遠距離
+@TENTACLE_BOSS_6_LONG
+RESULT = 125
+RETURN RESULT
+
+;--------------------------------------------------
+;拘束力
+@TENTACLE_BOSS_6_HOLD
+RESULT = 180
+RETURN RESULT
+
+;--------------------------------------------------
+;PALAM補正 百分率で返す
+@TENTACLE_BOSS_6_PALAM_HOSEI
+
+;快C
+LOCAL:0 = 100
+;快V
+LOCAL:1 = 100
+;快A
+LOCAL:2 = 100
+;快B
+LOCAL:3 = 100
+;潤滑
+LOCAL:4 = 100
+;恭順
+LOCAL:5 = 120
+;習得
+LOCAL:6 = 200
+;欲情
+LOCAL:7 = 100
+;屈服
+LOCAL:8 = 120
+;恥辱
+LOCAL:9 = 100
+;苦痛
+LOCAL:10 = 100
+;恐怖
+LOCAL:11 = 100
+
+IF TFLAG:23
+	FOR LOCAL:12, 0,12
+		LOCAL:(LOCAL:12) /= 4
+	NEXT
+ENDIF
+
+RETURN LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11
+
+
+
+;--------------------------------------------------
+;専用ルーチン（戦闘）
+@TENTACLE_BOSS_6_ATTACK_ROUTINE
+LOCAL:0 = RAND:100
+IF LOCAL:0 < 20
+	RETURN 2
+ELSE 
+	RETURN 0
+ENDIF
+
+;--------------------------------------------------
+;専用ルーチン（性行為）
+@TENTACLE_BOSS_6_SEX_ROUTINE
+;挿入系コマンドが少ないため、衣装の破壊の優先度アップ
+SIF RAND:100 < 12
+	RETURN 14
+
+LOCAL = RAND:100
+IF BASE:性耐性 == 0 && TFLAG:23 == 0
+	RETURN 1013
+ELSEIF TFLAG:23 && RAND:100 < 90 - TFLAG:23 * 5
+	RETURN 1013
+ELSEIF LOCAL < 20
+	RETURN 10
+ELSEIF LOCAL < 35
+	RETURN 11
+ELSEIF LOCAL < 40
+	RETURN 1005
+ELSEIF LOCAL < 45
+	RETURN 2
+ELSEIF LOCAL < 50
+	RETURN 3
+ELSEIF LOCAL < 60
+	RETURN 5
+ELSEIF LOCAL < 70
+	RETURN 12
+ELSEIF LOCAL < 75
+	RETURN 13
+ELSE
+	RETURN -1
+ENDIF
+
+;--------------------------------------------------
+;性コマンドレファレンス
+;ARG=1　素股焦らし成功時の行動指定
+;ARG=2　素股焦らし失敗時の行動指定
+;ARG=3　フェラチオ誘発時の行動指定
+@TENTACLE_BOSS_6_REACTION_REF, ARG = 0
+IF ARG == 1
+	LOCAL = RAND:6
+	IF LOCAL < 2
+		RETURN 3
+	ELSEIF LOCAL < 4
+		RETURN 5
+	ELSEIF LOCAL < 5
+		RETURN 1001
+	ELSE
+		RETURN 1002
+	ENDIF
+ELSEIF ARG == 2
+	RETURN 15
+ELSEIF ARG == 3
+	RETURN 11
+ENDIF
+RETURN -1
+
+
+;--------------------------------------------------
+;専用ルーチン（幽閉）
+@TENTACLE_BOSS_6_PRISON_ROUTINE
+LOCAL = RAND:100
+IF LOCAL < 30
+	CALL PRISON_COMABLE, 5
+	RETURN 1
+ELSEIF LOCAL < 35
+	CALL PRISON_COMABLE, 101
+	RETURN 1
+ELSEIF LOCAL < 40
+	CALL PRISON_COMABLE, 200
+	RETURN 1
+ELSE
+	RETURN 0
+ENDIF
+
+;--------------------------------------------------
+;触手サイズ補正
+;この補正の後に部位ごとの補正が入る
+@TENTACLE_BOSS_6_TENTACLE_SIZE,ARG
+;C用触手
+LOCAL:0 = 190
+LOCAL:4 = 1
+;V用触手
+LOCAL:1 = 30
+LOCAL:5 = RAND:90 + 5
+;A用触手
+LOCAL:2 = 150
+LOCAL:6 = 1
+;B用触手
+LOCAL:3 = 30
+LOCAL:7 = RAND:90 + 5
+RETURN LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7

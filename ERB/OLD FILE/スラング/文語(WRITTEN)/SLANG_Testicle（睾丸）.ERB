@@ -1,0 +1,94 @@
+;**********************************************************
+;基本ルール
+;加筆修正は、自由に行ってください
+;ただし、前の方が書いた文章は出来る限り消さないでください
+;
+;書き込む順番は、クドくなり過ぎないように3要素と部位で表現します
+;【実況】汁に濡れている、寄生されている、触手拘束具などを装着など
+;【形状】大きさ、深さなど、
+;【動作】開閉している、うごめいているなど、動きを表現
+;【部位呼称】淫乱や発情や性格で下品な書き方に
+;
+;ザーメンは別に表現されているので、ここではうまく扱う
+;
+;増やして欲しい隠語は、アウトプットしてリクエストなりしましょう
+;未登録の中に放り込むなり、掲示板にアップするなりすれば、
+;実装される可能性があります
+;
+;by 雑魚の人 2018/02/11
+;**********************************************************
+;Testicle(睾丸)の淫語
+@SLANG_Testicle(ARG)
+#DIMS SLANGWORD_Testicle
+#FUNCTIONS
+
+;初期化
+SLANGWORD_Testicle=
+
+;第一形容詞：状況（汁など）
+IF TALENT:淫乱 > 0
+	SELECTCASE RAND:2
+		CASE 1
+			SLANGWORD_Testicle += "先走り液が溢れる"
+		CASEELSE
+			SLANGWORD_Testicle += "カウパーが溢れる"
+	ENDSELECT
+ENDIF
+
+
+
+;第二形容詞：形状表現
+
+
+
+;第三形容詞：動作表現
+IF TALENT:淫乱 > 0
+	SELECTCASE RAND:2
+		CASE 1
+			SLANGWORD_Testicle += "ドクドクと脈打つ"
+		CASEELSE
+			SLANGWORD_Testicle += "キュンキュンしている"
+	ENDSELECT
+ENDIF
+
+;部位呼称
+IF TALENT:淫乱 > 0
+	SELECTCASE RAND:3
+		CASE 2
+			SLANGWORD_Testicle += "精液製造機"
+		CASE 1
+			SLANGWORD_Testicle += "精液バンク"
+		CASEELSE
+			SLANGWORD_Testicle += "ザーメンタンク"
+	ENDSELECT
+ELSE
+	SELECTCASE RAND:3
+		CASE 2
+			SLANGWORD_Testicle += "玉袋"
+		CASE 1
+			SLANGWORD_Testicle += "睾丸"
+		CASEELSE
+			SLANGWORD_Testicle += "金玉"
+	ENDSELECT
+ENDIF
+
+
+;合成して出来上がった淫語を返す
+RETURNF SLANGWORD_Testicle
+
+
+
+
+
+;*************【淫語覚書（未登録）】***********************
+;
+;
+;
+;
+;
+;*************【淫語覚書（未登録）】***********************
+
+
+
+
+

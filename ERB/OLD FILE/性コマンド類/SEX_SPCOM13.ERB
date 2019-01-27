@@ -1,0 +1,298 @@
+;丸飲み精液攻め
+
+;性コマンド分類
+@SEX_TYPE_COM1013
+RETURN 通常
+
+@SEX_SPCOM13
+;取得パラメータ計算
+;ベース値の明示的初期化
+REPEAT 12
+	LOCAL:COUNT = 0
+REND
+
+;触手サイズの設定
+CALL SET_TENTACLE_SIZE, FLAG:10, FLAG:11, FLAG:110, FLAG:111, 1013
+
+;丸飲み準備
+IF TFLAG:23 == 0
+	;油断度の上昇
+	TFLAG:3 += 0
+
+	;地の文:SPCOM13_PRE
+	CALL MESSAGE_SEX_SPCOM13_PRE
+
+	;触手の虜なら欲情、それ以外は恐怖
+	IF TALENT:触手の虜
+		LOCAL:7 = 1500
+	ELSE
+		LOCAL:11 = 1500
+	ENDIF
+
+	;潤滑
+	LOCAL:4 = 0
+
+	;習得基本値
+	LOCAL:6 += 0
+
+	;欲情基本値
+	LOCAL:7 += 0
+
+	;屈服基本値
+	LOCAL:8 += 200
+
+	;恥情基本値
+	LOCAL:9 += 0
+
+	;苦痛基本値
+	LOCAL:10 += 0
+
+	;恐怖基本値
+	LOCAL:11 += 0
+
+	;体力消費基本値
+	LOCAL:12 += 0
+;気絶している場合、または確率で即死
+ELSEIF (TCVAR:12 & 気絶) || RAND:100 < (20 + TFLAG:23 * 15)
+	;全個所に射精
+	IF TALENT:オトコ <= 0
+		TFLAG:4 = TFLAG:4 | 膣
+		TFLAG:4 = TFLAG:4 | ワレメ
+		INSERT = INSERT | 膣
+	ENDIF
+	TFLAG:4 = TFLAG:4 | アナル
+	TFLAG:4 = TFLAG:4 | 胸
+	TFLAG:4 = TFLAG:4 | 手
+	TFLAG:4 = TFLAG:4 | 口
+	INSERT = INSERT | アナル
+
+	;油断度の上昇
+	TFLAG:3 += 0
+
+	;射精値 1000
+	CALL TENTACLE_SYASEI_UP, 1000
+
+	;地の文:SPCOM13
+	CALL MESSAGE_SEX_SPCOM13
+
+	;服へのダメージ
+	CALL CLOTH_BATTLE_DAMAGE, 25
+
+	;ベース
+	SIF TALENT:オトコ <= 0
+		EXP:Ｖ経験 += 5
+	EXP:Ａ経験 += 5
+	EXP:フェラ経験 += 5
+	EXP:精液経験 += 20
+	SIF FLAG:110 == 0 && INCEST_F(TARGET, FLAG:10 * 100 + FLAG:11, 1) > 0
+		EXP:近親交配経験 += 2
+	SIF FLAG:110 == 1 && INCEST_F(TARGET, FLAG:111) > 0
+		EXP:近親交配経験 += 2
+
+	;潤滑
+	LOCAL:4 = 10000
+
+	;快V
+	IF TALENT:オトコ <= 0
+		IF ABL:Ｖ感覚 == 0
+			LOCAL:1 = 400
+		ELSEIF ABL:Ｖ感覚 == 1
+			LOCAL:1 = 1000
+		ELSEIF ABL:Ｖ感覚 == 2
+			LOCAL:1 = 2000
+		ELSEIF ABL:Ｖ感覚 == 3
+			LOCAL:1 = 4000
+		ELSEIF ABL:Ｖ感覚 == 4
+			LOCAL:1 = 10000
+		ELSEIF ABL:Ｖ感覚 >= 5
+			LOCAL:1 = 20000
+		ENDIF
+	ENDIF
+
+	;快A　感覚が低いうちは少なめ
+	IF ABL:Ａ感覚 == 0
+		LOCAL:2 = 80
+	ELSEIF ABL:Ａ感覚 == 1
+		LOCAL:2 = 500
+	ELSEIF ABL:Ａ感覚 == 2
+		LOCAL:2 = 2000
+	ELSEIF ABL:Ａ感覚 == 3
+		LOCAL:2 = 4000
+	ELSEIF ABL:Ａ感覚 == 4
+		LOCAL:2 = 10000
+	ELSEIF ABL:Ａ感覚 >= 5
+		LOCAL:2 = 20000
+	ENDIF
+
+	;屈服　精液中毒で変化
+	IF ABL:精液中毒 == 0
+		LOCAL:8 = 2000
+	ELSEIF ABL:精液中毒 == 1
+		LOCAL:8 = 4000
+	ELSEIF ABL:精液中毒 == 2
+		LOCAL:8 = 6000
+	ELSEIF ABL:精液中毒 == 3
+		LOCAL:8 = 8000
+	ELSEIF ABL:精液中毒 == 4
+		LOCAL:8 = 16000
+	ELSEIF ABL:精液中毒 >= 5
+		LOCAL:8 = 24000
+	ENDIF
+
+	;処女なら苦痛が大量に入る
+	IF TALENT:処女 > 0
+		LOCAL:10 = 10000
+		TALENT:処女 = -1
+		CFLAG:206 = 3
+		TCVAR:1 = 1
+	ELSE
+		LOCAL:10 = 0
+	ENDIF
+
+	;恭順
+	IF ABL:従順 <= 2
+		LOCAL:5 = 200
+	ELSEIF ABL:従順 == 3
+		LOCAL:5 = 500
+	ELSEIF ABL:従順 == 4
+		LOCAL:5 = 1000
+	ELSEIF ABL:従順 >= 5
+		LOCAL:5 = 2000
+	ENDIF
+
+	;習得
+	IF ABL:奉仕精神 == 0
+		LOCAL:6 = 20
+	ELSEIF ABL:奉仕精神 == 1
+		LOCAL:6 = 50
+	ELSEIF ABL:奉仕精神 == 2
+		LOCAL:6 = 100
+	ELSEIF ABL:奉仕精神 == 3
+		LOCAL:6 = 200
+	ELSEIF ABL:奉仕精神 == 4
+		LOCAL:6 = 500
+	ELSEIF ABL:奉仕精神 >= 5
+		LOCAL:6 = 1000
+	ENDIF
+
+	;恐怖　従順と精液中毒で大まかに
+	IF ABL:従順 < 4
+		IF ABL:精液中毒 < 4
+			LOCAL:11 = 20000
+		ELSE
+			LOCAL:11 = 2000
+		ENDIF
+	ELSE
+		IF ABL:精液中毒 < 4
+			LOCAL:11 = 2000
+		ELSE
+			LOCAL:11 = 200
+		ENDIF
+	ENDIF
+
+	;習得基本値
+	LOCAL:6 += 0
+
+	;欲情基本値
+	LOCAL:7 += 10000
+
+	;屈服基本値
+	LOCAL:8 += 5000
+
+	;恥情基本値
+	LOCAL:9 += 500
+
+	;苦痛基本値
+	LOCAL:10 += 0
+
+	;恐怖基本値
+	LOCAL:11 += 2000
+
+	;体力消費基本値
+	LOCAL:12 += 1050
+
+	;妊娠判定を余分に行う
+	SIF TALENT:オトコ <= 0
+		CALL NINSIN_HANTEI,5,3
+
+	;即死攻撃、これを食らったら幽閉される
+	BASE:体力 = 0
+	BASE:気力 = 0
+ELSE
+	;油断度の上昇
+	TFLAG:3 += 200
+
+	;地の文:SPCOM13_MISS
+	CALL MESSAGE_SEX_SPCOM13_MISS
+
+	;服へのダメージ
+	CALL CLOTH_BATTLE_DAMAGE, 10
+
+	;ベース
+	EXP:精液経験 += 2
+
+	;潤滑
+	LOCAL:4 = 200
+
+	;屈服　精液中毒で変化
+	IF ABL:精液中毒 == 0
+		LOCAL:8 = 200
+	ELSEIF ABL:精液中毒 == 1
+		LOCAL:8 = 400
+	ELSEIF ABL:精液中毒 == 2
+		LOCAL:8 = 1000
+	ELSEIF ABL:精液中毒 == 3
+		LOCAL:8 = 2000
+	ELSEIF ABL:精液中毒 == 4
+		LOCAL:8 = 3000
+	ELSEIF ABL:精液中毒 >= 5
+		LOCAL:8 = 4000
+	ENDIF
+
+	;恐怖　従順で大まかに
+	IF ABL:従順 < 4
+		IF ABL:精液中毒 < 4
+			LOCAL:11 = 1000
+		ELSE
+			LOCAL:11 = 100
+		ENDIF
+	ELSE
+		IF ABL:精液中毒 < 4
+			LOCAL:11 = 500
+		ELSE
+			LOCAL:11 = 50
+		ENDIF
+	ENDIF
+
+	;習得基本値
+	LOCAL:6 += 100
+
+	;欲情基本値
+	LOCAL:7 += 0
+
+	;屈服基本値
+	LOCAL:8 += 200
+
+	;恥情基本値
+	LOCAL:9 += 200
+
+	;苦痛基本値
+	LOCAL:10 += 0
+
+	;恐怖基本値
+	LOCAL:11 += 0
+
+	;体力消費基本値
+	LOCAL:12 += 300
+ENDIF
+
+;結界による触手本数の変動
+CALL SET_TENTACLE_POOL
+
+;行動予約なし
+TFLAG:17 = -1
+;触手の行動を記録
+TFLAG:20 = 1013
+
+;計算へ
+CALL PALAM_CAL, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, LOCAL:12

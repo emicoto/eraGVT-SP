@@ -1,0 +1,3280 @@
+;--------------------------------------------------
+;特別活動
+@SEISAN
+#DIM SC_VAR, 2
+
+;稼ぐ方法
+LOCAL:141 = 0
+
+;変身可能キャラは変身状態になるか選べる
+CALL ACTION_TRANSFORMATION_SELECT, TARGET, "特別活動"
+
+PRINTFORM [0]アルバイト　　　　
+IF EXP:出産経験 > 0 || TALENT:妊娠 == 1 || TALENT:妊娠 == 3
+	PRINTFORM [1]研究所で検査協力　
+ELSE
+	PRINTFORM [1]研究所助手　　　　
+ENDIF
+PRINTFORM [2]雑魚触手退治　　　
+PRINTL 
+;欲望で援助交際解放
+SIF ABL:欲望 > 0 && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0)
+	PRINTFORM [3]援助交際　　　　　
+;欲望と露出癖、または枕営業回数でAV出演解放
+SIF ((ABL:欲望 + ABL:露出癖) >= 5 || CFLAG:283 >= 10) && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0)
+	PRINTFORM [4]AV出演　　　　　　
+;欲望とマゾっ気で公衆便所解放
+SIF (ABL:欲望 + ABL:マゾっ気) >= 5 && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0)
+	PRINTFORM [5]公衆便所　　　　　
+PRINTL 
+PRINTFORM [6]アイドル活動　　　
+;デビュー後なら枕営業解放
+SIF EXP:魅了経験 > 99 && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0)
+	PRINTFORM [7]枕営業　　　　　　
+;デビュー後かつ週末ならライブ公演解放
+SIF EXP:魅了経験 > 99 && (DAY % 7 == 0 || DAY % 7 == 6)
+	PRINTFORM [8]ライブ公演　　　　
+PRINTL 
+DRAWLINE
+
+IF CFLAG:111 > 0
+	CALL RES_SCHEDULE, 111
+	IF RESULT == 0
+		PRINTL 
+		PRINT スケジュール：アルバイト
+		PRINTL 
+	ENDIF
+	IF RESULT == 1
+		PRINTL 　
+		IF EXP:出産経験 > 0 || TALENT:妊娠 == 1 || TALENT:妊娠 == 3
+			PRINT スケジュール：研究所で検査協力　
+		ELSE
+			PRINT スケジュール：研究所助手　　　　
+		ENDIF
+		PRINTL 
+	ENDIF
+	IF RESULT == 2
+		PRINTL 
+		PRINT スケジュール：雑魚触手退治
+		PRINTL 
+	ENDIF
+	IF RESULT == 3
+		PRINTL 
+		PRINT スケジュール：援助交際
+		IF ABL:欲望 == 0 || (TALENT:オトコ > 0 && FILTER_CHECK_F(5) > 0)
+			PRINT （実行不能）
+			PRINTL 
+			PRINTL 手動で行動を選択してください
+			GOTO INPUT_LOOP
+		ENDIF
+	ENDIF
+	IF RESULT == 4
+		PRINTL 
+		PRINT スケジュール：AV出演
+		IF ((ABL:欲望 + ABL:露出癖) < 5 && CFLAG:283 < 10) || (TALENT:オトコ > 0 && FILTER_CHECK_F(5) > 0)
+			PRINT （実行不能）
+			PRINTL 
+			PRINTL 手動で行動を選択してください
+			GOTO INPUT_LOOP
+		ENDIF
+	ENDIF
+	IF RESULT == 5
+		PRINTL 
+		PRINT スケジュール：公衆便所
+		IF (ABL:欲望 + ABL:マゾっ気) < 5 || (TALENT:オトコ > 0 && FILTER_CHECK_F(5) > 0)
+			PRINT （実行不能）
+			PRINTL 
+			PRINTL 手動で行動を選択してください
+			GOTO INPUT_LOOP
+		ENDIF
+	ENDIF
+	IF RESULT == 6
+		PRINTL 
+		PRINT スケジュール：アイドル活動
+		PRINTL 
+	ENDIF
+	IF RESULT == 7
+		PRINTL 
+		PRINT スケジュール：枕営業
+		IF (EXP:魅了経験 < 100) || (TALENT:オトコ > 0 && FILTER_CHECK_F(5) > 0)
+			PRINT （実行不能）
+			PRINTL 
+			PRINTL 手動で行動を選択してください
+			GOTO INPUT_LOOP
+		ENDIF
+	ENDIF
+	IF RESULT == 8
+		PRINTL 
+		PRINT スケジュール：ライブ公演
+		IF (EXP:魅了経験 < 100) || (DAY % 7 != 0 && DAY % 7 != 6)
+			PRINT （実行不能）
+			PRINTL 
+			PRINTL 手動で行動を選択してください
+			GOTO INPUT_LOOP
+		ENDIF
+	ENDIF
+ELSE
+	$INPUT_LOOP
+	INPUT
+ENDIF
+
+PRINTL 
+;男なら一部のコマンドは選択不可
+IF (RESULT == 3 && TALENT:オトコ > 0 && FILTER_CHECK_F(5) == 1) || (RESULT == 4 && TALENT:オトコ > 0 && FILTER_CHECK_F(5) == 1) || (RESULT == 5 && TALENT:オトコ > 0 && FILTER_CHECK_F(5) == 1) || (RESULT == 7 && TALENT:オトコ > 0 && FILTER_CHECK_F(5) == 1)
+	PRINTL 正しい値を入力してください
+	GOTO INPUT_LOOP
+ELSEIF RESULT < 0 || RESULT > 8 || (ABL:欲望 < 1 && RESULT == 3) || (ABL:欲望 + ABL:露出癖 < 5 && CFLAG:283 < 10 && RESULT == 4) || ((ABL:欲望 + ABL:マゾっ気) < 5 && RESULT == 5) || (EXP:魅了経験 < 100 && RESULT == 7) || ((EXP:魅了経験 < 100 || (DAY % 7 != 0 && DAY % 7 != 6)) && RESULT == 8)
+	PRINTL 正しい値を入力してください
+	GOTO INPUT_LOOP
+ELSE
+	LOCAL:141 = RESULT
+ENDIF
+CALL MESSAGE_SEISAN, LOCAL:141
+CALL _ABLUP, 1
+SIF CFLAG:1 > 0
+	CALL TRANSFORM, 0
+BEGIN TURNEND
+
+;生産メッセージ
+@MESSAGE_SEISAN, ARG
+#DIM PAYMENT
+#DIM NAMAHAME
+PAYMENT = 0
+NAMAHAME = 0
+DRAWLINE
+SELECTCASE ARG
+	;アルバイト
+	CASE 0
+		;ファミレス
+		IF RAND:4 == 0 && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0)
+			PRINTL アルバイト（ウェイトレス）
+			PRINTL 
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はファミレスでウェイトレスのアルバイトをすることにしました。
+			;魅了経験40以上
+			IF EXP:魅了経験 > 49 && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0)
+				PRINTFORML 接客の最中、お客さんに身体を触られました。
+				;口上
+				TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_FAMILY_chikan")
+				;恥情
+				JUEL:恥情 += 50
+			ELSE
+				;口上
+				TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_FAMILY_normal")
+			ENDIF
+			LOCAL:1 = 0
+			CALL CALC_SEISAN, ARG, LOCAL:1
+			PAYMENT = RESULT:1
+			RESULT:0 = RESULT:0 / 100 + RAND:(RESULT:0 / 500 + 8) + 1
+			IF CONFIG_CHECK_SCREEN_F(3) == 0
+				PRINTW 
+			ELSE
+				PRINTL 
+			ENDIF
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は{RESULT:0}席の注文を取り、{PAYMENT}＄の報酬を得ました。
+			LOCAL:2 = 0
+			SIF RAND:100 < 10
+				LOCAL:2 += 1
+			SIF RAND:100 < (EXP:魅了経験 / 10)
+				LOCAL:2 += 1
+			IF LOCAL:2 > 0
+				FLAG:853 += LOCAL:2
+				PRINTFORML 人気度が{LOCAL:2}上がった
+			ENDIF
+		;食堂
+		ELSEIF RAND:3 == 0 && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0)
+			PRINTL アルバイト（厨房手伝い）
+			PRINTL 
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は食堂で厨房手伝いのアルバイトをすることにしました。
+			IF RAND:3 == 0
+				PRINTFORML 卵のケースを運ぶ途中、同僚が%PRINT_TRANSCALLNAME(TARGET)%のお尻を撫で回した。
+				PRINTFORML  
+				IF TALENT:感情乏しい > 0
+					PRINTFORML まったく反応しない%PRINT_TRANSCALLNAME(TARGET)%の態度に行為はエスカレートしていき
+					PRINTFORML 尻を揉み回して下着に手を入れようとしたところで、
+					PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の冷ややかな視線に気付いた同僚は慌ててそっぽを向いて誤魔化した…
+				ELSEIF TALENT:臆病 || TALENT:恥ずかしがり屋 || TALENT:悲観的
+					PRINTFORML 驚いた%PRINT_TRANSCALLNAME(TARGET)%が思わず身を竦ませると
+					PRINTFORML ケースが傾いて卵が幾つか地面に落ちてしまった。
+					PRINTFORML 恨めしそうに同僚を見ると知らんぷりで誤魔化されてしまった…
+				ELSEIF TALENT:サド気質 || TALENT:小悪魔
+					PRINTFORML びっくりした%PRINT_TRANSCALLNAME(TARGET)%は振り返って艷やかしい笑みを見せながら、
+					PRINTFORML 同僚が浮かれて隙を見せてる所に、%PRINT_TRANSCALLNAME(TARGET)%は事故に見せかけて同僚の足を強く踏んだ。
+					PRINTFORML 痛みで蹲った同僚に謝りながら%PRINT_TRANSCALLNAME(TARGET)%は早足でその場から去った…‥
+				ELSE
+					PRINTFORML 引っ叩いてやろうと思った%PRINT_TRANSCALLNAME(TARGET)%だが、
+					PRINTFORML 下手に暴れたら店の卵を割ってしまう。
+					PRINTFORML 相手を睨みつけてやると同僚は何事も無かったかのような態度で誤魔化した…
+				ENDIF
+				;口上
+				TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_SYOKUDOU_chikan")
+				;習得
+				JUEL:習得 += 25
+				;恥情
+				JUEL:恥情 += 100
+			ELSEIF RAND:2 == 0 && ABL:Ｃ感覚 + ABL:Ｖ感覚 + ABL:Ａ感覚 + ABL:Ｂ感覚 >= 3 && ABL:欲望 > 1
+				PRINTFORML 身体が重い…顔が熱い…
+				PRINTFORMW そして…肢体が…疼く
+				PRINTFORML （何か…変）
+				PRINTFORML
+				PRINTFORMW 身体の異常に戸惑う%PRINT_TRANSCALLNAME(TARGET)%。
+				PRINTFORML
+				PRINTFORML 実のところ、今感じている感覚には覚えがある。しかし
+				PRINTFORML （何故今ここで？）
+				PRINTFORMW 熱に浮かされた頭で考える。ここに触手は居ない…はず
+				PRINTFORML
+				PRINTFORML そんな思考は、何者かに羽交い締めにされ遮られた。
+				PRINTFORML 振り解こうと力を込めた%PRINT_TRANSCALLNAME(TARGET)%だが、
+				PRINTFORML 胸元を一撫でされただけで腰砕けになってしまう。
+				PRINTFORML
+				PRINTFORM 「デュフフ、
+					IF RAND:3 == 0
+						PRINTFORM T-L Potion
+					ELSEIF RAND:2 == 0
+						PRINTFORM TEMPTATION XXX
+					ELSE
+						PRINTFORM スレイヴメーカー
+					ENDIF
+				PRINTFORM 、噂に違わぬ効果だな」
+				PRINTFORML 声の主は店長だった。
+				PRINTFORML どうやら賄いに一服盛られたらしい。
+				PRINTFORML
+				;口上
+				TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_SYOKUDOU_drug")
+				PRINTFORML
+				PRINTFORML 薬の効果で発情しきった%PRINT_TRANSCALLNAME(TARGET)%は
+				PRINTFORML ろくに抵抗も出来ないまま、意識がトぶまでイかされた・・・
+				;習得
+				JUEL:習得 += 75
+				;恥情
+				JUEL:恥情 += 250
+				;フェラ経験
+				EXP:フェラ経験 += 3
+				;精液経験
+				EXP:精液経験 += 3
+			ELSE
+				;口上
+				TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_SYOKUDOU")
+			ENDIF
+			LOCAL:1 = 0
+			CALL CALC_SEISAN, ARG, LOCAL:1
+			PAYMENT = RESULT:1
+			RESULT:0 = RESULT:0 / 50 + RAND:(RESULT:0 / 150 + 4) + 2
+			IF CONFIG_CHECK_SCREEN_F(3) == 0
+				PRINTW 
+			ELSE
+				PRINTL 
+			ENDIF
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は{RESULT:0}品の料理を手伝い、{PAYMENT}＄の報酬を得ました。
+		;新聞配達
+		ELSEIF RAND:2 == 0
+			PRINTL アルバイト（新聞配達）
+			PRINTL 
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は新聞配達のアルバイトをすることにしました。
+			PRINTFORML
+			IF RAND:4 == 0 && ((TALENT:処女 < 1 && EXP:Ｖ経験 > 0) || (EXP:Ａ経験 > 2 && CFLAG:36 > 20)) && (FLAG:44 >= 1 && FLAG:44 <= 30) && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0)
+				PRINTFORMW 意気揚々と自転車に跨ると、突如サドルが蠢いた。
+				PRINTFORML 驚いて腰を浮かせようとした%PRINT_TRANSCALLNAME(TARGET)%だが、
+				PRINTFORML サドルから伸びた触手に腰骨を抱え込まれてしまう。
+				PRINTFORMW
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の股間に密着したサドル触手は
+				PRINTFORML %SPLIT_SEX(TARGET,"陰核／陰茎")%を擦り上げるように振動子を隆起させ、
+				PRINTFORML 更に別の触手が%PRINT_TRANSCALLNAME(TARGET)%の%SPLIT_SEX(TARGET,"前後の穴／後ろ穴")%に潜り込み
+				PRINTFORML ペダルの回転に連動するかのようにピストン運動を始めた。
+				PRINTFORMW
+				PRINTFORML たまらず足を止めると、奥まで潜った触手が大きくうねりながら
+				PRINTFORML %SPLIT_SEX(TARGET,"陰核／陰茎")%の振動子ともども激しく振動し、探り当てた%SPLIT_SEX(TARGET,"Ｇスポット／前立腺")%を責め立てる。
+				PRINTFORML 抵抗する意味も時間も無い事を悟った%PRINT_TRANSCALLNAME(TARGET)%は、
+				PRINTFORML 快感で砕けかけた足腰になけなしの力を込めてペダルを踏み込んだ。
+				PRINTFORML
+				;口上
+				TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_SHINBUN_acmecycle")
+				PRINTFORML
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は通り道に水跡を残しながらも、何とか新聞を配り終えた。
+				PRINTFORML
+				IF RAND:5 == 0
+					CFLAG:42 = 400
+					PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の秘所に喰い付いたサドル触手はそのまま下着に同化し、
+					PRINTFORMW %PRINT_TRANSCALLNAME(TARGET)%を弄び続ける拘束具へと変貌を遂げた…
+				ELSE
+					PRINTFORML 配達を終えて店に戻った所でサドルは元に戻った。
+					PRINTFORML 自転車を降りて愛液が滴るサドルをよく調べても、
+					PRINTFORML これといった異常は見つけられなかった…
+				ENDIF
+				;習得
+				JUEL:習得 += 75
+				;恥情
+				JUEL:恥情 += 100
+			ELSEIF RAND:3 == 0 && CFLAG:254 && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0)
+				PRINTFORMW 配達中のスポーツ紙の記事が%PRINT_TRANSCALLNAME(TARGET)%の目に止まった。
+				PRINTFORML
+					IF RAND:3 == 0 && EXP:魅了経験 > 199
+						PRINTFORML 「独占スクープ！アイドル魔法少女%PRINT_TRANSCALLNAME(TARGET)%、陵辱の瞬間！？」
+						PRINTFORML 「元スタッフに突撃インタビュー。魔法少女の実態に迫る！」
+						PRINTFORML 「事務所はコメント拒否の一点張り。陵辱の事実や如何に」
+					ELSEIF RAND:2 == 0 && (TALENT:801 > 0 && TALENT:801 <= 2)
+						PRINTFORML 「清純なる魔法少女、散華の瞬間をカメラは捉えた！」
+						PRINTFORML 「未成熟でも容赦無し！幼いアソコを触手が貫く！」
+						PRINTFORML 「関係者が明かす陵辱の実態、触手の好みは○学生！？」
+					ELSE
+						PRINTFORML 「激写！魔法少女陵辱、その全てを緊急レポート！」
+						PRINTFORML 「無惨に晒された素肌！飛び散る愛液！艶めかしく響く嬌声！」
+						PRINTFORML 「あなたの街の触手スポット。魔法少女に会うならココ！」
+					ENDIF
+				PRINTFORML
+				PRINTFORMW 顔は辛うじて隠れ、局部に修正も入っているが、
+				PRINTFORML 写真はどう見ても%PRINT_TRANSCALLNAME(TARGET)%本人だ。見る人が見ればその正体も、
+				PRINTFORMW ……完全に「挿入ってる」事も分かるだろう。
+				PRINTFORML
+				;口上
+				TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_SHINBUN_topnews")
+				PRINTFORML
+				PRINTFORML 新聞を破り捨てたくなる衝動をすんでのところでこらえ、
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は１面を飾る自らの痴態を郵便受けに捩じ込んだ。
+				;恥情
+				JUEL:恥情 += 50
+			ELSEIF RAND:2 == 0
+				PRINTFORMW まだ薄暗い公園の緑地帯に妙な気配を感じる……
+				PRINTFORML 基地に連絡を入れつつ、いつでも戦闘に入れるよう
+				PRINTFORML 注意深く公園に足を踏み入れる%PRINT_TRANSCALLNAME(TARGET)%。
+				PRINTFORMW (もう少し先……ここ！）
+				PRINTFORML
+				LOCAL:2 = 0
+					IF RAND:2 == 0 && FLAG:44 <= 10
+						PRINTFORML 意を決して「気配」の元に飛び込む%PRINT_TRANSCALLNAME(TARGET)%。
+						PRINTFORML そこには、数体の子触手が半裸の女性に群がっていた！
+						PRINTFORML
+						;口上
+						TRYCALLFORM KOJO_ROOT(CFLAG:6, "ENCOUNT_MOB")
+						PRINTFORML
+						PRINTFORMW 手早く子触手を片付ける%PRINT_TRANSCALLNAME(TARGET)%。
+						PRINTFORML
+						IF RAND:2 == 0
+							PRINTFORML 女性は%PRINT_TRANSCALLNAME(TARGET)%にお礼を言うと、身なりを整え
+							PRINTFORML 多少フラつきながらも帰路についた。
+						ELSE
+							PRINTFORML 「ちょっと！邪魔しないでよ！」
+							PRINTFORMW 何故か助けた女性から罵声が飛んできた。
+							PRINTFORML 話を聞くと、いつもここで触手オナニーをしていたらしい……
+							PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は、その行為の危険性についてかいつまんだ説明をした後、
+							PRINTFORML 女性を後にして配達に戻った。
+						ENDIF
+						LOCAL:2 = 1
+					ELSE
+						PRINTFORML 意を決して「気配」の元に飛び込む%PRINT_TRANSCALLNAME(TARGET)%。
+						PRINTFORML そこには、絡み合う若い男女の姿があった。
+						PRINTFORMW
+						PRINTFORML しとどに濡れた秘裂、そこに飲み込まれる逞しい肉棒、
+						PRINTFORML 揉みしだかれ自在に形を変える乳房、唾液の糸が掛かる口と口、
+						PRINTFORMW お互いに相手の事しか見えていない「愛しあう２人」がそこに居た。
+						PRINTFORML
+						PRINTFORML 何の因果か、「愛のあるセックス」にはとんと縁のない%PRINT_TRANSCALLNAME(TARGET)%は
+						PRINTFORML イケナイ事だと知りつつも、その尊い行為から目が離せない……
+						PRINTFORML
+						;口上
+						TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_SHINBUN_debagame")
+						PRINTFORML
+						PRINTFORML ハッと我に返った%PRINT_TRANSCALLNAME(TARGET)%は、動悸の止まない胸を押さえながら
+						PRINTFORML 逃げるように配達に戻った。
+					ENDIF
+			ELSE
+			;口上
+			TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_SHINBUN")
+			ENDIF
+			LOCAL:1 = 0
+			CALL CALC_SEISAN, ARG, LOCAL:1
+			PAYMENT = RESULT:1
+			RESULT:0 = RESULT:0 / 100 + RAND:(RESULT:0 / 500 + 6) + 10
+			IF CONFIG_CHECK_SCREEN_F(3) == 0
+				PRINTW 
+			ELSE
+				PRINTL 
+			ENDIF
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は{RESULT:0}件に新聞配達し、{PAYMENT}＄の報酬を得ました。
+			IF LOCAL:2 > 0
+				FLAG:853 += LOCAL:2
+				PRINTFORML 人気度が{LOCAL:2}上がった
+			ENDIF
+		;ヒーローショー
+		ELSE
+			PRINTL アルバイト（ヒーローショー）
+			PRINTL 
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は活動費を稼ぐためにヒーローショーに出演するアルバイトをすることにしました。
+			IF EXP:魅了経験 > 199 && (TALENT:オトコ <= 0 ||FILTER_CHECK_F(5) == 0)
+				PRINTL 「大きいお兄さん」の数がかなり多いようです…
+			ELSEIF EXP:魅了経験 > 99 && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0)
+				PRINTL 親子連れの観客の中に場違いな「大きいお兄さん」がちらほら混ざっています…
+			ELSE
+				PRINTL 観客はほとんどが親子連れのようです…
+			ENDIF
+			PRINTL 
+			;触手拘束具
+			IF CFLAG:42 == 400
+				IF EXP:魅了経験 > 49 && RAND:2 == 0 && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0)
+					PRINTFORML ショーの途中で悪の組織に捕まる場面に差し掛かると、
+					PRINTFORML 不意の服の下で%ITEMNAME:(CFLAG:42)%が激しく動き出した。
+					PRINTFORML 出かかった嬌声を何とか飲み込みながらも台詞を口にする%PRINT_TRANSCALLNAME(TARGET)%。
+					PRINTL 
+					PRINTFORML しかし%ITEMNAME:(CFLAG:42)%の発する瘴気に当てられた怪人や戦闘員達が
+					PRINTFORML 生気を失った表情で%PRINT_TRANSCALLNAME(TARGET)%身体中を弄り回し始めた。
+					IF TALENT:感情乏しい > 0
+						PRINT 止めるように
+					ELSE
+						PRINT 必死に
+					ENDIF
+					PRINTFORML 説得する%PRINT_TRANSCALLNAME(TARGET)%だが、%ITEMNAME:(CFLAG:42)%によって扇情的なポーズを強制されてしまう。
+					PRINTFORML 和やかなはずのヒーローショーは、%PRINT_TRANSCALLNAME(TARGET)%の公開陵辱ショーへと変貌した。
+					IF CONFIG_CHECK_SCREEN_F(3) == 0
+						PRINTW 
+					ELSE
+						PRINTL 
+					ENDIF
+					;口上
+					TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_HERO_ryoujoku")
+					PRINTFORML 
+					PRINTFORML 観客が呼んだ警備隊に助け出されるまで、%PRINT_TRANSCALLNAME(TARGET)%は痴態を晒し続けた…
+					LOCAL:1 = 2
+					CALL CALC_SEISAN, ARG, LOCAL:1
+					PAYMENT = RESULT:1
+					RESULT:0 = RESULT:0 / 250 + RAND:(RESULT:0 / 250 + 6) + ABL:レベル
+					IF CONFIG_CHECK_SCREEN_F(3) == 0
+						PRINTW 
+					ELSE
+						PRINTL 
+					ENDIF
+					PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は{RESULT:0}人のちびっこに歪んだ性癖を植え付け、{PAYMENT}＄の給与を得ました。
+					;習得
+					JUEL:習得 += 125
+					;恥情
+					JUEL:恥情 += 100
+					;フェラ経験
+					EXP:フェラ経験 += 3
+				ELSE
+					PRINTFORML ショーが佳境に差し掛かったとき不意の服の下で%ITEMNAME:(CFLAG:42)%が激しく動き、
+					PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は衆人環視の中で絶頂を迎えてしまった。
+					;口上
+					TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_HERO_syokusyu")
+					PRINTL
+					PRINTFORML 無理矢理誤魔化してショーを続行したものの、触手絶頂を迎える姿を見られてしまった…
+					LOCAL:1 = 2
+					CALL CALC_SEISAN, ARG, LOCAL:1
+					PAYMENT = RESULT:1
+					RESULT:0 = RESULT:0 / 250 + RAND:(RESULT:0 / 250 + 6) + ABL:レベル
+					IF CONFIG_CHECK_SCREEN_F(3) == 0
+						PRINTW 
+					ELSE
+						PRINTL 
+					ENDIF
+					PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は{RESULT:0}人のちびっこに歪んだ性癖を植え付け、{PAYMENT}＄の給与を得ました。
+				ENDIF
+			;FEAT効果による不幸防止
+			ELSEIF RAND:3 == 0 && TALENT:ラッキーチャーム == 0
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は怪人にとどめを刺す肝心な場面で足を滑らせ派手にすっ転び、
+				IF (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0)
+					;履いてない
+					IF CFLAG:42 == 0
+						PRINTFORM 下履きを履いていなかったばかりに、
+						;生えてない
+						SIF TALENT:パイパン == 1
+							PRINTFORM 毛も生えていない
+						PRINTFORML アソコを
+					ELSE
+						PRINTFORML 下に履いていた%ITEMNAME:(CFLAG:42)%を
+					ENDIF
+				ELSE
+					PRINTFORM 無様に転倒する姿を
+				ENDIF
+				PRINTFORML 観客の眼に晒す羽目になってしまった…
+				;口上
+				TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_HERO_korobi")
+				LOCAL:1 = 1
+				CALL CALC_SEISAN, ARG, LOCAL:1
+				PAYMENT = RESULT:1
+				RESULT:0 = RESULT:0 / 250 + RAND:(RESULT:0 / 250 + 6) + ABL:レベル
+				IF CONFIG_CHECK_SCREEN_F(3) == 0
+					PRINTW 
+				ELSE
+					PRINTL 
+				ENDIF
+				IF (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0) && (CFLAG:42 != 313 || CFLAG:42 != 314)
+					PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は{RESULT:0}人のちびっこに夢と性の芽生えを与え、{PAYMENT}＄の報酬を得ました。
+				ELSE
+					PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は{RESULT:0}人のちびっこに現実の厳しさを教え、{PAYMENT}＄の報酬を得ました。
+				ENDIF
+				;恥情
+				JUEL:恥情 += 25
+			ELSEIF RAND:2 == 0 && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0)
+				IF EXP:魅了経験 > 99
+					PRINTFORML ショーの途中で悪の組織に捕まる場面に差し掛かると、
+					PRINTFORML 後ろから羽交い絞めにされた%PRINT_TRANSCALLNAME(TARGET)%の身体を、怪人役がさりげなく弄り回していく。
+					PRINTL 
+					PRINTFORML 初めは何とか台詞を口にしていたものの大胆になっていく愛撫に耐えきれず、
+					PRINTFORML ついには舞台の上で絶頂を迎える姿を見られてしまった…
+					;口上
+					TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_HERO_chikan")
+					LOCAL:1 = 2
+					CALL CALC_SEISAN, ARG, LOCAL:1
+					PAYMENT = RESULT:1
+					RESULT:0 = RESULT:0 / 250 + RAND:(RESULT:0 / 250 + 6) + ABL:レベル
+					IF CONFIG_CHECK_SCREEN_F(3) == 0
+						PRINTW 
+					ELSE
+						PRINTL 
+					ENDIF
+					PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は{RESULT:0}人のちびっこに歪んだ性癖を植え付け、{PAYMENT}＄の給与を得ました。
+					;習得
+					JUEL:習得 += 50
+					;恥情
+					JUEL:恥情 += 50
+					EXP:絶頂経験 += 1
+					IF RAND:3 == 0 && (TALENT:オトコ > 0 || TALENT:ふたなり > 0)
+					    EXP:射精経験 += 1
+						CFLAG:37 += 1
+					ENDIF
+				ELSE
+					PRINTFORML アクションシーンの途中で%PRINT_TRANSCALLNAME(TARGET)%は怪人にスカートを捲られてしまい、
+					;履いてない
+					IF CFLAG:42 == 0
+						PRINTFORM 下履きを履いていなかったばかりに、
+						;生えてない
+						SIF TALENT:パイパン == 1
+							PRINTFORM 毛も生えていない
+						PRINTFORM アソコを
+					ELSE
+						PRINTFORM 下に履いていた%ITEMNAME:(CFLAG:42)%を
+					ENDIF
+					PRINTFORML 観客の眼に晒す羽目になってしまった…
+					;口上
+					TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_HERO_skirtmekuri")
+					LOCAL:1 = 1
+					CALL CALC_SEISAN, ARG, LOCAL:1
+					PAYMENT = RESULT:1
+					RESULT:0 = RESULT:0 / 250 + RAND:(RESULT:0 / 250 + 6) + ABL:レベル
+					IF CONFIG_CHECK_SCREEN_F(3) == 0
+						PRINTW 
+					ELSE
+						PRINTL 
+					ENDIF
+					IF CFLAG:42 != 313 || CFLAG:42 != 314
+					PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は{RESULT:0}人のちびっこに夢と性の芽生えを与え、{PAYMENT}＄の報酬を得ました。
+					ELSE
+					PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は{RESULT:0}人のちびっこに現実の厳しさを教え、{PAYMENT}＄の報酬を得ました。
+					ENDIF
+					;習得
+					JUEL:習得 += 25
+					;恥情
+					JUEL:恥情 += 25
+				ENDIF
+			ELSE
+				;口上
+				TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_HERO_normal")
+				LOCAL:1 = 0
+				CALL CALC_SEISAN, ARG, LOCAL:1
+				PAYMENT = RESULT:1
+				RESULT:0 = RESULT:0 / 250 + RAND:(RESULT:0 / 250 + 6) + ABL:レベル
+				IF CONFIG_CHECK_SCREEN_F(3) == 0
+					PRINTW 
+				ELSE
+					PRINTL 
+				ENDIF
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は{RESULT:0}人のちびっこに夢と希望を与え、{PAYMENT}＄の報酬を得ました。
+			ENDIF
+			;魅了経験の上昇とFEATの効果
+			LOCAL = 0
+			IF RAND:2 == 0 && EXP:魅了経験 > 30 && (EXP:魅了経験 < 99 || EXP:魅了経験 > 99)
+				LOCAL += 1
+				SIF TALENT:平凡 > 0 && RAND:4 == 0
+					LOCAL -= 1
+				SIF TALENT:人外の美貌 > 0 && RAND:4 == 0 && EXP:魅了経験 < 98
+					LOCAL += 1
+			ELSEIF RAND:3 == 0 && EXP:魅了経験 < 28
+				LOCAL += 2
+				SIF TALENT:平凡 > 0 && RAND:4 != 0
+					LOCAL -= 1
+				SIF TALENT:人外の美貌 > 0 && RAND:4 != 0 && EXP:魅了経験 < 27
+					LOCAL += 1
+			ELSEIF EXP:魅了経験 < 29
+				LOCAL += 1
+				SIF TALENT:平凡 > 0 && RAND:4 == 0
+					LOCAL -= 1
+				SIF TALENT:人外の美貌 > 0 && RAND:4 != 0 && EXP:魅了経験 < 28
+					LOCAL += 1
+			ENDIF
+			IF LOCAL > 0
+				EXP:魅了経験 += LOCAL
+				PRINTFORML 魅了経験が{LOCAL}上がった
+			ENDIF
+			LOCAL:2 = 0
+			SIF RAND:100 < 10
+				LOCAL:2 += 1
+			SIF RAND:100 < (EXP:魅了経験 / 10)
+				LOCAL:2 += 1
+			IF LOCAL:2 > 0
+				FLAG:853 += LOCAL:2
+				PRINTFORML 人気度が{LOCAL:2}上がった
+			ENDIF
+		ENDIF
+	;研究所助手
+	CASE 1
+		;妊娠経験がある・もしくは妊娠中だと子宮の調査
+		IF (EXP:出産経験 && RAND:2 == 0) || TALENT:妊娠 == 1 || TALENT:妊娠 == 3
+			PRINTL 研究所で検査協力（子宮）
+			PRINTL 
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は研究所に自分を検体として提供することになりました。
+			PRINTL 
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は大股開きで分娩台に括りつけられ、クスコで拡げられた局部を白衣の女医達に覗きこまれていた。
+			IF TALENT:パイパン == 0
+				PRINTFORML 観察の邪魔になる陰毛は産毛も残さず奇麗に剃り上げられ、艶やかな少女の秘唇が明かりに曝されている。
+				TALENT:パイパン = 1
+			ENDIF
+			;妊娠中
+			IF TALENT:妊娠 == 1 || TALENT:妊娠 == 3
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%が胎内に宿す、おぞましい異種交配の結晶は貴重な研究対象である。
+				PRINTFORMW 内視鏡が膣を通って子宮に潜り込む感触に、%PRINT_TRANSCALLNAME(TARGET)%は唇を噛んで声を殺して耐えていた。
+				PRINTFORML 科学の名のもとに、触手に穢し尽くされた胎内を詳らかに撮影され、資料として記録されるのだった…
+				;口上
+				TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_KENKYU_ninshin")
+			ELSE
+				PRINTFORML 触手に孕まされ、おぞましい異種交配の結晶を産み落とした%PRINT_TRANSCALLNAME(TARGET)%の女性器は貴重な研究対象である。
+				PRINTFORMW 内視鏡が膣を通って子宮に潜り込む感触に、%PRINT_TRANSCALLNAME(TARGET)%は唇を噛んで声を殺して耐えていた。
+				PRINTFORML 科学の名のもとに、触手に穢し尽くされた胎内を詳らかに撮影され、資料として記録されるのだった…
+				;口上
+				TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_KENKYU_after")
+			ENDIF
+			PRINTL
+			PRINTFORML 屈辱の調査が終わった時には、%PRINT_TRANSCALLNAME(TARGET)%は完全に発情してしまっていた……
+			LOCAL:1 = 2
+			CALL CALC_SEISAN, ARG, LOCAL:1
+			PAYMENT = RESULT:1
+			IF CONFIG_CHECK_SCREEN_F(3) == 0
+				PRINTW 
+			ELSE
+				PRINTL 
+			ENDIF
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は検査協力の報酬として{PAYMENT}＄を得ました
+			;習得
+			JUEL:習得 += 25
+			;恥情
+			JUEL:恥情 += 50
+		;母乳体質だと搾乳試験
+		ELSEIF TALENT:母乳体質
+			PRINTL 研究所で検査協力（搾乳）
+			PRINTL 
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は研究所に自分を検体として提供することになりました。
+			PRINTL 
+			PRINTFORML 手足を固定された%PRINT_TRANSCALLNAME(TARGET)%は搾乳機を装着され、白衣の女医達に実験動物を見るような視線に晒されている。
+			;ふたなり
+			IF TALENT:ふたなり > 0
+				PRINTFORML 機械を装着されているのは乳房ばかりでなく、男性器にも同じように搾乳機が取り付けられている。
+				PRINTFORML 触手に改造された%PRINT_TRANSCALLNAME(TARGET)%から分泌される母乳、精液はともに貴重な研究対象である。
+				PRINTFORMW 無様な姿勢で機械に体液を搾り取られていく羞恥に、%PRINT_TRANSCALLNAME(TARGET)%は唇を噛んで声を殺して耐えていた。
+				PRINTFORML 科学の名のもとに、まるで家畜同然に機械で体液を搾られ、サンプルとして採取され続けた…
+				;口上
+				TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_KENKYU_hutanar")
+			ELSE
+				PRINTFORML 触手に改造された%PRINT_TRANSCALLNAME(TARGET)%の乳房から分泌される母乳は貴重な研究対象である。
+				PRINTFORMW 無様な姿勢で機械に体液を搾り取られていく羞恥に、%PRINT_TRANSCALLNAME(TARGET)%は唇を噛んで声を殺して耐えていた。
+				PRINTFORML 科学の名のもとに、まるで家畜同然に機械で母乳を搾られ、サンプルとして採取され続けた…
+				;口上
+				TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_KENKYU_sakunyu")
+			ENDIF
+			PRINTL
+			PRINTFORML 屈辱の調査が終わった時には、%PRINT_TRANSCALLNAME(TARGET)%は完全に発情してしまっていた…
+			LOCAL:1 = 1
+			CALL CALC_SEISAN, ARG, LOCAL:1
+			PAYMENT = RESULT:1
+			IF CONFIG_CHECK_SCREEN_F(3) == 0
+				PRINTW 
+			ELSE
+				PRINTL 
+			ENDIF
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は検査協力の報酬として{PAYMENT}＄を得ました
+			;習得
+			JUEL:習得 += 25
+			;恥情
+			JUEL:恥情 += 50
+		;研究所助手
+		ELSE
+			PRINTL 研究所助手
+			PRINTL 
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は研究所で助手としてアルバイトをこなしました。
+			PRINTL 
+			;口上
+			TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_KENKYU_normal")
+			LOCAL:1 = 0
+			CALL CALC_SEISAN, ARG, LOCAL:1
+			PAYMENT = RESULT:1
+			IF CONFIG_CHECK_SCREEN_F(3) == 0
+				PRINTW 
+			ELSE
+				PRINTL 
+			ENDIF
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はアルバイトの報酬として{PAYMENT}＄を得ました
+			IF TALENT:変身能力 == -1 && RAND:4 == 0
+				BASE:知性 += 3
+				PRINTFORML 知性の基礎値が3上がった
+			ELSEIF RAND:3 == 0
+				BASE:知性 += 2
+				PRINTFORML 知性の基礎値が2上がった
+			ELSEIF RAND:3 < 2
+				BASE:知性 += 1
+				PRINTFORML 知性の基礎値が1上がった
+			ENDIF
+		ENDIF
+	;雑魚触手退治
+	CASE 2
+		PRINTL 雑魚触手退治
+		PRINTL 
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は駆除依頼の出ていた極々弱い雑魚触手を狩りに出ました。
+		;触手の虜だとわざと負けて嬲られる
+		IF TALENT:触手の虜 > 0
+			PRINTW 
+			PRINTFORML それは一般人でも容易に殲滅できるほどの雑魚触手の群れだったが、
+			PRINTFORML 既に触手の虜に成り下がっている%PRINT_TRANSCALLNAME(TARGET)%は服を脱ぎ捨て、自らその触手の群れに身体を差し出してしまった。
+			PRINTL 
+			IF TALENT:処女 > 0
+				PRINT 処女喪失
+				PRINTL 
+				TALENT:処女 = -1
+			ENDIF
+			IF RAND:2 == 0
+				PRINTFORML 上等な餌を前にした触手たちは先を争うように%PRINT_TRANSCALLNAME(TARGET)%の身体に殺到し、穴という穴を陵辱していく。
+				PRINTFORML 仲間達にはひた隠しにしていた昏い欲望を解き放った%PRINT_TRANSCALLNAME(TARGET)%は、触手の玩具として貪られる悦びに溺れていく。
+				PRINTFORML 帰りが遅いのを不審に思い探しに来てくれた仲間が見たのは、気を失ってなお絶頂し続けている%PRINT_TRANSCALLNAME(TARGET)%の姿だった…
+			ELSE
+				PRINTFORML 触手たちは%PRINT_TRANSCALLNAME(TARGET)%の身体に殺到し、穴という穴に汚濁を注ぎ込んでいく。
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は本気を出せば小指でひねれる程度の強さの触手にさらなる陵辱を媚び、快楽の泥沼に溺れていく。
+				PRINTFORML 帰りが遅いのを不審に思い探しに来てくれた仲間が見たのは、獣のような声をあげて陵辱されている%PRINT_TRANSCALLNAME(TARGET)%の姿だった…
+			ENDIF
+			;口上
+			TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_BATTLE_toriko")
+			LOCAL:1 = 1
+			CALL CALC_SEISAN, ARG, LOCAL:1
+			PAYMENT = RESULT:1
+			IF CONFIG_CHECK_SCREEN_F(3) == 0
+				PRINTW 
+			ELSE
+				PRINTL 
+			ENDIF
+			PRINTFORML 仲間が助けに来るまでの間、%PRINT_TRANSCALLNAME(TARGET)%は{RESULT:0}匹の触手に陵辱されてしまった。
+			;習得
+			JUEL:習得 += 50
+			;欲情
+			JUEL:欲情 += 200
+			IF TALENT:オトコ <= 0 && BASE:Ｖ結界耐久力 == 0
+				;Ｖ経験
+				EXP:Ｖ経験 += RESULT:0 / 2 + 2
+				;Ｖ感覚
+				JUEL:快Ｖ += RESULT:0 * ABL:Ｖ感覚 / 2 + 2
+				;アフターピル
+				CALL AFTER_PILL, TARGET, 5, 200
+			ELSEIF BASE:Ａ結界耐久力 == 0
+				;Ａ経験
+				EXP:Ａ経験 += RESULT:0 / 4 + 1
+				;Ａ感覚
+				JUEL:快Ａ += RESULT:0 * ABL:Ａ感覚 / 4 + 1
+			ENDIF
+			IF BASE:Ａ結界耐久力 == 0
+				;Ａ経験
+				EXP:Ａ経験 += RESULT:0 / 4 + 1
+				;Ａ感覚
+				JUEL:快Ａ += RESULT:0 * ABL:Ａ感覚 / 4 + 1
+			ENDIF
+			;フェラ経験
+			EXP:フェラ経験 += RESULT:0 / 2 + 2
+			;精液経験
+			EXP:精液経験 += RESULT:0 / 2 + 2
+			IF TALENT:オトコ > 0 || TALENT:ふたなり > 0
+			EXP:射精経験 += RESULT:0 / 2 + 2
+			CFLAG:37 += RESULT:0 / 2 + 2
+			ENDIF
+			;妊娠判定
+			SIF TALENT:オトコ <= 0 && BASE:Ｖ結界耐久力 == 0
+				CALL NINSIN_HANTEI,(RESULT:0 / 10 + 2), 50, 200
+		;触手拘束具有りだと敗北イベントの可能性
+		ELSEIF CFLAG:42 == 400 && RAND:4 == 0
+			PRINTW 
+			PRINTFORML それは万に一つも負ける可能性もない程度の雑魚触手の群れだったが、
+			PRINTFORML 不意に動いた%ITEMNAME:(CFLAG:42)%に意識が逸れた隙を突かれ、
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は触手の群れに飲み込まれるようにして地面に縫い付けられてしまった。
+			PRINTL 
+			IF RAND:2 == 0
+				PRINTFORML 触手たちはまるで狩人に制裁を加えるかのように、身体を鞭のようにくねらせて%PRINT_TRANSCALLNAME(TARGET)%の身体を打ち据える。
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の衣装はみるみるうちに裂けてボロボロになり、柔肌に赤い傷が刻まれていく。
+				IF TALENT:感情乏しい > 0
+					PRINTFORML 容赦のない責め苦に%PRINT_TRANSCALLNAME(TARGET)%が力尽きると、
+					PRINTFORML 周囲を取り囲む触手たちは我先にと凌辱を開始した…
+				ELSE
+					PRINTFORML 苦痛に満ちた責め苦にやがて%PRINT_TRANSCALLNAME(TARGET)%も心を折られ、泣き叫んで許しを請うが、
+					PRINTFORML それが聞き届けられることなどあるはずもない…
+				ENDIF
+				IF TALENT:処女 > 0
+					PRINTL 
+					PRINTL 処女喪失
+					PRINTL 
+					TALENT:処女 = -1
+				ENDIF
+				;口上
+				TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_BATTLE_haibokuA")
+			ELSE
+				PRINTFORML 触手たちは哀れな獲物の身体をぬめぬめと這い回り、
+				PRINTFORML 媚毒がたっぷり含まれた粘液を%PRINT_TRANSCALLNAME(TARGET)%の皮膚に塗り込んだ。
+				PRINTFORM やがて%PRINT_TRANSCALLNAME(TARGET)%の準備が整うと、触手たちは
+				SIF TALENT:オトコ <= 0
+					PRINTL 膣に、
+				PRINTFORML 尻穴に、口に、尿道に、臍に、耳穴に、鼻腔にと、
+				PRINTFORML ありとあらゆる穴に潜り込み、敗北の証を刻みつけるように汚濁を吐き出していく…
+				IF TALENT:処女 > 0
+					PRINTL 
+					PRINTL 処女喪失
+					PRINTL 
+					TALENT:処女 = -1
+				ENDIF
+				;口上
+				TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_BATTLE_haibokuB")
+			ENDIF
+			LOCAL:1 = 1
+			CALL CALC_SEISAN, ARG, LOCAL:1
+			PAYMENT = RESULT:1
+			IF CONFIG_CHECK_SCREEN_F(3) == 0
+				PRINTW 
+			ELSE
+				PRINTL 
+			ENDIF
+			PRINTFORML 帰りが遅いのを不審に思った仲間が助けに来るまでの間、%PRINT_TRANSCALLNAME(TARGET)%は{RESULT:0}匹の触手に陵辱されてしまった。
+			;習得
+			JUEL:習得 += 50
+			;苦痛
+			JUEL:苦痛 += 200
+			IF TALENT:オトコ <= 0 && BASE:Ｖ結界耐久力 == 0
+				;Ｖ経験
+				EXP:Ｖ経験 += RESULT:0 / 2 + 2
+				;Ｖ感覚
+				JUEL:快Ｖ += RESULT:0 * ABL:Ｖ感覚 / 2 + 2
+			ELSEIF BASE:Ａ結界耐久力 == 0
+				;Ａ経験
+				EXP:Ａ経験 += RESULT:0 / 4 + 1
+				;Ａ感覚
+				JUEL:快Ａ += RESULT:0 * ABL:Ａ感覚 / 4 + 1
+			ENDIF
+			IF BASE:Ａ結界耐久力 == 0
+				;Ａ経験
+				EXP:Ａ経験 += RESULT:0 / 4 + 1
+				;Ａ感覚
+				JUEL:快Ａ += RESULT:0 * ABL:Ａ感覚 / 4 + 1
+			ENDIF
+			;フェラ経験
+			EXP:フェラ経験 += RESULT:0 / 2 + 2
+			;精液経験
+			EXP:精液経験 += RESULT:0 / 2 + 2
+
+			IF TALENT:オトコ > 0 || TALENT:ふたなり > 0
+			EXP:射精経験 += RESULT:0 / 2 + 2
+			CFLAG:37 += RESULT:0 / 2 + 2
+			ENDIF
+
+			;アフターピル
+			CALL AFTER_PILL, TARGET, 5, 200
+			;妊娠判定
+			SIF TALENT:オトコ <= 0 && BASE:Ｖ結界耐久力 == 0
+				CALL NINSIN_HANTEI,(RESULT:0 / 10 + 2), 50, 200
+
+		;普通は楽勝
+		ELSE
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は特に苦戦することもなく、触手の群れを蹴散らした。
+			;口上
+			TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_BATTLE_normal")
+			LOCAL:1 = 0
+			CALL CALC_SEISAN, ARG, LOCAL:1
+			PAYMENT = RESULT:1
+			IF CONFIG_CHECK_SCREEN_F(3) == 0
+				PRINTW 
+			ELSE
+				PRINTL 
+			ENDIF
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は{RESULT:0}匹の触手を駆除し、{PAYMENT}＄の報酬を得ました。
+		ENDIF
+	;援助交際
+	CASE 3
+		PRINTL 援助交際
+		PRINTL 
+		IF TALENT:オトコ <= 0 && TALENT:変身時ＴＳ > 0 && CFLAG:1 > 0
+			IF TALENT:淫乱 > 0
+				PRINTFORML 女性の姿に変身した%PRINT_TRANSCALLNAME(TARGET)%は、身綺麗にして街に繰り出していた。
+				PRINTW 
+				PRINTFORML 露出の多い服装に下着が見えそうなマイクロミニスカート。
+				PRINTFORML とどめに派手な色のサイハイソックスを身に付けた姿はいかにも腰の軽そうなギャル風だ。
+				PRINTFORML ほどなくして声をかけられた%PRINT_TRANSCALLNAME(TARGET)%は肩を抱かれて街の人ごみの中へと消えていった…
+			ELSEIF TALENT:処女 > 0
+				PRINTFORML 少しでも変身中のカラダに慣れておこうと考え、
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は女性化した状態で街をぶらつくことにした。
+				PRINTW 
+				PRINTFORML 服装はしっかり整えたつもりでも、変な目で見られていないかと気になってしまう。
+				PRINTFORML すると不意に知らない相手に声をかけられてしまい、
+				PRINTFORML あたふたと慌てているうちに一緒に食事でもどうかと誘われてしまった。
+				PRINTFORML …ナンパだ…！
+				PRINTW 
+				PRINTFORML どう反応するべきか迷っていた%PRINT_TRANSCALLNAME(TARGET)%だったが、
+				PRINTFORML デートに付き合ってくれたらお礼をする、と現金を見せられ、
+				PRINTFORML 一緒に食事する程度なら…と相手に付いていくことにした…
+			ELSE
+				PRINTFORML 資金を稼ぐために、%PRINT_TRANSCALLNAME(TARGET)%は出会い系サイトで知り合った相手と待ち合わせしていた。
+				PRINTFORML 出会い系サイトとは言いつつも、その実態は性的な取引の斡旋場で、
+				PRINTFORML 多少の金額と引き換えにカラダを提供するのだ。
+				PRINTW 
+				PRINTFORML 相手が待ち合わせ場所に現れると、
+				PRINTFORML 自己紹介もそこそこにこちらの全身を舐めるように視姦してくる。
+				IF TALENT:感情乏しい > 0
+					PRINTFORML まったく気にした風もない無愛想な態度の%PRINT_TRANSCALLNAME(TARGET)%だが
+					PRINTFORML 相手はそういうタイプが好みなのかニヤニヤ笑っている…
+				ELSE
+					PRINTFORML 女性に向けられるそういった視線に晒された経験が薄い%PRINT_TRANSCALLNAME(TARGET)%は
+					PRINTFORML 顔を真っ赤にしながら必死に気持ちを落ち着けている…
+				ENDIF
+			ENDIF
+		ELSEIF TALENT:淫乱 > 0
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は街で遊んでくれそうな相手を探している…
+			PRINTW 
+			PRINTFORML 露出の多い服装に下着が見えそうなマイクロミニスカート。
+			PRINTFORML とどめに派手な色のサイハイソックスを身に付けた姿はいかにも腰の軽そうなギャル風だ。
+			PRINTFORML ほどなくして声をかけられた%PRINT_TRANSCALLNAME(TARGET)%は肩を抱かれて街の人ごみの中へと消えていった…
+		ELSEIF TALENT:処女 > 0
+			PRINTFORML 街で歩いていた%PRINT_TRANSCALLNAME(TARGET)%はふと知らない相手に声を掛けられた。
+			PRINTFORML 一緒に食事でもどうかと誘われているところを見ると、
+			PRINTFORML これが噂に聞くナンパという奴かもしれない。
+			PRINTW 
+			PRINTFORML あまり良い印象が無かったので警戒していた%PRINT_TRANSCALLNAME(TARGET)%だったが、
+			PRINTFORML デートに付き合ってくれたらお礼をする、と現金を見せられ、
+			PRINTFORML 一緒に食事する程度なら…と相手に付いていくことにした…
+		ELSE
+			PRINTFORML 資金を稼ぐために、%PRINT_TRANSCALLNAME(TARGET)%は出会い系サイトで知り合った相手と待ち合わせしていた。
+			PRINTFORML 出会い系サイトとは言いつつも、その実態は性的な取引の斡旋場で、
+			PRINTFORML 多少の金額と引き換えにカラダを提供するのだ。
+			PRINTW 
+			PRINTFORML 相手が待ち合わせ場所に現れると、
+			PRINTFORML 自己紹介もそこそこにこちらの全身を舐めるように視姦してくる。
+			IF TALENT:感情乏しい > 0
+				PRINTFORML まったく気にした風もない無愛想な態度の%PRINT_TRANSCALLNAME(TARGET)%だが
+				PRINTFORML 相手はそういうタイプが好みなのかニヤニヤ笑っている…
+			ELSE
+				PRINTFORML これも資金調達のためだ…と自分に言い聞かせながら、
+				PRINTFORML 表情に出てしまわないように気を遣うので精いっぱいだ…
+			ENDIF
+		ENDIF
+		PRINTW 
+		PRINTW ・・
+		PRINTW ・・・・
+		PRINTW ・・・・・・
+		PRINTL 
+		;通常の援交
+		IF RAND:5 != 0 && TALENT:オトコ <= 0
+			IF TALENT:処女 > 0
+				PRINTFORML 繁華街のハズレのラブホテルに、%PRINT_TRANSCALLNAME(TARGET)%の嬌声が響いている。
+				NAMAHAME = 0
+			ELSE
+				PRINTFORML ラブホテルの一室で%PRINT_TRANSCALLNAME(TARGET)%は男の前で膝をついて口で奉仕している。
+				PRINTFORML 勃起したペニスを軽く手でしごきながらコンドームを着けさせようとすると、
+				PRINTFORML 男に「生ハメさせて欲しい」と頼まれてしまった…
+				PRINTL 
+				PRINTFORMW お小遣いは弾むから…と言っているが、生で挿入を許すべきだろうか？
+				PRINTL 
+				PRINTFORML [0]断固拒否する（報酬減少）
+				PRINTFORML [1]やんわりと断る（交渉失敗率{ABL:従順 * 15 + 15}％）
+				PRINTFORML [2]膣外で出すよう約束させる（報酬増加・小）
+				PRINTFORML [3]中出しＯＫする（報酬増加・大）
+				$INPUT_LOOP_ENKOU
+				INPUT
+				IF RESULT == 0
+					PRINTL 有無を言わさぬ雰囲気で男にコンドームを着けさせた…
+					NAMAHAME = -1
+				ELSEIF RESULT == 1
+					IF RAND:100 < ABL:従順 * 15 + 15
+						PRINTL 男を説得しようとしたが、雰囲気に流され押し切られてしまった…
+						NAMAHAME = 1 + RAND:2
+					ELSE
+						PRINTL 男はしぶしぶコンドームを着けることを受け入れた…
+						NAMAHAME = 0
+					ENDIF
+				ELSEIF RESULT == 2
+					PRINTL 中出しＮＧを条件に要求を受け入れた…
+					NAMAHAME = 1
+				ELSEIF RESULT == 3
+					PRINTL 中出ししても良いと伝えると、男の目が興奮の色に変わった…
+					NAMAHAME = 2
+				ELSE
+					GOTO INPUT_LOOP_ENKOU
+				ENDIF
+			ENDIF
+			PRINTW 
+			IF RAND:4 == 0
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は歳の離れた男のペニスを受け入れ、激しく突き上げられていた。
+				PRINTFORML 相手は歪んだ欲望を秘めているらしく、%PRINT_TRANSCALLNAME(TARGET)%を自分の娘の名前で呼びながら犯し、
+				PRINTFORML 近親相姦のロールプレイに勤しんでいる…
+				PRINTL 
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%もまた男をパパ、パパと呼んで背徳感を煽り立てつつ、
+				;ランダム分岐フラグ
+				FLAG:900 = 4
+			ELSEIF RAND:3 == 0
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は男の上に跨り、騎乗位で胸を揉まれながら自分から腰を振っていた。
+				PRINTFORML 大きく開脚した体勢で尻を上下に叩きつけ、ひたすら膣肉でペニスを扱き上げていく…
+				PRINTFORML 顔を真っ赤にして相手も見ずにひたすら快楽を貪り続ける%PRINT_TRANSCALLNAME(TARGET)%は
+				;ランダム分岐フラグ
+				FLAG:900 = 3
+			ELSEIF RAND:2 == 0
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は壁に手をついた体勢で後ろから男に犯されていた。
+				PRINTFORML 激しさを増していく動きに、肘で体重を支える%PRINT_TRANSCALLNAME(TARGET)%の乳房の前後が加速していく…
+				PRINTFORML まるで獣のような交尾快楽に酔いしれた%PRINT_TRANSCALLNAME(TARGET)%は
+				;ランダム分岐フラグ
+				FLAG:900 = 2
+			ELSE
+				PRINTFORML 男に圧し掛かられた%PRINT_TRANSCALLNAME(TARGET)%は完全に無防備を晒して何時間も責められ続けていた。
+				PRINTFORML ねちっこい腰使いで執拗に子宮口を責められ、%PRINT_TRANSCALLNAME(TARGET)%は幾度となく絶頂に導かれてしまう…
+				PRINTFORML 理性が焼き切れるほど官能を昂らせ、少女から牝へと堕とされた%PRINT_TRANSCALLNAME(TARGET)%は
+				;ランダム分岐フラグ
+				FLAG:900 = 1
+			ENDIF
+			IF TALENT:処女 > 0
+				PRINTFORML 処女を失ったばかりなのに絶頂させられる快楽に屈服させられてしまった…
+				PRINTW 
+				PRINTL 処女喪失
+				CFLAG:206 = 8
+				TALENT:処女 = -1
+			ELSEIF NAMAHAME > 1
+				PRINTL 言われるがまま膣内射精のおねだりをさせられ、屈従の証を胎内に注ぎ込まれてしまった…
+			ELSE
+				PRINTFORML 焦点の合わない目で男と口づけしながら激しく突き上げられている…
+			ENDIF
+			;口上
+			TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_SYOUHU_normalA")
+			;習得
+			JUEL:習得 += 250
+			;Ｖ経験
+			EXP:Ｖ経験 += 3
+			;Ｖ感覚
+			JUEL:快Ｖ += 15 * ABL:Ｖ感覚
+			;精液経験
+			EXP:精液経験 += 3
+
+			IF TALENT:ふたなり > 0
+			EXP:射精経験 += 1
+			CFLAG:37 += 1
+			ENDIF
+
+			;基本報酬
+			LOCAL:1 = 0
+			CALL CALC_SEISAN, ARG, LOCAL:1
+			PAYMENT = RESULT:1
+			PRINTW 
+			;中出し
+			IF NAMAHAME == 2
+				PRINTL 膣内射精
+				PRINTL 
+				IF RAND:3 == 0
+					PRINTFORML 男は出すぞ！中に出すぞ！と叫びながらピストンを加速させ、
+				ELSEIF RAND:2 == 0
+					PRINTFORML 男は卑猥な言葉で煽りながらピストンを加速させ、
+				ELSE
+					PRINTFORML 男は無言のまま鬼気迫る勢いでピストンを加速させ、
+				ENDIF
+				PRINTFORML 痙攣しながら濃厚な欲望を%PRINT_TRANSCALLNAME(TARGET)%の肉穴に解き放った。
+				PRINTFORML 最後の一滴まで出しきってペニスが引き抜かれると、たっぷり注ぎ込まれた精液が
+				PRINTFORML こってりと溢れ出てきた…
+				PRINTW 
+				;追加報酬
+				PAYMENT += 500
+				MONEY += 500
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は街で声をかけてきた男に{PAYMENT}＄のお小遣いをもらった
+				;アフターピル
+				CALL AFTER_PILL, TARGET, 35, 誰とも知れない相手
+				;妊娠判定
+				SIF TALENT:オトコ <= 0
+					CALL NINSIN_HANTEI, 3, 800, 誰とも知れない相手
+			;外出し
+			ELSEIF NAMAHAME == 1
+				;避妊失敗
+				IF RAND:5 == 0
+					IF RAND:8 == 0
+						PRINTL 膣内射精
+						PRINTL 
+						PRINTFORML 男の限界が近付いていると察した%PRINT_TRANSCALLNAME(TARGET)%は外で出すように頼んだが
+						PRINTFORML 相手は無視してピストンを続け、そのまま膣内に精液を放出した…
+						PRINTW 
+						PRINTL 男を咎めても悪びれる様子もなく、何食わぬ顔で多めの金額を握らせてきた…
+						;追加報酬
+						PAYMENT += 200
+						MONEY += 200
+						PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は街で声をかけてきた男に{PAYMENT}＄のお小遣いをもらった
+						;アフターピル
+						CALL AFTER_PILL, TARGET, 35, 誰とも知れない相手
+						;妊娠判定
+						SIF TALENT:オトコ <= 0
+							CALL NINSIN_HANTEI, 3, 800, 誰とも知れない相手
+					ELSEIF RAND:2 == 0
+						PRINTL 膣内射精
+						PRINTL 
+						PRINTFORML 男は射精寸前でペニスを引き抜こうとしたが、
+						PRINTFORML もたついて外に出すのが少し遅れてしまったようだ。
+						PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%が指で秘裂を押し広げると、僅かだが白濁液が流れ出てきた…
+						PRINTW 
+						PRINTL 男を咎めても後の祭りでしかない。後でピルを飲んでおかなければ…
+						;追加報酬
+						PAYMENT += 250
+						MONEY += 250
+						PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は街で声をかけてきた男に{PAYMENT}＄のお小遣いをもらった
+						;アフターピル
+						CALL AFTER_PILL, TARGET, 35, 誰とも知れない相手
+						;妊娠判定
+						SIF TALENT:オトコ <= 0
+							CALL NINSIN_HANTEI, 1, 800, 誰とも知れない相手
+					ELSE
+						PRINTL 膣内射精
+						PRINTL 
+						PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%が叩きつけられる快楽に流されていると、
+						PRINTFORML 男が突然力尽きて痙攣し、そのまま%PRINT_TRANSCALLNAME(TARGET)%の上にしなだれかかってきた。
+						PRINTFORML まさかと思いながら慌ててペニスを引き抜かせると、
+						PRINTFORML 案の定たっぷりと中出しされた精液がどろりとワレメから溢れ出していた…
+						PRINTW 
+						PRINTL 男を咎めても後の祭りでしかない。後でピルを飲んでおかなければ…
+						;追加報酬
+						PAYMENT += 300
+						MONEY += 300
+						PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は街で声をかけてきた男に{PAYMENT}＄のお小遣いをもらった
+						;アフターピル
+						CALL AFTER_PILL, TARGET, 35, 誰とも知れない相手
+						;妊娠判定
+						SIF TALENT:オトコ <= 0
+							CALL NINSIN_HANTEI, 3, 800, 誰とも知れない相手
+					ENDIF
+				;避妊成功
+				ELSEIF RAND:3 == 0
+					PRINTL ワレメに射精
+					PRINTL 
+					PRINTFORML 男は射精寸前でペニスを引き抜くと、%PRINT_TRANSCALLNAME(TARGET)%のワレメに欲望を解き放った…
+					PRINTW 
+					;追加報酬
+					PAYMENT += 250
+					PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は街で声をかけてきた男に{PAYMENT}＄のお小遣いをもらった
+				ELSEIF RAND:2 == 0
+					PRINTL 口に射精
+					PRINTL 
+					PRINTFORML 男は射精寸前でペニスを引き抜くと%PRINT_TRANSCALLNAME(TARGET)%にフェラチオさせ、
+					PRINTFORML そのまま喉の奥に欲望を解き放った…
+					PRINTW 
+					;追加報酬
+					PAYMENT += 250
+					PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は街で声をかけてきた男に{PAYMENT}＄のお小遣いをもらった
+				ELSE
+					PRINTL 膣外射精
+					PRINTL 
+					PRINTFORML 男が射精寸前でペニスを引き抜くと、
+					PRINTFORML 危うく迸った白濁が%PRINT_TRANSCALLNAME(TARGET)%の下腹部を汚していった…
+					PRINTW 
+					;追加報酬
+					PAYMENT += 250
+					PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は街で声をかけてきた男に{PAYMENT}＄のお小遣いをもらった
+				ENDIF
+			;コンドームに射精
+			ELSEIF NAMAHAME < 1
+				;避妊失敗
+				IF RAND:10 == 0
+					IF RAND:4 == 0 && NAMAHAME == -1
+						PRINTL 無許可中出し
+						PRINTL 
+						PRINTFORML 男は限界に達すると、あろうことかコンドームを取り外して再度挿入し
+						PRINTFORML 制止する%PRINT_TRANSCALLNAME(TARGET)%を無視して生ハメの状態でピストンしはじめた。
+						PRINTFORML レイプ同然の行為に抵抗するも、男はそのまま無許可での中出しを敢行した…
+						PRINTW 
+						PRINTFORML 茫然とする%PRINT_TRANSCALLNAME(TARGET)%に、男は何食わぬ顔で少し盛った金額を握らせてきた…
+						;追加報酬
+						PAYMENT += 150
+						MONEY += 150
+						PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は街で声をかけてきた男に{PAYMENT}＄のお小遣いをもらった
+						;アフターピル
+						CALL AFTER_PILL, TARGET, 35, 誰とも知れない相手
+						;妊娠判定
+						SIF TALENT:オトコ <= 0
+							CALL NINSIN_HANTEI, 3, 800, 誰とも知れない相手
+					ELSE
+						PRINTL 破れたコンドーム
+						PRINTL 
+						PRINTFORML 男はゴム越しに%PRINT_TRANSCALLNAME(TARGET)%の膣内にたっぷりと欲望を吐き出した。
+						PRINTFORML …が、どうにも様子がおかしく、何やら膣内に妙な感触が広がっていく。
+						PRINTFORML まさかと思いながら慌ててペニスを引き抜かせると、
+						PRINTFORML 案の定コンドームが破れており、濃厚な精液がどろりとワレメから溢れ出していた…
+						PRINTW 
+						PRINTFORML 男はお詫びと称して、少し盛った金額を握らせてきた…
+						;報酬減額
+						PAYMENT += 100
+						MONEY += 100
+						PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は街で声をかけてきた男に{PAYMENT}＄のお小遣いをもらった
+						;アフターピル
+						CALL AFTER_PILL, TARGET, 35, 誰とも知れない相手
+						;妊娠判定
+						SIF TALENT:オトコ <= 0
+							CALL NINSIN_HANTEI, 3, 800, 誰とも知れない相手
+					ENDIF
+				ELSE
+					PRINTL コンドームに射精
+					PRINTL 
+					PRINTFORML 男はゴム越しに%PRINT_TRANSCALLNAME(TARGET)%の膣内にたっぷりと欲望を吐き出した。
+					PRINTFORML ペニスを引き抜いてみると、コンドームは濃厚な精液でぷっくり膨らんでいた…
+					PRINTW 
+					;報酬減額
+					PAYMENT -= NAMAHAME * 100
+					MONEY -= NAMAHAME * 100
+					PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は街で声をかけてきた男に{PAYMENT}＄のお小遣いをもらった
+				ENDIF
+			ENDIF
+		;ねちっこく調教される
+		ELSEIF RAND:3 == 0
+			PRINTFORML 繁華街のハズレのラブホテルに、%PRINT_TRANSCALLNAME(TARGET)%の嬌声が響いている。
+			PRINTW 
+			IF RAND:2 == 0 && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0)
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は街で知り合った男の前に跪き、硬く反り返った男性器に口で奉仕していた。
+				PRINTFORML 男の言うままに%PRINT_TRANSCALLNAME(TARGET)%は洗ってもいない肉棒に舌を這わせ、先走りを啜っていく…
+				PRINTFORML 舌の使い方から始まり、最後には喉を性器のように扱う術まで教えられ、
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は男に口で奉仕する術をたっぷりと教え込まれてしまった…
+				;口上
+				TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_SYOUHU_normalB")
+				;習得
+				JUEL:習得 += 100
+				;フェラ経験
+				EXP:フェラ経験 += 3
+				;精液経験
+				EXP:精液経験 += 3
+			ELSE
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%を買った男は挿入もせず、ただただ執拗にキスを繰り返していた。
+				PRINTFORML 唾液をたっぷりと流し込まれ、口の中で音を立てながら混ぜ合わされ、それを嚥下させられる…
+				PRINTFORML 最初はその行為に嫌悪感しかなかった%PRINT_TRANSCALLNAME(TARGET)%だが、男の卓越した舌使いに理性を蕩かされていくに従って
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%のほうから男にキスを媚びるまでに狂わされてしまった…
+				;口上
+				TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_SYOUHU_normalC")
+				;習得
+				JUEL:習得 += 50
+			ENDIF
+			PRINTL
+			PRINTFORML 男による%PRINT_TRANSCALLNAME(TARGET)%の調教は、時間の許す限り続いた…
+			IF CONFIG_CHECK_SCREEN_F(3) == 0
+				PRINTW 
+			ELSE
+				PRINTL 
+			ENDIF
+			LOCAL:1 = 0
+			CALL CALC_SEISAN, ARG, LOCAL:1
+			PAYMENT = RESULT:1
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は街で声をかけてきた男に{PAYMENT}＄のお小遣いをもらった
+		;変態的なプレイをされる
+		ELSEIF RAND:2 == 0
+			IF RAND:4 == 0
+				PRINTFORMW 黴臭いビルの地下室で%PRINT_TRANSCALLNAME(TARGET)%は目隠しに口枷、そして全身を荒縄で縛られて自由を奪われていた。
+				PRINTFORML 何リットルもの浣腸液を詰め込まれた腹はまるで孕んだように醜く膨らみ、縛られた肢体をより淫靡に強調している。
+				PRINTFORML 脂汗を浮かべて責め苦に耐える%PRINT_TRANSCALLNAME(TARGET)%に男が近付き、浣腸液を塞き止めているプラグを勢い良く引き抜くと、
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はくぐもった悲鳴を上げながら汚物を撒き散らし、ぐったりと崩れ落ちた。
+				PRINTL 
+				PRINTFORML 男による%PRINT_TRANSCALLNAME(TARGET)%への変態行為は、時間の許す限り続いた…
+				;口上
+				TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_SYOUHU_hentaiA")
+				;習得
+				JUEL:習得 += 150
+				;Ａ経験
+				EXP:Ａ経験 += 3
+				;Ａ感覚
+				JUEL:快Ａ += 15 * ABL:Ａ感覚
+				;フェラ経験
+				EXP:フェラ経験 += 1
+				;精液経験
+				EXP:精液経験 += 1
+			ELSEIF RAND:3 == 0
+				PRINTFORMW 黴臭いビルの地下室で%PRINT_TRANSCALLNAME(TARGET)%は鼻フックで醜く化粧を施され、男の前に四つん這いになっていた。
+				PRINTFORML アナルに尻尾を模したプラグを差し込まれている%PRINT_TRANSCALLNAME(TARGET)%の今の身分は牝豚である…
+				PRINTFORML 言葉を喋ることも許されず、ブヒブヒと鳴きながら家畜同然に嬲られ、人間としてのプライドを徹底的に破壊され、
+				PRINTFORML 主人に媚び、与えられる快楽にただ身を任せることを心にも体にも教え込まれていく…
+				PRINTL 
+				PRINTFORML 男による%PRINT_TRANSCALLNAME(TARGET)%への変態行為は、時間の許す限り続き、終わる頃には%PRINT_TRANSCALLNAME(TARGET)%はすっかり牝豚に堕ちていた…
+				;口上
+				TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_SYOUHU_hentaiB")
+				;習得
+				JUEL:習得 += 150
+				;苦痛快楽経験
+				EXP:苦痛快楽経験 += 3
+				;苦痛
+				JUEL:苦痛 += 300
+				;フェラ経験
+				EXP:フェラ経験 += 1
+				;精液経験
+				EXP:精液経験 += 1
+			ELSEIF RAND:2 == 0
+				PRINTFORMW 黴臭いビルの地下室で%PRINT_TRANSCALLNAME(TARGET)%は動物の耳を模した髪飾りをつけられ、男の前に四つん這いになっていた。
+				PRINTFORML 首輪から伸びたリードを男に握られた%PRINT_TRANSCALLNAME(TARGET)%の今の身分は牝犬である…
+				PRINTFORML 命じられるがまま『芸』をし、成功すれば快楽を、失敗すれば苦痛を与えられ、%PRINT_TRANSCALLNAME(TARGET)%は飴と鞭で男に躾けられていく…
+				PRINTL 
+				PRINTFORML 男による%PRINT_TRANSCALLNAME(TARGET)%への変態行為は、時間の許す限り続き、終わる頃には%PRINT_TRANSCALLNAME(TARGET)%はすっかり牝犬に堕ちていた…
+				;口上
+				TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_SYOUHU_hentaiC")
+				;習得
+				JUEL:習得 += 150
+				;苦痛快楽経験
+				EXP:苦痛快楽経験 += 2
+				;苦痛
+				JUEL:苦痛 += 100
+				;欲情
+				JUEL:欲情 += 100
+				;恥情
+				JUEL:恥情 += 100
+				;フェラ経験
+				EXP:フェラ経験 += 1
+				;精液経験
+				EXP:精液経験 += 1
+			ELSE
+				PRINTFORMW 黴臭いビルの地下室で%PRINT_TRANSCALLNAME(TARGET)%はボンテージに身を包み、手した鞭で男を打ち据えていた。
+				PRINTFORML 手足を縛られ満足に動くこともできない男を、ヒールで踏みつけながら鞭で嬲り、爪先を舐めさせ、
+				PRINTFORML さらに男性自身をヒールで踏みにじり、女王様として崇めさせる、その倒錯的な行為…
+				PRINTL 
+				PRINTFORML 自分の中のサディズムが目覚めて行くに従い、%PRINT_TRANSCALLNAME(TARGET)%奇妙な胸の高鳴りを感じていた…
+				;口上
+				TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_SYOUHU_hentaiD")
+				;習得
+				JUEL:習得 += 100
+				;欲情
+				JUEL:欲情 += 100
+				;フェラ経験
+				EXP:フェラ経験 += 1
+				;精液経験
+				EXP:精液経験 += 1
+			ENDIF
+			IF CONFIG_CHECK_SCREEN_F(3) == 0
+				PRINTW 
+			ELSE
+				PRINTL 
+			ENDIF
+			LOCAL:1 = 0
+			CALL CALC_SEISAN, ARG, LOCAL:1
+			PAYMENT = RESULT:1
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は街で声をかけてきた変態趣味の男に{PAYMENT}＄のお小遣いをもらった
+		;欲求不満のお姉様のお相手
+		ELSE
+			IF TALENT:オトコ <= 0
+				PRINTFORMW どぎつい照明に照らされた部屋で、二匹の牝が絡み合っている。
+				PRINTFORML 熱い吐息は次第に浅くなっていき、甲高い嬌声が響き、ぐったりと崩れ落ちる。
+				PRINTFORML 汗にまみれたうなじを舐めあい、重ねた秘処を押し付けあい、再び高め合っていく。
+				;習得
+				JUEL:習得 += 150
+				;欲情
+				JUEL:欲情 += 100
+			ELSE
+				PRINTFORMW 街で%PRINT_TRANSCALLNAME(TARGET)%に声を掛けてきたのは女性だった。
+				IF TALENT:小柄
+					PRINT どうやらショタ趣味のある相手らしく、
+				ELSE
+					PRINT どうやら顔を気に入られたらしく、
+				ENDIF
+				PRINTFORML ホテルに入るなり「可愛い」を連発しながら騎乗位で%PRINT_TRANSCALLNAME(TARGET)%にまたがり、
+				PRINTFORML 逆レイプのような乱暴さで激しく腰を振ってくる。
+				PRINTFORML 決して逆らうことは許されず、射精することも許されず、ただ都合のいい肉棒として
+				PRINTFORML ひたすらに膣肉の感触に耐えることを強いられる。
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%が何度もイきたいと懇願するが、女性は嗜虐的な表情で「ダ・メ」と宣告した…
+				;習得
+				JUEL:習得 += 150
+				;欲情
+				JUEL:欲情 += 100
+				;射精経験
+				EXP:射精経験 += 2
+				CFLAG:37 += 2
+			ENDIF
+			;口上
+			TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_SYOUHU_les")
+			PRINTL
+			PRINTFORMW %PRINT_TRANSCALLNAME(TARGET)%と若い女の交わりは、時間の許す限り続いた…
+			IF CONFIG_CHECK_SCREEN_F(3) == 0
+				PRINTW 
+			ELSE
+				PRINTL 
+			ENDIF
+			LOCAL:1 = 0
+			CALL CALC_SEISAN, ARG, LOCAL:1
+			PAYMENT = RESULT:1
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は街で声をかけてきた欲求不満のおねえさまに{PAYMENT}＄のお小遣いをもらった
+		ENDIF
+		LOCAL:2 = 0
+		SIF RAND:100 < 20
+			LOCAL:2 += 1
+		SIF RAND:100 < (EXP:魅了経験 / 8)
+			LOCAL:2 += 1
+		IF LOCAL:2 > 0
+			FLAG:853 += LOCAL:2
+			PRINTFORML 人気度が{LOCAL:2}上がった
+		ENDIF
+		SIF RAND:100 < 25
+			CFLAG:825 += 1
+	;AV出演
+	CASE 4
+		PRINTL AV出演
+		PRINTL 
+		PRINTFORML 小遣いを稼ぐために%PRINT_TRANSCALLNAME(TARGET)%が出演した、卑猥な謳い文句で飾られたAVが店頭に並んでいる…
+		LOCAL:1 = 0
+		CALL CALC_SEISAN, ARG, LOCAL:1
+		PAYMENT = RESULT:1
+		IF CONFIG_CHECK_SCREEN_F(3) == 0
+			PRINTW 
+		ELSE
+			PRINTL 
+		ENDIF
+		IF RAND:11 == 0
+			PRINTFORML ファン必見の充実感！
+			IF TALENT:変身能力 == 1
+				PRINTFORML 可憐にエッチな魔法少女  %PRINT_TRANSCALLNAME(TARGET)%へ大変身を遂げた%PRINT_TRANSCALLNAME(TARGET)%ちゃんがアナタのエッチな願いを叶えます！
+			ELSE
+				PRINTFORML 可憐にエッチな魔法少女  マジカル☆%PRINT_TRANSCALLNAME(TARGET)%へ大変身を遂げた%PRINT_TRANSCALLNAME(TARGET)%ちゃんがアナタのエッチな願いを叶えます！
+			ENDIF
+			PRINTFORML 世界を救うため、メガネに三つ編みの制服姿から魔法少女へと変身！
+			PRINTFORML 魔法を駆使して濃密エロバトルを繰り広げ、触手に吐き出された白い液体が少女の運命を変える！
+			CFLAG:282 = 1
+			IF CONFIG_CHECK_SCREEN_F(3) == 0
+				PRINTW 
+			ELSE
+				PRINTL 
+			ENDIF
+			IF TALENT:変身能力 == 1
+				PRINTFORMW 『コスプレ魔法少女  %PRINT_TRANSCALLNAME(TARGET)%』は{RESULT:0}本売れ、{PAYMENT}＄の報酬を得ました。
+				LOCALS = 『コスプレ魔法少女  %PRINT_TRANSCALLNAME(TARGET)%』
+			ELSE
+				PRINTFORMW 『コスプレ魔法少女  マジカル☆%PRINT_TRANSCALLNAME(TARGET)%』は{RESULT:0}本売れ、{PAYMENT}＄の報酬を得ました。
+				LOCALS = 『コスプレ魔法少女  マジカル☆%PRINT_TRANSCALLNAME(TARGET)%』
+			ENDIF
+		ELSEIF RAND:10 == 0
+			IF TALENT:変身能力 == 1
+				PRINTFORML 大人気凌辱ヒロインシリーズ第二弾がいよいよ登場。伝説の%PRINT_TRANSCALLNAME(TARGET)%がついに悪の秘密結社に屈する！
+			ELSE
+				PRINTFORML 大人気凌辱ヒロインシリーズ第二弾がいよいよ登場。伝説のプリティー☆%PRINT_TRANSCALLNAME(TARGET)%がついに悪の秘密結社に屈する！
+			ENDIF
+			PRINTFORML 誇り高き少女戦士は「監禁」「陵辱」「調教」「洗脳」され快楽地獄に溺れていく…
+			PRINTFORML 戦いを忘れ男達の精液便所になり果てイキ狂う少女戦士は、このピンチを乗り越えられるのだろうか！
+			CFLAG:282 = 2
+			IF CONFIG_CHECK_SCREEN_F(3) == 0
+				PRINTW 
+			ELSE
+				PRINTL 
+			ENDIF
+			IF TALENT:変身能力 == 1
+				PRINTFORMW 『凌辱ヒロイン %PRINT_TRANSCALLNAME(TARGET)% セカンドシーズン』は{RESULT:0}本売れ、{PAYMENT}＄の報酬を得ました。
+				LOCALS = 『凌辱ヒロイン %PRINT_TRANSCALLNAME(TARGET)% セカンドシーズン』
+			ELSE
+				PRINTFORMW 『凌辱ヒロイン プリティー☆%PRINT_TRANSCALLNAME(TARGET)% セカンドシーズン』は{RESULT:0}本売れ、{PAYMENT}＄の報酬を得ました。
+				LOCALS = 『凌辱ヒロイン プリティー☆%PRINT_TRANSCALLNAME(TARGET)% セカンドシーズン』
+			ENDIF
+		ELSEIF RAND:9 == 0
+			PRINTFORML 紳士企画がおくるM男系コスプレAVシリーズ！
+			PRINTFORML 第6弾は、清純派美人AV女優の‘%PRINT_TRANSCALLNAME(TARGET)%’さんが出演！
+			PRINTFORML 私服からコスプレ衣装への着替え・自己紹介を含めて総計75分オーバーの作品に仕上がりました。
+			CFLAG:282 = 3
+			IF CONFIG_CHECK_SCREEN_F(3) == 0
+				PRINTW 
+			ELSE
+				PRINTL 
+			ENDIF
+			IF TALENT:変身能力 == 1
+				PRINTFORMW 『サディスティック魔法少女 %PRINT_TRANSCALLNAME(TARGET)%』は{RESULT:0}本売れ、{PAYMENT}＄の報酬を得ました。
+				LOCALS = 『サディスティック魔法少女 %PRINT_TRANSCALLNAME(TARGET)%』
+			ELSE
+				PRINTFORMW 『サディスティック魔法少女 すぷらったー☆%PRINT_TRANSCALLNAME(TARGET)%』は{RESULT:0}本売れ、{PAYMENT}＄の報酬を得ました。
+				LOCALS = 『サディスティック魔法少女 すぷらったー☆%PRINT_TRANSCALLNAME(TARGET)%』
+			ENDIF
+		ELSEIF TALENT:ふたなり > 0 && RAND:8 == 0
+			PRINTFORML ある日、突然。妹にお○ん○んが生えちゃった！
+			PRINTFORML オドロキ困る妹をよそに興味深々萌える僕（兄）が、たっぷり変態プレイを強要しちゃう！
+			PRINTFORML ふたなりになった妹は、いつもよりいっぱい感じちゃって、生えちゃったお○ん○んも、すぐに大きく反り勃ち、
+			PRINTFORML 先からえっちなお汁を出して変な気分に。 
+			CFLAG:282 = 4
+			IF CONFIG_CHECK_SCREEN_F(3) == 0
+				PRINTW 
+			ELSE
+				PRINTL 
+			ENDIF
+			PRINTFORMW 『ふたなりな妹とえっちしてみませんか？ %NAME%』は{RESULT:0}本売れ、{PAYMENT}＄の報酬を得ました。
+			LOCALS = 『ふたなりな妹とえっちしてみませんか？ %NAME%』
+		ELSEIF CHECK_PREGNANT_F(TARGET) > 0 && RAND:7 == 0
+			PRINTFORML お父さんとの子を授かったという臨月の少女の究極の近親相姦記録。
+			PRINTFORML 週末になると家族から調教・陵辱され続け、家庭内記録だとして父親が撮り貯めた
+			PRINTFORML 常識を完全に逸脱する驚愕の秘蔵映像がここに流出。
+			PRINTFORML 父親という名の鬼畜に飼い慣らされ性奴隷と化した少女の凄惨な姿がここにある。 
+			CFLAG:282 = 5
+			IF CONFIG_CHECK_SCREEN_F(3) == 0
+				PRINTW 
+			ELSE
+				PRINTL 
+			ENDIF
+			PRINTFORMW 『私の子●はお父さんとの子 腹ボテ小○生 鬼畜父親中出し 近親相姦成長記録』は{RESULT:0}本売れ、{PAYMENT}＄の報酬を得ました。
+			LOCALS = 『私の子●はお父さんとの子 腹ボテ小○生 鬼畜父親中出し 近親相姦成長記録』
+		ELSEIF RAND:6 == 0
+			PRINTFORML 帰宅途中…ネコの鳴き声が聞こえてきた。声を頼りに廃工場に入ると大きなダンボール箱がひとつ。
+			PRINTFORML 中を覗くと、そこにはつぶらな瞳のネコの姿が…。ネコの名前は‘%PRINT_TRANSCALLNAME(TARGET)%’。
+			PRINTFORML その時からボクと‘%PRINT_TRANSCALLNAME(TARGET)%’との不思議な生活がスタート。
+			PRINTFORML 言葉が通じない一人と一匹が、なにげない日常、
+			PRINTFORML ちょっと危険な事件を通して心を通わせていくハートフル・ファンタジー。
+			PRINTFORML 日本一のかわいさを誇る‘%PRINT_TRANSCALLNAME(TARGET)%’のネコ耳ルックは、前代未聞の可愛らしさかも！？
+			PRINTFORML 「にゃ～*」と迫る%PRINT_TRANSCALLNAME(TARGET)%ちゃんの眼差しに…全人類の男子が癒される120分！！
+			CFLAG:282 = 6
+			IF CONFIG_CHECK_SCREEN_F(3) == 0
+				PRINTW 
+			ELSE
+				PRINTL 
+			ENDIF
+			PRINTFORMW 『ネコ耳%PRINT_TRANSCALLNAME(TARGET)%のニャンニャンしちゃうぞ』は{RESULT:0}本売れ、{PAYMENT}＄の報酬を得ました。
+			LOCALS = 『ネコ耳%PRINT_TRANSCALLNAME(TARGET)%のニャンニャンしちゃうぞ』
+		ELSEIF RAND:5 == 0
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%ちゃんの卑猥な口から溢れ出るおスケベ淫語の数々。
+			PRINTFORML お願いもっと、おちんぽ頂戴！おちんぽ頂戴！ねぇあなたおちんぽ頂戴。
+			PRINTFORML こんなにおまんこが喜んでるの、あなたのおちんぽも幸せになってる？
+			PRINTFORML あぁ、おまんこ、幸せ、とっても、幸せ～！わたしのお口の中にあなたのきんたま汁をブッ掛けて！
+			CFLAG:282 = 7
+			IF CONFIG_CHECK_SCREEN_F(3) == 0
+				PRINTW 
+			ELSE
+				PRINTL 
+			ENDIF
+			PRINTFORMW 『淫語 卑猥語 BEST SELECTION %NAME%』は{RESULT:0}本売れ、{PAYMENT}＄の報酬を得ました。
+			LOCALS = 『淫語 卑猥語 BEST SELECTION %NAME%』
+		ELSEIF RAND:4 == 0
+			PRINTFORML 無敵ロ○ータ美少女‘%PRINT_TRANSCALLNAME(TARGET)%’が贈る激萌えコスプレ7変化！
+			PRINTFORML 女子校生、プリティーナース、巫女さま、弓道少女、舐めネコちゃん、萌え萌えアイドル、
+			PRINTFORML 人気のアニメコスを含む最強に萌えるシチューエーションSEXです！
+			PRINTFORML 「いっぱい気持ちよくなりたい…」恥じらいながらの潮吹き＆激ピストンFUCKは必見です！！！
+			CFLAG:282 = 8
+			IF CONFIG_CHECK_SCREEN_F(3) == 0
+				PRINTW 
+			ELSE
+				PRINTL 
+			ENDIF
+			PRINTFORMW 『萌え萌えコスプレ7 %NAME%』は{RESULT:0}本売れ、{PAYMENT}＄の報酬を得ました。
+			LOCALS = 『萌え萌えコスプレ7 %NAME%』
+		ELSEIF RAND:3 == 0
+			PRINTFORML 一人暮らしをしている親戚のお兄ちゃんの家に下宿している女子校生%PRINT_TRANSCALLNAME(TARGET)%。
+			PRINTFORML いつの日からか二人の同棲生活は始まった…。
+			PRINTFORML そして間もなくしてイケナイと知りながらも二人の交際が始まる。
+			PRINTFORML それはとってもとっても甘～い、同棲性活だったのでした。
+			PRINTFORML 「めちゃカワ女子校生%PRINT_TRANSCALLNAME(TARGET)%と僕の毎日ビンビンで甘過ぎる夢の同棲性活！！」
+			CFLAG:282 = 9
+			IF CONFIG_CHECK_SCREEN_F(3) == 0
+				PRINTW 
+			ELSE
+				PRINTL 
+			ENDIF
+			PRINTFORMW 『かわゆ過ぎる%PRINT_TRANSCALLNAME(TARGET)%と僕のパコパコ同棲性活』は{RESULT:0}本売れ、{PAYMENT}＄の報酬を得ました。
+			LOCALS = 『かわゆ過ぎる%PRINT_TRANSCALLNAME(TARGET)%と僕のパコパコ同棲性活』
+		ELSEIF RAND:2 == 0
+			PRINTFORML いきなり勃ったチンポをおちょぼアナルに無理矢理差し込み女を征服する！
+			PRINTFORML チンポが入るはずの穴ではないが、妊娠の心配もないからナマで男汁全部注入しても問題無し！
+			PRINTFORML 嫌々言ってるけど、結局俺のチンポが菊門刺激して気持ちいいんだろ？
+			PRINTFORML 犯される女の喘ぎとガッツリめり込むアナルSEXをご覧下さい！
+			CFLAG:282 = 10
+			IF CONFIG_CHECK_SCREEN_F(3) == 0
+				PRINTW 
+			ELSE
+				PRINTL 
+			ENDIF
+			PRINTFORMW 『無理矢理犯されるアナル 4時間』は{RESULT:0}本売れ、{PAYMENT}＄の報酬を得ました。
+			LOCALS = 『無理矢理犯されるアナル 4時間』
+		ELSE
+			PRINTFORML ツインテールに爽やかなブルーのメイド服が激似合いの%PRINT_TRANSCALLNAME(TARGET)%ちゃん。
+			PRINTFORML ロリロリしたお顔に舌足らずなしゃべり方がめちゃくちゃキュートなメイドさん。
+			PRINTFORML しかし、生まれついての不器用さが災いし、お仕事では失敗続き…
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%ちゃんのムチムチしたカラダをイヤらしい目つきで見つめるご主人様から、えっちなお仕置きを受ける事に…
+			PRINTFORML メイド服を着たまま、口に入りきらないデカチンをフェラ奉仕。
+			PRINTFORML おさまりきらない勃起チ●ポをパイパンオマ●コにあてがわれ、着衣のまま激しいピストン運動へ…。
+			CFLAG:282 = 11
+			IF CONFIG_CHECK_SCREEN_F(3) == 0
+				PRINTW 
+			ELSE
+				PRINTL 
+			ENDIF
+			PRINTFORMW 『おしおきされてイキまくるドジっ娘メイド %NAME%』は{RESULT:0}本売れ、{PAYMENT}＄の報酬を得ました。
+			LOCALS = 『おしおきされてイキまくるドジっ娘メイド %NAME%』
+		ENDIF
+		IF PAYMENT >= 2000 && GLOBAL:157 == 0
+			PRINTL 【実績：ＡＶ女優】を達成しました！
+			PRINTW 
+			GLOBAL:157 = 1
+			SAVEGLOBAL
+		ENDIF
+		PRINTL
+		PRINTL どうやらサンプルディスクが郵送されてきたようだ。
+		IF CFLAG:281 == 0
+			PRINTL ……ちょっとだけ見てみようか？
+			PRINTL [0] はい
+			PRINTL [1] いいえ
+			PRINTL [9] はい　（次から確認しない）
+			PRINTL [10]いいえ（次から確認しない）
+			INPUT
+			IF RESULT == 0
+				CFLAG:281 = 0
+				;口上
+				TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_AV")
+				PRINTL
+				PRINTFORML 画面の中で、%PRINT_TRANSCALLNAME(TARGET)%は痴態をさらしている。
+			ELSEIF RESULT == 1
+				CFLAG:281 = 0
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はパッケージを見て顔を真っ赤にしている。
+			ELSEIF RESULT == 9
+				CFLAG:281 = 1
+				;口上
+				TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_AV")
+				PRINTL
+				PRINTFORML 画面の中で、%PRINT_TRANSCALLNAME(TARGET)%は痴態をさらしている。
+			ELSEIF RESULT == 10
+				CFLAG:281 = 2
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はパッケージを見て顔を真っ赤にしている。
+			ELSE
+				PRINTL 正しい値を入力してください
+			ENDIF
+		ELSEIF CFLAG:281 == 1
+			PRINTL ……ちょっとだけ見てみよう。
+			;口上
+			TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_AV")
+			PRINTL
+			PRINTFORML 画面の中で、%PRINT_TRANSCALLNAME(TARGET)%は痴態をさらしている。
+		ELSEIF CFLAG:281 == 2
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はパッケージを見て顔を真っ赤にしている。
+		ENDIF
+		SAVESTR:(20 + TARGET) = %LOCALS%
+		SIF RAND:100 < 75
+			CFLAG:285 += 1
+		;いまのところ珠と経験は一括処理
+		;習得
+		JUEL:習得 += 150
+		IF TALENT:オトコ <= 0
+			;Ｖ経験
+			EXP:Ｖ経験 += 2
+			;Ｖ感覚
+			JUEL:快Ｖ += 10 * ABL:Ｖ感覚
+		ELSE
+			;Ａ経験
+			EXP:Ａ経験 += 2
+			;Ａ感覚
+			JUEL:快Ａ += 10 * ABL:Ａ感覚
+		ENDIF
+		;Ａ経験
+		EXP:Ａ経験 += 2
+		;Ａ感覚
+		JUEL:快Ａ += 10 * ABL:Ａ感覚
+		;フェラ経験
+		EXP:フェラ経験 += 1
+		;精液経験
+		EXP:精液経験 += 5
+		;ＡＶ業界では避妊がしっかりしているので妊娠判定はなし
+	;公衆便所
+	CASE 5
+		;浮浪者の共用便器
+		IF RAND:3 == 0 && TALENT:オトコ <= 0
+			PRINTL 公衆便所（浮浪者）
+			PRINTL 
+			PRINTFORMW 曰くつきの公園の木陰に%PRINT_TRANSCALLNAME(TARGET)%の姿があった。
+			PRINTFORMW 空のポーチを手に震える少女の肌を隠すものは何一つなく、ふとももには汗でない汁が伝っていた。
+			PRINTFORML 今ならまだ引き返すことができる…
+			PRINTW 
+			PRINTFORML 茂みの先から、吐き気を催すほどの猛烈な臭気が漂ってきている。
+			SIF TALENT:ふたなり > 0
+				PRINTFORMW %PRINT_TRANSCALLNAME(TARGET)%のふたなりペニスは痛いほど張り詰め、泉のように先走りを垂れ流していた。
+			PRINTFORMW %PRINT_TRANSCALLNAME(TARGET)%は何度もつばを飲み込むと、木陰から足を踏み出した。
+			PRINTFORML もう後には戻れない…
+			;口上
+			TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_TOILET_homeless")
+			IF CONFIG_CHECK_SCREEN_F(3) == 0
+				PRINTW 
+			ELSE
+				PRINTL 
+			ENDIF
+			IF TALENT:処女 > 0
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は浮浪者の不潔なペニスをしゃぶらされながら、
+				PRINTFORML 垢のこびりついた肉棒に処女を散らされた。
+				PRINTW 
+				PRINTL 処女喪失
+				CFLAG:206 = 9
+				PRINTW 
+				TALENT:処女 = -1
+				EXP:異常経験 += 1
+			ENDIF
+			LOCAL:1 = 0
+			CALL CALC_SEISAN, ARG, LOCAL:1
+			PAYMENT = RESULT:1
+			RESULT:0 = RESULT:0 / 10 + RAND:5 + 1
+			PRINTFORML 肉便器%PRINT_TRANSCALLNAME(TARGET)%は{RESULT:0}人に使われたが、使用料は{PAYMENT}＄しか入っていなかった…
+		;路地裏放置
+		ELSEIF RAND:2 == 0
+			PRINTL 公衆便所（路地裏放置）
+			PRINTL 
+			;口上
+			TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_TOILET_roji")
+			PRINTL
+			PRINTFORML 開口ギャグで広げられた口だけ露出したラバーマスクで
+			PRINTFORML ぴっちりと顔を覆われた%PRINT_TRANSCALLNAME(TARGET)%は人気のない路地裏に転がされていた。
+			PRINTW 
+			PRINTFORML 『公衆便器　ご自由にお使いください』の看板の通り
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の身体は誰とも知れない精液にまみれて異臭を放ち、
+				SIF TALENT:ふたなり > 0 || TALENT:オトコ > 0
+					PRINTL 股間で屹立するペニスからは自ら吐き出した精液にまみれ、
+				SIF TALENT:母乳体質
+					PRINTL 赤く充血した乳首は黄ばんだ母乳を垂れ流し、
+			PRINT 無遠慮に使われた
+			SIF TALENT:オトコ <= 0
+				PRINT 雌穴と
+			PRINTFORML 尻穴はだらしなく口を開け、混ざり合ったおぞましい精液が地面にまで溢れていた。
+			IF TALENT:処女 > 0
+				PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%の純潔は
+					SELECTCASE RAND:4
+						CASE 0
+							PRINT 浮浪者の垢にまみれた汚らしい肉棒
+						CASE 1
+							PRINT 顔も知らぬ通りすがりの男の野太いペニス
+						CASE 2
+							PRINT 小学生の包茎ペニス
+						CASE 3
+							PRINT 発情した野良犬の歪な肉棒
+					ENDSELECT
+				PRINTL に散らされ、
+				PRINTL 既に破瓜の血も膣肉にこびりつく生臭い精液に洗い流されていた。
+				PRINTW 
+				PRINTL 処女喪失
+				CFLAG:206 = 9
+				PRINTW 
+				TALENT:処女 = -1
+				EXP:異常経験 += 1
+			ENDIF
+			PRINT 肉穴便器の利用者たちが去っていくと、
+			SIF TALENT:お漏らし癖
+				PRINT 溢れた白濁に混じってゆるゆると失禁し
+			PRINTFORMW 痙攣する%PRINT_TRANSCALLNAME(TARGET)%はそのまま路地裏に放置された…
+			PRINTL 
+			LOCAL:1 = 0
+			CALL CALC_SEISAN, ARG, LOCAL:1
+			PAYMENT = RESULT:1
+			RESULT:0 = RESULT:0 / 10 + RAND:5 + 1
+			PRINTFORML 肉便器%PRINT_TRANSCALLNAME(TARGET)%は{RESULT:0}人に使われたが、使用料は{PAYMENT}＄しか入っていなかった…
+			;アフターピル
+			CALL AFTER_PILL, TARGET, 10, 誰とも知れない相手
+			;妊娠判定
+			SIF TALENT:オトコ <= 0
+				CALL NINSIN_HANTEI, (RESULT:0 / 2 + 2), 100, 誰とも知れない相手
+		;野良犬
+		ELSE
+			PRINTL 公衆便所（野良犬）
+			PRINTL 
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は着てきた服と下着を詰めたバッグに茂みに隠すと、小さなボードを首に掛けた。
+			PRINTFORML 『公衆便器　ご自由にお使い下さい』
+			PRINTFORML 破滅への衝動に火照り切った%PRINT_TRANSCALLNAME(TARGET)%はよろけるように裏山へ入り込んでいく。
+			PRINTW 
+			PRINTFORML 人の声に茂みを覗きこむと、そこには四つん這いの少女が野良犬と交尾するおぞましい光景があった。
+			PRINTFORML 少女の上気した肌を隠すものは何もなく、長い髪を振り乱し、
+			PRINTFORML 半ば白目を剥いたアへ顔で気が狂ったように泣き叫んでいた…
+			PRINTW 
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%に気づいた野良犬は激しく吠え立てるものの、
+			PRINTFORML 本射精が始まって根本の瘤が少女にがっちりはまりこんでおり
+			PRINTFORML 犬の精液を受けて失禁しながらイき狂う少女と繋がったまま、その場を動くことができない。
+			PRINTW 
+			PRINTFORML 言葉を失う%PRINT_TRANSCALLNAME(TARGET)%が呆然と見つめるなか、種付けを終えた野良犬は一声吠えて逃げ去っていった。
+			PRINTW 
+			PRINTFORML 意識を取り戻した少女は%PRINT_TRANSCALLNAME(TARGET)%よりもいくらか年上のようで、美しい顔立ちをしてはいたものの
+			PRINTFORML その身体は牝豚同然にいやらしく育ち、肥大した乳首からは黄ばんだ母乳が息をつくたびにごぼごぼと溢れ、
+			PRINTFORML おぞましい生命を宿し醜く突き出た腹の下には二度と取れないふたなりの証が生やされていた。
+			PRINTW 
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は彼女がかつては自分と同じように触手と戦っていたこと
+			PRINTFORML そして彼女がもう二度と戦う力を取り戻せないであろうことに気付いてしまった。
+			PRINTFORML 少女だったものは%PRINT_TRANSCALLNAME(TARGET)%の手を取り、自分と同じになってはならないと必死に訴え続けている…
+			PRINTW 
+			PRINTFORML しかし少女の言葉も届かないほど堕ちてしまっている%PRINT_TRANSCALLNAME(TARGET)%は、
+			PRINTFORML 少女の隣に四つん這いになり、妖しい期待をその眼に浮かべた…
+			PRINTW 
+			IF TALENT:処女 > 0 && TALENT:オトコ <= 0
+				PRINTL 処女喪失
+				CFLAG:206 = 10
+				PRINTW 
+				TALENT:処女 = -1
+				EXP:異常経験 += 1
+			ENDIF
+			;口上
+			TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_TOILET_dog")
+			IF CONFIG_CHECK_SCREEN_F(3) == 0
+				PRINTW 
+			ELSE
+				PRINTL 
+			ENDIF
+			LOCAL:1 = 1
+			CALL CALC_SEISAN, ARG, LOCAL:1
+			PAYMENT = RESULT:1
+			RESULT:0 = RESULT:0 / 20 + RAND:5 + 1
+			PRINTFORML 肉便器%PRINT_TRANSCALLNAME(TARGET)%は{RESULT:0}匹の野良犬に使われたが、当然使用料は１＄たりとも得られなかった…
+		ENDIF
+		CFLAG:285 += 1
+		;習得
+		JUEL:習得 += 200
+		;恥情
+		JUEL:恥情 += 100
+		IF TALENT:オトコ <= 0
+			;Ｖ経験
+			EXP:Ｖ経験 += RESULT:0 / 2 + 2
+			;Ｖ感覚
+			JUEL:快Ｖ += RESULT:0 * ABL:Ｖ感覚 / 2 + 2
+		ELSE
+			;Ａ経験
+			EXP:Ａ経験 += RESULT:0 / 4 + 1
+			;Ａ感覚
+			JUEL:快Ａ += RESULT:0 * ABL:Ａ感覚 / 4 + 1
+		ENDIF
+		;Ａ経験
+		EXP:Ａ経験 += RESULT:0 / 4 + 1
+		;Ａ感覚
+		JUEL:快Ａ += RESULT:0 * ABL:Ａ感覚 /4 + 1
+		;フェラ経験
+		EXP:フェラ経験 += RESULT:0 / 2 + 2
+		;精液経験
+		EXP:精液経験 += RESULT:0 / 2 + 2
+		SIF RAND:100 < 25
+			CFLAG:825 += 1
+	;アイドル活動　魅了経験が１００以上でアイドルデビュー、それまでは下積み
+	CASE 6
+		IF EXP:魅了経験 < 50
+			PRINTL アイドル活動（下積み）
+			PRINTL 
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はアイドルとして売り出しました。
+			IF DAY < 14
+				PRINTL 知名度が低いためか、人気はまずまずのようです。
+				;口上
+				TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_IDOL1")
+				LOCAL:2 = 30 + RAND:5
+				;魅了経験に対するFEATの効果
+				SIF TALENT:平凡 > 0 && RAND:4 != 0
+					LOCAL:2 -= RAND:5 + 1
+				SIF TALENT:人外の美貌 > 0 && RAND:4 != 0
+					LOCAL:2 += RAND:5 + 1
+				LOCAL:2 = MAX(LOCAL:2, 30)
+				EXP:魅了経験 += LOCAL:2
+				IF CONFIG_CHECK_SCREEN_F(3) == 0
+					PRINTW 
+				ELSE
+					PRINTL 
+				ENDIF
+				PRINTFORML 魅了経験が{LOCAL:2}上がった
+				IF EXP:魅了経験 >= 100
+					IF CONFIG_CHECK_SCREEN_F(3) == 0
+						PRINTW 
+					ELSE
+						PRINTL 
+					ENDIF
+					PRINTL 将来性があるということで、
+					PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はアイドルとしてプロデビューすることが決まりました。
+				ENDIF
+			ELSE
+				PRINTL 触手との戦いで顔が知られているためか、なかなか好評なスタートです。
+				;口上
+				TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_IDOL2")
+				LOCAL:2 = 25 + MIN(DAY,28) + RAND:5
+				;魅了経験に対するFEATの効果
+				SIF TALENT:平凡 > 0 && RAND:4 != 0
+					LOCAL:2 -= RAND:5 + 1
+				SIF TALENT:人外の美貌 > 0 && RAND:4 != 0
+					LOCAL:2 += RAND:5 + 1
+				LOCAL:2 = MAX(LOCAL:2, 35)
+				EXP:魅了経験 += LOCAL:2
+				IF CONFIG_CHECK_SCREEN_F(3) == 0
+					PRINTW 
+				ELSE
+					PRINTL 
+				ENDIF
+				PRINTFORML 魅了経験が{LOCAL:2}上がった
+				IF EXP:魅了経験 >= 100
+					IF CONFIG_CHECK_SCREEN_F(3) == 0
+						PRINTW 
+					ELSE
+						PRINTL 
+					ENDIF
+					PRINTL 運良く「面倒を見たい」というプロダクションと巡り合い、
+					PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は一足飛びにアイドルとしてプロデビューすることが決まりました。
+				ENDIF
+			ENDIF
+		ELSEIF EXP:魅了経験 < 200
+			PRINTL アイドル活動（下積み）
+			PRINTL 
+			IF RAND:3 == 0
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は路上ライブを行いました。
+				;口上
+				TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_IDOL3")
+				LOCAL:1 = 0
+				CALL CALC_SEISAN, ARG, LOCAL:1
+				PAYMENT = RESULT:1
+				IF CONFIG_CHECK_SCREEN_F(3) == 0
+					PRINTW 
+				ELSE
+					PRINTL 
+				ENDIF
+				IF RESULT:0 > 10
+					PRINTFORML {RESULT:0}人の聴衆から喝采を受け、{PAYMENT}＄の資金を稼いだ。
+				ELSE
+					PRINTFORML {RESULT:0}人が投げ銭を行い、{PAYMENT}＄の資金を稼いだ。
+				ENDIF
+				LOCAL:2 = 2 + RAND:4
+				;魅了経験に対するFEATの効果
+				SIF TALENT:平凡 > 0 && RAND:4 != 0
+					LOCAL:2 -= RAND:2 + 1
+				SIF TALENT:人外の美貌 > 0 && RAND:4 != 0
+					LOCAL:2 += RAND:2 + 1
+				IF LOCAL:2 > 0
+					EXP:魅了経験 += LOCAL:2
+					PRINTFORML 魅了経験が{LOCAL:2}上がった
+				ENDIF
+				IF EXP:魅了経験 >= 100
+					IF CONFIG_CHECK_SCREEN_F(3) == 0
+						PRINTW 
+					ELSE
+						PRINTL 
+					ENDIF
+					PRINTL 歌に聞き入っていたプロデューサーにスカウトされ、
+					PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はアイドルとしてプロデビューすることが決まりました。
+				ENDIF
+			ELSE
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は芸能プロダクションに売り込みを行いました。
+				;口上
+				TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_IDOL4")
+				LOCAL:2 = 4 + RAND:2
+				;魅了経験に対するFEATの効果
+				SIF TALENT:平凡 > 0 && RAND:4 != 0
+					LOCAL:2 -= RAND:2 + 1
+				SIF TALENT:人外の美貌 > 0 && RAND:4 != 0
+					LOCAL:2 += RAND:2 + 1
+				SIF LOCAL:2 > 0
+					EXP:魅了経験 += LOCAL:2
+				IF CONFIG_CHECK_SCREEN_F(3) == 0
+					PRINTW 
+				ELSE
+					PRINTL 
+				ENDIF
+				SIF LOCAL:2 > 0
+					PRINTFORML 魅了経験が{LOCAL:2}上がった
+				IF EXP:魅了経験 >= 200
+					IF CONFIG_CHECK_SCREEN_F(3) == 0
+						PRINTW 
+					ELSE
+						PRINTL 
+					ENDIF
+					PRINTL 地道な努力が認められたのか、
+					PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はアイドルとしてプロデビューすることが決まりました。
+				ENDIF
+			ENDIF
+		;デビュー後
+		ELSE
+			IF RAND:4 == 0 || (TALENT:オトコ > 0 && RAND:2 == 0)
+				PRINTL アイドル活動（テレビ出演）
+				PRINTL 
+				IF EXP:魅了経験 > 499
+					PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はテレビ番組のレギュラーとして活躍しました。
+				ELSE
+					PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はテレビ番組に出演しました。
+				ENDIF
+				;口上
+				TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_IDOL_TV")
+				LOCAL:1 = 1
+				CALL CALC_SEISAN, ARG, LOCAL:1
+				PAYMENT = RESULT:1
+				IF CONFIG_CHECK_SCREEN_F(3) == 0
+					PRINTW 
+				ELSE
+					PRINTL 
+				ENDIF
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はギャラとして{PAYMENT}＄の資金を稼いだ。
+				LOCAL:2 = 4 + RAND:2
+				;魅了経験に対するFEATの効果
+				SIF TALENT:平凡 > 0 && RAND:4 != 0
+					LOCAL:2 -= RAND:2 + 1
+				SIF TALENT:人外の美貌 > 0 && RAND:4 != 0
+					LOCAL:2 += RAND:2 + 1
+				IF LOCAL:2 > 0
+					EXP:魅了経験 += LOCAL:2
+					PRINTFORML 魅了経験が{LOCAL:2}上がった
+				ENDIF
+			ELSEIF RAND:3 != 0 && CFLAG:42 != 400 && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0)
+				PRINTL アイドル活動（グラビア撮影）
+				PRINTL 
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はグラビア撮影を行いました。
+				;口上
+				TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_IDOL_picture")
+				LOCAL:1 = 2
+				CALL CALC_SEISAN, ARG, LOCAL:1
+				PAYMENT = RESULT:1
+				IF RAND:5 == 0
+					LOCALS = 『ピュエアリーＫＩＳＳ %NAME%』
+				ELSEIF RAND:4 == 0
+					LOCALS = 『マジかるエン★ジェル %NAME%』
+				ELSEIF RAND:3 == 0
+					LOCALS = 『純情ＨＥＡＲＴ %NAME%』
+				ELSEIF RAND:2 == 0
+					LOCALS = 『%NAME% ゆうわくビーチ』
+				ELSE
+					LOCALS = 『ガールズ＆スタイルズ %NAME%』
+				ENDIF
+				IF CONFIG_CHECK_SCREEN_F(3) == 0
+					PRINTW 
+				ELSE
+					PRINTL 
+				ENDIF
+				PRINTFORML 写真集%LOCALS%は{RESULT:0}部売れ、ギャラとして{PAYMENT}＄の資金を稼いだ。
+				IF EXP:魅了経験 > 799
+					LOCAL:2 = 8 + RAND:6
+					;魅了経験に対するFEATの効果
+					SIF TALENT:平凡 > 0 && RAND:4 != 0
+						LOCAL:2 -= RAND:4 + 1
+					SIF TALENT:人外の美貌 > 0 && RAND:4 != 0
+						LOCAL:2 += RAND:4 + 1
+				ELSE
+					LOCAL:2 = 4 + RAND:4
+					;魅了経験に対するFEATの効果
+					SIF TALENT:平凡 > 0 && RAND:4 != 0
+						LOCAL:2 -= RAND:2 + 1
+					SIF TALENT:人外の美貌 > 0 && RAND:4 != 0
+						LOCAL:2 += RAND:2 + 1
+				ENDIF
+				IF LOCAL:2 > 0
+					EXP:魅了経験 += LOCAL:2
+					PRINTFORML 魅了経験が{LOCAL:2}上がった
+				ENDIF
+				SAVESTR:(23 + TARGET) = %LOCALS%
+			ELSEIF RAND:2 == 0
+				PRINTL アイドル活動（新曲の収録）
+				PRINTL 
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は新曲の収録を行いました。
+				;口上
+				TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_IDOL_music")
+				LOCAL:1 = 2
+				CALL CALC_SEISAN, ARG, LOCAL:1
+				PAYMENT = RESULT:1
+				IF CONFIG_CHECK_SCREEN_F(3) == 0
+					PRINTW 
+				ELSE
+					PRINTL 
+				ENDIF
+				PRINTFORML ＣＤは{RESULT:0}枚売れ、ギャラとして{PAYMENT}＄の資金を稼いだ。
+				IF EXP:魅了経験 > 499
+					LOCAL:2 = 12 + RAND:4
+					;魅了経験に対するFEATの効果
+					SIF TALENT:平凡 > 0 && RAND:4 != 0
+						LOCAL:2 -= RAND:6 + 1
+					SIF TALENT:人外の美貌 > 0 && RAND:4 != 0
+						LOCAL:2 += RAND:6 + 1
+				ELSE
+					LOCAL:2 = 6 + RAND:2
+					;魅了経験に対するFEATの効果
+					SIF TALENT:平凡 > 0 && RAND:4 != 0
+						LOCAL:2 -= RAND:3 + 1
+					SIF TALENT:人外の美貌 > 0 && RAND:4 != 0
+						LOCAL:2 += RAND:3 + 1
+				ENDIF
+				IF LOCAL:2 > 0
+					EXP:魅了経験 += LOCAL:2
+					PRINTFORML 魅了経験が{LOCAL:2}上がった
+				ENDIF
+			ELSE
+				PRINTL アイドル活動（通常営業）
+				PRINTL 
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はイベントやサイン会などに奔走しました。
+				;口上
+				TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_IDOL_event")
+				IF EXP:魅了経験 > 499
+					LOCAL:2 = 10 + RAND:4
+					;魅了経験に対するFEATの効果
+					SIF TALENT:平凡 > 0 && RAND:4 != 0
+						LOCAL:2 -= RAND:5 + 1
+					SIF TALENT:人外の美貌 > 0 && RAND:4 != 0
+						LOCAL:2 += RAND:5 + 1
+				ELSE
+					LOCAL:2 = 8 + RAND:4
+					;魅了経験に対するFEATの効果
+					SIF TALENT:平凡 > 0 && RAND:4 != 0
+						LOCAL:2 -= RAND:4 + 1
+					SIF TALENT:人外の美貌 > 0 && RAND:4 != 0
+						LOCAL:2 += RAND:4 + 1
+				ENDIF
+				LOCAL:1 = 3
+				CALL CALC_SEISAN, ARG, LOCAL:1
+				PAYMENT = RESULT:1
+				SIF LOCAL:2 > 0
+					EXP:魅了経験 += LOCAL:2
+				IF CONFIG_CHECK_SCREEN_F(3) == 0
+					PRINTW 
+				ELSE
+					PRINTL 
+				ENDIF
+				SIF LOCAL:2 > 0
+					PRINTFORML 魅了経験が{LOCAL:2}上がった
+			ENDIF
+			LOCAL:2 = 0
+			SIF RAND:100 < 10
+				LOCAL:2 += 1
+			SIF RAND:100 < 10
+				LOCAL:2 += 1
+			IF LOCAL:2 > 0
+				FLAG:853 += LOCAL:2
+				PRINTFORML 人気度が{LOCAL:2}上がった
+			ENDIF
+		ENDIF
+	;枕営業
+	CASE 7
+		PRINTL 枕営業
+		PRINTL 
+		;枕営業の報酬は魅了経験
+		IF TALENT:オトコ <= 0 && TALENT:処女 > 0
+			IF RAND:4 != 0
+				;さすがにプロデューサーは処女を奪わない
+				PRINTFORML プロデューサーの機嫌を取るため、%PRINT_TRANSCALLNAME(TARGET)%は口で奉仕をしている
+				PRINTFORML 膝立ちになって上目づかいで肉棒の先端に舌を這わせ、それからゆっくりと口に含んでいく
+				PRINTFORML 緩急を付けながら、時おり口を放して反り立ったペニスにキスをし、再び吸い上げながら竿を咥える
+				PRINTFORML 加速していく動きにたまらなくなったプロデューサーが%PRINT_TRANSCALLNAME(TARGET)%の頭を掴み、
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は口で白い劣情の迸りを受け止めた…
+				;口上
+				TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_MAKURA_pro1")
+				LOCAL:1 = 0
+				CALL CALC_SEISAN, ARG, LOCAL:1
+				PAYMENT = RESULT:1
+				;習得
+				JUEL:習得 += 100
+				;フェラ経験
+				EXP:フェラ経験 += 2
+				;精液経験
+				EXP:精液経験 += 1
+				LOCAL:2 = 8 + RAND:4
+				;魅了経験に対するFEATの効果
+				SIF TALENT:平凡 > 0 && RAND:4 != 0
+					LOCAL:2 -= RAND:4 + 1
+				SIF TALENT:人外の美貌 > 0 && RAND:4 != 0
+					LOCAL:2 += RAND:4 + 1
+				SIF LOCAL:2 > 0
+					EXP:魅了経験 += LOCAL:2
+				IF CONFIG_CHECK_SCREEN_F(3) == 0
+					PRINTW 
+				ELSE
+					PRINTL 
+				ENDIF
+				SIF LOCAL:2 > 0
+					PRINTFORML 魅了経験が{LOCAL:2}上がった
+				;露見度を加算
+				CFLAG:283 += 1
+			ELSE
+				IF EXP:魅了経験 > 499
+					PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は高級ホテルの一室でスポンサー企業の取り締まり役という男を紹介された
+					PRINTFORML より積極的な出資を考えてくれるよう売れっ子アイドルに"説得"させるというわけだ
+					PRINTFORML 部屋で二人きりになった%PRINT_TRANSCALLNAME(TARGET)%は顔を背けながらバスローブの帯を解いた…
+				ELSE
+					PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はホテルの一室で某テレビ局の役員を紹介された
+					PRINTFORML 口効きして貰えればだいぶ仕事がしやすくなるだろう、との事務所の説明だった
+					PRINTFORML 部屋で二人きりになった%PRINT_TRANSCALLNAME(TARGET)%は顔を背けながらバスローブの帯を解いた…
+				ENDIF
+				IF CONFIG_CHECK_SCREEN_F(3) == 0
+					PRINTW 
+				ELSE
+					PRINTL 
+				ENDIF
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%がまだ処女だと聞いた途端に男の息が荒くなり、そのままベッドへ強引に押し倒されてしまう
+				PRINTFORML 唇を奪われながら乱暴な愛撫をされ、続いて誰にも触らせたことのない秘部が舐め上げられる
+				IF TALENT:感情乏しい > 0
+					PRINTFORML 反応の薄い%PRINT_TRANSCALLNAME(TARGET)%が恐怖に強張っていると勘違いした男は表面上だけ優しい言葉を投げかけつつ、
+					PRINTFORML ろくに濡れていないワレメにいきり立った男根を押し当て、容赦なく奥まで挿入した
+				ELSE
+					PRINTFORML 恐怖と屈辱に唇を噛む%PRINT_TRANSCALLNAME(TARGET)%が顔を上げると、男は既にいきり立った男根を挿入しようとしていた
+				ENDIF
+				IF CONFIG_CHECK_SCREEN_F(3) == 0
+					PRINTW 
+				ELSE
+					PRINTL 
+				ENDIF
+				PRINTL 処女喪失
+				PRINTL 
+				IF TALENT:感情乏しい > 0
+					PRINTFORML 遠慮のない動きで処女を踏み荒らされる鈍痛に%PRINT_TRANSCALLNAME(TARGET)%の無表情が微かに歪む
+				ELSE
+					PRINTFORML 制止する間もなく侵入したペニスに処女を踏み荒らされ、%PRINT_TRANSCALLNAME(TARGET)%は叫び声を上げる
+				ENDIF
+				PRINTFORML 正常位でまんぐり返しの姿勢で乱暴に突き上げられ、ろくに快楽もないまま肉と肉のぶつかる音だけが響く
+				PRINTFORML "営業"の時間が早く終わることを祈って、%PRINT_TRANSCALLNAME(TARGET)%はただ目を瞑ることしかできない
+				IF CONFIG_CHECK_SCREEN_F(3) == 0
+					PRINTW 
+				ELSE
+					PRINTL 
+				ENDIF
+				IF RAND:4 == 0
+					PRINTFORML 『ほうらッ、アイドルならッ、笑顔じゃなきゃッ、ピースッピースぅ！！』
+				ELSEIF RAND:3 == 0
+					PRINTFORML 『きみ、いけないんだよォ？　悪い子には罰を与えないと…ふひひひ』
+				ELSEIF RAND:2 == 0
+					PRINTFORML 『感じてンのか？　処女を失ったばかりだってのに…しょうもない変態女…だなァ！』
+				ELSE
+					PRINTFORML 『綺麗な肌をしているねぇ…　おじさんの大好物なんだ、レロレロレロ…レロ…』
+				ENDIF
+				IF CONFIG_CHECK_SCREEN_F(3) == 0
+					PRINTW 
+				ELSE
+					PRINTL 
+				ENDIF
+				PRINTFORML 下卑た言葉で責めてくる男のピストンが加速し、射精が近いことを知る%PRINT_TRANSCALLNAME(TARGET)%
+				PRINTFORML 痛みを堪えながら何とか絶頂する様子の演技をして見せると、
+				IF RAND:2 == 0
+					PRINTFORML 男はそのまま膣内に精液を注ぎ込んだ…
+					IF CONFIG_CHECK_SCREEN_F(3) == 0
+						PRINTW 
+					ELSE
+						PRINTL 
+					ENDIF
+					PRINTFORML 愕然とする%PRINT_TRANSCALLNAME(TARGET)%に男は『大丈夫大丈夫、よくあることだから』と
+					PRINTFORML 無責任な言葉を投げかけて、そのままシャワーを浴びに行ってしまった…
+					;アフターピル
+					CALL AFTER_PILL, TARGET, 35, 望まない相手
+				ELSE
+					PRINTFORML 男は寸前でペニスを引き抜き、%PRINT_TRANSCALLNAME(TARGET)%の腹を白く汚した…
+					IF CONFIG_CHECK_SCREEN_F(3) == 0
+						PRINTW 
+					ELSE
+						PRINTL 
+					ENDIF
+					PRINTFORML 呆然とする%PRINT_TRANSCALLNAME(TARGET)%に男は『まぁ、中の下だな、頑張りなよ』と
+					PRINTFORML 無情な言葉を投げかけて、そのままシャワーを浴びに行ってしまった…
+				ENDIF
+				PRINTFORML 
+				;口上
+				TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_MAKURA_client1")
+				LOCAL:1 = 1
+				CALL CALC_SEISAN, ARG, LOCAL:1
+				PAYMENT = RESULT:1
+				TALENT:処女 = -1
+				CFLAG:206 = 7
+				;習得
+				JUEL:習得 += 175
+				;Ｖ経験
+				EXP:Ｖ経験 += 3
+				;Ｖ感覚
+				JUEL:快Ｖ += 15 * ABL:Ｖ感覚
+				;Ａ経験
+				EXP:Ａ経験 += 1
+				;Ａ感覚
+				JUEL:快Ａ += 5 * ABL:Ａ感覚
+				;フェラ経験
+				EXP:フェラ経験 += 1
+				;精液経験
+				EXP:精液経験 += 5
+				LOCAL:2 = 12 + RAND:6
+				;魅了経験に対するFEATの効果
+				SIF TALENT:平凡 > 0 && RAND:4 != 0
+					LOCAL:2 -= RAND:6 + 1
+				SIF TALENT:人外の美貌 > 0 && RAND:4 != 0
+					LOCAL:2 += RAND:6 + 1
+				SIF LOCAL:2 > 0
+					EXP:魅了経験 += LOCAL:2
+				IF CONFIG_CHECK_SCREEN_F(3) == 0
+					PRINTW 
+				ELSE
+					PRINTL 
+				ENDIF
+				SIF LOCAL:2 > 0
+					PRINTFORML 魅了経験が{LOCAL:2}上がった
+				;露見度を加算
+				CFLAG:283 += 2
+				;妊娠判定
+				SIF TALENT:オトコ <= 0
+					CALL NINSIN_HANTEI, 5, 80, 望まない相手
+			ENDIF
+		ELSE
+			IF RAND:3 == 0 || (TALENT:オトコ > 0 && CFLAG:36 < 40)
+				IF TIME == 0
+					PRINTFORML プロデューサーの機嫌を取るため、%PRINT_TRANSCALLNAME(TARGET)%は口で奉仕をしている
+					SIF TALENT:オトコ > 0 && CFLAG:36 < 30
+					PRINTFORML 菊穴にアナルプラグを入れているまま
+					PRINTFORML 膝立ちになって、上目づかいで肉棒の先端に舌を這わせゆっくりと口に含んでいく
+					
+					PRINTFORML 緩急を付けながら、時おり口を放して反り立ったペニスにキスをし、再び吸い上げながら竿を咥える
+					PRINTFORML 加速していく動きにたまらなくなったプロデューサーが%PRINT_TRANSCALLNAME(TARGET)%の頭を掴み、
+					PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は口で白い劣情の迸りを受け止めた…
+					;口上
+					TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_MAKURA_pro1")
+					LOCAL:1 = 0
+					CALL CALC_SEISAN, ARG, LOCAL:1
+					PAYMENT = RESULT:1
+					;習得
+					JUEL:習得 += 100
+					SIF TALENT:アイドル
+					JUEL:恭順 += 100
+					;フェラ経験
+					EXP:フェラ経験 += 2
+					IF TALENT:オトコ > 0 && CFLAG:36 < 30
+					JUEL:快Ａ += 5 + (5 * ABL:Ａ感覚)
+					CFLAG:36 += 2
+					ENDIF
+					;精液経験
+					EXP:精液経験 += 1
+					LOCAL:2 = 8 + RAND:4
+					;魅了経験に対するFEATの効果
+					SIF TALENT:平凡 > 0 && RAND:4 != 0
+						LOCAL:2 -= RAND:4 + 1
+					SIF TALENT:人外の美貌 > 0 && RAND:4 != 0
+						LOCAL:2 += RAND:4 + 1
+					SIF LOCAL:2 > 0
+						EXP:魅了経験 += LOCAL:2
+					;露見度を加算
+					CFLAG:283 += 1
+				ELSEIF TALENT:オトコ > 0 && CFLAG:36 < 30
+				    PRINTFORML 人の居なくなった事務所で、%PRINT_TRANSCALLNAME(TARGET)%は"残業"を命じられた
+					PRINTFORML 抱き合いながら濃厚なキスを交わして手でプロデューサーのペニスを服の上から撫で、
+					PRINTFORML プロデューサーは%PRINT_TRANSCALLNAME(TARGET)%を机へ運ばせ背を向かせると、
+					PRINTFORML アイドルコスチューム姿のまま下着を脱がして愛撫しながら菊穴の開発を始めた…
+					PRINTFORML プロデューサーの指の動きで%PRINT_TRANSCALLNAME(TARGET)%の菊穴は少しずつほぐれていき
+					PRINTFORML やっと成人男性の指が二つまで入れるようになった……
+					PRINTW
+					CFLAG:36 += 4
+					IF CFLAG:36 >= 30
+					PRINTFORML 後ろ穴を半時間もほぐれ続いたら、やっとプロヂューサーの肉棒を受け入れるようになり、
+					PRINTFORML そのまま机に押し倒し、バックの姿勢で挿入した…
+					PRINTFORML 押し殺したような%PRINT_TRANSCALLNAME(TARGET)%の声が響き、事務所での着衣セックスは夜遅くまで続いた…
+					PRINTW
+					;口上
+					TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_MAKURA_pro2A1")
+					ELSE
+					PRINTFORML 半時間も続く穴の開発だが、結局プロデューサーの剛直を受け入れるまでには至らず、
+					PRINTFORML しかたなく素股と口で奉仕させることにした……
+					PRINTW
+					;口上
+					TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_MAKURA_pro2A")
+					ENDIF
+					
+					LOCAL:1 = 0
+					CALL CALC_SEISAN, ARG, LOCAL:1
+					PAYMENT = RESULT:1
+					;習得
+					JUEL:習得 += 100
+					SIF TALENT:アイドル
+					JUEL:恭順 += 100
+
+					;フェラ経験
+					EXP:フェラ経験 += RAND(1,3)
+
+					SIF CFLAG:36 < 30
+					EXP:フェラ経験 += RAND(1,3)
+
+					JUEL:快Ａ += 5 + (10 * ABL:Ａ感覚)
+					CFLAG:36 += 4
+
+					IF CFLAG:36 >= 30
+					EXP:Ａ経験 += RAND(1,3)
+					JUEL:快Ａ += 5 + (10 * ABL:Ａ感覚)
+					ENDIF
+
+					;精液経験
+					EXP:精液経験 += RAND(2,5)
+
+					LOCAL:2 = 10 + RAND:2
+					;魅了経験に対するFEATの効果
+					SIF TALENT:平凡 > 0 && RAND:4 != 0
+						LOCAL:2 -= RAND:5 + 1
+					SIF TALENT:人外の美貌 > 0 && RAND:4 != 0
+						LOCAL:2 += RAND:5 + 1
+					SIF LOCAL:2 > 0
+						EXP:魅了経験 += LOCAL:2
+					;露見度を加算
+					CFLAG:283 += 2
+
+				ELSEIF TALENT:オトコ <= 0 || (TALENT:オトコ > 0 && CFLAG:36 > 30 )
+					PRINTFORML 人の居なくなった事務所で、%PRINT_TRANSCALLNAME(TARGET)%は"残業"を命じられた
+					PRINTFORML 抱き合いながら濃厚なキスを交わして手でプロデューサーのペニスをしごき、
+					PRINTFORML プロデューサーは%PRINT_TRANSCALLNAME(TARGET)%を壁に向かわせると、
+					PRINTFORML アイドルコスチューム姿のまま下着をずらして立ちバックの姿勢で挿入した…
+					IF CONFIG_CHECK_SCREEN_F(3) == 0
+						PRINTW 
+					ELSE
+						PRINTL 
+					ENDIF
+					IF TALENT:オトコ <= 0
+						PRINTFORM コスチュームの胸元は大きく開かれ露わになった%PRINT_TRANSCALLNAME(TARGET)%の
+						IF TALENT:貧乳 > 0
+							PRINT 控えめな
+						ELSEIF TALENT:巨乳 > 2
+							PRINT ダイナミックな大きさの
+						ELSEIF TALENT:巨乳 > 0
+							PRINT 豊満な
+						ELSE
+							PRINT 整った
+						ENDIF
+						PRINTFORML 乳房がピストンのたびに前後に揺れる
+					ENDIF
+					PRINTFORML 押し殺したような%PRINT_TRANSCALLNAME(TARGET)%の声が響き、事務所での着衣セックスは夜遅くまで続いた…
+					;口上
+					TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_MAKURA_pro2")
+					LOCAL:1 = 1
+					CALL CALC_SEISAN, ARG, LOCAL:1
+					PAYMENT = RESULT:1
+					;習得
+					JUEL:習得 += 150
+					IF TALENT:オトコ <= 0
+						;Ｖ経験
+						EXP:Ｖ経験 += 2
+						;Ｖ感覚
+						JUEL:快Ｖ += 10 * ABL:Ｖ感覚
+					ELSEIF TALENT:オトコ > 0
+						;Ａ経験
+						EXP:Ａ経験 += 2
+						;Ａ感覚
+						JUEL:快Ａ += 10 * ABL:Ａ感覚						
+					ENDIF
+					;Ａ経験
+					EXP:Ａ経験 += 2
+					;Ａ感覚
+					JUEL:快Ａ += 10 * ABL:Ａ感覚
+					SIF TALENT:アイドル
+					JUEL:恭順 += 100
+					;フェラ経験
+					EXP:フェラ経験 += 1
+					;精液経験
+					EXP:精液経験 += 5
+					LOCAL:2 = 10 + RAND:2
+					;魅了経験に対するFEATの効果
+					SIF TALENT:平凡 > 0 && RAND:4 != 0
+						LOCAL:2 -= RAND:5 + 1
+					SIF TALENT:人外の美貌 > 0 && RAND:4 != 0
+						LOCAL:2 += RAND:5 + 1
+					SIF LOCAL:2 > 0
+						EXP:魅了経験 += LOCAL:2
+					;露見度を加算
+					CFLAG:283 += 2
+					;アフターピル
+					CALL AFTER_PILL, TARGET, 35, 望まない相手
+					;妊娠判定
+					SIF TALENT:オトコ <= 0
+						CALL NINSIN_HANTEI, 5, 40, 望まない相手
+				ENDIF
+				IF CONFIG_CHECK_SCREEN_F(3) == 0
+					PRINTW 
+				ELSE
+					PRINTL 
+				ENDIF
+				SIF LOCAL:2 > 0
+					PRINTFORML 魅了経験が{LOCAL:2}上がった
+			ELSEIF RAND:2 == 0 && ((TALENT:オトコ > 0 && CFLAG:36 >= 40) || TALENT:オトコ < 1)
+				PRINTFORMW 高級ホテルの一室で%PRINT_TRANSCALLNAME(TARGET)%はお得意様のご機嫌取りをさせられている…
+				IF RAND:2 == 0 
+					;口上
+					TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_MAKURA_client2")
+					PRINTL
+					PRINTFORML 相手はかれこれ何時間も%PRINT_TRANSCALLNAME(TARGET)%を正常位でひたすら犯し続け、
+					PRINTFORML コンドームもせずに%PRINT_TRANSCALLNAME(TARGET)%の%SPLIT_SEX(TARGET,"膣内／腸内")%に数えきれないくらい射精している
+					PRINTFORML %SPLIT_SEX(TARGET,"もちろんピルは飲んでいる／妊娠できる身体ではない")%が、「孕め、孕め」と叫ぶ男がどこか偏執的な恐怖を感じさせる
+					PRINTFORML 男は一番深い場所まで突き入れると信じらないくらいの量の精液を流し込み、
+					PRINTFORML 繰り返し繰り返し動いては最後の一滴まで%SPLIT_SEX(TARGET,"膣内／腸内")%に出し切っていく…
+					IF CONFIG_CHECK_SCREEN_F(3) == 0
+						PRINTW 
+					ELSE
+						PRINTL 
+					ENDIF
+					PRINTFORML 何度めかの%SPLIT_SEX(TARGET,"膣内／腸内")%射精でようやくペニスが引き抜かれると、栓を抜かれた精液がどっと溢れだす
+					PRINTFORML 連続でイき続けている%PRINT_TRANSCALLNAME(TARGET)%は最早アイドルとしての体面すら保てず、
+					PRINTFORML ベッドの上でアクメ顔を晒しながらびくびくと痙攣している…
+					LOCAL:1 = 2
+					CALL CALC_SEISAN, ARG, LOCAL:1
+					PAYMENT = RESULT:1
+					;習得
+					JUEL:習得 += 225
+					;恐怖
+					JUEL:恐怖 += 100
+					SIF TALENT:アイドル
+					JUEL:屈服 += 100
+					IF TALENT:オトコ < 0
+					;Ｖ感覚
+					JUEL:快Ｖ += 20 * ABL:Ｖ感覚
+					;Ｖ経験
+					EXP:Ｖ経験 += 18
+					ELSE
+					;Ａ感覚
+					JUEL:快Ａ += 20 * ABL:Ａ感覚
+					;Ｖ経験
+					EXP:Ａ経験 += 15 + (RAND:10)
+					ENDIF
+					;フェラ経験
+					EXP:フェラ経験 += 1
+					;精液経験
+					EXP:精液経験 += 10
+					;妊娠判定。低確率だがピル貫通
+					SIF TALENT:オトコ <= 0
+						CALL NINSIN_HANTEI, 10, 5, 望まない相手
+				ELSEIF (TALENT:オトコ > 0 && CFLAG:36 >= 40) || TALENT:オトコ < 1
+					PRINTFORML 今日の相手はコスプレマニアのようで、%PRINT_TRANSCALLNAME(TARGET)%に様々なコスチュームを着せて楽しんでいる
+					;口上
+					TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_MAKURA_client3")
+					PRINTL
+					IF TALENT:オトコ <= 0
+						PRINTFORML 何度も体位を変えながらも前の穴には手を出さず、ひたすらアナルだけを攻め続け
+					ELSE
+						PRINTFORML 男の精力は無尽蔵のようで、何度も体位を変えながらひたすらアナルを攻め続け
+					ENDIF
+					IF ABL:Ａ感覚 > 2
+						PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の尻穴は特に具合がいいらしく、相手は夢中で快楽を貪っている
+					ELSE
+						PRINTFORML アニメキャラの名前を呼びながら、男は%PRINT_TRANSCALLNAME(TARGET)%の尻穴を開発していく
+					ENDIF
+					PRINTFORML 最後に直腸に精液を流し込んで終わりかと思いきや、
+					PRINTFORML 男は次のコスチュームを取りだして着替えるよう要求した…
+					LOCAL:1 = 3
+					CALL CALC_SEISAN, ARG, LOCAL:1
+					PAYMENT = RESULT:1
+					;習得
+					JUEL:習得 += 225
+					SIF TALENT:アイドル
+					JUEL:屈服 += 100
+					;恥情
+					JUEL:恥情 += 100
+					;Ａ感覚
+					JUEL:快Ａ += 20 * ABL:Ａ感覚
+					;Ａ経験
+					EXP:Ａ経験 += 18
+					;フェラ経験
+					EXP:フェラ経験 += 1
+					;精液経験
+					EXP:精液経験 += 10
+				ENDIF
+				LOCAL:2 = 16 + RAND:3
+				;魅了経験に対するFEATの効果
+				SIF TALENT:平凡 > 0 && RAND:4 != 0
+					LOCAL:2 -= RAND:8 + 1
+				SIF TALENT:人外の美貌 > 0 && RAND:4 != 0
+					LOCAL:2 += RAND:8 + 1
+				SIF LOCAL:2 > 0
+					EXP:魅了経験 += LOCAL:2
+				IF CONFIG_CHECK_SCREEN_F(3) == 0
+					PRINTW 
+				ELSE
+					PRINTL 
+				ENDIF
+				SIF LOCAL:2 > 0
+					PRINTFORML 魅了経験が{LOCAL:2}上がった
+				;露見度を加算
+				CFLAG:283 += 2
+				SIF RAND:100 < 30
+		     	CFLAG:825 += 1
+			ELSEIF (EXP:Ａ経験 + EXP:Ｖ経験 ) >= 10 
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は特別なファンクラブに奉仕することになった
+				PRINTFORML 高額の会費を払わなければ参加できない"お触りＯＫな交流会"らしいが…
+				PRINTL 
+				PRINTFORML 会場に到着した頃にはすでに異様な熱気が渦巻いており、
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%が壇上に上がると仮面を被った参加者たちの盛り上がりは最高潮に達した
+				PRINTFORML 「うおー%PRINT_TRANSCALLNAME(TARGET)%たんーッ」「結婚してくれーッ」「脱げーッ」などの声で埋め尽くされる
+				IF CONFIG_CHECK_SCREEN_F(3) == 0
+					PRINTW 
+				ELSE
+					PRINTL 
+				ENDIF
+				PRINTFORML 煽情的なＢＧＭで服を脱いでいき、ついに手袋とストッキングだけになった%PRINT_TRANSCALLNAME(TARGET)%を男たちが取り囲む
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%が手と口で一人ひとりのペニスをしごいていくが、待ちきれない一人がついに%PRINT_TRANSCALLNAME(TARGET)%を押し倒した
+				PRINTFORML 輪姦が始まるとその後は我先にと%PRINT_TRANSCALLNAME(TARGET)%の穴という穴が男根で埋め尽くされ、
+				PRINTFORML それでも穴が足りずに同じ穴に２本以上が突き込まれる…
+				PRINTL
+				;口上
+				TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_MAKURA_fanclub")
+				PRINTFORML 一晩中犯され続けた%PRINT_TRANSCALLNAME(TARGET)%の全身を白濁液と夥しい数の使用済みのコンドームが覆っている…
+				SIF TALENT:感情乏しい == 0
+					PRINTFORML 目を覚ました%PRINT_TRANSCALLNAME(TARGET)%は自分の肩を抱き、しばらくその場で嗚咽した…
+				LOCAL:1 = 4
+				CALL CALC_SEISAN, ARG, LOCAL:1
+				PAYMENT = RESULT:1
+				;習得
+				JUEL:習得 += 300
+
+				SIF TALENT:アイドル
+					JUEL:屈服 += 100
+				    
+				IF TALENT:オトコ <= 0
+					;Ｖ経験
+					EXP:Ｖ経験 += 12
+					;Ｖ感覚
+					JUEL:快Ｖ += 20 * ABL:Ｖ感覚
+				ELSE
+					;Ａ経験
+					EXP:Ａ経験 += 12
+					;Ａ感覚
+					JUEL:快Ａ += 20 * ABL:Ａ感覚
+					EXP:Ａ拡張経験 += 1
+					CFLAG:36 += 10
+				ENDIF
+				;Ａ経験
+				EXP:Ａ経験 += 12
+				;Ａ感覚
+				JUEL:快Ａ += 20 * ABL:Ａ感覚
+				;フェラ経験
+				EXP:フェラ経験 += 18
+				;精液経験
+				EXP:精液経験 += 15
+				LOCAL:2 = 20 + RAND:12
+				;魅了経験に対するFEATの効果
+				SIF TALENT:平凡 > 0 && RAND:4 != 0
+					LOCAL:2 -= RAND:10 + 1
+				SIF TALENT:人外の美貌 > 0 && RAND:4 != 0
+					LOCAL:2 += RAND:10 + 1
+				SIF LOCAL:2 > 0
+					EXP:魅了経験 += LOCAL:2
+				IF CONFIG_CHECK_SCREEN_F(3) == 0
+					PRINTW 
+				ELSE
+					PRINTL 
+				ENDIF
+				SIF LOCAL:2 > 0
+					PRINTFORML 魅了経験が{LOCAL:2}上がった
+				;露見度を加算
+				CFLAG:283 += 3
+				LOCAL:2 = 0
+				SIF RAND:100 < 50
+					LOCAL:2 += 1
+				SIF RAND:100 < 25
+					LOCAL:2 += 1
+				IF LOCAL:2 > 0
+					FLAG:853 += LOCAL:2
+					PRINTFORML 人気度が{LOCAL:2}上がった
+				ENDIF
+				;アフターピル
+				CALL AFTER_PILL, TARGET, 10, 誰とも知れない相手
+				;妊娠判定
+				SIF TALENT:オトコ <= 0
+					CALL NINSIN_HANTEI, 15, 80, 誰とも知れない相手
+			ENDIF
+		ENDIF
+		SIF RAND:100 < 50
+			CFLAG:285 += 1
+		SIF RAND:100 < 30
+			CFLAG:825 += 1
+	;ライブ公演
+	CASE 8
+		PRINTL ライブ公演
+		PRINTL 
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はライブを開くことになりました。
+		IF EXP:魅了経験 > 999
+			PRINTL 超満員の武道館は、公演が始まる前から熱気に包まれています…
+		ELSEIF EXP:魅了経験 > 499
+			PRINTL 大きな会場にも関わらず、観客がすし詰め状態になっています…
+		ELSEIF EXP:魅了経験 > 199
+			PRINTL それほど立派な会場ではないが、観客は多い方です…
+		ELSE
+			PRINTL 満員とはいきませんが、観客からは期待の目が向けられています…
+		ENDIF
+		IF CONFIG_CHECK_SCREEN_F(3) == 0
+			PRINTW 
+		ELSE
+			PRINTL 
+		ENDIF
+		PRINTFORML 歌と踊りを披露しステージを舞う%PRINT_TRANSCALLNAME(TARGET)%。
+		;触手拘束具
+		IF CFLAG:42 == 400
+			PRINTFORML ライブが佳境に差し掛かったとき不意の服の下で%ITEMNAME:(CFLAG:42)%が激しく動き、
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は衆人環視の中で絶頂を迎えてしまいました。
+			;口上
+			TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_LIVE_syokusyu")
+			IF CONFIG_CHECK_SCREEN_F(3) == 0
+				PRINTW 
+			ELSE
+				PRINTL 
+			ENDIF
+			LOCAL:1 = 2
+			CALL CALC_SEISAN, ARG, LOCAL:1
+			PAYMENT = RESULT:1
+			IF EXP:魅了経験 > 499 || TALENT:アイドル
+				PRINTFORML アクシデントはあったものの、%PRINT_TRANSCALLNAME(TARGET)%は何とかミスをカバーすることに成功しました…
+			ELSE
+				PRINTFORML 無理矢理誤魔化してライブを続行したものの、触手絶頂を迎える姿を見られてしまいました…
+			ENDIF
+			PRINTFORML {RESULT:0}人の来場者を迎え、%PRINT_TRANSCALLNAME(TARGET)%はギャラとして{PAYMENT}＄の資金を稼ぎました。
+			PRINTL 
+		;FEAT効果による不幸防止
+		ELSEIF RAND:(2 + (EXP:魅了経験 / 20)) == 0 && TALENT:ラッキーチャーム == 0 
+			IF (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0)
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は最後の大舞台で足を滑らせ派手にすっ転び、
+				;履いてない
+				IF CFLAG:42 == 0
+					PRINTFORM 下履きを履いていなかったばかりに、
+					;生えてない
+					SIF TALENT:パイパン == 1
+						PRINTFORM 毛も生えていない
+					PRINTFORM アソコを
+				ELSE
+					PRINTFORM 下に履いていた%ITEMNAME:(CFLAG:42)%を
+				ENDIF
+				PRINTFORML 観客の眼に晒す羽目になってしまいました。
+			ELSE
+				PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は最後の大舞台で足を滑らせ派手にすっ転びました。
+			ENDIF
+			;口上
+			TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_LIVE_korobi")
+			IF CONFIG_CHECK_SCREEN_F(3) == 0
+				PRINTW 
+			ELSE
+				PRINTL 
+			ENDIF
+			LOCAL:1 = 1
+			CALL CALC_SEISAN, ARG, LOCAL:1
+			PAYMENT = RESULT:1
+			IF EXP:魅了経験 > 249
+				PRINTFORML アクシデントはあったものの、%PRINT_TRANSCALLNAME(TARGET)%は何とか最後まで歌い続けました…
+			ELSE
+				PRINTFORML 何とかライブを続行したものの、大きなミスに%PRINT_TRANSCALLNAME(TARGET)%は動揺を隠しきれませんでした…
+			ENDIF
+			PRINTFORML {RESULT:0}人の来場者を迎え、%PRINT_TRANSCALLNAME(TARGET)%はギャラとして{PAYMENT}＄の資金を稼ぎました。
+			PRINTL 
+		ELSEIF RAND:8 < (EXP:魅了経験 / 100)
+			;口上
+			TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_LIVE_normal")
+			IF CONFIG_CHECK_SCREEN_F(3) == 0
+				PRINTW 
+			ELSE
+				PRINTL 
+			ENDIF
+			LOCAL:1 = 3
+			CALL CALC_SEISAN, ARG, LOCAL:1
+			PAYMENT = RESULT:1
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は絶好調で歌い終え、公演は大盛況に終わりました…
+			LOCAL:2 = 12 + RAND:2
+			;魅了経験に対するFEATの効果
+			SIF TALENT:平凡 > 0 && RAND:4 != 0
+				LOCAL:2 -= RAND:6 + 1
+			SIF TALENT:人外の美貌 > 0 && RAND:4 != 0
+				LOCAL:2 += RAND:6 + 1
+			SIF LOCAL:2 > 0
+				EXP:魅了経験 += LOCAL:2
+			IF CONFIG_CHECK_SCREEN_F(3) == 0
+				PRINTW 
+			ELSE
+				PRINTL 
+			ENDIF
+			PRINTFORML {RESULT:0}人の来場者を迎え、%PRINT_TRANSCALLNAME(TARGET)%はギャラとして{PAYMENT}＄の資金を稼ぎました。
+			SIF LOCAL:2 > 0
+				PRINTFORML 魅了経験が{LOCAL:2}上がった
+		ELSE
+			;口上
+			TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEISAN_LIVE_normal")
+			IF CONFIG_CHECK_SCREEN_F(3) == 0
+				PRINTW 
+			ELSE
+				PRINTL 
+			ENDIF
+			LOCAL:1 = 0
+			CALL CALC_SEISAN, ARG, LOCAL:1
+			PAYMENT = RESULT:1
+			PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は最後までしっかりと歌い終え、観客たちは満足して帰っていきました…
+			;魅了経験に対するFEATの効果
+			IF EXP:魅了経験 < 200
+				LOCAL:2 = 8 + RAND:2
+				SIF TALENT:平凡 > 0 && RAND:4 != 0
+					LOCAL:2 -= RAND:4 + 1
+				SIF TALENT:人外の美貌 > 0 && RAND:4 != 0
+					LOCAL:2 += RAND:4 + 1
+			ELSE
+				LOCAL:2 = 2 + RAND:3
+				SIF TALENT:平凡 > 0 && RAND:4 != 0
+					LOCAL:2 -= 1
+				SIF TALENT:人外の美貌 > 0 && RAND:4 != 0
+					LOCAL:2 += 1
+			ENDIF
+			SIF LOCAL:2 > 0
+				EXP:魅了経験 += LOCAL:2
+			IF CONFIG_CHECK_SCREEN_F(3) == 0
+				PRINTW 
+			ELSE
+				PRINTL 
+			ENDIF
+			PRINTFORML {RESULT:0}人の来場者を迎え、%PRINT_TRANSCALLNAME(TARGET)%はギャラとして{PAYMENT}＄の資金を稼ぎました。
+			SIF LOCAL:2 > 0
+				PRINTFORML 魅了経験が{LOCAL:2}上がった
+		ENDIF
+		LOCAL:2 = 0
+		SIF RAND:100 < 50
+			LOCAL:2 += 1
+		SIF RAND:100 < 50
+			LOCAL:2 += 1
+		SIF RAND:100 < 50
+			LOCAL:2 += 1
+		IF LOCAL:2 > 0
+			FLAG:853 += LOCAL:2
+			PRINTFORML 人気度が{LOCAL:2}上がった
+		ENDIF
+		;いくら失敗してもデビュー前の評価には戻らない
+		SIF EXP:魅了経験 < 200
+			EXP:魅了経験 = 200
+		;実績
+		CALL GET_STATE_EXPUP,TARGET
+ENDSELECT
+;行動結果表示のためのウェイト
+PRINTW 
+
+;稼ぎ・経験計算
+@CALC_SEISAN, ARG:0, ARG:1
+;体力の最大値
+LOCAL:120 = MAXBASE:体力
+;気力の最大値
+LOCAL:130 = MAXBASE:気力
+;性耐性の最大値
+LOCAL:140 = MAXBASE:性耐性
+;客の人数
+LOCAL:121 = 0
+;稼いだお金
+LOCAL:131 = 0
+;金銭獲得倍率
+LOCAL:151 = 100
+;FEAT効果による効率アップ
+SIF TALENT:ラッキーチャーム > 0
+	LOCAL:151 = 125
+
+SELECTCASE ARG:0
+	;アルバイト
+	CASE 0
+		SELECTCASE ARG:1
+			;バイト成功
+			CASE 0
+				LOCAL:120 = LOCAL:120 * (20 + RAND:7) / 100
+				LOCAL:130 = LOCAL:130 * (10 + RAND:4) / 100
+				BASE:体力 = LIMIT(BASE:体力 - SYOUHI_KEIGEN(TARGET,LOCAL:120,体力), 0 , BASE:体力)
+				BASE:気力 = LIMIT(BASE:気力 - SYOUHI_KEIGEN(TARGET,LOCAL:130,気力), 0 , BASE:気力)
+				LOCAL:121 = MAXBASE:体力 - BASE:体力
+				LOCAL:131 = LOCAL:151 * LOCAL:121 / 1000 + RAND:10 + 200 + ABL:レベル * 10
+				MONEY += LOCAL:131
+			;ヒーローショー失敗
+			CASE 1
+				LOCAL:120 = LOCAL:120 * (40 + RAND:7) / 100
+				LOCAL:130 = LOCAL:130 * (50 + RAND:4) / 100
+				LOCAL:140 = LOCAL:140 * (30 + RAND:4) / 100
+				BASE:体力 = LIMIT(BASE:体力 - SYOUHI_KEIGEN(TARGET,LOCAL:120,体力), 0 , BASE:体力)
+				BASE:気力 = LIMIT(BASE:気力 - SYOUHI_KEIGEN(TARGET,LOCAL:130,気力), 0 , BASE:気力)
+				BASE:性耐性 = LIMIT(BASE:性耐性 - LOCAL:140, 0 , BASE:性耐性)
+				LOCAL:121 = MAXBASE:体力 - BASE:体力
+				LOCAL:131 = LOCAL:151 * LOCAL:121 / 2000 + RAND:10 + 100 + ABL:レベル * 5
+				MONEY += LOCAL:131
+			;ヒーローショー絶頂失敗
+			CASE 2
+				LOCAL:120 = LOCAL:120 * (50 + RAND:7) / 100
+				LOCAL:130 = LOCAL:130 * (70 + RAND:4) / 100
+				LOCAL:140 = LOCAL:140 * (60 + RAND:4) / 100
+				BASE:体力 = LIMIT(BASE:体力 - SYOUHI_KEIGEN(TARGET,LOCAL:120,体力), 0 , BASE:体力)
+				BASE:気力 = LIMIT(BASE:気力 - SYOUHI_KEIGEN(TARGET,LOCAL:130,気力), 0 , BASE:気力)
+				BASE:性耐性 = LIMIT(BASE:性耐性 - LOCAL:140, 0 , BASE:性耐性)
+				LOCAL:121 = MAXBASE:体力 - BASE:体力
+				LOCAL:131 = LOCAL:151 * LOCAL:121 / 2000 + RAND:10 + 50 + ABL:レベル * 2
+				MONEY += LOCAL:131
+		ENDSELECT
+	;研究所助手
+	CASE 1
+		SELECTCASE ARG:1
+			;助手
+			CASE 0
+				LOCAL:120 = LOCAL:120 * (10 + RAND:7) / 100
+				LOCAL:130 = LOCAL:130 * (20 + RAND:4) / 100
+				BASE:体力 = LIMIT(BASE:体力 - SYOUHI_KEIGEN(TARGET,LOCAL:120,体力), 0 , BASE:体力)
+				BASE:気力 = LIMIT(BASE:気力 - SYOUHI_KEIGEN(TARGET,LOCAL:130,気力), 0 , BASE:気力)
+				LOCAL:121 = MAXBASE:体力 - BASE:体力
+				LOCAL:131 = LOCAL:151 * LOCAL:121 / 8000 + RAND:10 + 150 + ABL:レベル * 8
+				LOCAL:131 = LOCAL:131 * MAXBASE:知性 / 100
+				MONEY += LOCAL:131
+			;母乳
+			CASE 1
+				SIF TALENT:ふたなり > 0
+					EXP:射精経験 += 1 + RAND:5
+				EXP:噴乳経験 += 1 + RAND:5
+				LOCAL:120 = LOCAL:120 * (50 + RAND:7) / 100
+				LOCAL:130 = LOCAL:130 * (70 + RAND:4) / 100
+				LOCAL:140 = LOCAL:140 * (60 + RAND:4) / 100
+				BASE:体力 = LIMIT(BASE:体力 - SYOUHI_KEIGEN(TARGET,LOCAL:120,体力), 0 , BASE:体力)
+				BASE:気力 = LIMIT(BASE:気力 - SYOUHI_KEIGEN(TARGET,LOCAL:130,気力), 0 , BASE:気力)
+				BASE:性耐性 = LIMIT(BASE:性耐性 - LOCAL:140, 0 , BASE:性耐性)
+				LOCAL:121 = MAXBASE:体力 - BASE:体力
+				LOCAL:131 = LOCAL:151 * LOCAL:121 / 4000 + RAND:10 + 450 + ABL:レベル * 16
+				MONEY += LOCAL:131
+			;妊娠
+			CASE 2
+				EXP:露出快楽経験 += 1
+				LOCAL:120 = LOCAL:120 * (20 + RAND:7) / 100
+				LOCAL:130 = LOCAL:130 * (70 + RAND:4) / 100
+				LOCAL:140 = LOCAL:140 * (60 + RAND:4) / 100
+				BASE:体力 = LIMIT(BASE:体力 - SYOUHI_KEIGEN(TARGET,LOCAL:120,体力), 0 , BASE:体力)
+				BASE:気力 = LIMIT(BASE:気力 - SYOUHI_KEIGEN(TARGET,LOCAL:130,気力), 0 , BASE:気力)
+				BASE:性耐性 = LIMIT(BASE:性耐性 - LOCAL:140, 0 , BASE:性耐性)
+				LOCAL:121 = MAXBASE:気力 - BASE:気力
+				LOCAL:131 = LOCAL:151 * LOCAL:121 / 4000 + RAND:10 + 1350 + ABL:レベル * 24
+				MONEY += LOCAL:131
+		ENDSELECT
+	;雑魚触手退治
+	CASE 2
+		SELECTCASE ARG:1
+			;駆除成功
+			CASE 0
+				LOCAL:120 = LOCAL:120 * (30 + RAND:7) / 100
+				LOCAL:130 = LOCAL:130 * (30 + RAND:4) / 100
+				LOCAL:140 = LOCAL:140 * (30 + RAND:4) / 100
+				BASE:体力 = LIMIT(BASE:体力 - SYOUHI_KEIGEN(TARGET,LOCAL:120,体力), 0 , BASE:体力)
+				BASE:気力 = LIMIT(BASE:気力 - SYOUHI_KEIGEN(TARGET,LOCAL:130,気力), 0 , BASE:気力)
+				BASE:性耐性 = LIMIT(BASE:性耐性 - LOCAL:140, 0 , BASE:性耐性)
+				LOCAL:121 = MAXBASE:体力 - BASE:体力
+				EXP:戦闘経験 +=  LOCAL:121 * (1 + RAND:5 * 1) / 100
+				LOCAL:131 = LOCAL:151 * LOCAL:121 / 800 + RAND:10 + ABL:レベル * 5 + 100
+				MONEY += LOCAL:131
+			;敗北
+			CASE 1
+				LOCAL:121 = BASE:体力 * (50 + RAND:3) / 100
+				EXP:戦闘経験 += LOCAL:121 * (10 + RAND:3) / 100
+				EXP:被姦経験 += LOCAL:121 * (20 + RAND:3) / 100
+				SIF TALENT:オトコ <= 0
+					EXP:Ｖ経験 += LOCAL:121 * (10 + RAND:3) / 100
+				EXP:Ａ経験 += LOCAL:121 * (10 + RAND:3) / 100
+				EXP:絶頂経験 += LOCAL:121 * (10 + RAND:2) / 100
+				EXP:精液経験 += LOCAL:121 * (10 + RAND:2) / 100
+				EXP:フェラ経験 += LOCAL:121 * (10 + RAND:2) / 100
+
+				IF TALENT:ふたなり > 0 || TALENT:オトコ > 0
+				    LOCAL:666 += LOCAL:121 * (1 + RAND:3 * 1) / 100
+					EXP:射精経験 += LOCAL:999
+					CFLAG:37 += LOCAL:999
+					LOCAL:666 = 0
+				ENDIF
+
+				SIF TALENT:母乳体質 > 0
+					EXP:噴乳経験 += LOCAL:121 * (10 + RAND:3) / 100
+				SIF TALENT:お漏らし癖 > 0
+					EXP:放尿経験 += LOCAL:121 * (10 + RAND:3) / 100
+				LOCAL:120 = LOCAL:120 * (80 + RAND:7) / 100
+				LOCAL:130 = LOCAL:130 * (80 + RAND:4) / 100
+				LOCAL:140 = LOCAL:140 * (80 + RAND:4) / 100
+				BASE:体力 = LIMIT(BASE:体力 - SYOUHI_KEIGEN(TARGET,LOCAL:120,体力), 0 , BASE:体力)
+				BASE:気力 = LIMIT(BASE:気力 - SYOUHI_KEIGEN(TARGET,LOCAL:130,気力), 0 , BASE:気力)
+				BASE:性耐性 = LIMIT(BASE:性耐性 - LOCAL:140, 0 , BASE:性耐性)
+		ENDSELECT
+	;援助交際
+	CASE 3
+		LOCAL:121 = BASE:体力 * (7 + RAND:3) / 100
+		EXP:被姦経験 += LOCAL:121 * (2 + RAND:3) / 100
+		SIF TALENT:オトコ <= 0
+			EXP:Ｖ経験 += LOCAL:121 * (1 + RAND:3) / 100
+		EXP:Ａ経験 += LOCAL:121 * (1 + RAND:3) / 100
+		EXP:絶頂経験 += LOCAL:121 * (1 + RAND:2) / 100
+		EXP:精液経験 += LOCAL:121 * (1 + RAND:2) / 100
+		EXP:フェラ経験 += LOCAL:121 * (1 + RAND:2) / 100
+		EXP:露出快楽経験 += LOCAL:121 * (2 + RAND:3) / 100
+		EXP:奉仕快楽経験 += LOCAL:121 * (2 + RAND:3) / 100
+		EXP:苦痛快楽経験 += LOCAL:121 * (2 + RAND:3) / 100
+		EXP:自慰経験 += LOCAL:121 * (2 + RAND:3) / 100
+
+		IF TALENT:ふたなり > 0 || TALENT:オトコ > 0
+		    LOCAL:666 += LOCAL:121 * (1 + RAND:3 * 1) / 100
+			EXP:射精経験 += LOCAL:666
+			CFLAG:37 += LOCAL:666
+			LOCAL:666 = 0
+		ENDIF
+
+		SIF TALENT:母乳体質 > 0
+			EXP:噴乳経験 += LOCAL:121 * (1 + RAND:3) / 100
+		SIF TALENT:お漏らし癖 > 0
+			EXP:放尿経験 += LOCAL:121 * (1 + RAND:3) / 100
+		LOCAL:120 = LOCAL:120 * (3 + RAND:4) / 100
+		LOCAL:130 = LOCAL:130 * (5 + RAND:4) / 100
+		LOCAL:140 = LOCAL:140 * (7 + RAND:4) / 100
+		BASE:体力 = LIMIT(BASE:体力 - SYOUHI_KEIGEN(TARGET,LOCAL:120,体力), 0 , BASE:体力)
+		BASE:気力 = LIMIT(BASE:気力 - SYOUHI_KEIGEN(TARGET,LOCAL:130,気力), 0 , BASE:気力)
+		BASE:性耐性 = LIMIT(BASE:性耐性 - LOCAL:140, 0 , BASE:性耐性)
+		LOCAL:131 = LOCAL:151 * LOCAL:121 * 3 / 100 + RAND:10 + 250
+		MONEY += LOCAL:131
+	;AV出演
+	CASE 4
+		LOCAL:121 = BASE:体力 * (5 + RAND:3) / 100 + RAND:(EXP:魅了経験 * 5 + 1) + MAX(EXP:魅了経験 - 100,0) * 50
+		EXP:被姦経験 += LOCAL:121 * (2 + RAND:3) / 100
+		SIF TALENT:オトコ <= 0
+			EXP:Ｖ経験 += LOCAL:121 * (1 + RAND:3) / 100
+		EXP:Ａ経験 += LOCAL:121 * (1 + RAND:3) / 100
+		EXP:絶頂経験 += LOCAL:121 * (1 + RAND:2) / 100
+		EXP:精液経験 += LOCAL:121 * (1 + RAND:2) / 100
+		EXP:フェラ経験 += LOCAL:121 * (1 + RAND:2) / 100
+		EXP:露出快楽経験 += LOCAL:121 * (2 + RAND:3) / 100
+		EXP:奉仕快楽経験 += LOCAL:121 * (2 + RAND:3) / 100
+		EXP:苦痛快楽経験 += LOCAL:121 * (2 + RAND:3) / 100
+		EXP:自慰経験 += LOCAL:121 * (2 + RAND:3) / 100
+
+		IF TALENT:ふたなり > 0 || TALENT:オトコ > 0
+		    LOCAL:666 += LOCAL:121 * (1 + RAND:3 * 1) / 100
+			EXP:射精経験 += LOCAL:666
+			CFLAG:37 += LOCAL:666
+			LOCAL:666 = 0
+		ENDIF
+
+		SIF TALENT:母乳体質 > 0
+			EXP:噴乳経験 += LOCAL:121 * (1 + RAND:3) / 100
+		SIF TALENT:お漏らし癖 > 0
+			EXP:放尿経験 += LOCAL:121 * (1 + RAND:3) / 100
+		LOCAL:120 = LOCAL:120 * (4 + RAND:4) / 100
+		LOCAL:130 = LOCAL:130 * (4 + RAND:4) / 100
+		LOCAL:140 = LOCAL:140 * (7 + RAND:4) / 100
+		BASE:体力 = LIMIT(BASE:体力 - SYOUHI_KEIGEN(TARGET,LOCAL:120,体力), 0 , BASE:体力)
+		BASE:気力 = LIMIT(BASE:気力 - SYOUHI_KEIGEN(TARGET,LOCAL:130,気力), 0 , BASE:気力)
+		BASE:性耐性 = LIMIT(BASE:性耐性 - LOCAL:140, 0 , BASE:性耐性)
+		LOCAL:131 = LOCAL:151 * LOCAL:121 / 200 + RAND:10 + 1200
+		MONEY += LOCAL:131
+	;公衆便所
+	CASE 5
+		LOCAL:121 = BASE:体力 * (6 + RAND:3) / 100
+		EXP:被姦経験 += LOCAL:121 * (2 + RAND:3) / 100
+		SIF TALENT:オトコ <= 0
+			EXP:Ｖ経験 += LOCAL:121 * (1 + RAND:3) / 100
+		EXP:Ａ経験 += LOCAL:121 * (1 + RAND:3) / 100
+		EXP:絶頂経験 += LOCAL:121 * (1 + RAND:2) / 100
+		EXP:精液経験 += LOCAL:121 * (1 + RAND:2) / 100
+		EXP:フェラ経験 += LOCAL:121 * (1 + RAND:2) / 100
+		EXP:露出快楽経験 += LOCAL:121 * (2 + RAND:3) / 100
+		EXP:奉仕快楽経験 += LOCAL:121 * (2 + RAND:3) / 100
+		EXP:苦痛快楽経験 += LOCAL:121 * (2 + RAND:3) / 100
+		EXP:自慰経験 += LOCAL:121 * (2 + RAND:3) / 100
+
+		IF TALENT:ふたなり > 0 || TALENT:オトコ > 0
+		    LOCAL:666 += LOCAL:121 * (1 + RAND:3 * 1) / 100
+			EXP:射精経験 += LOCAL:666
+			CFLAG:37 += LOCAL:666
+			LOCAL:666 = 0
+		ENDIF
+
+		SIF TALENT:母乳体質 > 0
+			EXP:噴乳経験 += LOCAL:121 * (1 + RAND:3) / 100
+		SIF TALENT:お漏らし癖 > 0
+			EXP:放尿経験 += LOCAL:121 * (1 + RAND:3) / 100
+		LOCAL:120 = LOCAL:120 * (7 + RAND:7) / 100
+		LOCAL:130 = LOCAL:130 * (7 + RAND:4) / 100
+		LOCAL:140 = LOCAL:140 * (7 + RAND:4) / 100
+		BASE:体力 = LIMIT(BASE:体力 - SYOUHI_KEIGEN(TARGET,LOCAL:120,体力), 0 , BASE:体力)
+		BASE:気力 = LIMIT(BASE:気力 - SYOUHI_KEIGEN(TARGET,LOCAL:130,気力), 0 , BASE:気力)
+		BASE:性耐性 = LIMIT(BASE:性耐性 - LOCAL:140, 0 , BASE:性耐性)
+		LOCAL:131 = 1 + LOCAL:151 * RAND:50 / 100
+		SELECTCASE ARG:1
+			;肉便器
+			CASE 0
+				MONEY += LOCAL:131
+			;牝犬は報酬無し
+		ENDSELECT
+	;アイドル活動
+	CASE 6
+		SELECTCASE ARG:1
+			;路上ライブ
+			CASE 0
+				LOCAL:120 = LOCAL:120 * (20 + RAND:7) / 100
+				LOCAL:130 = LOCAL:130 * (10 + RAND:4) / 100
+				BASE:体力 = LIMIT(BASE:体力 - SYOUHI_KEIGEN(TARGET,LOCAL:120,体力), 0 , BASE:体力)
+				BASE:気力 = LIMIT(BASE:気力 - SYOUHI_KEIGEN(TARGET,LOCAL:130,気力), 0 , BASE:気力)
+				LOCAL:121 = MAXBASE:体力 - BASE:体力
+				LOCAL:131 =LOCAL:151 * LOCAL:121 / 5000 + RAND:10 + 10 + ABL:レベル * 1
+				LOCAL:121 /= 200
+				SIF LOCAL:121 >= 10
+					LOCAL:131 += 200
+				MONEY += LOCAL:131
+			;テレビ出演
+			CASE 1
+				LOCAL:120 = LOCAL:120 * (40 + RAND:7) / 100
+				LOCAL:130 = LOCAL:130 * (20 + RAND:4) / 100
+				BASE:体力 = LIMIT(BASE:体力 - SYOUHI_KEIGEN(TARGET,LOCAL:120,体力), 0 , BASE:体力)
+				BASE:気力 = LIMIT(BASE:気力 - SYOUHI_KEIGEN(TARGET,LOCAL:130,気力), 0 , BASE:気力)
+				IF EXP:魅了経験 > 299
+					LOCAL:121 = MAXBASE:体力 - BASE:体力 + EXP:魅了経験 * 90
+				ELSEIF EXP:魅了経験 > 199
+					LOCAL:121 = MAXBASE:体力 - BASE:体力 + EXP:魅了経験 * 60
+				ELSE
+					LOCAL:121 = MAXBASE:体力 - BASE:体力 + EXP:魅了経験 * 30
+				ENDIF
+				LOCAL:121 /= 10
+				LOCAL:131 =LOCAL:151 * LOCAL:121 / 200 + RAND:10 + 500
+				MONEY += LOCAL:131
+			;グラビア撮影、ＣＤ収録
+			CASE 2
+				LOCAL:120 = LOCAL:120 * (35 + RAND:7) / 100
+				LOCAL:130 = LOCAL:130 * (35 + RAND:4) / 100
+				BASE:体力 = LIMIT(BASE:体力 - SYOUHI_KEIGEN(TARGET,LOCAL:120,体力), 0 , BASE:体力)
+				BASE:気力 = LIMIT(BASE:気力 - SYOUHI_KEIGEN(TARGET,LOCAL:130,気力), 0 , BASE:気力)
+				IF EXP:魅了経験 > 299
+					LOCAL:121 = MAXBASE:体力 - BASE:体力 + EXP:魅了経験 * 2000
+				ELSEIF EXP:魅了経験 > 199
+					LOCAL:121 = MAXBASE:体力 - BASE:体力 + EXP:魅了経験 * 1000
+				ELSE
+					LOCAL:121 = MAXBASE:体力 - BASE:体力 + EXP:魅了経験 * 200
+				ENDIF
+				LOCAL:121 /= 100
+				LOCAL:131 =LOCAL:151 * LOCAL:121 / 400 + RAND:10 + 750
+				MONEY += LOCAL:131
+			;イベントに参加
+			CASE 3
+				LOCAL:120 = LOCAL:120 * (50 + RAND:7) / 100
+				LOCAL:130 = LOCAL:130 * (10 + RAND:4) / 100
+				BASE:体力 = LIMIT(BASE:体力 - SYOUHI_KEIGEN(TARGET,LOCAL:120,体力), 0 , BASE:体力)
+				BASE:気力 = LIMIT(BASE:気力 - SYOUHI_KEIGEN(TARGET,LOCAL:130,気力), 0 , BASE:気力)
+		ENDSELECT
+
+	;枕営業
+	CASE 7
+		SELECTCASE ARG:1
+			;プロデューサーフェラ
+			CASE 0
+				LOCAL:120 = LOCAL:120 * (20 + RAND:7) / 100
+				LOCAL:130 = LOCAL:130 * (10 + RAND:4) / 100
+				EXP:フェラ経験 += 1 + RAND:3
+				BASE:体力 = LIMIT(BASE:体力 - SYOUHI_KEIGEN(TARGET,LOCAL:120,体力), 0 , BASE:体力)
+				BASE:気力 = LIMIT(BASE:気力 - SYOUHI_KEIGEN(TARGET,LOCAL:130,気力), 0 , BASE:気力)
+			;プロデューサー着衣セックス
+			CASE 1
+				LOCAL:120 = LOCAL:120 * (40 + RAND:7) / 100
+				LOCAL:130 = LOCAL:130 * (10 + RAND:4) / 100
+				SIF TALENT:オトコ <= 0
+					EXP:Ｖ経験 += 1 + RAND:3
+				EXP:Ａ経験 += RAND:3
+				EXP:絶頂経験 += RAND:3
+			
+			IF TALENT:ふたなり > 0 || TALENT:オトコ > 0
+		    LOCAL:666 += RAND:3
+			EXP:射精経験 += LOCAL:666
+			CFLAG:37 += LOCAL:666
+			LOCAL:666 = 0
+			ENDIF
+
+				EXP:精液経験 += 1 + RAND:3
+				EXP:フェラ経験 += 1 + RAND:2
+				BASE:体力 = LIMIT(BASE:体力 - SYOUHI_KEIGEN(TARGET,LOCAL:120,体力), 0 , BASE:体力)
+				BASE:気力 = LIMIT(BASE:気力 - SYOUHI_KEIGEN(TARGET,LOCAL:130,気力), 0 , BASE:気力)
+			;Ｖマニア
+			CASE 2
+				LOCAL:120 = LOCAL:120 * (50 + RAND:7) / 100
+				LOCAL:130 = LOCAL:130 * (50 + RAND:4) / 100
+				EXP:Ｖ経験 += 8 + RAND:5
+				EXP:絶頂経験 += 3 + RAND:3
+				EXP:精液経験 += 3 + RAND:3
+				EXP:フェラ経験 += 1 + RAND:2
+				BASE:体力 = LIMIT(BASE:体力 - SYOUHI_KEIGEN(TARGET,LOCAL:120,体力), 0 , BASE:体力)
+				BASE:気力 = LIMIT(BASE:気力 - SYOUHI_KEIGEN(TARGET,LOCAL:130,気力), 0 , BASE:気力)
+			;アナルマニア
+			CASE 3
+				LOCAL:120 = LOCAL:120 * (50 + RAND:7) / 100
+				LOCAL:130 = LOCAL:130 * (50 + RAND:4) / 100
+				EXP:Ａ経験 += 8 + RAND:5
+				EXP:絶頂経験 += 3 + RAND:3
+			
+			IF TALENT:ふたなり > 0 || TALENT:オトコ > 0
+		    LOCAL:666 += RAND:3
+			EXP:射精経験 += LOCAL:666
+			CFLAG:37 += LOCAL:666
+			LOCAL:666 = 0
+			ENDIF
+
+				EXP:精液経験 += 3 + RAND:3
+				EXP:フェラ経験 += 1 + RAND:2
+				BASE:体力 = LIMIT(BASE:体力 - SYOUHI_KEIGEN(TARGET,LOCAL:120,体力), 0 , BASE:体力)
+				BASE:気力 = LIMIT(BASE:気力 - SYOUHI_KEIGEN(TARGET,LOCAL:130,気力), 0 , BASE:気力)
+			;輪姦
+			CASE 4
+				LOCAL:120 = LOCAL:120 * (70 + RAND:7) / 100
+				LOCAL:130 = LOCAL:130 * (70 + RAND:4) / 100
+				SIF TALENT:オトコ <= 0
+					EXP:Ｖ経験 += 15 + RAND:5
+				
+			IF TALENT:ふたなり > 0 || TALENT:オトコ > 0
+		    LOCAL:666 += 5 + RAND:15
+			EXP:射精経験 += LOCAL:666
+			CFLAG:37 += LOCAL:666
+			LOCAL:666 = 0
+			ENDIF
+
+				EXP:Ａ経験 += 15 + RAND:5
+				EXP:絶頂経験 += 10 + RAND:5
+				EXP:精液経験 += 15 + RAND:5
+				EXP:フェラ経験 += 10 + RAND:5
+				BASE:体力 = LIMIT(BASE:体力 - SYOUHI_KEIGEN(TARGET,LOCAL:120,体力), 0 , BASE:体力)
+				BASE:気力 = LIMIT(BASE:気力 - SYOUHI_KEIGEN(TARGET,LOCAL:130,気力), 0 , BASE:気力)
+		ENDSELECT
+
+	;ライブ
+	CASE 8
+		SELECTCASE ARG:1
+			;成功
+			CASE 0
+				LOCAL:120 = LOCAL:120 * (80 + RAND:7) / 100
+				LOCAL:130 = LOCAL:130 * (30 + RAND:4) / 100
+				BASE:体力 = LIMIT(BASE:体力 - SYOUHI_KEIGEN(TARGET,LOCAL:120,体力), 0 , BASE:体力)
+				BASE:気力 = LIMIT(BASE:気力 - SYOUHI_KEIGEN(TARGET,LOCAL:130,気力), 0 , BASE:気力)
+				IF EXP:魅了経験 > 499
+					LOCAL:121 = MAXBASE:体力 - BASE:体力 + EXP:魅了経験 * 72
+				ELSEIF EXP:魅了経験 > 399
+					LOCAL:121 = MAXBASE:体力 - BASE:体力 + EXP:魅了経験 * 54
+				ELSEIF EXP:魅了経験 > 299
+					LOCAL:121 = MAXBASE:体力 - BASE:体力 + EXP:魅了経験 * 38
+				ELSEIF EXP:魅了経験 > 199
+					LOCAL:121 = MAXBASE:体力 - BASE:体力 + EXP:魅了経験 * 22
+				ELSEIF EXP:魅了経験 > 149
+					LOCAL:121 = MAXBASE:体力 - BASE:体力 + EXP:魅了経験 * 11
+				ELSE
+					LOCAL:121 = MAXBASE:体力 - BASE:体力 + EXP:魅了経験 * 4
+				ENDIF
+				LOCAL:131 =LOCAL:151 * LOCAL:121 / 1200 + RAND:10 + 200 + ABL:レベル * 10 + 500
+				MONEY += LOCAL:131
+			;失敗
+			CASE 1
+				LOCAL:120 = LOCAL:120 * (80 + RAND:7) / 100
+				LOCAL:130 = LOCAL:130 * (50 + RAND:4) / 100
+				LOCAL:140 = LOCAL:140 * (30 + RAND:4) / 100
+				BASE:体力 = LIMIT(BASE:体力 - SYOUHI_KEIGEN(TARGET,LOCAL:120,体力), 0 , BASE:体力)
+				BASE:気力 = LIMIT(BASE:気力 - SYOUHI_KEIGEN(TARGET,LOCAL:130,気力), 0 , BASE:気力)
+				BASE:性耐性 = LIMIT(BASE:性耐性 - LOCAL:140, 0 , BASE:性耐性)
+				IF EXP:魅了経験 > 499
+					LOCAL:121 = MAXBASE:体力 - BASE:体力 + EXP:魅了経験 * 72
+				ELSEIF EXP:魅了経験 > 399
+					LOCAL:121 = MAXBASE:体力 - BASE:体力 + EXP:魅了経験 * 54
+				ELSEIF EXP:魅了経験 > 299
+					LOCAL:121 = MAXBASE:体力 - BASE:体力 + EXP:魅了経験 * 38
+				ELSEIF EXP:魅了経験 > 199
+					LOCAL:121 = MAXBASE:体力 - BASE:体力 + EXP:魅了経験 * 22
+				ELSEIF EXP:魅了経験 > 149
+					LOCAL:121 = MAXBASE:体力 - BASE:体力 + EXP:魅了経験 * 11
+				ELSE
+					LOCAL:121 = MAXBASE:体力 - BASE:体力 + EXP:魅了経験 * 4
+				ENDIF
+				SIF EXP:魅了経験 < 200
+					LOCAL:121 /= 4
+				LOCAL:131 = LOCAL:151 * LOCAL:121 / 2400 + RAND:10 + 100 + ABL:レベル * 10
+				MONEY += LOCAL:131
+			;絶頂失敗
+			CASE 2
+				LOCAL:120 = LOCAL:120 * (80 + RAND:7) / 100
+				LOCAL:130 = LOCAL:130 * (80 + RAND:4) / 100
+				LOCAL:140 = LOCAL:140 * (60 + RAND:4) / 100
+				BASE:体力 = LIMIT(BASE:体力 - SYOUHI_KEIGEN(TARGET,LOCAL:120,体力), 0 , BASE:体力)
+				BASE:気力 = LIMIT(BASE:気力 - SYOUHI_KEIGEN(TARGET,LOCAL:130,気力), 0 , BASE:気力)
+				BASE:性耐性 = LIMIT(BASE:性耐性 - LOCAL:140, 0 , BASE:性耐性)
+				IF EXP:魅了経験 > 499
+					LOCAL:121 = MAXBASE:体力 - BASE:体力 + EXP:魅了経験 * 72
+				ELSEIF EXP:魅了経験 > 399
+					LOCAL:121 = MAXBASE:体力 - BASE:体力 + EXP:魅了経験 * 54
+				ELSEIF EXP:魅了経験 > 299
+					LOCAL:121 = MAXBASE:体力 - BASE:体力 + EXP:魅了経験 * 38
+				ELSEIF EXP:魅了経験 > 199
+					LOCAL:121 = MAXBASE:体力 - BASE:体力 + EXP:魅了経験 * 22
+				ELSEIF EXP:魅了経験 > 149
+					LOCAL:121 = MAXBASE:体力 - BASE:体力 + EXP:魅了経験 * 11
+				ELSE
+					LOCAL:121 = MAXBASE:体力 - BASE:体力 + EXP:魅了経験 * 4
+				ENDIF
+				SIF EXP:魅了経験 < 200
+					LOCAL:121 /= 4
+				LOCAL:131 = LOCAL:151 * LOCAL:121 / 3600 + RAND:10 + 50 + ABL:レベル * 10
+				MONEY += LOCAL:131
+			;大成功
+			CASE 3
+				LOCAL:120 = LOCAL:120 * (40 + RAND:7) / 100
+				LOCAL:130 = LOCAL:130 * (15 + RAND:4) / 100
+				BASE:体力 = LIMIT(BASE:体力 - SYOUHI_KEIGEN(TARGET,LOCAL:120,体力), 0 , BASE:体力)
+				BASE:気力 = LIMIT(BASE:気力 - SYOUHI_KEIGEN(TARGET,LOCAL:130,気力), 0 , BASE:気力)
+				IF EXP:魅了経験 > 499
+					LOCAL:121 = MAXBASE:体力 - BASE:体力 + EXP:魅了経験 * 72
+				ELSEIF EXP:魅了経験 > 399
+					LOCAL:121 = MAXBASE:体力 - BASE:体力 + EXP:魅了経験 * 54
+				ELSEIF EXP:魅了経験 > 299
+					LOCAL:121 = MAXBASE:体力 - BASE:体力 + EXP:魅了経験 * 38
+				ELSEIF EXP:魅了経験 > 199
+					LOCAL:121 = MAXBASE:体力 - BASE:体力 + EXP:魅了経験 * 22
+				ELSEIF EXP:魅了経験 > 149
+					LOCAL:121 = MAXBASE:体力 - BASE:体力 + EXP:魅了経験 * 11
+				ELSE
+					LOCAL:121 = MAXBASE:体力 - BASE:体力 + EXP:魅了経験 * 4
+				ENDIF
+				LOCAL:131 =LOCAL:151 * LOCAL:121 / 1200 + RAND:10 + 400 + ABL:レベル * 20 + 1000
+				MONEY += LOCAL:131
+		ENDSELECT
+ENDSELECT
+RETURN LOCAL:121, LOCAL:131
+

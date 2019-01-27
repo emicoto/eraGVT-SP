@@ -1,0 +1,3566 @@
+
+;	文字列追加方法
+
+;・線（---）で区切られているブロックを丸ごとひとつコピペします
+;　貼り付ける位置は、機能上は二重線（===）の範囲内ならばどこでも同じですが
+;　重複チェックのしやすさなどから以下のカテゴリー順で、
+;　カテゴリー内は訓読みの五十音順→音読みの五十音順にすることを推奨します
+
+;名詞（生物）
+;名詞（鳥）
+;名詞（虫）
+;名詞（花）
+;名詞（宝石）
+;名詞（明暗）
+;名詞（現象）
+;名詞（炎氷雷）
+;名詞（色）
+;名詞（数）
+;それ以外の名詞
+;形容詞
+;動詞
+;熟語
+
+
+
+;・ブロック内の以下の５点を変更します
+
+;------------------------------------------
+;	IF RAND_NO:1 == 0
+;		RAND_NO:0 += 1
+;	ELSE
+;		RAND_NO:0 -= 1
+;(１)		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+;(２)			NAME_STR:(NOW_NO:0) = 雪
+;(３)			KUN_STR:(NOW_NO:0) = ゆき
+;(４)			ON_STR:(NOW_NO:0) = せつ
+;(５)			CAT_VAR = 名詞 + 現象
+;			SELECTED_NO = RAND_NO
+;			GOTO END_ADD_STR
+;		ENDIF
+;	ENDIF
+
+;　(１)「PER_VAR & 」に、その文字列が使われる位置を記述します
+;　　　「語頭」・「語尾」の二つがあります　その文字列が不自然でない位置を指定してください
+;　(２)「NAME_STR:(NOW_NO:0) = 」に、追加したい文字列を記述します
+;　(３)「KUN_STR:(NOW_NO:0) = 」に、その文字列の訓読みを記述します
+;　(４)「ON_STR:(NOW_NO:0) = 」に、その文字列の音読みを記述します
+;　(５)「CAT_VAR = 」に、その文字列のカテゴリーを記述します
+;　　　カテゴリーには「名詞」・「形容詞」・「動詞」・「熟語」と、
+;　　　名詞の小分類として「生物」・「鳥」・「虫」・「花」・「宝石」・
+;　　　「明暗」・「現象」・「炎氷雷」・「色」・「数」があります
+
+;・ファイルを保存します
+
+
+
+@GENERATE_WEAPON_STR_JP
+#DIM NOW_NO, 2
+#DIM SELECTED_NO
+#DIM RAND_NO, 2
+#DIM PER_VAR
+#DIM PRE_NO
+#DIM CAT_VAR
+#DIM PRE_CAT
+
+#DIM CONST 語頭 = 1
+#DIM CONST 語尾 = 2
+
+#DIM CONST 名詞 = 1
+#DIM CONST 形容詞 = 2
+#DIM CONST 動詞 = 4
+#DIM CONST 熟語 = 8
+
+#DIM CONST 生物 = 16
+#DIM CONST 鳥 = 32
+#DIM CONST 虫 = 64
+#DIM CONST 花 = 128
+#DIM CONST 宝石 = 256
+#DIM CONST 明暗 = 512
+#DIM CONST 現象 = 1024
+#DIM CONST 炎氷雷 = 2048
+#DIM CONST 色 = 4096
+#DIM CONST 数 = 8192
+
+#DIMS NAME_STR, 2
+#DIMS KUN_STR, 2
+#DIMS ON_STR, 2
+
+VARSET NOW_NO
+VARSET SELECTED_NO
+VARSET PER_VAR
+VARSET PRE_CAT
+NOW_NO:0 = RAND:2
+DO
+	RAND_NO:0 = RAND_NO:1
+;どこかでNOW_NO:0に負の値が入ってしまうことがあるのでその場合はリセット
+	IF NOW_NO:0 < 0
+		VARSET NOW_NO
+	ENDIF
+	NAME_STR:(NOW_NO:0) = 
+	KUN_STR:(NOW_NO:0) = 
+	ON_STR:(NOW_NO:0) = 
+	IF RAND_NO:0 > 0
+		;語頭
+		IF NOW_NO:0 == 0
+			PER_VAR = 語頭
+		;語尾
+		ELSE
+			PER_VAR = 語尾
+		ENDIF
+	ENDIF
+
+;====================================================================================
+
+;		 /////     名詞 - 生物     /////
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 蟒蛇
+			KUN_STR:(NOW_NO:0) = うわばみ
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 生物
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 鬼
+			KUN_STR:(NOW_NO:0) = おに
+			ON_STR:(NOW_NO:0) = き
+			CAT_VAR = 名詞 + 生物
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 大蛇
+			KUN_STR:(NOW_NO:0) = おろち
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 生物
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 狐
+			IF NOW_NO:0 == 1 && RAND:2
+				KUN_STR:(NOW_NO:0) = ぎつね
+			ELSE
+				KUN_STR:(NOW_NO:0) = きつね
+			ENDIF
+			ON_STR:(NOW_NO:0) = こ
+			CAT_VAR = 名詞 + 生物
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			IF RAND:2 == 0
+				NAME_STR:(NOW_NO:0) = 竜
+			ELSE
+				NAME_STR:(NOW_NO:0) = 龍
+			ENDIF
+			KUN_STR:(NOW_NO:0) = たつ
+			ON_STR:(NOW_NO:0) = りゅう
+			CAT_VAR = 名詞 + 生物
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 虎
+			KUN_STR:(NOW_NO:0) = とら
+			ON_STR:(NOW_NO:0) = こ
+			CAT_VAR = 名詞 + 生物
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 蛟
+			KUN_STR:(NOW_NO:0) = みずち
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 生物
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 麒麟
+			KUN_STR:(NOW_NO:0) = 
+			ON_STR:(NOW_NO:0) = きりん
+			CAT_VAR = 名詞 + 生物
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 獅子
+			KUN_STR:(NOW_NO:0) = 
+			IF NOW_NO:0 == 1 && RAND:2
+				ON_STR:(NOW_NO:0) = じし
+			ELSE
+				ON_STR:(NOW_NO:0) = しし
+			ENDIF
+			CAT_VAR = 名詞 + 生物
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+
+
+;		 /////     名詞 - 鳥     /////
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 飛鳥
+			KUN_STR:(NOW_NO:0) = あすか
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 鳥
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 花鶏
+			KUN_STR:(NOW_NO:0) = あとり
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 鳥
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 斑鳩
+			KUN_STR:(NOW_NO:0) = いかるが
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 鳥
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+;			IF RAND:2
+;				NAME_STR:(NOW_NO:0) = %UNICODE(0x9D8D)%
+;			ELSE
+				NAME_STR:(NOW_NO:0) = 交喙
+;			ENDIF
+			KUN_STR:(NOW_NO:0) = いすか
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 鳥
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 鶯
+			KUN_STR:(NOW_NO:0) = うぐいす
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 鳥
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 鴉
+			IF NOW_NO:0 == 1 && RAND:2
+				KUN_STR:(NOW_NO:0) = がらす
+			ELSE
+				KUN_STR:(NOW_NO:0) = からす
+			ENDIF
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 鳥
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 白鷺
+			KUN_STR:(NOW_NO:0) = しらさぎ
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 鳥
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 千鳥
+			KUN_STR:(NOW_NO:0) = ちどり
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 鳥
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 鶫
+			KUN_STR:(NOW_NO:0) = つぐみ
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 鳥
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 燕
+			KUN_STR:(NOW_NO:0) = つばめ
+			ON_STR:(NOW_NO:0) = えん
+			CAT_VAR = 名詞 + 鳥
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 鶴
+			IF NOW_NO:0 == 1 && RAND:2
+				KUN_STR:(NOW_NO:0) = づる
+			ELSE
+				KUN_STR:(NOW_NO:0) = つる
+			ENDIF
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 鳥
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 朱鷺
+			KUN_STR:(NOW_NO:0) = とき
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 鳥
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 鵺
+			KUN_STR:(NOW_NO:0) = ぬえ
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 鳥
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 隼
+			KUN_STR:(NOW_NO:0) = はやぶさ
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 鳥
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+
+
+;		 /////     名詞 - 虫     /////
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 揚羽
+			KUN_STR:(NOW_NO:0) = あげは
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 虫
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 蜘蛛
+			IF NOW_NO:0 == 1 && RAND:2
+				KUN_STR:(NOW_NO:0) = ぐも
+			ELSE
+				KUN_STR:(NOW_NO:0) = くも
+			ENDIF
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 虫
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 蠍
+			KUN_STR:(NOW_NO:0) = さそり
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 虫
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 蜂
+			IF NOW_NO:0 == 1 && RAND:2
+				KUN_STR:(NOW_NO:0) = ばち
+			ELSE
+				KUN_STR:(NOW_NO:0) = はち
+			ENDIF
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 虫
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 蛍
+			IF NOW_NO:0 == 1 && RAND:2
+				KUN_STR:(NOW_NO:0) = ぼたる
+			ELSE
+				KUN_STR:(NOW_NO:0) = ほたる
+			ENDIF
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 虫
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+
+
+;		 /////     名詞 - 花     /////
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 葵
+			KUN_STR:(NOW_NO:0) = あおい
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 花
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 薊
+			KUN_STR:(NOW_NO:0) = あざみ
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 花
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 紫陽花
+			KUN_STR:(NOW_NO:0) = あじさい
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 花
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 梓
+			KUN_STR:(NOW_NO:0) = あずさ
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 花
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 菖蒲
+			KUN_STR:(NOW_NO:0) = あやめ
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 花
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 茨
+			KUN_STR:(NOW_NO:0) = いばら
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 花
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 楓
+			KUN_STR:(NOW_NO:0) = かえで
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 花
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 桔梗
+			IF NOW_NO:0 == 1 && RAND:4
+				KUN_STR:(NOW_NO:0) = ぎきょう
+			ELSE
+				KUN_STR:(NOW_NO:0) = ききょう
+			ENDIF
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 花
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 桜
+			IF NOW_NO:0 == 1 && RAND:2
+				KUN_STR:(NOW_NO:0) = ざくら
+			ELSE
+				KUN_STR:(NOW_NO:0) = さくら
+			ENDIF
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 花
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 石榴
+			KUN_STR:(NOW_NO:0) = ざくろ
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 花
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 椿
+			KUN_STR:(NOW_NO:0) = つばき
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 花
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 常盤
+			KUN_STR:(NOW_NO:0) = ときわ
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 花
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 撫子
+			KUN_STR:(NOW_NO:0) = なでしこ
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 花
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 譲葉
+			KUN_STR:(NOW_NO:0) = ゆずりは
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 花
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 百合
+			KUN_STR:(NOW_NO:0) = ゆり
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 花
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 竜胆
+			KUN_STR:(NOW_NO:0) = りんどう
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 花
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+
+
+;		 /////     名詞 - 宝石     /////
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 琥珀
+			KUN_STR:(NOW_NO:0) = 
+			ON_STR:(NOW_NO:0) = こはく
+			CAT_VAR = 名詞 + 宝石
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 玻璃
+			KUN_STR:(NOW_NO:0) = 
+			ON_STR:(NOW_NO:0) = はり
+			CAT_VAR = 名詞 + 宝石
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 翡翠
+			KUN_STR:(NOW_NO:0) = 
+			ON_STR:(NOW_NO:0) = ひすい
+			CAT_VAR = 名詞 + 宝石
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 瑪瑙
+			KUN_STR:(NOW_NO:0) = 
+			ON_STR:(NOW_NO:0) = めのう
+			CAT_VAR = 名詞 + 宝石
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 瑠璃
+			KUN_STR:(NOW_NO:0) = 
+			ON_STR:(NOW_NO:0) = るり
+			CAT_VAR = 名詞 + 宝石
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+
+
+;		 /////     名詞 - 明暗     /////
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 暁
+			KUN_STR:(NOW_NO:0) = あかつき
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 明暗
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 灯
+			KUN_STR:(NOW_NO:0) = あかり
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 明暗
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 明
+			KUN_STR:(NOW_NO:0) = あけ
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 明暗
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 陰
+			KUN_STR:(NOW_NO:0) = 
+			ON_STR:(NOW_NO:0) = いん
+			CAT_VAR = 名詞 + 生物 + 鳥 + 虫 + 花 + 宝石 + 明暗
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 熾
+			IF RAND:2
+				KUN_STR:(NOW_NO:0) = おき
+			ELSE
+				KUN_STR:(NOW_NO:0) = おこり
+			ENDIF
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 明暗
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 影
+			KUN_STR:(NOW_NO:0) = かげ
+			ON_STR:(NOW_NO:0) = えい
+			CAT_VAR = 名詞 + 明暗
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 月影
+			KUN_STR:(NOW_NO:0) = 
+			ON_STR:(NOW_NO:0) = げつえい
+			CAT_VAR = 名詞 + 明暗
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 月
+			IF NOW_NO:0 == 1 && RAND:2
+				KUN_STR:(NOW_NO:0) = づき
+			ELSE
+				KUN_STR:(NOW_NO:0) = つき
+			ENDIF
+			KUN_STR:(NOW_NO:0) = つき
+			IF NOW_NO:0 == 1 && RAND:2
+				ON_STR:(NOW_NO:0) = がつ
+			ELSE
+				ON_STR:(NOW_NO:0) = げつ
+			ENDIF
+			CAT_VAR = 名詞 + 明暗
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 光
+			IF RAND:2
+				KUN_STR:(NOW_NO:0) = ひかり
+			ELSE
+				KUN_STR:(NOW_NO:0) = みつ
+			ENDIF
+			ON_STR:(NOW_NO:0) = こう
+			CAT_VAR = 名詞 + 明暗
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 闇
+			KUN_STR:(NOW_NO:0) = やみ
+			ON_STR:(NOW_NO:0) = あん
+			CAT_VAR = 名詞 + 明暗
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 夜
+			IF RAND:2
+				KUN_STR:(NOW_NO:0) = よ
+			ELSE
+				KUN_STR:(NOW_NO:0) = よる
+			ENDIF
+			ON_STR:(NOW_NO:0) = や
+			CAT_VAR = 名詞 + 明暗
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 宵
+			KUN_STR:(NOW_NO:0) = よい
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 明暗
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 陽
+			KUN_STR:(NOW_NO:0) = 
+			ON_STR:(NOW_NO:0) = よう
+			CAT_VAR = 名詞 + 生物 + 鳥 + 虫 + 花 + 宝石 + 明暗
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 冥
+			KUN_STR:(NOW_NO:0) = 
+			ON_STR:(NOW_NO:0) = めい
+			CAT_VAR = 名詞 + 明暗
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+
+
+;		 /////     名詞 - 現象     /////
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 雨
+			IF RAND:2 == 0
+				KUN_STR:(NOW_NO:0) = あめ
+			ELSEIF NOW_NO:0 == 0
+				KUN_STR:(NOW_NO:0) = あま
+			ELSE
+				KUN_STR:(NOW_NO:0) = さめ
+			ENDIF
+			ON_STR:(NOW_NO:0) = う
+			CAT_VAR = 名詞 + 現象
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 嵐
+			KUN_STR:(NOW_NO:0) = あらし
+			ON_STR:(NOW_NO:0) = らん
+			CAT_VAR = 名詞 + 現象
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 朧
+			KUN_STR:(NOW_NO:0) = おぼろ
+			ON_STR:(NOW_NO:0) = ろう
+			CAT_VAR = 名詞 + 現象
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 霞
+			IF NOW_NO:0 == 1 && RAND:2
+				KUN_STR:(NOW_NO:0) = がすみ
+			ELSE
+				KUN_STR:(NOW_NO:0) = かすみ
+			ENDIF
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 現象
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 風
+			IF NOW_NO:0 == 0 && RAND:2
+				KUN_STR:(NOW_NO:0) = かざ
+			ELSE
+				KUN_STR:(NOW_NO:0) = かぜ
+			ENDIF
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 現象
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 霧
+			IF NOW_NO:0 == 1 && RAND:2
+				KUN_STR:(NOW_NO:0) = ぎり
+			ELSE
+				KUN_STR:(NOW_NO:0) = きり
+			ENDIF
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 現象
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 時雨
+			KUN_STR:(NOW_NO:0) = しぐれ
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 現象
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 霜
+			KUN_STR:(NOW_NO:0) = しも
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 現象
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 凪
+			KUN_STR:(NOW_NO:0) = なぎ
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 現象
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 波
+			KUN_STR:(NOW_NO:0) = なみ
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 現象
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 雪
+			KUN_STR:(NOW_NO:0) = ゆき
+			ON_STR:(NOW_NO:0) = せつ
+			CAT_VAR = 名詞 + 現象
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 六花
+			KUN_STR:(NOW_NO:0) = 
+			ON_STR:(NOW_NO:0) = りっか
+			CAT_VAR = 名詞 + 現象
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+
+
+;		 /////     名詞 - 炎氷雷     /////
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 雷
+			IF RAND:2
+				KUN_STR:(NOW_NO:0) = いかづち
+			ELSE
+				KUN_STR:(NOW_NO:0) = かみなり
+			ENDIF
+			ON_STR:(NOW_NO:0) = らい
+			CAT_VAR = 名詞 + 炎氷雷
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 凍て
+			KUN_STR:(NOW_NO:0) = いて
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 炎氷雷 + 形容詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 氷
+			KUN_STR:(NOW_NO:0) = こおり
+			IF NOW_NO:0 == 0 && RAND:2
+				ON_STR:(NOW_NO:0) = ひ
+			ELSE
+				ON_STR:(NOW_NO:0) = ひょう
+			ENDIF
+			CAT_VAR = 名詞 + 炎氷雷
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 火
+			IF RAND:2 && NOW_NO:0 == 0
+				KUN_STR:(NOW_NO:0) = ほ
+			ELSE
+				KUN_STR:(NOW_NO:0) = ひ
+			ENDIF
+			CAT_VAR = 名詞 + 炎氷雷
+			ON_STR:(NOW_NO:0) = か
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 炎
+			KUN_STR:(NOW_NO:0) = ほのお
+			ON_STR:(NOW_NO:0) = えん
+			CAT_VAR = 名詞 + 炎氷雷
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 焔
+			KUN_STR:(NOW_NO:0) = ほむら
+			ON_STR:(NOW_NO:0) = えん
+			CAT_VAR = 名詞 + 炎氷雷
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 雷霆
+			KUN_STR:(NOW_NO:0) = 
+			ON_STR:(NOW_NO:0) = らいてい
+			CAT_VAR = 名詞 + 炎氷雷
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+
+
+;		 /////     名詞 - 色     /////
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 青
+			KUN_STR:(NOW_NO:0) = あお
+			ON_STR:(NOW_NO:0) = せい
+			CAT_VAR = 名詞 + 色
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 蒼
+			KUN_STR:(NOW_NO:0) = あお
+			ON_STR:(NOW_NO:0) = そう
+			CAT_VAR = 名詞 + 色
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 碧
+			KUN_STR:(NOW_NO:0) = あお
+			ON_STR:(NOW_NO:0) = へき
+			CAT_VAR = 名詞 + 色
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 赫
+			KUN_STR:(NOW_NO:0) = あか
+			ON_STR:(NOW_NO:0) = かく
+			CAT_VAR = 名詞 + 色
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 銅
+			KUN_STR:(NOW_NO:0) = あかがね
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 色
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 茜
+			KUN_STR:(NOW_NO:0) = あかね
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 色
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 淡
+			KUN_STR:(NOW_NO:0) = うす
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 色
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 黒
+			KUN_STR:(NOW_NO:0) = くろ
+			ON_STR:(NOW_NO:0) = こく
+			CAT_VAR = 名詞 + 色
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 紫苑
+			KUN_STR:(NOW_NO:0) = 
+			ON_STR:(NOW_NO:0) = しおん
+			CAT_VAR = 名詞 + 色
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 白
+			KUN_STR:(NOW_NO:0) = しろ
+			ON_STR:(NOW_NO:0) = はく
+			CAT_VAR = 名詞 + 色
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 銀
+			KUN_STR:(NOW_NO:0) = しろがね
+			ON_STR:(NOW_NO:0) = ぎん
+			CAT_VAR = 名詞 + 色
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 七色
+			KUN_STR:(NOW_NO:0) = なないろ
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 色
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 鈍色
+			KUN_STR:(NOW_NO:0) = にびいろ
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 色
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 濡羽
+			KUN_STR:(NOW_NO:0) = ぬれば
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 色
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 翠
+			KUN_STR:(NOW_NO:0) = みどり
+			ON_STR:(NOW_NO:0) = すい
+			CAT_VAR = 名詞 + 色
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 紫
+			KUN_STR:(NOW_NO:0) = むらさき
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 色
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 紅蓮
+			KUN_STR:(NOW_NO:0) = 
+			ON_STR:(NOW_NO:0) = ぐれん
+			CAT_VAR = 名詞 + 色
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 五色
+			KUN_STR:(NOW_NO:0) = 
+			ON_STR:(NOW_NO:0) = ごしき
+			CAT_VAR = 名詞 + 色
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 金色
+			KUN_STR:(NOW_NO:0) = 
+			ON_STR:(NOW_NO:0) = こんじき
+			CAT_VAR = 名詞 + 色
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 蘇芳
+			KUN_STR:(NOW_NO:0) = 
+			ON_STR:(NOW_NO:0) = すおう
+			CAT_VAR = 名詞 + 色
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 緋
+			KUN_STR:(NOW_NO:0) = あか
+			ON_STR:(NOW_NO:0) = ひ
+			CAT_VAR = 名詞 + 色
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+
+
+;		 /////     名詞 - 数     /////
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 一
+			IF NOW_NO:0 == 0 && RAND:2
+				KUN_STR:(NOW_NO:0) = ひと
+			ELSE
+				KUN_STR:(NOW_NO:0) = ひとつ
+				SIF RAND:2 == 0
+					NAME_STR:(NOW_NO:0) = 一ツ
+			ENDIF
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 数
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 二
+			IF NOW_NO:0 == 0 && RAND:2
+				KUN_STR:(NOW_NO:0) = ふた
+			ELSE
+				KUN_STR:(NOW_NO:0) = ふたつ
+				SIF RAND:2 == 0
+					NAME_STR:(NOW_NO:0) = 二ツ
+			ENDIF
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 数
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾 * (RAND:16 == 0)) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 三
+			ON_STR:(NOW_NO:0) = さん
+			IF NOW_NO:0 == 0 && RAND:2
+				KUN_STR:(NOW_NO:0) = み
+			ELSE
+				KUN_STR:(NOW_NO:0) = みつ
+				IF RAND:2 == 0
+					NAME_STR:(NOW_NO:0) = 三ツ
+					ON_STR:(NOW_NO:0) = 
+				ENDIF
+			ENDIF
+			CAT_VAR = 名詞 + 数
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾 * (RAND:16 == 0)) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 四
+			ON_STR:(NOW_NO:0) = し
+			IF NOW_NO:0 == 0 && RAND:2
+				KUN_STR:(NOW_NO:0) = よ
+			ELSE
+				KUN_STR:(NOW_NO:0) = よつ
+				IF RAND:2 == 0
+					NAME_STR:(NOW_NO:0) = 四ツ
+					ON_STR:(NOW_NO:0) = 
+				ENDIF
+			ENDIF
+			CAT_VAR = 名詞 + 数
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾 * (RAND:4 == 0)) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 五
+			ON_STR:(NOW_NO:0) = ご
+			IF NOW_NO:0 == 0 && RAND:2
+				KUN_STR:(NOW_NO:0) = いつ
+			ELSE
+				KUN_STR:(NOW_NO:0) = いつつ
+				IF RAND:2 == 0
+					NAME_STR:(NOW_NO:0) = 五ツ
+					ON_STR:(NOW_NO:0) = 
+				ENDIF
+			ENDIF
+			CAT_VAR = 名詞 + 数
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾 * (RAND:16 == 0)) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 六
+			IF NOW_NO:0 == 0 && RAND:2
+				ON_STR:(NOW_NO:0) = りく
+			ELSE
+				ON_STR:(NOW_NO:0) = ろく
+			ENDIF
+			IF NOW_NO:0 == 0 && RAND:2
+				KUN_STR:(NOW_NO:0) = む
+			ELSE
+				KUN_STR:(NOW_NO:0) = むつ
+				IF RAND:2 == 0
+					NAME_STR:(NOW_NO:0) = 六ツ
+					ON_STR:(NOW_NO:0) = 
+				ENDIF
+			ENDIF
+			CAT_VAR = 名詞 + 数
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾 * (RAND:16 == 0)) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 七
+			ON_STR:(NOW_NO:0) = しち
+			IF RAND:2 == 0
+				KUN_STR:(NOW_NO:0) = なな
+			ELSE
+				IF RAND:2 == 0
+					NAME_STR:(NOW_NO:0) = 七ツ
+					ON_STR:(NOW_NO:0) = 
+				ENDIF
+				KUN_STR:(NOW_NO:0) = ななつ
+			ENDIF
+			CAT_VAR = 名詞 + 数
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾 * (RAND:16 == 0)) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 八
+			ON_STR:(NOW_NO:0) = はち
+			IF RAND:2 == 0
+				KUN_STR:(NOW_NO:0) = や
+			ELSE
+				IF RAND:2 == 0
+					NAME_STR:(NOW_NO:0) = 八ツ
+					ON_STR:(NOW_NO:0) = 
+				ENDIF
+				KUN_STR:(NOW_NO:0) = やつ
+			ENDIF
+			CAT_VAR = 名詞 + 数
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾 * (RAND:16 == 0)) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 九
+			IF RAND:2 == 0
+				KUN_STR:(NOW_NO:0) = ここの
+			ELSE
+				SIF RAND:2 == 0
+					NAME_STR:(NOW_NO:0) = 九ツ
+				KUN_STR:(NOW_NO:0) = ここのつ
+			ENDIF
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 数
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾 * (RAND:6 == 0)) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 一重
+			KUN_STR:(NOW_NO:0) = ひとえ
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 数
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾 * (RAND:6 == 0)) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 二重
+			KUN_STR:(NOW_NO:0) = ふたえ
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 数
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 七重
+			KUN_STR:(NOW_NO:0) = ななえ
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 数
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾 * (RAND:6 == 0)) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 八重
+			KUN_STR:(NOW_NO:0) = やえ
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 数
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾 * (RAND:6 == 0)) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 九重
+			KUN_STR:(NOW_NO:0) = ここのえ
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞 + 数
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+
+
+;		 /////     名詞     /////
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 天
+			IF NOW_NO:0 == 0
+				KUN_STR:(NOW_NO:0) = あま
+			ELSE
+				KUN_STR:(NOW_NO:0) = 
+			ENDIF
+			ON_STR:(NOW_NO:0) = てん
+			CAT_VAR = 名詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 絃
+			KUN_STR:(NOW_NO:0) = いと
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 岩
+			KUN_STR:(NOW_NO:0) = いわ
+			ON_STR:(NOW_NO:0) = がん
+			CAT_VAR = 名詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 初
+			KUN_STR:(NOW_NO:0) = うい
+			ON_STR:(NOW_NO:0) = はつ
+			CAT_VAR = 名詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			IF RAND:5 == 0
+				NAME_STR:(NOW_NO:0) = 詩
+			ELSEIF RAND:4 == 0
+				NAME_STR:(NOW_NO:0) = 歌
+			ELSEIF RAND:3 == 0
+				NAME_STR:(NOW_NO:0) = 唄
+			ELSEIF RAND:2 == 0
+				NAME_STR:(NOW_NO:0) = 詠
+			ELSE
+				NAME_STR:(NOW_NO:0) = 謡
+			ENDIF
+			KUN_STR:(NOW_NO:0) = うた
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 現
+			KUN_STR:(NOW_NO:0) = うつつ
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 鏡
+			KUN_STR:(NOW_NO:0) = かがみ
+			ON_STR:(NOW_NO:0) = きょう
+			CAT_VAR = 名詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 篝
+			KUN_STR:(NOW_NO:0) = かがり
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 鉄
+			IF RAND:2
+				KUN_STR:(NOW_NO:0) = かね
+			ELSE
+				KUN_STR:(NOW_NO:0) = くろがね
+			ENDIF
+			IF NOW_NO:0 == 0 && RAND:2
+				ON_STR:(NOW_NO:0) = てっ
+			ELSE
+				ON_STR:(NOW_NO:0) = てつ
+			ENDIF
+			CAT_VAR = 名詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 神
+			IF NOW_NO:0 == 1 && RAND:2
+				KUN_STR:(NOW_NO:0) = がみ
+			ELSEIF NOW_NO:0 == 0 && RAND:2
+				KUN_STR:(NOW_NO:0) = かん
+			ELSE
+				KUN_STR:(NOW_NO:0) = かみ
+			ENDIF
+			ON_STR:(NOW_NO:0) = しん
+			CAT_VAR = 名詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 髪
+			IF NOW_NO:0 == 1 && RAND:4
+				KUN_STR:(NOW_NO:0) = がみ
+			ELSE
+				KUN_STR:(NOW_NO:0) = かみ
+			ENDIF
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 絡繰
+			KUN_STR:(NOW_NO:0) = からくり
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			IF RAND:2
+				NAME_STR:(NOW_NO:0) = 巫
+			ELSE
+				NAME_STR:(NOW_NO:0) = 覡
+			ENDIF
+			KUN_STR:(NOW_NO:0) = かんなぎ
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 傀儡
+			KUN_STR:(NOW_NO:0) = くぐつ
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 楔
+			KUN_STR:(NOW_NO:0) = くさび
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 鎖
+			IF NOW_NO:0 == 1 && RAND:2
+				KUN_STR:(NOW_NO:0) = ぐさり
+			ELSE
+				KUN_STR:(NOW_NO:0) = くさり
+			ENDIF
+			ON_STR:(NOW_NO:0) = さ
+			CAT_VAR = 名詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 祟り
+			IF NOW_NO:0 == 1 && RAND:2
+				KUN_STR:(NOW_NO:0) = だたり
+			ELSE
+				KUN_STR:(NOW_NO:0) = たたり
+			ENDIF
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 魂
+			KUN_STR:(NOW_NO:0) = たま
+			ON_STR:(NOW_NO:0) = こん
+			CAT_VAR = 名詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 咎
+			KUN_STR:(NOW_NO:0) = とが
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 髑髏
+			KUN_STR:(NOW_NO:0) = どくろ
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 鋼
+			KUN_STR:(NOW_NO:0) = はがね
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 姫
+			KUN_STR:(NOW_NO:0) = ひめ
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 舞
+			KUN_STR:(NOW_NO:0) = まい
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 禊
+			KUN_STR:(NOW_NO:0) = みそぎ
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 御魂
+			KUN_STR:(NOW_NO:0) = みたま
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 躯
+			KUN_STR:(NOW_NO:0) = むくろ
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 夢
+			KUN_STR:(NOW_NO:0) = ゆめ
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 名詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 地
+			KUN_STR:(NOW_NO:0) = 
+			ON_STR:(NOW_NO:0) = ち
+			CAT_VAR = 名詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+
+
+;		 /////     形容詞     /////
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 忌み
+			KUN_STR:(NOW_NO:0) = いみ
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 形容詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 裏
+			KUN_STR:(NOW_NO:0) = うら
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 形容詞
+			SELECTED_NO = RAND_NO
+			SIF RAND:4 == 0
+				NOW_NO:0 -= 1
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 幽けき
+			KUN_STR:(NOW_NO:0) = かそけき
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 形容詞
+;			この単語のカテゴリではないが、抑制するためのカテゴリ指定
+			CAT_VAR += 数 + 動詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾 * (RAND:4 == 0)) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 朽
+			KUN_STR:(NOW_NO:0) = くち
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 形容詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 囀
+			KUN_STR:(NOW_NO:0) = さえずり
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 形容詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 終
+			SIF RAND:2 == 0
+				NAME_STR:(NOW_NO:0) = 終ノ
+			KUN_STR:(NOW_NO:0) = ついの
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 形容詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 劈
+			KUN_STR:(NOW_NO:0) = つんざき
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 形容詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾 * (RAND:4 == 0)) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 飛
+			KUN_STR:(NOW_NO:0) = とび
+			IF NOW_NO:0 == 1
+				ON_STR:(NOW_NO:0) = ひ
+			ELSE
+				ON_STR:(NOW_NO:0) = 
+			ENDIF
+			CAT_VAR = 形容詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 惑い
+			KUN_STR:(NOW_NO:0) = まどい
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 形容詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 乱
+			KUN_STR:(NOW_NO:0) = みだれ
+			ON_STR:(NOW_NO:0) = らん
+			CAT_VAR = 形容詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 雅
+			KUN_STR:(NOW_NO:0) = みやび
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 形容詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 禁
+			KUN_STR:(NOW_NO:0) = 
+			ON_STR:(NOW_NO:0) = きん
+			CAT_VAR = 形容詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+
+
+;		 /////     動詞     /////
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 * (RAND:4 == 0) + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 穿
+			KUN_STR:(NOW_NO:0) = うがち
+			ON_STR:(NOW_NO:0) = せん
+			CAT_VAR = 動詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 駆
+			IF NOW_NO:0 == 1 && RAND:2
+				KUN_STR:(NOW_NO:0) = がけ
+			ELSE
+				KUN_STR:(NOW_NO:0) = かけ
+			ENDIF
+			ON_STR:(NOW_NO:0) = く
+			CAT_VAR = 動詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 * (RAND:4 == 0) + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 咬
+			IF NOW_NO:0 == 1 && RAND:2
+				KUN_STR:(NOW_NO:0) = がみ
+			ELSE
+				KUN_STR:(NOW_NO:0) = かみ
+			ENDIF
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 動詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 砕
+			KUN_STR:(NOW_NO:0) = くだき
+			ON_STR:(NOW_NO:0) = さい
+			CAT_VAR = 動詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 殺
+			KUN_STR:(NOW_NO:0) = ごろし
+			ON_STR:(NOW_NO:0) = さつ
+			CAT_VAR = 動詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 削
+			KUN_STR:(NOW_NO:0) = そぎ
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 動詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 散
+			KUN_STR:(NOW_NO:0) = ちらし
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 動詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 綴
+			KUN_STR:(NOW_NO:0) = つづり
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 動詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 紡
+			KUN_STR:(NOW_NO:0) = つむぎ
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 動詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 連
+			KUN_STR:(NOW_NO:0) = つらね
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 動詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 * (RAND:4 == 0) + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 流
+			KUN_STR:(NOW_NO:0) = ながれ
+			IF NOW_NO:0 == 1
+				ON_STR:(NOW_NO:0) = 
+			ELSE
+				ON_STR:(NOW_NO:0) = る
+			ENDIF
+			CAT_VAR = 動詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 * (RAND:4 == 0) + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 鳴
+			KUN_STR:(NOW_NO:0) = なき
+			ON_STR:(NOW_NO:0) = めい
+			CAT_VAR = 動詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 * (RAND:4 == 0) + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 啼
+			KUN_STR:(NOW_NO:0) = なき
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 動詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 * (RAND:4 == 0) + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 縫
+			KUN_STR:(NOW_NO:0) = ぬい
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 動詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 捩
+			KUN_STR:(NOW_NO:0) = ねじり
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 動詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 走
+			KUN_STR:(NOW_NO:0) = はしり
+			ON_STR:(NOW_NO:0) = そう
+			CAT_VAR = 動詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 * (RAND:4 == 0) + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 払
+			IF NOW_NO:0 == 1 && RAND:2
+				KUN_STR:(NOW_NO:0) = ばらい
+			ELSE
+				KUN_STR:(NOW_NO:0) = はらい
+			ENDIF
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 動詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 屠
+			KUN_STR:(NOW_NO:0) = ほふり
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 動詞
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 閃
+			KUN_STR:(NOW_NO:0) = 
+			ON_STR:(NOW_NO:0) = せん
+			CAT_VAR = 名詞 + 生物 + 鳥 + 虫 + 花 + 宝石 + 明暗
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+
+
+;		 /////     熟語     /////
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾 * (RAND:4 == 0)) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 十六夜
+			KUN_STR:(NOW_NO:0) = いざよい
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 熟語
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 神楽
+			KUN_STR:(NOW_NO:0) = かぐら
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 熟語
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 陽炎
+			KUN_STR:(NOW_NO:0) = かげろう
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 現象 + 熟語
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 不知火
+			KUN_STR:(NOW_NO:0) = しらぬい
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 熟語
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 月詠
+			KUN_STR:(NOW_NO:0) = つくよみ
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 熟語
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾 * (RAND:2 == 0)) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 祝詞
+			KUN_STR:(NOW_NO:0) = のりと
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 熟語
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 疾風
+			KUN_STR:(NOW_NO:0) = はやて
+			ON_STR:(NOW_NO:0) = しっぷう
+			CAT_VAR = 現象 + 熟語
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 一風
+			KUN_STR:(NOW_NO:0) = ひとかぜ
+			ON_STR:(NOW_NO:0) = いっぷう
+			CAT_VAR = 熟語 + 数
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 八雲
+			KUN_STR:(NOW_NO:0) = やくも
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 熟語 + 数
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 阿修羅
+			KUN_STR:(NOW_NO:0) = 
+			ON_STR:(NOW_NO:0) = あしゅら
+			CAT_VAR = 熟語
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 一水
+			KUN_STR:(NOW_NO:0) = 
+			ON_STR:(NOW_NO:0) = いっすい
+			CAT_VAR = 熟語 + 数
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 久遠
+			KUN_STR:(NOW_NO:0) = 
+			ON_STR:(NOW_NO:0) = くおん
+			CAT_VAR = 熟語
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾 * (RAND:2 == 0)) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 虚空
+			KUN_STR:(NOW_NO:0) = 
+			ON_STR:(NOW_NO:0) = こくう
+			CAT_VAR = 熟語
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 孤月
+			KUN_STR:(NOW_NO:0) = 
+			ON_STR:(NOW_NO:0) = こげつ
+			CAT_VAR = 熟語
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 止水
+			KUN_STR:(NOW_NO:0) = 
+			ON_STR:(NOW_NO:0) = しすい
+			CAT_VAR = 熟語
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 七星
+			KUN_STR:(NOW_NO:0) = 
+			ON_STR:(NOW_NO:0) = しちせい
+			CAT_VAR = 熟語
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 呪言
+			KUN_STR:(NOW_NO:0) = 
+			ON_STR:(NOW_NO:0) = じゅごん
+			CAT_VAR = 熟語
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 呪禁
+			KUN_STR:(NOW_NO:0) = 
+			ON_STR:(NOW_NO:0) = じゅごん
+			CAT_VAR = 熟語
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;リストラ
+;1）「乱れ雪月花」のイメージが強すぎる　2）二番煎じでそれを超えそうな名前がイメージできない　3）組み合わせるには長い
+;------------------------------------------
+;	IF RAND_NO:1 == 0
+;		RAND_NO:0 += 1
+;	ELSE
+;		RAND_NO:0 -= 1
+;		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+;			NAME_STR:(NOW_NO:0) = 雪月花
+;			KUN_STR:(NOW_NO:0) = 
+;			ON_STR:(NOW_NO:0) = せつげっか
+;			CAT_VAR = 花 + 明暗 + 現象 + 熟語
+;			SELECTED_NO = RAND_NO
+;			GOTO END_ADD_STR
+;		ENDIF
+;	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 刹那
+			KUN_STR:(NOW_NO:0) = 
+			ON_STR:(NOW_NO:0) = せつな
+			CAT_VAR = 熟語
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 那由他
+			KUN_STR:(NOW_NO:0) = 
+			ON_STR:(NOW_NO:0) = なゆた
+			CAT_VAR = 熟語
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 白夜
+			KUN_STR:(NOW_NO:0) = 
+			ON_STR:(NOW_NO:0) = びゃくや
+			CAT_VAR = 熟語
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 微塵
+			KUN_STR:(NOW_NO:0) = 
+			ON_STR:(NOW_NO:0) = みじん
+			CAT_VAR = 熟語
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 無音
+			KUN_STR:(NOW_NO:0) = 
+			ON_STR:(NOW_NO:0) = むおん
+			CAT_VAR = 熟語
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 無常
+			KUN_STR:(NOW_NO:0) = 
+			ON_STR:(NOW_NO:0) = むじょう
+			CAT_VAR = 熟語
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 * (RAND:4 == 0) + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 無拍子
+			KUN_STR:(NOW_NO:0) = むびょうし
+			ON_STR:(NOW_NO:0) = 
+			CAT_VAR = 熟語
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 無明
+			KUN_STR:(NOW_NO:0) = 
+			ON_STR:(NOW_NO:0) = むみょう
+			CAT_VAR = 熟語
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 羅刹
+			KUN_STR:(NOW_NO:0) = 
+			ON_STR:(NOW_NO:0) = らせつ
+			CAT_VAR = 熟語
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 螺旋
+			KUN_STR:(NOW_NO:0) = 
+			ON_STR:(NOW_NO:0) = らせん
+			CAT_VAR = 熟語
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && PRE_NO != RAND_NO
+			NAME_STR:(NOW_NO:0) = 流転
+			KUN_STR:(NOW_NO:0) = 
+			ON_STR:(NOW_NO:0) = るてん
+			CAT_VAR = 熟語
+			SELECTED_NO = RAND_NO
+			GOTO END_ADD_STR
+		ENDIF
+	ENDIF
+
+;====================================================================================
+
+	$END_ADD_STR
+;要素数決定
+	IF RAND_NO:1 == 0
+		RAND_NO:1 = RAND_NO:0 + 1
+;追加文字列決定
+	ELSEIF SELECTED_NO > 0
+		RAND_NO:0 = RAND_NO:1
+		;名詞のみと熟語の重複は許可する
+		IF CAT_VAR != 名詞 || (CAT_VAR & 熟語) == 0
+			;同一カテゴリは不可
+			SIF CAT_VAR == PRE_CAT
+				CONTINUE
+		ELSE
+		ENDIF
+
+		IF NOW_NO:1 > 0
+			;語頭文字列に訓読みがない
+			IF KUN_STR:0 == ""
+				;語尾文字列に訓読みがない
+				IF KUN_STR:1 == ""
+					;音+音
+					RESULTS:1 = %ON_STR:0%%ON_STR:1%
+				;語尾文字列に音読みがない
+				ELSE
+					IF RAND:4
+						CONTINUE
+					ENDIF
+					;音+訓
+					RESULTS:1 = %ON_STR:0%%KUN_STR:1%
+				ENDIF
+			;語頭文字列に音読みがない
+			ELSEIF ON_STR:0 == ""
+				;語尾文字列に訓読みがない
+				IF KUN_STR:1 == ""
+					IF RAND:4
+						CONTINUE
+					ENDIF
+					;訓+音
+					RESULTS:1 = %KUN_STR:0%%ON_STR:1%
+				;語尾文字列に音読みがない
+				ELSE
+					;訓+訓
+					RESULTS:1 = %KUN_STR:0%%KUN_STR:1%
+				ENDIF
+			;語頭文字列に両方ある
+			ELSE
+				;語尾文字列に訓読みがない
+				IF KUN_STR:1 == ""
+					IF RAND:6
+						RESULTS:1 = %ON_STR:0%%ON_STR:1%
+					ELSE
+						RESULTS:1 = %KUN_STR:0%%ON_STR:1%
+					ENDIF
+				;語尾文字列に音読みがない
+				ELSEIF ON_STR:1 == ""
+					IF RAND:6
+						RESULTS:1 = %KUN_STR:0%%KUN_STR:1%
+					ELSE
+						RESULTS:1 = %ON_STR:0%%KUN_STR:1%
+					ENDIF
+				;追加文字列・既存文字列に両方ある
+				ELSE
+					IF RAND:8 == 0
+						RESULTS:1 = %KUN_STR:0%%ON_STR:1%
+					ELSEIF RAND:7 == 0
+						RESULTS:1 = %ON_STR:0%%KUN_STR:1%
+					ELSEIF RAND:2 == 0
+						RESULTS:1 = %KUN_STR:0%%KUN_STR:1%
+					ELSE
+						RESULTS:1 = %ON_STR:0%%ON_STR:1%
+					ENDIF
+				ENDIF
+			ENDIF
+		ENDIF
+		NOW_NO:1 += 1
+		INVERTBIT NOW_NO:0, 0
+	ENDIF
+
+	PRE_NO = SELECTED_NO
+	PRE_CAT = CAT_VAR
+LOOP NOW_NO:1 < 2
+RESULTS:0 = %NAME_STR:0%%NAME_STR:1%
+RETURN 0

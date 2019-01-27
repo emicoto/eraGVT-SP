@@ -1,0 +1,738 @@
+;---------------------------------------------------------------------
+;ボスの侵攻イベント
+;出撃していないキャラが要る場合、防衛力が低いとボスが襲ってくる
+@RAID_HANTEI
+#DIM CCOUNT
+;男女平等のオプション
+IF FILTER_CHECK_F(5)
+	;キャラが全員オトコの場合は判定しない
+	LOCAL = 0
+	FOR CCOUNT, 0, CHARANUM
+		SIF CCOUNT == MASTER
+			CONTINUE
+		SIF CFLAG:CCOUNT:999 == 0
+			CONTINUE
+		SIF TALENT:CCOUNT:オトコ <= 0
+			LOCAL ++
+	NEXT
+	SIF LOCAL < 1
+		RETURN
+ENDIF
+;裏ボスは襲ってこない
+SIF FLAG:21
+	RETURN
+;全員が出撃していればボスは襲ってこない
+SIF FLAG:41 >= CHARANUM -1
+	RETURN
+;全員捕まってる場合も同様
+LOCAL = 0
+FOR CCOUNT, 0, CHARANUM
+	SIF CCOUNT == MASTER
+		CONTINUE
+	SIF CFLAG:CCOUNT:999 == 0
+		CONTINUE
+	SIF CFLAG:CCOUNT:0 == 0 && CFLAG:CCOUNT:100 !=101 && CFLAG:CCOUNT:100 !=105
+		LOCAL ++
+NEXT
+SIF LOCAL < 1
+	RETURN
+;3日目が経過するまでは襲ってこない
+SIF DAY < 3
+	RETURN
+
+;防衛力に応じた確率でイベント発生
+IF FLAG:852 < 1000
+	LOCAL:2 = RAND:6
+ELSEIF FLAG:852 < 1750
+	LOCAL:2 = RAND:12
+ELSEIF FLAG:852 < 2500
+	LOCAL:2 = RAND:24
+ELSEIF FLAG:852 < 3750
+	LOCAL:2 = RAND:36
+ELSEIF FLAG:852 < 5000
+	LOCAL:2 = RAND:48
+ELSEIF FLAG:852 < 7500
+	LOCAL:2 = RAND:60
+ELSEIF FLAG:852 < 10000
+	LOCAL:2 = RAND:72
+ELSEIF FLAG:852 < 12500
+	LOCAL:2 = RAND:84
+ELSEIF FLAG:852 < 15000
+	LOCAL:2 = RAND:96
+ELSEIF FLAG:852 < 17500
+	LOCAL:2 = RAND:112
+ELSEIF FLAG:852 < 20000
+	LOCAL:2 = RAND:128
+ELSE
+	LOCAL:2 = RAND:256
+ENDIF
+SIF FLAG:999 == 1 && TIME == 0
+	JUMP RAID_RESCUE
+IF LOCAL:2 == 0 && RAND:2 == 0 && TIME == 0
+	JUMP RAID_RESCUE
+	DRAWLINE
+ELSEIF LOCAL:2 == 0 && RAND:(18 - FLAG:52 * 3) != 0
+	JUMP RAID_ATTACK
+	DRAWLINE
+;最低でも1%で発生する
+ELSEIF RAND:100 == 0
+	JUMP RAID_ATTACK
+	DRAWLINE
+ENDIF
+
+;---------------------------------------------------------------------
+;ボス襲撃の実行
+@RAID_ATTACK
+#DIM CCOUNT
+DRAWLINE
+FLAG:43 = 0
+FLAG:45 = 1
+;ランダム抽選用に候補をクリア
+CALL CLEARRANDCHOOSE
+FOR CCOUNT, 0, CHARANUM
+	SIF CCOUNT == MASTER
+		CONTINUE
+	;男女平等のオプション
+	SIF TALENT:CCOUNT:オトコ > 0 && FILTER_CHECK_F(5) > 0
+		CONTINUE
+	;出撃していないターゲットを狙う
+	SIF (CFLAG:CCOUNT:100 == 101 || CFLAG:CCOUNT:100 == 105 || CFLAG:CCOUNT:0 != 0 || CFLAG:CCOUNT:999 == 0)
+		CONTINUE
+	CALL ADDRANDCHOOSE,CCOUNT
+	;FEAT効果で狙われやすくなる
+	IF TALENT:CCOUNT:巻き込まれ体質 > 0
+		CALL ADDRANDCHOOSE,CCOUNT
+		CALL ADDRANDCHOOSE,CCOUNT
+	ENDIF
+	IF TALENT:CCOUNT:人外の美貌 > 0
+		CALL ADDRANDCHOOSE,CCOUNT
+		CALL ADDRANDCHOOSE,CCOUNT
+	ENDIF
+NEXT
+;候補がない場合、中断
+IF CHOICECOUNT_F() < 1
+	FLAG:45 = 0
+	RETURN
+ENDIF
+TARGET = RANDCHOOSE_F()
+LOCAL:1 = 0
+LOCAL:2 = 0
+PRINTL 
+PRINTL 
+PRINTL 
+REPEAT 30
+	IF LOCAL:2 == 0
+		LOCAL:1 += 50
+		SIF LOCAL:1 == 250
+			LOCAL:2 = 1
+	ELSE
+		LOCAL:1 -= 50
+		SIF LOCAL:1 == 0
+			LOCAL:2 = 0
+	ENDIF
+	FONTBOLD
+	SETCOLOR LOCAL:1,0,0
+	PRINTL 　　　―――――　　　ＷＡＲＮＩＮＧ　！！　　―――――
+	PRINTL 
+	PRINTL 
+	PRINTL 
+	TINPUTS 100,"WARNING",0,""
+	CLEARLINE 5
+	SIF RESULTS != "WARNING"
+		BREAK
+REND
+SETCOLOR 250,0,0
+PRINTL 　　　―――――　　　ＷＡＲＮＩＮＧ　！！　　―――――
+PRINTL 
+PRINTL 
+PRINTL 
+RESETCOLOR
+FONTREGULAR
+
+;狙われたキャラはわずかに体力気力が回復する
+LOCAL = MAXBASE:体力 / 10 + 500
+BASE:体力 = LIMIT(LOCAL + BASE:体力, 0, MAXBASE:体力)
+
+LOCAL = MAXBASE:気力 / 100 + 500
+BASE:気力 = LIMIT(LOCAL + BASE:気力, 0, MAXBASE:気力)
+
+PRINTL 
+IF TIME == 0 && TALENT:夜魔の貴族 == 0
+	IF CFLAG:100 == 102
+		PRINT 鍛練を終えて街に出ていた
+	ELSEIF CFLAG:100 == 103
+		PRINT 息抜きがてらに街に出ていた
+	ELSEIF CFLAG:100 == 104
+		PRINT 特別活動を終えて帰り仕度していた
+	ELSEIF CFLAG:100 == 106
+		PRINT 戦闘支援を終えて街に出ていた
+	ENDIF
+	IF TALENT:主観視点 > 0
+		PRINTFORML %PRINT_CALLNAME(TARGET)%は、突然響き渡った轟音にはっとする。
+	ELSE
+		PRINTFORML %PRINT_CALLNAME(TARGET)%は、突然響き渡った轟音にはっとした。
+	ENDIF
+	PRINTFORML サイレンが鳴り響き、街行く人々がぎょっとスピーカーの方を振りかえって数秒、
+	PRINTFORML すぐ近くで誰かの悲鳴が響き渡り、周囲はパニックの渦に巻き込まれた。
+	PRINTL 
+	;右クリックに備えてフォースウェイト
+	FORCEWAIT
+	PRINTFORML 触手生物の襲撃。まさか、こんな街中にまで――
+	PRINTFORML そう思った次の瞬間、目の前のビルの壁が粉砕され、
+	PRINTFORML 土煙りの中からソレは姿を現した。
+	PRINTW 
+	PRINTFORML ――"人類の敵"、触手生物。
+	PRINTFORML 触手に巻き取られた犠牲者の亡骸を無造作に放り投げ、
+	PRINTFORML 逃げまどう人々の方へと突進し始める。
+	PRINTW 
+	PRINTFORML それを見た%PRINT_CALLNAME(TARGET)%は、咄嗟に駆け出していた――
+ELSE
+	IF CFLAG:100 == 102
+		PRINT 鍛練を終えたばかりの
+	ELSEIF CFLAG:100 == 103
+		PRINT 自室に居た
+	ELSEIF CFLAG:100 == 104
+		PRINT 特別活動を終えて戻った
+	ELSEIF CFLAG:100 == 106
+		PRINT 戦闘支援を行っていた
+	ENDIF
+	SIF CFLAG:100 == 106
+		CFLAG:100 = 103
+	IF TALENT:主観視点 > 0
+		PRINTFORML %PRINT_CALLNAME(TARGET)%は、突然響き渡った轟音にはっとする。
+	ELSE
+		PRINTFORML %PRINT_CALLNAME(TARGET)%は、突然響き渡った轟音にはっとした。
+	ENDIF
+	PRINTFORML 遅れて響き渡る警報音。急いで装備を整えようとする%PRINT_CALLNAME(TARGET)%をさらなる衝撃が襲い、
+	PRINTFORML 電線がショートする火花とともに一瞬照明が落ち、非常灯に切り替わる。
+	PRINTL 
+	;右クリックに備えてフォースウェイト
+	FORCEWAIT
+	IF CHARANUM_ALIVE() == 1
+		PRINTFORML このままでは危ない、何とか外部と連絡を取らなければ…！
+	ELSE
+		PRINTFORM このままでは危ない、何とか仲間
+		SIF CHARANUM_ALIVE() >= 3
+			PRINT たち
+		PRINTFORML と連絡を取らなければ…！
+	ENDIF
+	PRINTFORML そう思って%PRINT_CALLNAME(TARGET)%が立ち上がったそのとき！
+	PRINTFORML すぐ傍で壁が崩落し――
+	PRINTW 
+	PRINTFORML ――ヌ　メ　リ
+	PRINTFORML という音と共現れた触手に、%PRINT_CALLNAME(TARGET)%の顔から血の気が引いていく…
+	PRINTFORML 見間違えるはずもない――"人類の敵"、触手生物。
+	PRINTFORML その巨体がズズンと地響きを起こしながら、目の前の闇から姿を現そうとしている！
+	PRINTW 
+	PRINTFORML 突然の襲来に驚き戸惑いながらも、
+	PRINTFORML %PRINT_CALLNAME(TARGET)%は咄嗟に距離を取って触手の一撃を避わした。
+	PRINTFORML ――まさか自分を狙ってきたのだろうか？
+	PRINTW 
+	IF CHARANUM_ALIVE() == 1
+		PRINTFORML 頼れる相手は他に居らず、逃げようにも退路は塞がれている。
+		PRINTFORML もし自分がここで捕まってしまったら――
+	ELSEIF CHARANUM_ALIVE() - FLAG:41 < 2
+		PRINTFORML 仲間は出払っていて、今この場で対応できるのは自分しか居ない。
+		PRINTFORML もし皆が戻ってくる前に捕まってしまったら――
+	ELSE
+		PRINTFORML 仲間が駆けつけてくるまで、何とか時間を稼ぐしかない。
+		PRINTFORML いや、もしも皆が既に捕まっていたら――
+	ENDIF
+	PRINTFORML 刹那に浮かんだ戦慄を振り払い、%PRINT_CALLNAME(TARGET)%は武器を構えて敵に相対した……
+ENDIF
+PRINTL 
+PRINTFORML （襲撃イベント中は撤退できません！　何とか２０ターン耐えてください！）
+PRINTW 
+DRAWLINE
+CALL ENCOUNT_BOSS
+SIF FLAG:999 == 1
+	PRINTFORMW エンカウント番号 == {RESULT}
+IF RESULT != 1
+	PRINTL 
+	PRINTL #####     ERROR !!     #####
+	PRINTL ボス襲撃イベント不発バグです。原因究明のため、
+	PRINTL 掲示板にできるだけ詳細な発生状況を報告してください
+	PRINTW 
+	PRINTL イベントを強制スキップして無理やりゲームを続行します
+	PRINTW 
+	RETURN
+ELSEIF FLAG:110
+	PRINTL 
+	PRINTL #####     ERROR !!     #####
+	PRINTL FLAG:110TRUEバグです。原因究明のため、
+	PRINTL 掲示板にできるだけ詳細な発生状況を報告してください
+	PRINTW 
+	PRINTL イベントを強制スキップして無理やりゲームを続行します
+	PRINTW 
+	RETURN
+ENDIF
+BEGIN TRAIN
+
+
+;---------------------------------------------------------------------
+;救出イベントの実行
+@RAID_RESCUE
+#DIM CCOUNT
+;全員非戦闘員ならイベント終了
+LOCAL = 0
+FOR CCOUNT, 0, CHARANUM
+	SIF CCOUNT == MASTER
+		CONTINUE
+	SIF CFLAG:CCOUNT:999 == 0
+		CONTINUE
+	SIF CFLAG:CCOUNT:0 == 0 && CFLAG:CCOUNT:100 !=101 && CFLAG:CCOUNT:100 !=105 && TALENT:LOCAL:変身能力 != -1
+		LOCAL ++
+NEXT
+SIF LOCAL < 1
+	RETURN
+
+DRAWLINE
+FLAG:43 = 0
+;他のイベントが完成するまでは２番で固定
+;FLAG:45 = RAND:3 + 2
+FLAG:45 = 2
+$LOOP
+;出撃していないターゲットを狙う
+LOCAL = RAND:(CHARANUM -1) + 1
+
+;条件判定
+IF (CFLAG:LOCAL:100 == 101 || CFLAG:LOCAL:100 == 105 || CFLAG:LOCAL:0 != 0 || CFLAG:LOCAL:999 == 0 || TALENT:LOCAL:変身能力 == -1) && LOCAL:1 < 999
+	LOCAL:1 ++
+	GOTO LOOP
+ELSEIF LOCAL:1 >= 999
+	FLAG:45 = 0
+	PRINTFORML %CALLNAME:LOCAL%は何か嫌な気配を感じたが、気のせいだったようだ…
+	PRINTW 
+	RETURN
+ENDIF
+TARGET = LOCAL
+LOCAL:1 = 0
+LOCAL:2 = 0
+PRINTL 
+PRINTL 
+PRINTL 
+REPEAT 30
+	IF LOCAL:2 == 0
+		LOCAL:1 += 50
+		SIF LOCAL:1 == 250
+			LOCAL:2 = 1
+	ELSE
+		LOCAL:1 -= 50
+		SIF LOCAL:1 == 0
+			LOCAL:2 = 0
+	ENDIF
+	FONTBOLD
+	SETCOLOR LOCAL:1,LOCAL:1,0
+	PRINTL 　　　―――――　　　ＥＭＥＲＧＥＮＣＹ　！！　　―――――
+	PRINTL 
+	PRINTL 
+	PRINTL 
+	TINPUTS 100,"WARNING",0,""
+	CLEARLINE 5
+	SIF RESULTS != "WARNING"
+		BREAK
+REND
+SETCOLOR 250,250,0
+PRINTL 　　　―――――　　　ＥＭＥＲＧＥＮＣＹ　！！　　―――――
+PRINTL 
+PRINTL 
+PRINTL 
+RESETCOLOR
+FONTREGULAR
+
+;狙われたキャラはわずかに体力気力が回復する
+LOCAL = MAXBASE:体力 / 10 + 500
+BASE:体力 = LIMIT(LOCAL + BASE:体力, 0, MAXBASE:体力)
+
+LOCAL = MAXBASE:気力 / 100 + 500
+BASE:気力 = LIMIT(LOCAL + BASE:気力, 0, MAXBASE:気力)
+
+PRINTL 
+IF TIME == 0
+	IF CFLAG:100 == 102
+		PRINT 鍛練を終えて街に出ていた
+	ELSEIF CFLAG:100 == 103
+		PRINT 息抜きがてらに街に出ていた
+	ELSEIF CFLAG:100 == 104
+		PRINT 特別活動を終えて帰り仕度していた
+	ELSEIF CFLAG:100 == 106
+		PRINT 戦闘支援を終えて街に出ていた
+	ENDIF
+	PRINTFORML %PRINT_CALLNAME(TARGET)%のもとに、緊急の連絡が入った。
+	IF FLAG:45 == 2
+		PRINTFORML どうやら近くの女子高に大型触手生物が出現し、大暴れしているらしい。
+		PRINTFORML 自衛隊が出動したが、生徒たちは校舎の中に取り残されたままだという。
+		PRINTFORML 放っておけば多数の犠牲者が出るだろう。
+	ELSEIF FLAG:45 == 3
+		PRINTFORML 付近で大型触手生物と遭遇した自衛隊の一個小隊から救援要請があった。
+		PRINTFORML 目下交戦中とのことだが、彼らの装備ではそう長くは保たないだろう。
+		PRINTFORML だが、今すぐ応援に駆け付ければまだ間に合うかもしれない。
+	ELSEIF FLAG:45 == 4
+		PRINTFORML つい先ほど起きた襲撃事件で逃走した大型触手生物がこの近くをうろついているらしい。
+		PRINTFORML 女性数名が連れ去られたとのことで、救出の依頼が来ている。
+		PRINTFORML 確かにこのチャンスを逃せば、行方を追うのは絶望的となるだろう。
+	ENDIF
+	PRINTL 
+	PRINTFORML 危険を承知で助けに行くべきだろうか？
+	;右クリックに備えてフォースウェイト
+	FORCEWAIT
+	PRINTL 
+	PRINTL どうする？
+	PRINTL （ボス触手と撤退不可の戦闘になります。助けに行かなくてもペナルティはありません）
+	PRINTL  　[0]助けに行く　　[1]助けに行かない
+	$INPUT_LOOP_1
+	INPUT
+	IF RESULT == 0
+		PRINTL 
+		PRINTFORML たとえ危険が伴うとしても、この事態を見過ごすわけにはいかない。
+		PRINTFORML %PRINT_CALLNAME(TARGET)%は意を決して現場に向かうことにした……
+	ELSEIF RESULT == 1
+		PRINTL 
+		PRINTFORML 不確定要素も多く、万全でもない状態で触手生物と戦うのは危険すぎる。
+		PRINTFORML 状況から判断した結果、%PRINT_CALLNAME(TARGET)%は助けに行かないという決断を下した……
+	ELSE
+		GOTO INPUT_LOOP_1
+	ENDIF
+ENDIF
+PRINTW 
+;助けに行かない場合、イベント中断
+IF RESULT == 1
+	FLAG:45 = 0
+	RETURN
+ENDIF
+
+PRINTW ・・
+PRINTW ・・・・
+PRINTW ・・・・・・
+PRINTL 
+IF FLAG:45 == 2
+	PRINTFORML 襲撃されたという女子高までやってくると、既に特殊部隊が突入路を確保してくれていた。
+	PRINTFORML 夥しい数の雑魚触手の死体で校庭が埋め尽くされ、
+	PRINTFORML 周囲は返り血と粘液と弾痕で酷い有様だ。
+	PRINTFORML 自衛隊員に襲いかかっていた雑魚触手を叩き伏せ、%PRINT_CALLNAME(TARGET)%は状況の悪さに眉をしかめた。
+	PRINTW 
+	PRINTFORML このまま雑魚触手を倒し続けても埒が明かない。
+	PRINTFORML ボスを叩かなければ収拾が付かないだろう……そう判断して外部の制圧を自衛隊に任せ、
+	PRINTFORML %PRINT_CALLNAME(TARGET)%は校舎の内部へと踏み込むことにする。
+	PRINTW
+	PRINTFORML 学校内部は触手の浸食により、建物と肉とがグロテスクに融合した触手の巣になりつつあった。
+	PRINTFORML 本来ならコツコツと足音を反響するはずの床は不気味な臓器に覆われてブヨブヨと変形し、
+	PRINTFORML 天井からは得体の知れない肉腫が垂れ下っている。
+	PRINTFORML すると突然壁から触手が伸びてきて、%PRINT_CALLNAME(TARGET)%を捕まえようとしてきた！
+	PRINTW 
+	PRINTL どうする？
+	PRINTL 　[0]触手を薙ぎ払う　[1]咄嗟に避ける　[2]動きを見極める
+	PRINTL 
+	$INPUT_LOOP_2_1
+	INPUT
+	IF RESULT == 0
+		LOCAL = BASE:攻撃 + BASE:防御
+		IF LOCAL >= 250
+			PRINTFORML %PRINT_CALLNAME(TARGET)%が迫りくる触手を薙ぎ払うと、触手はたちまち細切れになった。
+			PRINTFORML 分かってはいたが、探索は簡単にはいかないようだ。
+			PRINTW 
+		ELSE
+			PRINTFORML %PRINT_CALLNAME(TARGET)%は迫りくる触手を薙ぎ払おうとしたが力負けしてしまい、
+			PRINTFORML 絡みつかれてしまった！
+			PRINTFORML 触手が胸や腰を撫でまわし、股間にも伸びて先端を擦りつけてくる。
+			PRINTFORML 何とか触手を振り解いた%PRINT_CALLNAME(TARGET)%だが、全身を粘液まみれにされてしまった。
+			PRINTW 
+			LOCAL = MAX(BASE:性耐性 / 10, 10) + RAND:3
+			BASE:性耐性 = MAX(BASE:性耐性 - LOCAL, 0)
+			PRINTFORML 　性耐性が{LOCAL}減少した！
+			PRINTW 
+		ENDIF
+	ELSEIF RESULT == 1
+		LOCAL = BASE:防御 + BASE:敏捷
+		IF LOCAL >= 250
+			PRINTFORML %PRINT_CALLNAME(TARGET)%は咄嗟に触手から身を躱わした。
+			PRINTFORML 分かってはいたが、探索は簡単にはいかないようだ。
+			PRINTW 
+		ELSE
+			PRINTFORML %PRINT_CALLNAME(TARGET)%は触手から身を躱わそうとしたが間に合わず、
+			PRINTFORML 絡みつかれてしまった！
+			PRINTFORML 触手が胸や腰を撫でまわし、股間にも伸びて先端を擦りつけてくる。
+			PRINTFORML 何とか触手を振り解いた%PRINT_CALLNAME(TARGET)%だが、全身を粘液まみれにされてしまった。
+			PRINTW 
+			LOCAL = MAX(BASE:性耐性 / 10, 10) + RAND:3
+			BASE:性耐性 = MAX(BASE:性耐性 - LOCAL, 0)
+			PRINTFORML 　性耐性が{LOCAL}減少した！
+			PRINTW 
+		ENDIF
+	ELSEIF RESULT == 2
+		LOCAL = BASE:知性
+		IF LOCAL >= 110
+			PRINTFORML %PRINT_CALLNAME(TARGET)%は触手の動きを見極め、回避することに成功した。
+			PRINTFORML 分かってはいたが、探索は簡単にはいかないようだ。
+			PRINTW 
+		ELSE
+			PRINTFORML %PRINT_CALLNAME(TARGET)%は触手の動きを見極めようとしたが動きに反応しきれず、
+			PRINTFORML 絡みつかれてしまった！
+			PRINTFORML 触手が胸や腰を撫でまわし、股間にも伸びて先端を擦りつけてくる。
+			PRINTFORML 何とか触手を振り解いた%PRINT_CALLNAME(TARGET)%だが、全身を粘液まみれにされてしまった。
+			PRINTW 
+			LOCAL = MAX(BASE:性耐性 / 10, 10) + RAND:3
+			BASE:性耐性 = MAX(BASE:性耐性 - LOCAL, 0)
+			PRINTFORML 　性耐性が{LOCAL}減少した！
+			PRINTW 
+		ENDIF
+	ELSE
+		GOTO INPUT_LOOP_2_1
+	ENDIF
+	PRINTFORML %PRINT_CALLNAME(TARGET)%は警戒を怠らずに奥へと進んでいく……
+	PRINTW 
+	PRINTFORML 途中何度か雑魚触手と遭遇して戦いながら、魔境と化した校内を進む。
+	PRINTFORML すると壁際から「誰か…」という声がしたので振り返ると、
+	LOCAL = RAND:7
+	IF LOCAL == 7
+		PRINT 捕まってしまった自衛隊員らしき女性が
+		LOCALS = 女性
+	ELSEIF LOCAL == 6
+		PRINT 授業参観に来ていた保護者らしき女性が
+		LOCALS = 女性
+	ELSEIF LOCAL == 5
+		PRINT 眼鏡を掛けた教員らしき女性が
+		LOCALS = 女性
+	ELSEIF LOCAL == 4
+		PRINT 凛々しい見た目の教員らしき女性が
+		LOCALS = 女性
+	ELSEIF LOCAL == 3
+		PRINT 地味な見た目の教員らしき女性が
+		LOCALS = 女性
+	ELSEIF LOCAL == 2
+		PRINT 体操服とニーソックス姿の少女が
+		LOCALS = 少女
+	ELSEIF LOCAL == 1
+		PRINT 風紀委員の腕章を付けた制服の少女が
+		LOCALS = 少女
+	ELSE
+		PRINT 派手なアクセサリを付けた金髪の制服少女が
+		LOCALS = 少女
+	ENDIF
+	PRINTFORML 触手に手足を取り込まれて、
+	PRINTFORML まるで磔にされたような状態で犯されていた。
+	LOCAL:1 = RAND:2
+	IF LOCAL:1 == 0
+		IF LOCAL == 7
+			PRINT 迷彩柄のズボンは脱がされ
+		ELSEIF LOCAL == 6 || LOCAL == 5 || LOCAL == 4 || LOCAL == 3
+			PRINT ストッキングを破られて
+		ELSEIF LOCAL == 2
+			PRINT 胸を突き出すような体勢で
+		ELSE
+			PRINT スカートを捲り上げられ
+		ENDIF
+		PRINTFORML 触手が股間に突き立てられ、卑猥な水音を立てている。
+	ELSE
+		PRINTW 
+		PRINTFORML 風船のように膨らんだ腹部がピストンのストロークのたびに揺れ、
+		PRINTFORML 半透明の壺状の触手が両胸の乳房から母乳を搾り取っていた。
+		PRINTW 
+		PRINTFORML おそらく%LOCALS%はもう、妊娠している。
+		PRINTFORML 手遅れという言葉が%PRINT_CALLNAME(TARGET)%の脳裏をよぎったとき、
+		PRINTFORML 虫の息の%LOCALS%と目が合った。
+	ENDIF
+	PRINTW 
+	PRINTFORML %LOCALS%はこちらに気づくと、自分のことはいいから奥にいる生徒たちを助けてくれと懇願してきた。
+	PRINTFORML 恐怖と快楽と苦痛に尊厳を踏みにじられながらも、気丈にも他人の心配をする様が胸を打つ。
+	PRINTFORML 早く…皆を…と声を振り絞った%LOCALS%は、歯を食いしばって凌辱に耐え続けている。
+	PRINTFORML すぐに後続の自衛隊員が駆けつけてくれるだろうが、
+	PRINTFORML このまま放っておいたら%LOCALS%が保たないかもしれない……
+	PRINTW 
+	PRINTL どうする？
+	PRINTFORML 　[0]先を急ぐ　[1]%LOCALS%を助け出す
+	PRINTL 
+	$INPUT_LOOP_2_2
+	INPUT
+	IF RESULT == 0
+		PRINTFORML 今はこの悪夢を早く終わらせることのほうが先決だ。
+		PRINTFORML %PRINT_CALLNAME(TARGET)%は%LOCALS%に謝罪して、先を急いでその場を立ち去った……
+		PRINTW 
+	ELSEIF RESULT == 1
+		IF LOCAL:1 == 0
+			PRINTFORML %PRINT_CALLNAME(TARGET)%は%LOCALS%を凌辱する触手を止めようと掴みかかったが、
+			PRINTFORML ヌメヌメとしていて動きをうまく止められない。
+			PRINTFORML 為すすべなく焦る%PRINT_CALLNAME(TARGET)%の目の前で触手の動きが速くなっていき、
+			PRINTFORML やがて触手は%LOCALS%の胎内に溢れんばかりの白濁液を注ぎ込んだ。
+			PRINTW 
+			PRINTFORML 悪戦苦闘の末に何とか%LOCALS%を助け出すことに成功したものの、
+			PRINTFORML %LOCALS%は既に十数回も中出しされてしまっており、疲れ果てて気絶してしまっていた。
+			PRINTFORML 遅れてやってきた自衛隊の救援部隊に%LOCALS%を預けて先に進む%PRINT_CALLNAME(TARGET)%だったが、
+			IF TALENT:主観視点 > 0
+				PRINTFORML 目の前で繰り広げられた痴態に股間をじわりと濡らしてしまった……
+			ELSE
+				PRINTFORML 目の前で繰り広げられた痴態に股間がじわりと濡れてしまっている……
+			ENDIF
+		ELSE
+			PRINTFORML %PRINT_CALLNAME(TARGET)%は苗床にされた%LOCALS%から触手を引きはがそうとするが、
+			PRINTFORML すでに半ばまで取り込まれてしまっており手の施しようが無かった。
+			PRINTFORML すると次の瞬間、%LOCALS%の様子が急変して叫び始め、
+			PRINTFORML 膨らんだ腹部が不気味に蠢き始めた。
+			PRINTW 
+			PRINTFORML 精液を撒き散らしながら触手がヴァギナから引き抜かれると、
+			PRINTFORML 続いて白濁交じりの大量の羊水と十数匹もの触手の幼生が吹き出した。
+			PRINTFORML 精根尽き果てぐったり項垂れる%LOCALS%の膣口からは無数のへその緒が垂れ下っており、
+			PRINTFORML %PRINT_CALLNAME(TARGET)%は茫然と足元の水たまりに蠢く幼生たちを見つめるしかなかった。
+			PRINTW 
+			PRINTFORML 遅れてやってきた自衛隊の衛生班に%LOCALS%を預けて先に進む%PRINT_CALLNAME(TARGET)%だったが、
+			IF TALENT:主観視点 > 0
+				PRINTFORML 目の前で繰り広げられた異種出産の様子に股間をじわりと濡らしてしまった……
+			ELSE
+				PRINTFORML 目の前で繰り広げられた異種出産の様子に股間がじわりと濡れてしまっている……
+			ENDIF
+		ENDIF
+		PRINTW 
+		LOCAL = MAX(BASE:性耐性 / 4, 20) + RAND:6
+		BASE:性耐性 = MAX(BASE:性耐性 - LOCAL, 0)
+		FLAG:853 += 1
+		PRINTFORML 　人気度が1上昇した！
+		PRINTFORML 　性耐性が{LOCAL}減少した！
+		PRINTW 
+	ELSE
+		GOTO INPUT_LOOP_2_2
+	ENDIF
+	PRINTFORML さらに奥へと進んでいくと、大きく開けた場所に出た。
+	IF RAND:2 == 0
+		PRINTFORML 元は体育館だったであろうその場所には多くの生徒たちが寄り集まっており、
+		PRINTFORML 互いを庇い合って何とか凌いでいるようだ。
+		PRINTFORML まだ無事な者も多いが、雑魚触手に襲われてしまっている少女の姿が目立つ。
+	ELSE
+		PRINTFORML おそらく礼拝堂なのだろうか、
+		PRINTFORML 神聖なステンドグラスやオルガンの周囲に這いまわる異形の触手が冒涜的だ。
+		PRINTFORML 見れば多数の気絶した生徒があちこちに倒れている。
+	ENDIF
+	PRINTW 
+	PRINTFORML 生存者を助けようと%PRINT_CALLNAME(TARGET)%が体育館に踏み込むと、
+	PRINTFORML 目の前に超重量の物体が躍り出てきた。
+	PRINTFORML おそらくコイツが親玉……今回の事件の元凶だろう。
+	PRINTFORML 邪悪な怪物の首魁を前に、%PRINT_CALLNAME(TARGET)%は戦闘態勢を取った！
+	PRINTW 
+ELSEIF FLAG:45 == 3
+	PRINTFORML 
+	PRINTFORML どうする？
+
+	IF LOCAL > 250
+		PRINTFORML 現場に到着した%PRINT_CALLNAME(TARGET)%が見たものは、
+		PRINTFORML いまにも陣形が崩れそうになっている自衛隊員たちと、
+		PRINTFORML 獲物を弄ぶかのように迫る触手生物の姿だった。
+		PRINTL 
+		PRINTFORML 見れば、自衛隊員たちは逃げ遅れた一般人を庇いながら戦っている。
+		PRINTFORML 自らの身を張って市民の盾となる隊員たちを嘲笑うように、
+		PRINTFORML 触手生物は鞭のようにしならせた一撃で彼らを打ち据えようとしている…！
+		PRINTW 
+		PRINTL どうする？
+		PRINTFORML 　[0]正面から立ち塞がる　[1]先制攻撃を仕掛ける
+		PRINTL 
+		$INPUT_LOOP_3_2
+		INPUT
+		IF RESULT == 0
+			IF BASE:防御 > 140 || BASE:攻撃 > 200
+				PRINTFORML ガツン！
+				PRINTFORML 鈍い音が響き渡り、咄嗟に身を竦めた隊員の一人が恐る恐る目を開けると、
+				PRINTFORML そこには触手の攻撃を正面から受け止める%PRINT_CALLNAME(TARGET)%の姿があった！
+				PRINTW 
+				IF RAND:5 == 0
+					PRINTFORML 「…これが…魔法少女……」
+				ELSEIF RAND:4 == 0
+					PRINTFORML 「……遅せーよ、一瞬覚悟決めちまったじゃねーか」
+				ELSEIF RAND:3 == 0
+					PRINTFORML 「来てるれるって、信じてた……」
+				ELSEIF RAND:2 == 0
+					PRINTFORML 「ま…魔法少女…なのか……？」
+				ELSE
+					PRINTFORML 「はは…ははは…ホントに居たんだ……」
+				ENDIF
+				PRINTFORML コンクリートをも砕く触手の一撃を受けて傷一つなく、
+				PRINTFORML 
+				FLAG:853 += 2
+				PRINTFORML 　人気度が2上昇した！
+				PRINTW 
+				PRINTFORML %PRINT_CALLNAME(TARGET)%が声を掛けると、茫然としていた隊員たちは我に返り、
+				PRINTFORML すぐさま退路を確保するべく行動を開始した。
+				PRINTFORML さすがはプロと言うべきか立ち直りが早い。逃げ遅れた一般人は任せてもいいだろう。
+				PRINTW 
+				PRINTFORML さて、後は目の前のデカブツを片づけるだけだが…
+				PRINTW 
+			ELSE
+
+			ENDIF
+		ELSEIF RESULT == 1
+
+		ELSE
+			GOTO INPUT_LOOP_3_2
+		ENDIF
+		PRINTFORML 
+		PRINTFORML 隊員
+	ELSE
+		PRINTFORML 急いで現場に急行した%PRINT_CALLNAME(TARGET)%だったが、
+	ENDIF
+ELSEIF FLAG:45 == 4
+ENDIF
+PRINTFORML （救出イベント中は撤退できません！　２０ターン耐えればミッション成功です！）
+PRINTW 
+DRAWLINE
+CALL ENCOUNT_BOSS
+SIF FLAG:999 == 1
+	PRINTFORMW エンカウント番号 == {RESULT}
+IF RESULT != 1
+	PRINTL 
+	PRINTL #####     ERROR !!     #####
+	PRINTL ボス襲撃イベント不発バグです。原因究明のため、
+	PRINTL 掲示板にできるだけ詳細な発生状況を報告してください
+	PRINTW 
+	PRINTL イベントを強制スキップして無理やりゲームを続行します
+	PRINTW 
+	RETURN
+ELSEIF FLAG:110
+	PRINTL 
+	PRINTL #####     ERROR !!     #####
+	PRINTL FLAG:110TRUEバグです。原因究明のため、
+	PRINTL 掲示板にできるだけ詳細な発生状況を報告してください
+	PRINTW 
+	PRINTL イベントを強制スキップして無理やりゲームを続行します
+	PRINTW 
+	RETURN
+ENDIF
+BEGIN TRAIN
+
+
+
+@RAID_RESCUE_SUCCESS
+PRINTW ・・
+PRINTW ・・・・
+PRINTW ・・・・・・
+PRINTL 
+IF FLAG:45 == 2
+	PRINTFORML %PRINT_CALLNAME(TARGET)%の活躍により、多数の生存者を助け出すことができた。
+	PRINTFORML 多くはまだ年端も行かぬ少女たちであり、
+	PRINTFORML 未来がこんな事件で閉ざされてしまうことなどあってはならないのだ。
+	PRINTW 
+	PRINTFORML 精一杯の感謝の言葉と共に手を振る少女たちに%PRINT_CALLNAME(TARGET)%は頬笑みを返す。
+	PRINTFORML 彼女らが失ったものは大きい。だが、それでもきっと立ち直って強く生きていくだろう。
+	PRINTFORML なぜなら少女たちはきっと、触手と戦う%PRINT_CALLNAME(TARGET)%の姿を一生忘れないだろうから……
+	PRINTW 
+	PRINTFORML 　人気度が3上昇した！
+	PRINTFORML 　報酬として政府から$5000入手した！
+	FLAG:853 += 3
+	MONEY += 5000
+ENDIF
+
+
+@RAID_RESCUE_FAILURE
+PRINTW ・・
+PRINTW ・・・・
+PRINTW ・・・・・・
+PRINTL 
+IF FLAG:45 == 2
+	PRINTFORML %PRINT_CALLNAME(TARGET)%が敗北したことで作戦は失敗し、学校は壊滅した。
+	PRINTFORML いかに特殊装備を身に付けた自衛隊といえども、ボス触手の相手が務まるはずもなく、
+	PRINTFORML 多数の生存者とともに女子高は汚染区域として放棄された……
+	PRINTW 
+	PRINTFORML 　救出ミッションに失敗しました……
+ENDIF
+
+
+
+
+
+

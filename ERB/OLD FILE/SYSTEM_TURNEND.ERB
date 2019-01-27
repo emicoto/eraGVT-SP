@@ -1,0 +1,19 @@
+@EVENTTURNEND
+;クズ市民関係のフラグをリセット
+FLAG:70 = 0
+FLAG:71 = 0
+FLAG:72 = 0
+
+;PALAM最大値をリセット
+VARSET MAX_PALAM
+
+;行動ごとに改行を入れる
+PRINTL 
+PRINTL 
+PRINTL 
+
+;次のキャラを行動させる
+FLAG:799 += 1
+
+BEGIN SHOP
+

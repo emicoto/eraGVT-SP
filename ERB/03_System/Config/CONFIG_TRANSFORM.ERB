@@ -1,0 +1,322 @@
+
+;---------------------------------------------
+;フィルタの処理
+;---------------------------------------------
+@CONFIG_T
+#DIM CCOUNT
+#DIM LCOUNT
+$INPUT_LOOP
+PRINTL 
+DRAWLINE
+PRINT ●
+SETCOLOR 255,200,50
+PRINTL 変身設定
+RESETCOLOR
+PRINTL  グローバル一括設定モードとキャラ個別設定モードがあります
+PRINTL  どちらかを選んで設定してください。
+PRINTL  ここで変身設定を指定しておくことで、
+PRINTL  変身するかどうかの選択肢を省略することができます。
+PRINTL 
+PRINTLC  [0] 一括設定モード
+PRINTLC  [1] キャラ個別設定モード
+PRINTL
+PRINTL
+PRINT  現在の設定：
+SETCOLOR 150,255,255
+ IF GLOBAL:50 == 1
+    PRINTL キャラ個別設定モード
+ ELSEIF GLOBAL:50 == 0
+    PRINTL グローバル一括設定モード
+ ENDIF
+    RESETCOLOR
+
+PRINTL
+DRAWLINE
+PRINTL [666] 戻る
+
+INPUT
+
+IF RESULT == 1
+    CALL CONFIG_CHARATS
+    GOTO INPUT_LOOP
+ELSEIF RESULT == 666
+    RETURN
+ELSEIF RESULT == 0
+    CALL CONFIG_GLOBALTS
+    GOTO INPUT_LOOP
+ELSE
+    GOTO INPUT_LOOP
+ENDIF
+
+RETURN
+
+@CONFIG_CHARATS
+#DIM CCOUNT
+
+DRAWLINE
+PRINTL キャラ個別変身設定モード
+DRAWLINE
+PRINTL
+    $MASTER_LOOP
+    LOCAL = LINECOUNT
+    PRINTL キャラクターの変身設定を行いください
+    PRINTL
+    FOR CCOUNT, 0, CHARANUM
+	     SIF CCOUNT == MASTER
+            CONTINUE
+         SIF TALENT:CCOUNT:変身能力 < 1
+            CONTINUE
+        SETCOLOR 255,255,150
+        PRINT  ★
+        RESETCOLOR
+        PRINTFORML %CALLNAME:CCOUNT% 
+        
+
+        PRINT  　特別活動
+            IF CFLAG:CCOUNT:101 == 1
+               PRINTBUTTON "【変身する】", (200+CCOUNT),
+             ELSEIF CFLAG:CCOUNT:101 == 2
+               PRINTBUTTON "【変身しない】", (200+CCOUNT),
+             ELSEIF CFLAG:CCOUNT:101 == 0
+               PRINTBUTTON "【自由選択】", (200+CCOUNT),
+            ENDIF
+        PRINT
+
+        PRINT 　情報収集
+            IF CFLAG:CCOUNT:102 == 1
+               PRINTBUTTON "【変身する】", (300+CCOUNT),
+             ELSEIF CFLAG:CCOUNT:102 == 2
+               PRINTBUTTON "【変身しない】", (300+CCOUNT),
+             ELSEIF CFLAG:CCOUNT:102 == 0
+               PRINTBUTTON "【自由選択】", (300+CCOUNT),
+            ENDIF
+        PRINT
+		     
+	    PRINT 　息抜き
+            IF CFLAG:CCOUNT:103 == 1
+               PRINTBUTTON "【変身する】", (400+CCOUNT)
+             ELSEIF CFLAG:CCOUNT:103 == 2
+               PRINTBUTTON "【変身しない】", (400+CCOUNT)
+             ELSEIF CFLAG:CCOUNT:103 == 0
+               PRINTBUTTON "【自由選択】", (400+CCOUNT)
+            ENDIF
+        PRINTL
+        PRINTL
+
+
+NEXT
+    PRINTL
+    IF GLOBAL:50 == 0
+    PRINTL [777] 使用するモードに設定する
+    ELSE
+    PRINTL  このモードに設定しています
+    ENDIF
+    PRINTL
+    DRAWLINE
+    PRINTL [999] 戻る
+    $INPUT_LOOP
+    INPUT
+
+    IF RESULT >= 100 && RESULT < 500
+       FOR CCOUNT, 1, CHARANUM
+           SIF CCOUNT == MASTER
+              CONTINUE
+           SIF TALENT:CCOUNT:変身能力 < 1
+              CONTINUE
+            
+            IF RESULT == (200 + CCOUNT) && CFLAG:CCOUNT:101 == 0 && CCOUNT == (RESULT - 200)
+               CFLAG:CCOUNT:101 = 1
+            ELSEIF (200 + CCOUNT) && CFLAG:CCOUNT:101 == 1 && CCOUNT == (RESULT - 200)
+               CFLAG:CCOUNT:101 = 2
+            ELSEIF (200 + CCOUNT) && CFLAG:CCOUNT:101 == 2 && CCOUNT == (RESULT - 200)
+               CFLAG:CCOUNT:101 = 0
+            ENDIF
+
+            IF RESULT == (300 + CCOUNT) && CFLAG:CCOUNT:102 == 0  && CCOUNT == (RESULT - 300)
+               CFLAG:CCOUNT:102 = 1
+            ELSEIF (300 + CCOUNT) && CFLAG:CCOUNT:102 == 1 && CCOUNT == (RESULT - 300)
+               CFLAG:CCOUNT:102 = 2
+            ELSEIF (300 + CCOUNT) && CFLAG:CCOUNT:102 == 2 && CCOUNT == (RESULT - 300)
+               CFLAG:CCOUNT:102 = 0
+            ENDIF
+
+            IF RESULT == (400 + CCOUNT) && CFLAG:CCOUNT:103 == 0 && CCOUNT == (RESULT - 400)
+               CFLAG:CCOUNT:103 = 1
+            ELSEIF (400 + CCOUNT) && CFLAG:CCOUNT:103 == 1 && CCOUNT == (RESULT - 400)
+               CFLAG:CCOUNT:103 = 2
+            ELSEIF (400 + CCOUNT) && CFLAG:CCOUNT:103 == 2 && CCOUNT == (RESULT - 400)
+               CFLAG:CCOUNT:103 = 0
+            ENDIF
+
+        NEXT
+    CLEARLINE LINECOUNT - LOCAL
+    GOTO MASTER_LOOP
+
+    ELSEIF RESULT == 777
+        GLOBAL:50 = 1
+	    SAVEGLOBAL
+       CLEARLINE LINECOUNT - LOCAL
+    GOTO MASTER_LOOP
+
+    ELSEIF RESULT == 999
+    RETURN 
+    ELSE
+    GOTO INPUT_LOOP
+
+    ENDIF
+
+
+
+@CONFIG_GLOBALTS
+;変身設定
+;ビット演算ではなく代入である点に注意
+;特別活動
+;GLOBAL:51 通常
+;GLOBAL:52 女体化する場合
+;GLOBAL:53 男性化する場合
+;情報収集
+;GLOBAL:54 通常
+;GLOBAL:55 女体化する場合
+;GLOBAL:56 男性化する場合
+;息抜き
+;GLOBAL:57 通常
+;GLOBAL:58 女体化する場合
+;GLOBAL:59 男性化する場合
+;0 常に選択する
+;1 通常、変身する
+;2 通常、変身しない
+#DIM CCOUNT
+#DIM LCOUNT
+DRAWLINE
+PRINTL グローバル一括変身設定モード
+DRAWLINE
+PRINTL
+$MASTER_LOOP
+LOCAL = LINECOUNT
+
+    PRINTL 特別活動時の変身設定
+    PRINTL
+    PRINT 　[11]通常の変身の場合　　　　　　    【
+    IF GLOBAL:51 == 1
+    	PRINT 常に変身する
+     ELSEIF GLOBAL:51 == 2
+    	PRINT 常に変身しない
+     ELSE
+    	PRINT 選択肢を表示する
+    ENDIF
+    PRINTL 】
+    PRINT 　[12]変身時に女体化する場合          【
+    IF GLOBAL:52 == 1
+    	PRINT 常に変身する
+     ELSEIF GLOBAL:52== 2
+    	PRINT 常に変身しない
+     ELSE
+    	PRINT 選択肢を表示する
+    ENDIF
+
+    PRINTL 】
+    PRINT 　[13]変身時に男性化する場合          【
+    IF GLOBAL:53 == 1
+    	PRINT 常に変身する
+     ELSEIF GLOBAL:53 == 2
+    	PRINT 常に変身しない
+     ELSE
+    	PRINT 選択肢を表示する
+    ENDIF
+    PRINTL 】
+    PRINTL 
+    PRINTL 情報収集時の変身設定
+    PRINTL
+    PRINT 　[14]通常の変身の場合　　　　　　    【
+    IF GLOBAL:54 == 1
+    	PRINT 常に変身する
+     ELSEIF GLOBAL:54 == 2
+    	PRINT 常に変身しない
+     ELSE
+    	PRINT 選択肢を表示する
+    ENDIF
+    PRINTL 】
+    PRINT 　[15]変身時に女体化する場合          【
+    IF GLOBAL:55 == 1
+    	PRINT 常に変身する
+     ELSEIF GLOBAL:55 == 2
+    	PRINT 常に変身しない
+     ELSE
+    	PRINT 選択肢を表示する
+    ENDIF
+    PRINTL 】
+    PRINT 　[16]変身時に男性化する場合          【
+    IF GLOBAL:56 == 1
+    	PRINT 常に変身する
+     ELSEIF GLOBAL:56 == 2
+    	PRINT 常に変身しない
+     ELSE
+    	PRINT 選択肢を表示する
+    ENDIF
+    PRINTL 】
+    PRINTL 
+    PRINTL 息抜きの変身設定
+    PRINTL
+    PRINT 　[17]通常の変身の場合　　　　　　    【
+    IF GLOBAL:57 == 1
+    	PRINT 常に変身する
+     ELSEIF GLOBAL:57 == 2
+    	PRINT 常に変身しない
+     ELSE
+     	PRINT 選択肢を表示する
+    ENDIF
+    PRINTL 】
+    PRINT 　[18]変身時に女体化する場合          【
+    IF GLOBAL:58 == 1
+    	PRINT 常に変身する
+     ELSEIF GLOBAL:58 == 2
+    	PRINT 常に変身しない
+     ELSE
+    	PRINT 選択肢を表示する
+    ENDIF
+
+    PRINTL 】
+    PRINT 　[19]変身時に男性化する場合          【
+
+    IF GLOBAL:59 == 1
+    	PRINT 常に変身する
+     ELSEIF GLOBAL:59 == 2
+    	PRINT 常に変身しない
+     ELSE
+    	PRINT 選択肢を表示する
+    ENDIF
+    PRINTL 】
+    PRINTL 
+    IF GLOBAL:50 == 1
+    PRINTL  [200] 使用するモードに設定する
+    ELSE
+    PRINTL  このモードに設定しています
+    ENDIF
+    PRINTL
+    DRAWLINE
+    PRINTL [201]戻る
+    PRINTL 
+    $INPUT_LOOP
+    INPUT
+    IF RESULT > 10 && RESULT < 20
+
+    	IF GLOBAL:(RESULT + 40) == 1
+    		GLOBAL:(RESULT + 40) = 2
+    	ELSEIF GLOBAL:(RESULT + 40) == 2
+    		GLOBAL:(RESULT + 40) = 0
+    	ELSE
+    		GLOBAL:(RESULT + 40) = 1
+    	ENDIF
+      SAVEGLOBAL
+    	CLEARLINE LINECOUNT - LOCAL
+    	GOTO MASTER_LOOP
+     ELSEIF RESULT == 200
+       GLOBAL:50 = 0
+	    SAVEGLOBAL
+       CLEARLINE LINECOUNT - LOCAL
+    	GOTO MASTER_LOOP
+     ELSEIF RESULT == 201
+       RETURN
+     ELSE
+       GOTO INPUT_LOOP
+	ENDIF

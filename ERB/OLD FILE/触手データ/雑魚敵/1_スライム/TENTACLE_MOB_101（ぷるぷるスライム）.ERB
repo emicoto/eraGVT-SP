@@ -1,0 +1,479 @@
+;==================================================
+;【基本】
+;--------------------------------------------------
+;雑魚敵
+;↓触手の存在確認用関数　何も処理しない
+@TENTACLE_MOB_101
+;--------------------------------------------------
+;名前
+@TENTACLE_MOB_101_GETNAME
+RESULTS = ぷるぷるスライム
+
+;--------------------------------------------------
+;解説
+@TENTACLE_MOB_101_DEFENITION
+PRINTFORML （あまり変形しない固体スライム生物）
+PRINTFORML （見た目が可愛いので騙されて近づくと酷い目に遭う）
+PRINTFORML （ぶにゅぶにゅと弾力があり、表面はひんやりしている）
+
+
+;==================================================
+;【ステータス】
+;--------------------------------------------------
+;HP
+@TENTACLE_MOB_101_HP
+LOCAL = 1000
+CALL TENTACLE_STATUS_HOSEI, LOCAL, 500
+RETURN RESULT
+
+;--------------------------------------------------
+;射精限界値
+@TENTACLE_MOB_101_SYASEI
+CALL TENTACLE_LEVEL
+LOCAL = 480 + RESULT * 5
+RETURN LOCAL
+
+;--------------------------------------------------
+;搾精ダメージ補正
+@TENTACLE_MOB_101_SAKUSEI
+LOCAL = 200
+RETURN LOCAL
+
+;--------------------------------------------------
+;油断度閾値
+@TENTACLE_MOB_101_YUDAN
+LOCAL = 500
+RETURN LOCAL
+
+;--------------------------------------------------
+;攻撃
+@TENTACLE_MOB_101_KOUGEKI
+LOCAL = 100
+CALL TENTACLE_STATUS_HOSEI, LOCAL
+RETURN RESULT
+
+;--------------------------------------------------
+;防御
+@TENTACLE_MOB_101_BOUGYO
+LOCAL = 200
+CALL TENTACLE_STATUS_HOSEI, LOCAL
+RETURN RESULT
+
+;--------------------------------------------------
+;敏捷
+@TENTACLE_MOB_101_BINSYOU
+LOCAL = 50
+CALL TENTACLE_STATUS_HOSEI, LOCAL
+RETURN RESULT
+
+;--------------------------------------------------
+;知性
+@TENTACLE_MOB_101_CHISEI
+LOCAL = 50
+CALL TENTACLE_STATUS_HOSEI, LOCAL,10
+RETURN RESULT
+
+;--------------------------------------------------
+;近距離
+@TENTACLE_MOB_101_SHORT
+RESULT = 150
+RETURN RESULT
+
+;--------------------------------------------------
+;中距離
+@TENTACLE_MOB_101_MIDDLE
+RESULT = 150
+RETURN RESULT
+
+;--------------------------------------------------
+;遠距離
+@TENTACLE_MOB_101_LONG
+RESULT = 150
+RETURN RESULT
+
+;--------------------------------------------------
+;拘束力
+@TENTACLE_MOB_101_HOLD
+RESULT = 150
+RETURN RESULT
+
+;--------------------------------------------------
+;PALAM補正 百分率で返す
+@TENTACLE_MOB_101_PALAM_HOSEI
+;快C
+LOCAL:0 = 100
+;快V
+LOCAL:1 = 100
+;快A
+LOCAL:2 = 100
+;快B
+LOCAL:3 = 100
+;潤滑
+LOCAL:4 = 50
+;恭順
+LOCAL:5 = 50
+;取得
+LOCAL:6 = 50
+;欲情
+LOCAL:7 = 50
+;屈服
+LOCAL:8 = 50
+;恥辱
+LOCAL:9 = 50
+;苦痛
+LOCAL:10 = 50
+;恐怖
+LOCAL:11 = 50
+
+RETURN LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11
+
+;==================================================
+;【専用ルーチン（戦闘）】
+;--------------------------------------------------
+@TENTACLE_MOB_101_ATTACK_ROUTINE
+LOCAL = RAND:100
+IF LOCAL < 45
+	RETURN 2
+ELSE
+	RETURN 0
+ENDIF
+
+
+;==================================================
+;【専用ルーチン（性行為）】
+;--------------------------------------------------
+@TENTACLE_MOB_101_SEX_ROUTINE
+LOCAL = RAND:100
+
+;触手バランスボール Ｖ挿入
+IF LOCAL < 5 || (TFLAG:20 == 2 && LOCAL < 90)
+	IF CLOTH_OUTER_PER > 90 || CLOTH_INNER_PER > CLOTH_INNER_DEF
+		RETURN 14
+	ELSE
+		IF TALENT:オトコ > 0
+			RETURN 1
+		ELSE
+			RETURN 3
+		ENDIF
+	ENDIF
+
+;触手バランスボール Ｖブラッシング
+ELSEIF LOCAL < 40 && TALENT:オトコ <= 0
+	RETURN 2
+
+;触手バランスボール弱
+ELSE
+	RETURN 0
+ENDIF
+RETURN 1
+
+;==================================================
+;【性コマンドレファレンス】
+;--------------------------------------------------
+;ARG=1　素股焦らし成功時の行動指定
+;ARG=2　素股焦らし失敗時の行動指定
+;ARG=3　フェラチオ誘発時の行動指定
+@TENTACLE_MOB_101_REACTION_REF, ARG = 0
+;挿入系コマンドがルーチンに無いので-1を返す
+IF ARG == 1
+	RETURN 3
+ELSEIF ARG == 2
+	RETURN 3
+ENDIF
+RETURN -1
+
+
+;==================================================
+;【コマンド使用時の描写】
+;--------------------------------------------------
+;触手バランスボール　繊毛
+
+;性コマンド分類
+@SEX_TYPE_MOB_101_COM0
+RETURN 通常
+
+@MESSAGE_MOB_101_COM0, ARG:0, ARG:1
+FONTBOLD
+PRINT 触手バランスボール 繊毛
+FONTREGULAR
+CALL MESSAGE_SEX_STATE, ARG:0, ARG:1, Ｃ
+PRINTL 
+IF  TFLAG:20 == 3
+	CALL TENTACLE_ACCESS, "NAME"
+	PRINTFORM は、太い触手を解き繊毛の様な触手へと変え、
+	PRINTFORML その身を大きく震わせた！
+	PRINTL 
+ELSEIF  TFLAG:20 == 2
+	CALL TENTACLE_ACCESS, "NAME"
+	PRINTFORM は、ブラシ触手が分かれ繊毛の様な触手へと変え、
+	PRINTFORML その身を大きく震わせた！
+	PRINTL 
+ELSEIF TFLAG:20 == 0
+	CALL TENTACLE_ACCESS, "NAME"
+	PRINTFORM は、その身を大きく震わせている！
+	PRINTL 
+ENDIF
+
+IF TFLAG:20 == 0 || TFLAG:20 == 2 || TFLAG:20 == 3
+	PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%
+	SIF TFLAG:20 == 0
+		PRINTFORML は落ちた腰を上げることができずにいる。
+	SIF TFLAG:20 == 2
+		PRINTFORML は先程の触手ブラシによるマッサージで腰に力が入らなかった。
+	SIF TFLAG:20 == 3
+		PRINTFORML の責め苦に晒された体は、抗うことが出来なかった。
+ELSE
+	PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%は跨がっている
+	CALL TENTACLE_ACCESS, "NAME"
+	PRINTFORML の刺激を腰を浮かせることで回避しようとした。
+	PRINTFORML しかし、にゅるりと触手が伸びて%PRINT_TRANSCALLNAME(TARGET)%を逃さない。
+ENDIF
+PRINTL 
+PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の恥丘にピッタリと張り付いた繊毛状の触手に、
+PRINTFORML クリトリスを磨かれた%PRINT_TRANSCALLNAME(TARGET)%は、その身を悶えさせるのであった・・・
+PRINTW 
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEX_COM0")
+PRINTL 
+;動画撮影フラグの処理
+IF FLAG:71
+	;愛撫されたところを見られた
+	SIF (ARG & Ｃ) || (ARG & Ｖ) || (ARG & Ａ) || (ARG & Ｂ)
+		SETBIT TFLAG:21,1
+ENDIF
+@SEXCOM_OPTION_MOB_101_COM0
+;追加攻め部位指定
+RETURN 7
+
+
+
+;--------------------------------------------------
+;触手バランスボール　Ｖブラッシング
+
+;性コマンド分類
+@SEX_TYPE_MOB_101_COM2
+RETURN 通常
+
+@MESSAGE_MOB_101_COM2, ARG:0, ARG:1
+FONTBOLD
+PRINT 触手バランスボール Ｖブラッシング
+FONTREGULAR
+CALL MESSAGE_SEX_STATE, ARG:0, ARG:1, Ｖ
+PRINTL 
+CALL TENTACLE_ACCESS, "NAME"
+PRINTFORML は、小さな触手が並ぶシャンプーブラシの様な形を作り始め、
+PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の恥丘にピッタリと触手ブラシを押し当てた！
+PRINTL 
+IF (ARG & Ｖ) == 0
+	PRINTFORM しかし、触手は結界に阻まれて直接触れることができなかった
+ELSE
+	CALL TENTACLE_ACCESS, "NAME"
+	PRINTFORML は、%PRINT_TRANSCALLNAME(TARGET)%を乗せたまま、
+	PRINTFORML ウネウネと触手を動かしながら、体を揺らし始めた！
+	PRINTFORML 
+	PRINTFORM %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%は
+	IF TALENT:触手の虜
+		PRINTFORM 触手のマッサージに幸福そうな表情を浮かべている
+	ELSEIF ABL:欲望 >= 3
+		PRINTFORM 強い快楽にだらしなく表情を弛緩させている
+	ELSEIF (TCVAR:12 & 気絶)
+		PRINTFORM 敏感なところに強く刺激され、意識がないまま悶絶している
+	ELSE
+		PRINTFORM 嫌悪感から
+		CALL TENTACLE_ACCESS, "NAME"
+		PRINTFORML を両手で掴んで引き離そうとするが、
+		PRINTFORM 返って強く押し付けられて余計に悶絶している
+	ENDIF
+ENDIF
+PRINTFORML ・・・
+PRINTW 
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEX_COM1")
+PRINTL 
+;動画撮影フラグの処理
+IF FLAG:71
+	;愛撫されたところを見られた
+	SIF (ARG & Ｃ) || (ARG & Ｖ)
+		SETBIT TFLAG:21,1
+ENDIF
+@SEXCOM_OPTION_MOB_101_COM2
+;追加攻め部位指定
+RETURN 1
+
+
+
+;--------------------------------------------------
+;触手バランスボール　Ｖ挿入
+
+;性コマンド分類
+@SEX_TYPE_MOB_101_COM3
+RETURN 挿入
+
+@MESSAGE_MOB_101_COM3, ARG:0, ARG:1
+FONTBOLD
+PRINTL 触手バランスボール Ｖ挿入
+FONTREGULAR
+IF TFLAG:20 == 0
+	CALL TENTACLE_ACCESS, "NAME"
+	PRINTFORML は、繊毛の中から太い触手を伸ばし始めた！
+	PRINTL 
+ELSEIF TFLAG:20 == 2
+	CALL TENTACLE_ACCESS, "NAME"
+	PRINTFORML は、小さな触手をまとめて太い触手を%PRINT_TRANSCALLNAME(TARGET)%へと伸ばした！
+	PRINTL 
+ELSEIF TFLAG:20 == 3
+	CALL TENTACLE_ACCESS, "NAME"
+	PRINTFORML は、太い触手で%PRINT_TRANSCALLNAME(TARGET)%を陵辱し続けている！
+	PRINTL 
+ENDIF
+
+IF (ARG & Ｖ) == 0
+	CALL TENTACLE_ACCESS, "NAME"
+	PRINTFORML は、開脚された%PRINT_TRANSCALLNAME(TARGET)%のヴァギナを貫こうとしたが、
+	PRINTFORM 結界に阻まれて触れることができなかった
+
+ELSEIF TCVAR:2 == 体勢：Ｖ防御
+	CALL TENTACLE_ACCESS, "NAME"
+	PRINTFORML は、開脚された%PRINT_TRANSCALLNAME(TARGET)%のヴァギナを貫こうとしたが、
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%が両手を使って挿入を防いだため、
+	PRINTFORM うまく行かなかったようだ
+
+ELSEIF TALENT:処女 > 0
+	LOCAL:10 = 10000
+	CALL LOSTVIRGIN
+	PRINTFORML 
+	CALL TENTACLE_ACCESS, "NAME"
+	PRINTFORM の太い触手で
+	PRINTFORML %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の処女は貫かれてしまった。
+	PRINTFORML 巨大な触手ボールが動くたびに、%PRINT_TRANSCALLNAME(TARGET)%の身体は無残にも蹂躙される。
+	PRINTL
+	PRINTW
+	PRINTFORML %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%は、縦横無尽の揺さぶりに必死に抵抗を続けるうちに、
+	PRINTFORML 身体は重心でバランスを取ることを覚えた。
+	PRINTFORML 下からうちつける触手の塊を、まるで馬のように乗りこなす。
+	PRINTFORM いつの間にか、%PRINT_TRANSCALLNAME(TARGET)%はそんなことを覚えてしまった。
+	PRINTW
+ELSE
+	CALL TENTACLE_ACCESS, "NAME"
+	PRINTFORML は%PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%の膣へ潜り込んで来た。
+	PRINTFORML 巨大な触手ボールが動くたびに、%PRINT_TRANSCALLNAME(TARGET)%の身体は犯される。
+	PRINTFORML %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%は、縦横無尽の揺さぶり下からうちつける触手の塊を、
+	PRINTFORML まるで馬のように乗りこなす。
+	PRINTFORM しかし、そんな抵抗も虚しく
+	CALL TENTACLE_ACCESS, "NAME"
+	PRINTFORML の動きは止まることはなく、
+	PRINTFORM %PRINT_SWOON()%%PRINT_TRANSCALLNAME(TARGET)%に快楽の波は押し寄せ、嬌声を上げ続けた
+ENDIF
+
+PRINTFORML ・・・
+PRINTW 
+;口上
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEX_COM3")
+PRINTL 
+;動画撮影フラグの処理
+IF FLAG:71
+	;愛撫されたところを見られた
+	SIF (ARG & Ｂ)
+		SETBIT TFLAG:21,1
+ENDIF
+
+
+
+;==================================================
+;【衣装を破く】
+;--------------------------------------------------
+;性コマンド分類
+@SEX_TYPE_MOB_101_COM14
+RETURN 通常
+
+@MESSAGE_MOB_101_COM14, ARG:0, ARG:1
+FONTBOLD
+PRINTL 衣装を破く
+FONTREGULAR
+CALL TENTACLE_ACCESS, "NAME"
+IF RAND:2 == 0
+	PRINTFORML は体の表面から濁った色の粘液を滲み出した！
+	PRINTFORML 異臭のする粘液が%PRINT_TRANSCALLNAME(TARGET)%の体に付着し、
+	PRINTFORML 衣装がみるみる溶かされていく・・・
+	PRINTL 
+	;口上
+	TRYCALLFORM KOJO_{CFLAG:6}_SEX_COM14
+	PRINTL 
+	;状態異常：べとべと
+	CALL STATE_CHANGE_BETOBETO, 15
+ELSE
+	PRINTFORML は%PRINT_TRANSCALLNAME(TARGET)%の小さな触手を伸ばし激しく蠢いている！
+	PRINTFORML もみくちゃにされた%PRINT_TRANSCALLNAME(TARGET)%の衣装が引き裂かれていく・・・
+	PRINTL 
+	;口上
+	TRYCALLFORM KOJO_{CFLAG:6}_SEX_COM14
+	PRINTL 
+ENDIF
+
+
+;==================================================
+;【絡みつく】
+;--------------------------------------------------
+@MESSAGE_BATTLE_MOB_101_KARAMITUKU
+PRINT 可愛らしい見た目のスライム
+IF TFLAG:12 == 3
+	PRINTFORM が、%PRINT_TRANSCALLNAME(TARGET)%の太ももに向かって絡みついてきた！
+ELSEIF RAND:2 == 0
+	PRINTFORM が地面から跳ねて、%PRINT_TRANSCALLNAME(TARGET)%の脚元から絡みついてきた！
+ELSE
+	PRINTFORM が勢い良く飛びかかり、%PRINT_TRANSCALLNAME(TARGET)%の両足にトリモチのように絡みついた！
+ENDIF
+PRINT （
+IF TFLAG:11 & 1
+	PRINT 近
+ELSE
+	PRINT 　
+ENDIF
+IF TFLAG:11 & 2
+	PRINT 中
+ELSE
+	PRINT 　
+ENDIF
+IF TFLAG:11 & 4
+	PRINT 遠
+ELSE
+	PRINT 　
+ENDIF
+PRINTL ）
+
+
+;==================================================
+;【絡みつく成功】
+;--------------------------------------------------
+@MESSAGE_BATTLE_MOB_101_KARAMITUKU_SUCCESS
+PRINTFORML 避けきれなかった%PRINT_TRANSCALLNAME(TARGET)%は両足に絡みつかれて拘束されてしまった。
+CALL TENTACLE_ACCESS, "NAME"
+PRINTFORML はその体をみるみる膨らませて、拘束された%PRINT_TRANSCALLNAME(TARGET)%の足をM字に広げてみせた。
+
+;=====パンツを見せるor秘所を開帳するかなど=====
+;触手拘束具を装着していた場合
+IF CFLAG:42 == 400
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は、蠢く触手拘束具を衆目にさらされてしまった……
+	PRINTFORML 触手拘束具は、恥辱に濡れる%PRINT_TRANSCALLNAME(TARGET)%の愛液を啜って喜びに身を震わせている。
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は、触手拘束具による辱めに耐えるしかなかった……
+;インナーが破壊されきっていない場合		
+ELSEIF TCVAR:25 > 0
+	SIF TCVAR:25 == TCVAR:24
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は、綺麗な%ITEMNAME:(CFLAG:42)%を衆目にさらされてしまった…
+	SIF TCVAR:25 < TCVAR:24
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は、破かれた%ITEMNAME:(CFLAG:42)%を衆目にさらされてしまった…
+ELSE
+	PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%は、
+	SIF TALENT:パイパン == 1
+		PRINTFORM 毛も生えてない
+	PRINTFORML アソコを衆目にさらされてしまった…
+ENDIF
+
+
+;=====拘束された結果=====
+CALL TENTACLE_ACCESS, "NAME"
+PRINTFORML が膨らみ終えると、%PRINT_TRANSCALLNAME(TARGET)%は
+PRINTFORML 半透明の大玉に跨がったような形で両足を拘束されていた…
+PRINTL 
+
+

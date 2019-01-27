@@ -1,0 +1,129 @@
+
+;--------------------------------------------------
+@MESSAGE_SEX_STATE, ARG:0, ARG:1, ARG:2
+;ARG:0	責め部位
+;	1：Ｃ　2：Ｖ　4：Ａ　8：Ｂ
+;ARG:1	部位結界
+;ARG:2	コマンド自体の責め部位
+
+IF ARG:0 || ARG:1
+	PRINT  （
+	IF ARG:0 & Ｃ || ARG:1 & Ｃ
+		SIF ARG:1 & Ｃ
+			SETCOLOR 96, 96, 96
+		PRINT Ｃ
+		RESETCOLOR
+	ENDIF
+
+	IF ARG:0 & Ｖ || ARG:1 & Ｖ
+		SIF ARG:1 & Ｖ
+			SETCOLOR 96, 96, 96
+		PRINT Ｖ
+		RESETCOLOR
+	ENDIF
+
+	IF ARG:0 & Ａ || ARG:1 & Ａ
+		SIF ARG:1 & Ａ
+			SETCOLOR 96, 96, 96
+		PRINT Ａ
+		RESETCOLOR
+	ENDIF
+
+	IF ARG:0 & Ｂ || ARG:1 & Ｂ
+		SIF ARG:1 & Ｂ
+			SETCOLOR 96, 96, 96
+		PRINT Ｂ
+		RESETCOLOR
+	ENDIF
+
+	PRINT ）
+ENDIF
+
+;結界の状態
+;ARG	部位
+@MESSAGE_SHIELD_STATE, ARG
+
+IF BASE:(ARG + 30) <= 0
+	RESULT = - 1
+ELSE
+	CALL PERCENT_CAL, BASE:(ARG + 30), MAXBASE:(ARG + 30)
+ENDIF
+
+IF RESULT <= 0
+	IF RAND:3 == 0
+		PRINTFORML ついに%TALENTNAME:(ARG + 190)%は完全に力を失い、消え去ってしまった！
+	ELSEIF RAND:2 == 0
+		PRINTFORML 完全に力を失った%TALENTNAME:(ARG + 190)%にヒビが入り、粉々に砕けてしまった！
+	ELSE
+		PRINTFORML %TALENTNAME:(ARG + 190)%は完全に力を失い、触手に引き裂かれてしまった！
+	ENDIF
+	IF FLAG:700 || CFLAG:0 != 0
+		SIF ARG == 0
+			PRINT 無防備な陰核
+		SIF ARG == 1
+			PRINT 無防備にひくつく秘所
+		SIF ARG == 2
+			PRINT キュッと引き締まった菊門
+		SIF ARG == 3
+			PRINT ツンと天を衝く乳首
+		PRINTFORML が触手の眼前にさらされてしまっている・・・
+	ENDIF
+	PRINTL 
+ELSEIF RESULT <= 25
+	PRINTFORML 今にも破られそうな%TALENTNAME:(ARG:0 + 190)%が、かろうじて触手の動きを止めている・・・
+	PRINTL 
+ELSEIF RESULT <= 50
+	PRINTFORML 未だ触手の跳梁を許さない%TALENTNAME:(ARG:0 + 190)%ではあるが、もうあまり保ちそうにない・・・
+	PRINTL 
+ELSEIF RESULT <= 75
+	PRINTFORML %TALENTNAME:(ARG:0 + 190)%は、依然として触手の侵入を拒んでいる！
+	PRINTL 
+ELSE
+	PRINTFORML 淡く輝きを放つ%TALENTNAME:(ARG:0 + 190)%が、力強く触手の侵入を阻んだ！
+	PRINTL 
+ENDIF
+
+;--------------------------------------------------
+;COMEX：追加責め
+@MESSAGE_SEX_COMEX, ARG:0, ARG:1
+;ARG:0	責め部位
+;	1：Ｃ　2：Ｖ　4：Ａ　8：Ｂ
+;ARG:1	コマンド自体の責め部位
+;	1：Ｃ　2：Ｖ　3：Ａ　4：Ｂ
+
+;Ｃ責めコマンドかつＣ責めのみ
+SIF ARG:1 == 1 && (ARG:0 & 14) == 0
+	RETURN 0
+
+;Ｖ責めコマンドかつＶ責めのみ
+SIF ARG:1 == 2 && (ARG:0 & 13) == 0
+	RETURN 0
+
+;Ａ責めコマンドかつＡ責めのみ
+SIF ARG:1 == 3 && (ARG:0 & 11) == 0
+	RETURN 0
+
+;Ｂ責めコマンドかつＢ責めのみ
+SIF ARG:1 == 4 && (ARG:0 & 7) == 0
+	RETURN 0
+
+;追加責めなし
+SIF ARG:0 == 0
+	RETURN 0
+
+IF RAND:3 == 0
+	PRINT 更に
+ELSEIF RAND:2 == 0
+	PRINT それだけでなく
+ELSE
+	PRINT 追い打ちをかけるように
+ENDIF
+
+SIF ARG:0 & 1 && ARG:1 != 1
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の\@TALENT:オトコ > 0 ? ペニス # クリトリス \@を撫で上げた
+SIF ARG:0 & 2 && ARG:1 != 2
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の膣口を浅くかき回した
+SIF ARG:0 & 4 && ARG:1 != 3
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%のアナルの周りを撫で回した
+SIF ARG:0 & 8 && ARG:1 != 4
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の胸を揉みしだいた

@@ -1,0 +1,104 @@
+;**********************************************************
+;休憩に関する処理
+@REST
+;体力,気力,性耐性回復
+;基本30%回復する、施設レベルに応じて増加
+
+IF FLAG:51 == 1
+	LOCAL:1 = 30
+ELSEIF FLAG:51 == 2
+	LOCAL:1 = 40
+ELSEIF FLAG:51 == 3
+	LOCAL:1 = 50
+ELSEIF FLAG:51 == 4
+	LOCAL:1 = 60
+ELSEIF FLAG:51 == 5
+	LOCAL:1 = 75
+ENDIF
+IF TALENT:回復早い > 0
+	LOCAL:1 += 5
+ELSEIF TALENT:回復遅い > 0
+	LOCAL:1 -= 5
+ENDIF
+;FEAT効果による回復量補正
+IF TALENT:魔力貯蔵 > 0
+	LOCAL:1 -= 5
+	SIF FLAG:51 >= 4
+		LOCAL:1 -= 5
+	SIF FLAG:51 >= 5
+		LOCAL:1 -= 5
+ENDIF
+IF TALENT:不老長寿 > 0
+	LOCAL:1 -= 5
+	SIF FLAG:51 >= 3
+		LOCAL:1 -= 5
+	SIF FLAG:51 >= 4
+		LOCAL:1 -= 5
+	SIF FLAG:51 >= 5
+		LOCAL:1 -= 5
+ENDIF
+SIF TALENT:溢れる生命力 > 0
+	LOCAL:1 += 10
+LOCAL = MAXBASE:体力 * LOCAL:1 / 100 + 200
+BASE:体力 = LIMIT(LOCAL + BASE:体力, 0, MAXBASE:体力)
+
+LOCAL = MAXBASE:気力 * LOCAL:1 / 100 + 200
+BASE:気力 = LIMIT(LOCAL + BASE:気力, 0, MAXBASE:気力)
+
+BASE:性耐性 = MAXBASE:性耐性
+
+IF CFLAG:0 != -1
+	IF CFLAG:999 != 0
+		PRINTFORML %CALLNAME:TARGET%は休憩しています…
+
+		;口上
+		TRYCALLFORM KOJO_ROOT(CFLAG:6, "REST")
+	ENDIF
+
+	;疲労の回復
+	IF CFLAG:99 > 0
+		CFLAG:99 -= 2
+		SIF (FLAG:53 & シャワー設備)
+			CFLAG:99 -= RAND:2
+		SIF (FLAG:53 & 大浴場)
+			CFLAG:99 -= RAND:2 + 1
+		SIF (FLAG:53 & 美容温泉)
+			CFLAG:99 -= 1
+		SIF (FLAG:53 & ビューティサロン)
+			CFLAG:99 -= 2
+
+		IF TIME == 1 || TALENT:夜魔の貴族 > 0
+			CFLAG:99 -= 4
+			SIF (FLAG:53 & 上質なベッド)
+				CFLAG:99 -= 2
+			SIF (FLAG:53 & 最高級ベッド)
+				CFLAG:99 -= 2
+		ELSE
+			CFLAG:99 -= 2
+			SIF (FLAG:53 & ゲームコーナー)
+				CFLAG:99 -= 2
+		ENDIF
+		SIF CFLAG:99 < 0
+			CFLAG:99 = 0
+		IF CFLAG:999 != 0
+			IF CFLAG:99 == 0
+				PRINTFORML %CALLNAME:TARGET%の身体から疲労が完全に抜けた！
+			ELSE
+				PRINTFORML %CALLNAME:TARGET%の身体から疲労が少し抜けた…
+			ENDIF
+		ENDIF
+	ENDIF
+
+	IF CFLAG:999 != 0
+		PRINTL 
+		SIF BASE:体力 == MAXBASE:体力 && BASE:気力 == MAXBASE:気力 && CFLAG:99 == 0
+			PRINTFORML %CALLNAME:TARGET%は最大まで回復した！
+
+		IF CONFIG_CHECK_SCREEN_F(3) == 0
+			PRINTW 
+		ELSE
+			PRINTL 
+		ENDIF
+	ENDIF
+ENDIF
+

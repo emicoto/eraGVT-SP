@@ -1,0 +1,99 @@
+;----------------------
+;初期メンバーの設定の改造
+;----------------------
+
+@CHARA_MAKE_DEFAULT_KAI
+#DIMS FSET_NAME
+PRINTL 
+$INPUT_LOOP_0
+PRINTL ロードする初期セットを選んでください
+FOR COUNT, 0, 99
+	TRYCALLFORM SHOKISET_NAME_{COUNT}
+NEXT
+PRINTL [99]戻る
+INPUT
+
+IF RESULT >= 0 && RESULT < 99
+	LOCAL:1 = RESULT
+	TRYCCALLFORM SHOKISET_SETUMEI_{LOCAL:1}
+		PRINTL よろしいですか？
+		PRINTL [0]いいえ
+		PRINTL [1]はい
+		$INPUT_LOOP_1
+		INPUT
+		IF RESULT < 0 || RESULT > 1
+			GOTO INPUT_LOOP_1
+		ELSEIF RESULT == 0
+			GOTO INPUT_LOOP_0
+		ELSEIF RESULT == 1
+			CALLFORM SHOKISET_SELECT_{LOCAL:1}
+		ENDIF
+	CATCH
+		GOTO INPUT_LOOP_0
+	ENDCATCH
+ELSEIF RESULT == 99
+	RETURN -1
+ELSE
+	GOTO INPUT_LOOP_0
+ENDIF
+
+;キャラクターCSV未定義値の一括設定処理
+CALL SHOKISET_CSVFIX
+
+
+;-------------------------------
+;グループの選択-CSV読み出し
+;-------------------------------
+@GROUP_SELECT_CSV
+#DIM LCOUNT
+#DIM NUM
+LCOUNT = 0;RESULTの保存用
+NUM = 1;人数の記録用
+
+PRINTL 読み出したいキャラのCSV番号を入力してください
+
+;1人決定するごとにNUMに加算、NUMが3を超えたら終了
+WHILE NUM <= 3
+	PRINTFORML {NUM}人目のキャラ番号を入力してください
+	PRINTL [999] CSV番号リスト
+	INPUT
+	LCOUNT = RESULT
+	IF LCOUNT == 999
+		REPEAT 999
+			EXISTCSV COUNT
+			IF RESULT == 1
+				PRINTFORML {COUNT},%CSVNAME(COUNT,0)%
+			ENDIF
+		REND
+		PRINTW
+	ELSE
+		EXISTCSV LCOUNT
+		;1が帰ってきたらキャラが定義されているので決定
+		IF RESULT == 1
+			PRINTFORML {NUM}人目のキャラを「%CSVNAME(LCOUNT,0)%」に設定しました
+			ADDCHARA LCOUNT
+			FLAG:8 ++
+			IF NO:NUM < 300
+				NO:NUM = 0
+			ENDIF
+			NUM += 1
+			PRINTL
+		ELSE
+			PRINTFORML {LCOUNT}番のキャラは登録されていません
+		ENDIF
+	ENDIF
+WEND
+
+
+;キャラクターCSV未定義値の一括設定処理を行う関数
+;-------------------------------
+;キャラクターCSV未定義値の一括設定
+;-------------------------------
+@SHOKISET_CSVFIX
+#DIM CCOUNT
+FOR CCOUNT, 0, CHARANUM
+	SIF CCOUNT == MASTER
+		CONTINUE
+	CALL FIRSTSETTING_CHARA_CSVFIX, CCOUNT
+NEXT
+

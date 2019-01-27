@@ -1,0 +1,103 @@
+;引き剥がす
+@COM40
+
+;刻印による行動制限判定　１で行動できない
+CALL ACT_LIMIT
+SIF RESULT == 1
+	RETURN 1
+
+;距離表示
+CALL PRINT_DISTANCE
+PRINTL 
+
+;地の文：引き剥がす
+CALL MESSAGE_BATTLE_CHARA_HIKIHAGASU
+
+;成功率計算
+CALL COM40_HANTEI
+LOCAL = RESULT
+
+;成功判定
+;Ａ触手は強制失敗
+IF FLAG:10 == 0 && FLAG:11 == 3
+;成功
+ELSEIF RAND:100 < LOCAL
+	;ボスの体勢が崩れる
+	TFLAG:1 = 1
+	SIF (TCVAR:12 & 強拘束)
+		TCVAR:12 -= 強拘束
+ENDIF
+
+IF TFLAG:1 == 1
+	;地の文：引き剥がす成功
+	CALL MESSAGE_BATTLE_CHARA_HIKIHAGASU_SUCCESS
+	;地の文：洗脳/悪堕ちキャラが操作キャラの引き剥がされた
+	SIF FLAG:110 == 1
+		CALL MESSAGE_OTHER_BATTLE_CHARA_HIKIHAGASU_SUCCESS
+ELSE
+	;地の文：引き剥がす失敗
+	CALL MESSAGE_BATTLE_CHARA_HIKIHAGASU_FALSE
+	;地の文：洗脳/悪堕ちキャラが操作キャラの引き剥がしを阻止した
+	SIF FLAG:110 == 1
+		CALL MESSAGE_OTHER_BATTLE_CHARA_HIKIHAGASU_FALSE
+ENDIF
+;行動ポイントを+1
+EX:行動ポイント += 1
+
+RETURN 1
+
+
+;成功率の算出
+@COM40_HANTEI
+VARSET LOCAL
+
+;キャラの体力＋気力の残量求める
+LOCAL:0 = PERCENT_CAL_F(BASE:体力 * 2 + BASE:気力, MAXBASE:体力 * 2 + MAXBASE:気力)
+;消耗度の最低値は防御力依存
+SIF LOCAL:0 < MIN(SQRT(MAX(BASE:防御 - 100, 0)) * 8, 75)
+	LOCAL:0 = MIN(SQRT(MAX(BASE:防御 - 100, 0)) * 8, 75)
+;麻痺で残量半減
+SIF (TCVAR:12 & 麻痺)
+	LOCAL:0 /= 2
+;SP変身中は気力体力の減少による影響を受けない
+SIF CFLAG:1 == 2
+	LOCAL:0 = 100
+;効果は1/4
+LOCAL:0 /= 4
+
+;敵の体力残量による補正
+CALL PERCENT_CAL, FLAG:13, FLAG:12
+IF RESULT > 50
+	LOCAL:1 = 75
+ELSEIF RESULT > 25
+	LOCAL:1 = 100
+ELSE
+	LOCAL:1 = 125
+ENDIF
+
+;基本成功率
+LOCAL:2 = (LOCAL:0 + 40) * LOCAL:1 / 100
+
+;暴れるが成功した次のターンは振りほどきやすくなる
+SIF TCVAR:2 == 体勢：暴れる防御
+	LOCAL:2 += 25
+;耐えた次のターンは少し振りほどきやすくなる
+SIF TCVAR:2 == 体勢：耐える
+	LOCAL:2 += 10
+;睨みつけた次のターンは振りほどきやすくなる
+SIF TCVAR:2 == 体勢：睨みつける
+	LOCAL:2 += 20
+;罵倒/反抗した次のターンは振りほどきやすくなる
+SIF TCVAR:2 == 体勢：罵倒する
+	LOCAL:2 += 15
+SIF TCVAR:2 == 体勢：反抗する
+	LOCAL:2 += 15
+;Ａ触手を振り解くのは非常に難しい
+SIF FLAG:10 == 0 && FLAG:11 == 3
+	LOCAL:2 = 1
+;EX:防を使用している場合は確率大アップ
+SIF GETBIT(TCVAR:3, 1)
+	LOCAL:2 += 50
+
+RETURN LOCAL:2
+

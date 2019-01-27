@@ -1,0 +1,66 @@
+;**********************************************************
+;基本ルール
+;加筆修正は、自由に行ってください
+;ただし、前の方が書いた文章は出来る限り消さないでください
+;
+;口述での「睾丸」なので、吐息や詰まった表現などはありです
+;体力や発情など、ステータスでどもったりする様にしましょう
+;この変数を呼び出すときは、吃ることも含めてお使いください
+;
+;ザーメンは別に表現されているので、ここではうまく扱う
+;
+;増やして欲しい隠語は、アウトプットしてリクエストなりしましょう
+;未登録の中に放り込むなり、掲示板にアップするなりすれば、
+;実装される可能性があります
+;
+;by 雑魚の人 2018/02/11
+;**********************************************************
+;Testicle(睾丸)の淫語
+@S_SLANG_Testicle(ARG)
+#DIMS SLANGWORD_Testicle
+#FUNCTIONS
+
+;初期化
+SLANGWORD_Testicle=
+
+;部位呼称
+IF TALENT:淫乱 > 0
+	SELECTCASE RAND:3
+		CASE 2
+			SLANGWORD_Testicle += "精液製造機"
+		CASE 1
+			SLANGWORD_Testicle += "精液バンク"
+		CASEELSE
+			SLANGWORD_Testicle += "ザーメンタンク"
+	ENDSELECT
+ELSE
+	SELECTCASE RAND:3
+		CASE 2
+			SLANGWORD_Testicle += "玉袋"
+		CASE 1
+			SLANGWORD_Testicle += "タマタマ"
+		CASEELSE
+			SLANGWORD_Testicle += "金玉"
+	ENDSELECT
+ENDIF
+
+
+;合成して出来上がった淫語を返す
+RETURNF SLANGWORD_Testicle
+
+
+
+
+
+;*************【淫語覚書（未登録）】***********************
+;
+;
+;
+;
+;
+;*************【淫語覚書（未登録）】***********************
+
+
+
+
+

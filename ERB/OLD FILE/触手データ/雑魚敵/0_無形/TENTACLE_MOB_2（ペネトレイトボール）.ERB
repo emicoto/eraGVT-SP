@@ -1,0 +1,640 @@
+;==================================================
+;【基本】
+;--------------------------------------------------
+;雑魚敵
+@TENTACLE_MOB_2
+;--------------------------------------------------
+;名前
+@TENTACLE_MOB_2_GETNAME
+RESULTS = ペネトレイトボール 
+
+;--------------------------------------------------
+;解説
+@TENTACLE_MOB_2_DEFENITION
+PRINTFORML （拳ほどの大きさの黒い球体が現れた）
+PRINTFORML （それは表面はゴムのようであり、ゆっくりと回転し続けており）
+PRINTFORML （不気味な蛇行をしながら宙を泳いでいる・・・）
+
+;==================================================
+;【ステータス】
+;--------------------------------------------------
+;HP
+@TENTACLE_MOB_2_HP
+LOCAL = 1250
+CALL TENTACLE_STATUS_HOSEI, LOCAL, 500
+RETURN RESULT
+
+;--------------------------------------------------
+;射精限界値
+@TENTACLE_MOB_2_SYASEI
+CALL TENTACLE_LEVEL
+LOCAL = 980 + RESULT * 5
+RETURN LOCAL
+
+;--------------------------------------------------
+;搾精ダメージ補正
+@TENTACLE_MOB_2_SAKUSEI
+LOCAL = 150
+RETURN LOCAL
+
+;--------------------------------------------------
+;油断度閾値
+@TENTACLE_MOB_2_YUDAN
+LOCAL = 500
+RETURN LOCAL
+
+;--------------------------------------------------
+;攻撃
+@TENTACLE_MOB_2_KOUGEKI
+LOCAL = 150
+CALL TENTACLE_STATUS_HOSEI, LOCAL
+RETURN RESULT
+
+;--------------------------------------------------
+;防御
+@TENTACLE_MOB_2_BOUGYO
+LOCAL = 50
+CALL TENTACLE_STATUS_HOSEI, LOCAL
+RETURN RESULT
+
+;--------------------------------------------------
+;敏捷
+@TENTACLE_MOB_2_BINSYOU
+LOCAL = 50
+CALL TENTACLE_STATUS_HOSEI, LOCAL
+RETURN RESULT
+
+;--------------------------------------------------
+;知性
+@TENTACLE_MOB_2_CHISEI
+LOCAL = 50
+CALL TENTACLE_STATUS_HOSEI, LOCAL,10
+RETURN RESULT
+
+;--------------------------------------------------
+;近距離
+@TENTACLE_MOB_2_SHORT
+RESULT = 200
+RETURN RESULT
+
+;--------------------------------------------------
+;中距離
+@TENTACLE_MOB_2_MIDDLE
+RESULT = 200
+RETURN RESULT
+
+;--------------------------------------------------
+;遠距離
+@TENTACLE_MOB_2_LONG
+RESULT = 200
+RETURN RESULT
+
+;--------------------------------------------------
+;拘束力
+@TENTACLE_MOB_2_HOLD
+RESULT = 50
+RETURN RESULT
+
+;--------------------------------------------------
+;PALAM補正 百分率で返す
+@TENTACLE_MOB_2_PALAM_HOSEI
+;快C
+LOCAL:0 = 100
+;快V
+LOCAL:1 = 100
+;快A
+LOCAL:2 = 100
+;快B
+LOCAL:3 = 100
+;潤滑
+LOCAL:4 = 50
+;恭順
+LOCAL:5 = 50
+;取得
+LOCAL:6 = 50
+;欲情
+LOCAL:7 = 40
+;屈服
+LOCAL:8 = 25
+;恥辱
+LOCAL:9 = 50
+;苦痛
+LOCAL:10 = 50
+;恐怖
+LOCAL:11 = 25
+
+RETURN LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11
+
+
+
+;==================================================
+;【専用ルーチン（戦闘）】
+;--------------------------------------------------
+@TENTACLE_MOB_2_ATTACK_ROUTINE, ARG:0, ARG:1
+
+LOCAL = RAND:100
+IF LOCAL < 45
+	RETURN 2
+ELSE
+	RETURN 0
+ENDIF
+
+
+
+;==================================================
+;【専用ルーチン（性行為）】
+;--------------------------------------------------
+@TENTACLE_MOB_2_SEX_ROUTINE, ARG:0, ARG:1
+
+LOCAL = RAND:100
+
+;20%以下の攻撃（アウター&インナーの防御無視、男女平等）
+;C攻め弱
+IF LOCAL < 20
+	RETURN 0
+
+;40%-20%=20%の確率
+;V攻め弱
+ELSEIF LOCAL < 40
+	RETURN 2
+
+;60%-40%=20%の確率
+;A攻め弱
+ELSEIF LOCAL < 60
+	RETURN 4
+
+;80%-60%=20%の確率
+;B攻め弱
+ELSEIF LOCAL < 80
+	RETURN 6
+
+;100%-80%=20%の（男女平等）
+;フェラ
+ELSE
+	RETURN 11
+ENDIF
+
+
+;==================================================
+;【性コマンドレファレンス】
+;--------------------------------------------------
+;ARG=1　素股焦らし成功時の行動指定
+;ARG=2　素股焦らし失敗時の行動指定
+;ARG=3　フェラチオ誘発時の行動指定
+@TENTACLE_MOB_2_REACTION_REF, ARG = 0
+;挿入系コマンドがルーチンに無いので-1を返す
+IF ARG == 1
+	RETURN -1
+ELSEIF ARG == 2
+	RETURN -1
+ELSEIF ARG == 3
+	RETURN 11
+ENDIF
+RETURN -1
+
+;==================================================
+;【コマンド使用時の描写】
+;--------------------------------------------------
+;==================================================
+;【Ｃ攻め弱】
+;--------------------------------------------------
+;性コマンド分類
+@SEX_TYPE_MOB_2_COM0
+RETURN 通常
+
+@MESSAGE_MOB_2_COM0, ARG:0, ARG:1
+FONTBOLD
+PRINTL Ｃ攻め弱
+FONTREGULAR
+
+;口上
+TRYCALLFORM KOJO_{CFLAG:6}_COM0
+PRINTL 
+;動画撮影フラグの処理
+IF FLAG:71
+	;愛撫されたところを見られた
+	SIF (ARG & Ｃ) || (ARG & Ｖ) || (ARG & Ａ) || (ARG & Ｂ)
+		SETBIT TFLAG:21,1
+ENDIF
+@SEXCOM_OPTION_MOB_2_COM0
+;追加攻め部位指定
+RETURN 1
+
+;==================================================
+;【Ｃ攻め強】
+;--------------------------------------------------
+;性コマンド分類
+@SEX_TYPE_MOB_2_COM1
+RETURN 通常
+
+@MESSAGE_MOB_2_COM1, ARG:0, ARG:1
+FONTBOLD
+PRINTL Ｃ攻め強
+FONTREGULAR
+
+;口上
+TRYCALLFORM KOJO_{CFLAG:6}_COM1
+PRINTL 
+
+;動画撮影フラグの処理
+IF FLAG:71
+	;愛撫されたところを見られた
+	SIF (ARG & Ｃ) || (ARG & Ｖ) || (ARG & Ａ) || (ARG & Ｂ)
+		SETBIT TFLAG:21,1
+ENDIF
+@SEXCOM_OPTION_MOB_2_COM1
+;追加攻め部位指定
+RETURN -1
+
+
+;==================================================
+;【Ｖ攻め弱】
+;--------------------------------------------------
+;性コマンド分類
+@SEX_TYPE_MOB_2_COM2
+RETURN 通常
+
+@MESSAGE_MOB_2_COM2, ARG:0, ARG:1
+FONTBOLD
+PRINTL Ｖ攻め弱
+FONTREGULAR
+
+;口上
+TRYCALLFORM KOJO_{CFLAG:6}_COM2
+PRINTL 
+
+;動画撮影フラグの処理
+IF FLAG:71
+	;愛撫されたところを見られた
+	SIF (ARG & Ｃ) || (ARG & Ｖ) || (ARG & Ａ) || (ARG & Ｂ)
+		SETBIT TFLAG:21,1
+ENDIF
+
+
+;==================================================
+;【Ｖ攻め強】
+;--------------------------------------------------
+;性コマンド分類
+@SEX_TYPE_MOB_2_COM3
+RETURN 挿入
+
+@MESSAGE_MOB_2_COM3, ARG:0, ARG:1
+FONTBOLD
+PRINTL Ｖ攻め強
+FONTREGULAR
+
+;口上
+TRYCALLFORM KOJO_{CFLAG:6}_COM3
+PRINTL 
+
+;動画撮影フラグの処理
+IF FLAG:71
+	;愛撫されたところを見られた
+	SIF (ARG & Ｃ) || (ARG & Ｖ) || (ARG & Ａ) || (ARG & Ｂ)
+		SETBIT TFLAG:21,1
+	;口を犯されたところを見られた
+	SIF (ARG & Ｖ) == 0
+		SETBIT TFLAG:21,2
+	;挿入されたところを見られた
+	SIF (ARG & Ｖ) || (ARG & Ａ)
+		SETBIT TFLAG:21,3
+ENDIF
+
+;==================================================
+;【Ａ攻め弱】
+;--------------------------------------------------
+;性コマンド分類
+@SEX_TYPE_MOB_2_COM4
+RETURN 通常
+
+@MESSAGE_MOB_2_COM4, ARG:0, ARG:1
+FONTBOLD
+PRINTL Ａ攻め弱
+FONTREGULAR
+
+;口上
+TRYCALLFORM KOJO_{CFLAG:6}_COM4
+PRINTL 
+
+;動画撮影フラグの処理
+IF FLAG:71
+	;愛撫されたところを見られた
+	SIF (ARG & Ｃ) || (ARG & Ｖ) || (ARG & Ａ) || (ARG & Ｂ)
+		SETBIT TFLAG:21,1
+ENDIF
+
+
+
+;==================================================
+;【Ａ攻め強】
+;--------------------------------------------------
+;性コマンド分類
+@SEX_TYPE_MOB_2_COM5
+RETURN 挿入
+
+@MESSAGE_MOB_2_COM5, ARG:0, ARG:1
+FONTBOLD
+PRINTL Ａ攻め強
+FONTREGULAR
+
+;口上
+TRYCALLFORM KOJO_{CFLAG:6}_COM5
+PRINTL 
+
+;動画撮影フラグの処理
+IF FLAG:71
+	;愛撫されたところを見られた
+	SIF (ARG & Ｃ) || (ARG & Ｖ) || (ARG & Ａ) || (ARG & Ｂ)
+		SETBIT TFLAG:21,1
+	;口を犯されたところを見られた
+	SIF (ARG & Ｖ) == 0
+		SETBIT TFLAG:21,2
+	;挿入されたところを見られた
+	SIF (ARG & Ｖ) || (ARG & Ａ)
+		SETBIT TFLAG:21,3
+ENDIF
+
+
+
+;==================================================
+;【Ｂ攻め弱】
+;--------------------------------------------------
+;性コマンド分類
+@SEX_TYPE_MOB_2_COM6
+RETURN 通常
+
+@MESSAGE_MOB_2_COM6, ARG:0, ARG:1
+FONTBOLD
+PRINTL Ｂ攻め弱
+FONTREGULAR
+
+;口上
+TRYCALLFORM KOJO_{CFLAG:6}_COM6
+PRINTL 
+
+;動画撮影フラグの処理
+IF FLAG:71
+	;愛撫されたところを見られた
+	SIF (ARG & Ｃ) || (ARG & Ｖ) || (ARG & Ａ) || (ARG & Ｂ)
+		SETBIT TFLAG:21,1
+ENDIF
+
+
+
+;==================================================
+;【Ｂ攻め強】
+;--------------------------------------------------
+;性コマンド分類
+@SEX_TYPE_MOB_2_COM7
+RETURN 通常
+
+@MESSAGE_MOB_2_COM7, ARG:0, ARG:1
+FONTBOLD
+PRINTL Ｂ攻め強
+FONTREGULAR
+
+;口上
+TRYCALLFORM KOJO_{CFLAG:6}_COM7
+PRINTL 
+
+;動画撮影フラグの処理
+IF FLAG:71
+	;愛撫されたところを見られた
+	SIF (ARG & Ｃ) || (ARG & Ｖ) || (ARG & Ａ) || (ARG & Ｂ)
+		SETBIT TFLAG:21,1
+ENDIF
+
+
+
+;==================================================
+;【スパンキング】
+;--------------------------------------------------
+;性コマンド分類
+@SEX_TYPE_MOB_2_COM8
+RETURN 通常
+
+@MESSAGE_MOB_2_COM8, ARG:0, ARG:1
+FONTBOLD
+PRINTL スパンキング
+FONTREGULAR
+
+;口上
+TRYCALLFORM KOJO_{CFLAG:6}_COM8
+PRINTL 
+
+;動画撮影フラグの処理
+IF FLAG:71
+	;嬲りものにされるところを見られた
+	SETBIT TFLAG:21,7
+ENDIF
+
+
+
+;==================================================
+;【針】
+;--------------------------------------------------
+;性コマンド分類
+@SEX_TYPE_MOB_2_COM9
+RETURN 通常
+
+@MESSAGE_MOB_2_COM9, ARG:0, ARG:1
+FONTBOLD
+PRINTL 針
+FONTREGULAR
+
+;口上
+TRYCALLFORM KOJO_{CFLAG:6}_COM9
+PRINTL 
+
+;動画撮影フラグの処理
+IF FLAG:71
+	;嬲りものにされるところを見られた
+	SETBIT TFLAG:21,7
+ENDIF
+
+
+
+;==================================================
+;【手淫】
+;--------------------------------------------------
+;性コマンド分類
+@SEX_TYPE_MOB_2_COM10
+RETURN 通常
+
+@MESSAGE_MOB_2_COM10, ARG:0, ARG:1
+FONTBOLD
+PRINTL 手淫
+FONTREGULAR
+
+;口上
+TRYCALLFORM KOJO_{CFLAG:6}_COM10
+PRINTL 
+
+;動画撮影フラグの処理
+IF FLAG:71
+	;愛撫されたところを見られた
+	SIF (ARG & Ｃ) || (ARG & Ｖ) || (ARG & Ａ) || (ARG & Ｂ)
+		SETBIT TFLAG:21,1
+	;口を犯されたところを見られた
+	SETBIT TFLAG:21,2
+ENDIF
+
+
+
+;==================================================
+;【フェラ】
+;--------------------------------------------------
+;性コマンド分類
+@SEX_TYPE_MOB_2_COM11
+RETURN フェラ
+
+@MESSAGE_MOB_2_COM11, ARG:0, ARG:1
+FONTBOLD
+PRINTL フェラ
+FONTREGULAR
+
+;口上
+TRYCALLFORM KOJO_{CFLAG:6}_COM11
+PRINTL 
+
+;動画撮影フラグの処理
+IF FLAG:71
+	;愛撫されたところを見られた
+	SIF (ARG & Ｃ) || (ARG & Ｖ) || (ARG & Ａ) || (ARG & Ｂ)
+		SETBIT TFLAG:21,1
+	;口を犯されたところを見られた
+	SETBIT TFLAG:21,2
+ENDIF
+
+
+
+;==================================================
+;【イラマチオ】
+;--------------------------------------------------
+;性コマンド分類
+@SEX_TYPE_MOB_2_COM12
+RETURN フェラ
+
+@MESSAGE_MOB_2_COM12, ARG:0, ARG:1
+FONTBOLD
+PRINTL イラマチオ
+FONTREGULAR
+
+;口上
+TRYCALLFORM KOJO_{CFLAG:6}_COM12
+PRINTL 
+
+;動画撮影フラグの処理
+IF FLAG:71
+	;口を犯されたところを見られた
+	SETBIT TFLAG:21,2
+	;嬲りものにされるところを見られた
+	SETBIT TFLAG:21,7
+ENDIF
+
+
+
+;==================================================
+;【絶頂禁止】
+;--------------------------------------------------
+;性コマンド分類
+@SEX_TYPE_MOB_2_COM13
+RETURN 通常
+
+@MESSAGE_MOB_2_COM13, ARG:0, ARG:1
+FONTBOLD
+PRINTL 絶頂禁止
+FONTREGULAR
+
+;口上
+TRYCALLFORM KOJO_{CFLAG:6}_COM13
+PRINTL 
+
+;動画撮影フラグの処理
+IF FLAG:71
+	;嬲りものにされるところを見られた
+	SETBIT TFLAG:21,7
+ENDIF
+
+;-----------------------------------------------------------------------------------------------------------------------------------------------
+
+;==================================================
+;【衣装を破く】
+;--------------------------------------------------
+;性コマンド分類
+@SEX_TYPE_MOB_2_COM14
+RETURN 通常
+
+@MESSAGE_MOB_2_COM14, ARG:0, ARG:1
+FONTBOLD
+PRINTL 衣装を破く
+FONTREGULAR
+CALL TENTACLE_ACCESS, "NAME"
+IF RAND:3 == 0
+	PRINTFORML は触手の先端から濁った色の粘液を勢いよく吐き出した！
+	PRINTFORML 異臭のする粘液が%PRINT_TRANSCALLNAME(TARGET)%の全身に降りかかり、
+	PRINTFORML 衣装がみるみる溶かされていく・・・
+	PRINTL 
+	;口上
+	TRYCALLFORM KOJO_{CFLAG:6}_SEX_COM14
+	PRINTL 
+	;状態異常：べとべと
+	CALL STATE_CHANGE_BETOBETO, 15
+ELSE
+	PRINTFORML は%PRINT_TRANSCALLNAME(TARGET)%の全身に絡まり、激しく蠢いている！
+	PRINTFORML もみくちゃにされた%PRINT_TRANSCALLNAME(TARGET)%の衣装が引き裂かれていく・・・
+	PRINTL 
+	;口上
+	TRYCALLFORM KOJO_{CFLAG:6}_SEX_COM14
+	PRINTL 
+ENDIF
+
+
+
+;==================================================
+;【絡みつく】
+;--------------------------------------------------
+@MESSAGE_BATTLE_MOB_2_KARAMITUKU
+
+PRINTFORML 黒い球体は突如急加速し、障害物でバウンドを繰り返すと、
+PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%の
+IF TFLAG:12 == 3
+	PRINTFORM 近距離
+ELSEIF RAND:2 == 0
+	PRINTFORM 中距離
+ELSE
+	PRINTFORM 遠距離
+ENDIF
+PRINTFORML から、弾丸のように突撃を行った
+
+PRINT （
+IF TFLAG:11 & 1
+	PRINT 近
+ELSE
+	PRINT 　
+ENDIF
+IF TFLAG:11 & 2
+	PRINT 中
+ELSE
+	PRINT 　
+ENDIF
+IF TFLAG:11 & 4
+	PRINT 遠
+ELSE
+	PRINT 　
+ENDIF
+PRINTL ）
+
+
+
+;==================================================
+;【絡みつく成功】
+;--------------------------------------------------
+@MESSAGE_BATTLE_MOB_2_KARAMITUKU_SUCCESS
+
+PRINTFORM 避けきれなかった%PRINT_TRANSCALLNAME(TARGET)%は
+CALL TENTACLE_ACCESS, "NAME"
+PRINTFORML に絡み付かれてしまった！
+
+
+

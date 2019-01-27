@@ -1,0 +1,13 @@
+CALL TENTACLE_ACCESS, "NAME"
+PRINTFORML は、気絶した%PRINT_TRANSCALLNAME(TARGET)%の頭部に帽子状の器官をかぶせ、
+PRINTFORML 頭部と両耳を覆って密閉させた。
+PRINTL 
+PRINTL …プーッ、ザザザッ、キュルルルルルッ…
+PRINTL 
+PRINTFORML ノイズとも何かの作動音とも付かない、奇妙な音が微かに漏れる…
+PRINTL
+PRINTL ---
+PRINTL ----
+PRINTL -----
+PRINTW
+

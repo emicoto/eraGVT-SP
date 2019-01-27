@@ -1,0 +1,41 @@
+@SHOKISET_NAME_4
+PRINTL [ 4]６人：ＫＪガールズ
+;-----------------------------
+;ＫＪガールズに対する説明
+;------------------------------
+@SHOKISET_SETUMEI_4
+PRINTL
+PRINTL 　　　『寄生ジョーカー』より参戦！
+PRINTL 　　　最大でキャラが６人使えるようになる多人数パーティ
+PRINTL 　　　しかし二人は最初から幽閉されており、一人は最初から洗脳されている
+PRINTL 　　　主人公の晴香以外は戦力にならないので大事に育てよう
+PRINTL 　　　人数が多いことが吉と出るか、凶と出るか、それはあなた次第
+PRINTL
+PRINTL 　　　かなりの上級者向け※バランス未調整
+PRINTL
+;-------------------------------
+;グループの選択-ＫＪガールズ
+;-------------------------------
+@SHOKISET_SELECT_4
+
+FLAG:5 = 1
+SAVESTR:10=ＫＪガールズ
+
+ADDCHARA 341
+FLAG:8 ++
+ADDCHARA 342
+FLAG:8 ++
+ADDCHARA 343
+FLAG:8 ++
+ADDCHARA 344
+FLAG:8 ++
+ADDCHARA 345
+FLAG:8 ++
+ADDCHARA 346
+FLAG:8 ++
+
+CALL SHOKISET_CSVFIX
+JUMP CHARA_MAKE_MAIN, 0
+
+
+

@@ -1,0 +1,138 @@
+;距離をとる
+@COM5
+;刻印による行動制限判定　１で行動できない
+CALL ACT_LIMIT
+SIF RESULT == 1
+	RETURN 1
+;空中攻撃フラグを進める
+CALL ATTACK_AIR_FLAG
+;べとべと中だと失敗することがある
+IF (TCVAR:12 & べとべと) && RAND:100 < 50 && GETBIT(TCVAR:216, 1) == 0
+	;距離表示
+	CALL PRINT_DISTANCE
+	PRINTL 
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は脚を滑らせてしまった！
+	PRINTFORML 移動を伴う行動が失敗した！
+	PRINTW 
+	RETURN 1
+ENDIF
+
+;同一距離フラグを折る
+TFLAG:30 = 0
+;チェインコンボをリセット
+TFLAG:31 = 0
+
+;距離を遠にする
+TCVAR:0 = 3
+;距離表示
+CALL PRINT_DISTANCE
+PRINTL 
+
+;体力45%、気力が20%回復　心境が普通になりやすい
+;回復早いなら+4%,+2%
+;回復遅いなら-4%,-2%
+;最大値と衣装と防御力による補正から回復量を計算
+CALL CLOTH_BATTLE_HOSEI, "BOUGYO"
+LOCAL:0 = MAXBASE:体力 + BASE:防御 * RESULT * 2 / 100
+;FEATによる回復量ボーナス
+SIF TALENT:溢れる生命力 > 0
+	TIMES LOCAL:0, 1.25
+IF TALENT:回復早い == 1
+	TIMES LOCAL:0, 0.49
+ELSEIF TALENT:回復遅い == 1
+	TIMES LOCAL:0, 0.41
+ELSE
+	TIMES LOCAL:0, 0.40
+ENDIF
+SIF BASE:気力 == 0
+	LOCAL:0 /= 2
+;疲労により回復量が減少
+REPEAT CFLAG:99
+	SIF LOCAL:0 <= 1
+		BREAK
+	;FEAT効果による回復量維持
+	IF TALENT:スタミナ > 0
+		TIMES LOCAL:0, 0.985
+	ELSE
+		TIMES LOCAL:0, 0.97
+	ENDIF
+REND
+;疲労が少ない時は体力大回復
+IF TALENT:スタミナ > 0
+	IF CFLAG:99 < 5
+		TIMES LOCAL:0, 1.25
+	ELSEIF CFLAG:99 < 10
+		TIMES LOCAL:0, 1.10
+	ENDIF
+ELSE
+	IF CFLAG:99 == 0
+		TIMES LOCAL:0, 1.25
+	ELSEIF CFLAG:99 < 5
+		TIMES LOCAL:0, 1.10
+	ENDIF
+ENDIF
+;救急スプレー#####
+SIF CFLAG:TARGET:43 == 504
+	LOCAL:0 = LOCAL:0 + 200
+SIF BASE:体力 + LOCAL:0 >= MAXBASE:体力
+	LOCAL:0 = MAXBASE:体力 - BASE:体力
+;体力が尽きている場合、体力が回復しない
+SIF BASE:体力 == 0
+	LOCAL:0 = 0
+BASE:体力 += LOCAL:0
+
+;最大値と衣装と防御力による補正から回復量を計算
+CALL CLOTH_BATTLE_HOSEI, "BOUGYO"
+LOCAL:1 = MAXBASE:気力 + BASE:防御 * RESULT * 4 / 200
+;FEATによる回復量ボーナス
+SIF TALENT:溢れる生命力 > 0
+	TIMES LOCAL:1, 1.25
+IF TALENT:回復早い == 1
+	TIMES LOCAL:1, 0.22
+ELSEIF TALENT:回復遅い == 1
+	TIMES LOCAL:1, 0.18
+ELSE
+	TIMES LOCAL:1, 0.20
+ENDIF
+SIF BASE:気力 + LOCAL:1 >= MAXBASE:気力
+	LOCAL:1 = MAXBASE:気力 - BASE:気力
+;疲労により回復量が減少
+REPEAT CFLAG:99
+	SIF LOCAL:1 <= 1
+		BREAK
+	;FEAT効果による回復量維持
+	IF TALENT:スタミナ > 0
+		TIMES LOCAL:0, 0.995
+	ELSE
+		TIMES LOCAL:0, 0.99
+	ENDIF
+REND
+BASE:気力 += LOCAL:1
+
+;疲労が少し蓄積
+TFLAG:99 += 1
+;FEAT効果による反動の増加
+SIF TALENT:空中浮遊 > 0
+	TFLAG:99 += 1
+
+;地の文：距離を取る
+CALL MESSAGE_BATTLE_CHARA_TAKEAWAY
+;地の文：洗脳/悪堕ちキャラが操作キャラの距離をとるを見た
+SIF FLAG:110 == 1
+	CALL MESSAGE_OTHER_BATTLE_CHARA_TAKEAWAY
+
+IF BASE:体力
+	PRINTFORML %BASENAME:0%が{LOCAL:0}回復した
+ELSE
+	PRINTFORML %BASENAME:0%は既に尽きてしまっている……
+ENDIF
+PRINTFORML %BASENAME:1%が{LOCAL:1}回復した
+
+;心境が普通に戻りやすい
+IF TCVAR:1 > 0 && RAND:100 < (TCVAR:11 * 20)
+	CALL SHINKYOU_CHANGE, "NORMAL"
+ELSE
+	TCVAR:11 ++
+ENDIF
+PRINTL 
+RETURN 1

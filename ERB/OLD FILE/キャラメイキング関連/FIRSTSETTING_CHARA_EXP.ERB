@@ -1,0 +1,617 @@
+
+;-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+;初期経験の設定
+@FIRSTSETTING_CHARA_EXP, ARG
+#DIM LCOUNT
+#DIM OPTION,4
+#DIM SEX_NUM
+VARSET LOCAL
+VARSET OPTION
+CALL LB
+LCOUNT = LINECOUNT
+$INPUT_LOOP
+PRINTFORML {ARG}人目のキャラ 『%CALLNAME:ARG%』 の初期経験を生成します
+DRAWLINE
+PRINTL 素質：
+PRINT 　
+SIF TALENT:ARG:処女 > 0
+	PRINT [処女]
+SIF TALENT:ARG:オトコ > 0
+	PRINT [オトコ]
+SIF TALENT:ARG:ふたなり > 0
+	PRINT [ふたなり]
+SIF TALENT:ARG:ロボっ子 > 0 && TALENT:ARG:未熟 != 2
+	PRINT [人工子宮]
+SIF TALENT:ARG:清純派 > 0
+	PRINT [清純派]
+SIF TALENT:ARG:未熟 == 1
+	PRINT [未熟]
+SIF TALENT:ARG:未熟 == 2
+	PRINT [不妊]
+SIF TALENT:ARG:交際相手 == 1
+	PRINT [片思い]
+SIF TALENT:ARG:交際相手 == 2
+	PRINT [彼氏持ち]
+SIF TALENT:ARG:交際相手 == 3
+	PRINT [婚約]
+SIF TALENT:ARG:交際相手 == 4
+	PRINT [人妻]
+SIF TALENT:ARG:交際相手 == 5
+	PRINT [未亡人]
+SIF TALENT:ARG:学生 == 1
+	PRINT [小学生]
+SIF TALENT:ARG:学生 == 2
+	PRINT [中学生]
+SIF TALENT:ARG:学生 == 3
+	PRINT [高校生]
+SIF TALENT:ARG:学生 == 4
+	PRINT [大学生]
+PRINTL 
+
+PRINT 　
+SIF TALENT:ARG:内向的 > 0
+	PRINT [内向的]
+SIF TALENT:ARG:自分勝手 > 0
+	PRINT [自分勝手]
+SIF TALENT:ARG:献身的 > 0
+	PRINT [献身的]
+SIF TALENT:ARG:小心者 > 0
+	PRINT [小心者]
+SIF TALENT:ARG:プライド高い > 0
+	PRINT [プライド高い]
+SIF TALENT:ARG:保守的 > 0
+	PRINT [保守的]
+SIF TALENT:ARG:好奇心 > 0
+	PRINT [好奇心]
+SIF TALENT:ARG:サド気質 > 0
+	PRINT [サド気質]
+SIF TALENT:ARG:マゾ気質 > 0
+	PRINT [マゾ気質]
+SIF TALENT:ARG:快楽に弱い > 0
+	PRINT [快楽に弱い]
+SIF TALENT:ARG:快楽の否定 > 0
+	PRINT [快楽に否定]
+SIF TALENT:ARG:争いを好まない > 0
+	PRINT [争いを好まない]
+SIF TALENT:ARG:喧嘩上等 > 0
+	PRINT [喧嘩上等]
+SIF TALENT:ARG:恥じらい > 0
+	PRINT [恥じらい]
+SIF TALENT:ARG:度胸 > 0
+	PRINT [度胸]
+SIF TALENT:ARG:人間不信 > 0
+	PRINT [人間不信]
+SIF TALENT:ARG:両刀 > 0
+	PRINT [両刀]
+SIF TALENT:ARG:男性苦手 > 0
+	PRINT [男性苦手]
+SIF TALENT:ARG:女性苦手 > 0
+	PRINT [女性苦手]
+SIF TALENT:ARG:母性的 > 0
+	PRINT [母性的]
+SIF TALENT:ARG:小悪魔 > 0
+	PRINT [小悪魔]
+SIF TALENT:ARG:目立ちたがり > 0
+	PRINT [目立ちたがり]
+SIF TALENT:ARG:上品 > 0
+	PRINT [上品]
+SIF TALENT:ARG:泣き虫 > 0
+	PRINT [泣き虫]
+SIF TALENT:ARG:潔癖症 > 0
+	PRINT [潔癖症]	
+PRINTL 
+
+DRAWLINE
+PRINTL 経験：
+PRINT 　
+CALL FIRSTSETTING_PRINT_EXP, ARG
+PRINTL 
+DRAWLINE
+
+PRINT 清純派：
+IF TALENT:ARG:オトコ == 0
+	PRINTPLAIN 　　　　　　　　　　　　　　　　　　
+	PRINT 処女：
+ENDIF
+PRINTL 
+SETCOLOR 120,255,255
+SIF TALENT:ARG:清純派 != 1
+	SETCOLOR 96,96,96
+PRINT 　[0] あり　　　　　　
+SETCOLOR 120,255,255
+SIF TALENT:ARG:清純派 != 0
+	SETCOLOR 96,96,96
+PRINT 　[1] なし　　　　　　
+IF TALENT:ARG:オトコ == 0
+	RESETCOLOR
+	SETCOLOR 120,255,255
+	SIF TALENT:ARG:処女!= 1
+		SETCOLOR 96,96,96
+	PRINT 　[2] 処女　　　　　　
+	SETCOLOR 120,255,255
+	SIF TALENT:ARG:処女 != 0
+		SETCOLOR 96,96,96
+	PRINT 　[3] 非処女　　　　　　　
+ENDIF
+RESETCOLOR
+PRINTL  
+PRINTL 
+
+PRINTL 経験回数：
+SETCOLOR 120,255,255
+SIF OPTION:0 != 0
+	SETCOLOR 96,96,96
+PRINT 　[10]なし　　　　　　
+SETCOLOR 120,255,255
+SIF OPTION:0 != 1
+	SETCOLOR 96,96,96
+PRINT 　[11]少ない　　　　　
+SETCOLOR 120,255,255
+SIF OPTION:0 != 2
+	SETCOLOR 96,96,96
+PRINT 　[12]やや少ない　　　
+IF TALENT:ARG:清純派 == 0
+	SETCOLOR 120,255,255
+	SIF OPTION:0 != 3
+		SETCOLOR 96,96,96
+	PRINT 　[13]多い　　　　　　
+	SETCOLOR 120,255,255
+	SIF OPTION:0 != 4
+		SETCOLOR 96,96,96
+	PRINT 　[14]かなり多い
+ENDIF
+RESETCOLOR
+PRINTL  
+PRINTL 
+
+PRINTL 生活環境：
+SETCOLOR 120,255,255
+SIF OPTION:1 != 0
+	SETCOLOR 96,96,96
+PRINT 　[20]優遇　　　　　　
+SETCOLOR 120,255,255
+SIF OPTION:1 != 1
+	SETCOLOR 96,96,96
+PRINT 　[21]一般的　　　　　
+SETCOLOR 120,255,255
+SIF OPTION:1 != 2
+	SETCOLOR 96,96,96
+PRINT 　[22]劣悪
+RESETCOLOR
+PRINTL 
+PRINTL 
+
+PRINTL 売春経験：
+SETCOLOR 120,255,255
+SIF OPTION:2 != 0
+	SETCOLOR 96,96,96
+PRINT 　[30]なし　　　　　　
+IF TALENT:ARG:清純派 == 0
+	SETCOLOR 120,255,255
+	SIF OPTION:2 != 1
+		SETCOLOR 96,96,96
+	PRINT 　[31]あり
+ENDIF
+RESETCOLOR
+PRINTL 
+PRINTL 
+
+IF TALENT:ARG:オトコ == 0
+	PRINTL 出産経験：
+	SETCOLOR 120,255,255
+	SIF OPTION:3 != 0
+		SETCOLOR 96,96,96
+	PRINT 　[40]なし　　　　　　
+	IF TALENT:ARG:処女 == 0 && TALENT:ARG:未熟 == 0
+		SETCOLOR 120,255,255
+		SIF OPTION:3 != 1
+			SETCOLOR 96,96,96
+		PRINT 　[41]少ない　　　　　
+		IF TALENT:ARG:清純派 == 0
+			SETCOLOR 120,255,255
+			SIF OPTION:3 != 2
+				SETCOLOR 96,96,96
+			PRINT 　[42]多い
+		ENDIF
+	ENDIF
+	RESETCOLOR
+	PRINTL 
+	PRINTL 
+ELSE
+	PRINTL 
+ENDIF
+
+DRAWLINE
+PRINTL [100]上記の条件でリロール
+PRINTL [200]リセットする
+PRINTL [999]決定
+INPUT
+IF RESULT == 0
+	IF TALENT:ARG:清純派 == 0
+		TALENT:ARG:清純派 = 1
+		SIF OPTION:0 >= 3
+			OPTION:0 = 2
+		SIF OPTION:2 >= 1
+			OPTION:2 = 0
+		SIF OPTION:3 == 2 && TALENT:ARG:交際相手 >= 4
+			OPTION:3 = 1
+		SIF TALENT:ARG:交際相手 < 4
+			OPTION:3 = 0
+	ENDIF
+	CLEARLINE LINECOUNT - LCOUNT
+	GOTO INPUT_LOOP
+ELSEIF RESULT == 1 && TALENT:ARG:オトコ == 0
+	TALENT:ARG:清純派 = 0
+	CLEARLINE LINECOUNT - LCOUNT
+	GOTO INPUT_LOOP
+ELSEIF RESULT == 2 && TALENT:ARG:オトコ == 0
+	IF TALENT:ARG:処女 == 0
+		TALENT:ARG:処女 = 1
+		SIF OPTION:3 > 0
+			OPTION:3 = 0
+	ENDIF
+	CLEARLINE LINECOUNT - LCOUNT
+	GOTO INPUT_LOOP
+ELSEIF RESULT == 3
+	TALENT:ARG:処女 = 0
+	CLEARLINE LINECOUNT - LCOUNT
+	GOTO INPUT_LOOP
+ELSEIF RESULT >= 10 && RESULT < 13
+	OPTION:0 = RESULT % 10
+	SIF OPTION:0 == 0
+		OPTION:3 = 0
+	CLEARLINE LINECOUNT - LCOUNT
+	GOTO INPUT_LOOP
+ELSEIF RESULT >= 13 && RESULT < 15 && TALENT:ARG:清純派 == 0
+	OPTION:0 = RESULT % 10
+	CLEARLINE LINECOUNT - LCOUNT
+	GOTO INPUT_LOOP
+ELSEIF RESULT >= 20 && RESULT < 23
+	OPTION:1 = RESULT % 10
+	CLEARLINE LINECOUNT - LCOUNT
+	GOTO INPUT_LOOP
+ELSEIF RESULT == 30
+	OPTION:2 = RESULT % 10
+	CLEARLINE LINECOUNT - LCOUNT
+	GOTO INPUT_LOOP
+ELSEIF RESULT >= 31 && RESULT < 32 && TALENT:ARG:清純派 == 0
+	OPTION:2 = RESULT % 10
+	CLEARLINE LINECOUNT - LCOUNT
+	GOTO INPUT_LOOP
+ELSEIF RESULT == 40
+	OPTION:3 = RESULT % 10
+	CLEARLINE LINECOUNT - LCOUNT
+	GOTO INPUT_LOOP
+ELSEIF RESULT == 41 && TALENT:ARG:オトコ == 0 && TALENT:ARG:未熟 == 0 && TALENT:ARG:処女 == 0
+	OPTION:3 = RESULT % 10
+	SIF OPTION:0 < 1
+		OPTION:0 = 1
+	CLEARLINE LINECOUNT - LCOUNT
+	GOTO INPUT_LOOP
+ELSEIF RESULT == 42 && TALENT:ARG:清純派 == 0 && TALENT:ARG:オトコ == 0 && TALENT:ARG:未熟 == 0 && TALENT:ARG:処女 == 0
+	OPTION:3 = RESULT % 10
+	SIF OPTION:0 < 1
+		OPTION:0 = 1
+	CLEARLINE LINECOUNT - LCOUNT
+	GOTO INPUT_LOOP
+ELSEIF RESULT == 100
+	;与えられた条件から初期経験を生成
+	SEX_NUM = 0
+	;経験を全てリセット
+	FOR LOCAL, 0, 99
+		EXP:ARG:LOCAL = 0
+	NEXT
+
+	;自慰経験
+	;性欲の強さをみる
+	LOCAL = RAND:8
+	SIF BASE:ARG:実年齢 > 8
+		LOCAL += RAND:2
+	SIF BASE:ARG:実年齢 > 12
+		LOCAL += RAND:2
+	SIF BASE:ARG:実年齢 > 16
+		LOCAL += RAND:2
+	SIF BASE:ARG:実年齢 > 20
+		LOCAL += RAND:2
+	SIF TALENT:ARG:学生 == 1
+		LOCAL = LOCAL / 2
+	SIF TALENT:ARG:学生 == 2
+		LOCAL = LOCAL * 2 / 3
+	SIF TALENT:ARG:快楽に弱い > 0
+		LOCAL += 2 + RAND:2
+	SIF TALENT:ARG:快楽の否定 > 0
+		LOCAL -= 2 + RAND:2
+	SIF TALENT:ARG:清純派 > 0
+		LOCAL -= 2 + RAND:2
+	SIF TALENT:ARG:保守的 > 0
+		LOCAL = LOCAL * 2 / 3
+	SIF TALENT:ARG:好奇心 > 0
+		LOCAL = LOCAL * 3 / 2
+	IF LOCAL > 0
+		SEX_NUM = LOCAL
+		FOR LOCAL, 0, SEX_NUM
+			EXP:ARG:自慰経験 += 1
+			IF RAND:4 != 0
+				SIF TALENT:ARG:未熟 != 1 && (TALENT:ARG:オトコ > 0 || TALENT:ARG:ふたなり > 0)
+					EXP:ARG:射精経験 += 1
+			ENDIF
+		NEXT
+	ENDIF
+	SEX_NUM = 0
+
+	;触手に襲われた経験があるか
+	LOCAL = 0
+	;処女なら襲われている確率が低い
+	IF TALENT:ARG:処女 > 0 && RAND:2 == 0
+	;生活環境が劣悪
+	ELSEIF TALENT:ARG:オトコ <= 0 && OPTION:1 == 2 && RAND:10 == 0
+		EXP:ARG:被姦経験 += 1
+		SEX_NUM += 3 + RAND:4
+		IF RAND:2 == 0
+			EXP:ARG:被姦経験 += 1
+			SEX_NUM += 1
+		ENDIF
+		IF RAND:2 == 0
+			EXP:ARG:被姦経験 += 1
+			SEX_NUM += 1
+		ENDIF
+		IF RAND:4 == 0
+			EXP:ARG:幽閉経験 += 1
+			SEX_NUM += 3
+		ENDIF
+	;生活環境が普通
+	ELSEIF TALENT:ARG:オトコ <= 0 && OPTION:1 == 1 && RAND:20 == 0
+		EXP:ARG:被姦経験 += 1
+		SEX_NUM += 1
+		IF RAND:8 == 0
+			EXP:ARG:幽閉経験 += 1
+			SEX_NUM += 3
+		ENDIF
+	ENDIF
+	SIF SEX_NUM > 0
+		PRINTFORMW 特殊判定：触手に襲われたことがある
+	IF SEX_NUM > 0
+		FOR LOCAL, 0, SEX_NUM
+			IF RAND:10 == 0 && TALENT:ARG:処女 == 0
+				EXP:ARG:Ｖ経験 += 2
+				EXP:ARG:Ｖ拡張経験 += 1
+				;出産経験
+				IF RAND:4 != 0
+					IF TALENT:ARG:処女 == 0 && TALENT:ARG:未熟 == 0
+						IF TALENT:ARG:母乳体質 > 0
+							EXP:ARG:出産経験 += 2 + RAND:4
+						ELSEIF RAND:4 == 0
+							EXP:ARG:出産経験 += 1 + RAND:3
+						ENDIF
+					ENDIF
+				ENDIF
+			ELSEIF RAND:9 == 0
+				EXP:ARG:Ａ経験 += 2
+				EXP:ARG:Ａ拡張経験 += 1
+			ELSEIF RAND:3 == 0 && TALENT:ARG:処女 == 0
+				EXP:ARG:Ｖ経験 += 1
+				;出産経験
+				IF RAND:4 != 0
+					IF TALENT:ARG:処女 == 0 && TALENT:ARG:未熟 == 0
+						IF TALENT:ARG:母乳体質 > 0
+							EXP:ARG:出産経験 += 2 + RAND:4
+						ELSEIF RAND:4 == 0
+							EXP:ARG:出産経験 += 1 + RAND:3
+						ENDIF
+					ENDIF
+				ENDIF
+			ELSEIF RAND:2 == 0
+				EXP:ARG:Ａ経験 += 1
+			ELSE
+				EXP:ARG:フェラ経験 += 1
+			ENDIF
+			IF RAND:4 == 0
+				SIF TALENT:ARG:母乳体質 > 0 && RAND:2 == 0
+					EXP:ARG:噴乳経験 += 1
+			ENDIF
+		NEXT
+	ENDIF
+	SEX_NUM = 0
+
+	;私生活での性交渉
+	LOCAL = 0
+	;経験回数が少ない
+	IF OPTION:0 == 1 && RAND:2 == 0
+		LOCAL = 1 + RAND:3
+		;売春経験が「あり」なら
+		SIF OPTION:2 == 1 && RAND:2 == 0
+			LOCAL += 1
+	;経験回数がやや少ない
+	ELSEIF OPTION:0 == 2 && RAND:2 == 0
+		LOCAL = 2 + RAND:6
+		;売春経験が「あり」なら
+		SIF OPTION:2 == 1 && RAND:3 != 0
+			LOCAL += 2
+	;経験回数が多い
+	ELSEIF OPTION:0 == 3
+		LOCAL = 4 + RAND:12
+		;売春経験が「あり」なら
+		SIF OPTION:2 == 1 && RAND:4 != 0
+			LOCAL += 4
+	;経験回数がかなり多い
+	ELSEIF OPTION:0 == 4
+		LOCAL = 8 + RAND:24
+		SIF RAND:10 == 0
+			LOCAL = LOCAL * 3 / 2
+		;売春経験が「あり」なら
+		SIF OPTION:2 == 1 && RAND:5 != 0
+			LOCAL += 8
+	ENDIF
+
+	;経験回数が「なし」以外なら
+	IF OPTION:0 != 0
+		;交際相手
+		SIF TALENT:ARG:交際相手 == 2
+			LOCAL += RAND:3
+		SIF TALENT:ARG:交際相手 == 3
+			LOCAL += RAND:6
+		SIF TALENT:ARG:交際相手 == 4 || TALENT:ARG:交際相手 == 5
+			LOCAL += RAND:12
+		;レイプ被害
+		IF OPTION:1 == 2 && RAND:4 == 0
+			LOCAL += 3 + RAND:6
+			PRINTFORMW 特殊判定：レイプされたことがある
+		ENDIF
+	ENDIF
+	;売春経験が「あり」なら
+	SIF OPTION:2 == 1 && RAND:5 != 0
+		LOCAL += 1 + RAND:3
+	SIF TALENT:ARG:保守的 > 0
+		LOCAL = LOCAL * 2 / 3
+	SIF TALENT:ARG:好奇心 > 0
+		LOCAL = LOCAL * 3 / 2
+	SIF TALENT:ARG:清純派
+		LOCAL = LOCAL / 2
+	SIF TALENT:ARG:学生 == 1
+		LOCAL = LOCAL / 2
+	SIF TALENT:ARG:学生 == 2
+		LOCAL = LOCAL * 2 / 3
+
+	;出産経験ありなら
+	IF OPTION:3 == 1
+		LOCAL += 1 + RAND:6
+	ELSEIF OPTION:3 == 2
+		LOCAL += 2 + RAND:12
+	ENDIF
+
+	IF LOCAL > 0
+		SEX_NUM = LOCAL
+		FOR LOCAL, 0, SEX_NUM
+			IF TALENT:ARG:オトコ > 0
+				SIF RAND:20 == 0
+					EXP:ARG:Ａ経験 += 1
+				IF RAND:4 != 0
+					SIF TALENT:ARG:未熟 != 1
+						EXP:ARG:射精経験 += 1
+				ENDIF
+			ELSE
+				IF OPTION:0 == 0 && OPTION:2 == 2
+					EXP:ARG:フェラ経験 += 1
+				ELSEIF OPTION:3 == 2 && EXP:ARG:Ｖ経験 == 0
+					EXP:ARG:Ｖ経験 += 2
+					IF RAND:6 != 0
+						SIF TALENT:ARG:未熟 != 1 && TALENT:ARG:ふたなり > 0
+							EXP:ARG:射精経験 += 1
+						SIF TALENT:ARG:母乳体質 > 0 && RAND:2 == 0
+							EXP:ARG:噴乳経験 += 1
+					ENDIF	
+				ELSEIF OPTION:3 == 1 && EXP:ARG:Ｖ経験 == 0
+					EXP:ARG:Ｖ経験 += 1
+					IF RAND:4 != 0
+						SIF TALENT:ARG:未熟 != 1 && TALENT:ARG:ふたなり > 0
+							EXP:ARG:射精経験 += 1
+						SIF TALENT:ARG:母乳体質 > 0 && RAND:2 == 0
+							EXP:ARG:噴乳経験 += 1
+					ENDIF					
+				ELSEIF RAND:10 == 0
+					EXP:ARG:異常経験 += 1
+					IF RAND:3 == 0 && TALENT:ARG:処女 == 0
+						EXP:ARG:Ｖ拡張経験 += 1
+					ELSEIF RAND:2 == 0
+						EXP:ARG:Ａ拡張経験 += 1
+					ELSE
+						EXP:ARG:放尿経験 += 1
+					ENDIF
+				ELSEIF RAND:3 == 0 && TALENT:ARG:処女 == 0
+					EXP:ARG:Ｖ経験 += 1
+					IF RAND:4 != 0
+						SIF TALENT:ARG:未熟 != 1 && TALENT:ARG:ふたなり > 0
+							EXP:ARG:射精経験 += 1
+						SIF TALENT:ARG:母乳体質 > 0 && RAND:2 == 0
+							EXP:ARG:噴乳経験 += 1
+					ENDIF
+				ELSEIF RAND:2 == 0
+					EXP:ARG:Ａ経験 += 1
+					IF RAND:4 != 0
+						SIF TALENT:ARG:未熟 != 1 && TALENT:ARG:ふたなり > 0
+							EXP:ARG:射精経験 += 1
+						SIF TALENT:ARG:母乳体質 > 0 && RAND:2 == 0
+							EXP:ARG:噴乳経験 += 1
+					ENDIF
+				ELSE
+					EXP:ARG:フェラ経験 += 1
+				ENDIF
+				SIF RAND:4 == 0 && TALENT:ARG:マゾ気質 > 0
+					EXP:ARG:苦痛快楽経験 += 1
+				SIF RAND:2 == 0 && TALENT:ARG:献身的 > 0
+					EXP:ARG:奉仕快楽経験 += 1
+			ENDIF
+		NEXT
+		;出産経験
+		IF OPTION:3 == 1 && EXP:ARG:Ｖ経験 > 0
+			EXP:ARG:出産経験 += 1
+			SIF RAND:10 == 0 && EXP:ARG:Ｖ経験 >= 3
+				EXP:ARG:出産経験 += 1
+		ELSEIF OPTION:3 == 2 && EXP:ARG:Ｖ経験 > 0
+			EXP:ARG:出産経験 += 1
+			SIF EXP:ARG:Ｖ経験 >= 2
+				EXP:ARG:出産経験 += 1
+			SIF RAND:10 == 0 && EXP:ARG:Ｖ経験 >= 5
+				EXP:ARG:出産経験 += 1
+			SIF RAND:10 == 0 && EXP:ARG:Ｖ経験 >= 7
+				EXP:ARG:出産経験 += 1
+			SIF RAND:20 == 0 && EXP:ARG:Ｖ経験 >= 8
+				EXP:ARG:出産経験 += 1
+			SIF RAND:20 == 0 && EXP:ARG:Ｖ経験 >= 9
+				EXP:ARG:出産経験 += 1
+		ENDIF
+		;魅了
+		SIF OPTION:2 == 1 && RAND:4 == 0
+			EXP:ARG:魅了経験 += 1 + RAND:3
+		;近親相姦
+		LOCAL = 0
+		IF TALENT:ARG:交際相手 == 0 && OPTION:2 == 0
+			IF OPTION:1 == 2 && RAND:4 == 0
+				LOCAL = 1
+			ELSEIF OPTION:1 == 1 && RAND:8 == 0
+				LOCAL = 1
+			ELSEIF OPTION:1 == 0 && RAND:12 == 0
+				LOCAL = 1
+			ENDIF
+			SIF TALENT:ARG:清純派 > 0 && RAND:2 == 0
+				LOCAL = 0
+		ENDIF
+		SIF LOCAL > 0
+			PRINTFORMW 特殊判定：近親相姦したことがある
+		IF LOCAL > 0
+			FOR LOCAL, 0, SEX_NUM
+				SIF RAND:4 != 0
+					EXP:ARG:近親交配経験 += 1
+			NEXT
+		ENDIF
+	ENDIF
+	SEX_NUM = 0
+
+	CLEARLINE LINECOUNT - LCOUNT
+	GOTO INPUT_LOOP
+ELSEIF RESULT == 200
+	;経験を全てリセット
+	FOR LOCAL, 0, 99
+		EXP:ARG:LOCAL = 0
+	NEXT
+	VARSET OPTION
+	CLEARLINE LINECOUNT - LCOUNT
+	GOTO INPUT_LOOP
+ELSEIF RESULT == 999
+ELSE
+	CLEARLINE LINECOUNT - LCOUNT
+	GOTO INPUT_LOOP
+ENDIF
+
+
+@FIRSTSETTING_PRINT_EXP, ARG
+FOR LOCAL, 0, 99
+	SIF EXP:ARG:LOCAL > 0
+		PRINTFORM %EXPNAME:LOCAL%({EXP:ARG:LOCAL}) 
+	IF LOCAL == 39
+		PRINTL 
+		PRINT 　
+	ENDIF
+NEXT
+
+

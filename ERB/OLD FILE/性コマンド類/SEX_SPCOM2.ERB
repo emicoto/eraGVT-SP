@@ -1,0 +1,263 @@
+;A攻めSP
+
+;性コマンド分類
+@SEX_TYPE_COM1002
+RETURN 挿入
+
+@SEX_SPCOM2
+;EX_COM	追加責め実行部位（ビット）
+;	1：Ｃ　2：Ｖ　4：Ａ　8：Ｂ
+;追加責め
+CALL SEX_COMEX_RANDOM, Ａ
+EX_COM = RESULT:0
+SH_COM = RESULT:1
+
+;前貼りが残っている場合はＶ追加攻めフラグを折る
+SIF CFLAG:42 == 398 && CLOTH_INNER_PER > 0 && (EX_COM & 膣)
+	EX_COM -= 膣
+;アナルプレイはＶ挿入しない場合
+SIF CONFIG_CHECK_OTHER_F(7) > 0 && (EX_COM & 膣)
+	EX_COM -= 膣
+
+;清純派なら１度だけ自動でＶ防御
+SIF TALENT:清純派 > 0 && TCVAR:2 != 100 && (EX_COM & 膣)
+	CALL AUTO_V_DEFENCE, TARGET
+
+;射精部位フラグ:アナルを立てる
+IF BASE:Ａ結界耐久力 <= 0
+	TFLAG:4 = TFLAG:4 | アナル
+	INSERT = INSERT | アナル
+ENDIF
+;Ｖ追加攻めがあるなら膣射精フラグを立てる
+IF (EX_COM & 膣) && TCVAR:2 != 体勢：Ｖ防御 && BASE:Ｖ結界耐久力 <= 0
+	TFLAG:4 = TFLAG:4 | 膣
+	INSERT = INSERT | 膣
+ENDIF
+
+;悪堕ちキャラのペニス位置をセット
+SIF FLAG:110 == 1 && (TALENT:(FLAG:111):オトコ > 0 || TALENT:(FLAG:111):ふたなり > 0)
+	TFLAG:18 = アナル
+
+;取得パラメータ計算
+;ベース値の明示的初期化
+REPEAT 12
+	LOCAL:COUNT = 0
+REND
+
+;油断度の上昇
+TFLAG:3 += 100
+
+;射精値 450
+CALL TENTACLE_SYASEI_UP, 450
+
+;触手サイズの設定
+CALL SET_TENTACLE_SIZE, FLAG:10, FLAG:11, FLAG:110, FLAG:111, 1002
+
+;処女なら苦痛が大量に入る
+IF TALENT:処女 > 0 && (EX_COM & 2) && TCVAR:2 != 体勢：Ｖ防御 && BASE:Ｖ結界耐久力 <= 0
+	LOCAL:10 = 10000
+	CALL LOSTVIRGIN
+ELSE
+	LOCAL:10 = 0
+ENDIF
+
+;地の文：洗脳/悪堕ちキャラが操作キャラにA攻めSPをした
+SIF FLAG:110 == 1
+	CALL MESSAGE_OTHER_SEX_SPCOM2
+
+;地の文:SPCOM2
+CALL MESSAGE_SEX_SPCOM2, EX_COM, SH_COM
+
+;結界による触手本数の変動
+CALL SET_TENTACLE_POOL
+;服へのダメージ
+CALL CLOTH_BATTLE_DAMAGE, 8
+
+;ベース
+SIF (EX_COM & Ｖ)
+	EXP:Ｖ経験 += 2
+SIF (EX_COM & Ａ)
+	EXP:Ａ経験 += 3
+EXP:フェラ経験 += 1
+EXP:苦痛快楽経験 += 1
+IF EX_COM & Ｖ || EX_COM & Ａ
+	SIF FLAG:110 == 0 && INCEST_F(TARGET, FLAG:10 * 100 + FLAG:11, 1) > 0
+		EXP:近親交配経験 += 1
+	SIF FLAG:110 == 1 && INCEST_F(TARGET, FLAG:111) > 0
+		EXP:近親交配経験 += 1
+ENDIF
+
+;快A　感覚が低いうちは少なめ
+IF ABL:Ａ感覚 == 0
+	LOCAL:2 = 1000
+ELSEIF ABL:Ａ感覚 == 1
+	LOCAL:2 = 2000
+ELSEIF ABL:Ａ感覚 == 2
+	LOCAL:2 = 4000
+ELSEIF ABL:Ａ感覚 == 3
+	LOCAL:2 = 10000
+ELSEIF ABL:Ａ感覚 == 4
+	LOCAL:2 = 20000
+ELSEIF ABL:Ａ感覚 >= 5
+	LOCAL:2 = 40000
+ENDIF
+;竿持ちの場合
+IF (TALENT:ふたなり > 0 || TALENT:オトコ > 0 )
+;快C
+     IF ABL:Ａ感覚 == 0
+	  LOCAL:0 = 15
+      ELSEIF ABL:Ａ感覚 == 1
+	  LOCAL:0 = 100
+      ELSEIF ABL:Ａ感覚 == 2
+	  LOCAL:0 = 300
+      ELSEIF ABL:Ａ感覚 == 3
+	  LOCAL:0 = 650
+      ELSEIF ABL:Ａ感覚 == 4
+	  LOCAL:0 = 1200
+      ELSEIF ABL:Ａ感覚 >= 5
+	  LOCAL:0 = 3000
+     ENDIF
+ENDIF
+;屈服
+IF ABL:Ａ感覚 == 0
+	LOCAL:8 = 200
+ELSEIF ABL:Ａ感覚 == 1
+	LOCAL:8 = 400
+ELSEIF ABL:Ａ感覚 == 2
+	LOCAL:8 = 1000
+ELSEIF ABL:Ａ感覚 == 3
+	LOCAL:8 = 2000
+ELSEIF ABL:Ａ感覚 == 4
+	LOCAL:8 = 4000
+ELSEIF ABL:Ａ感覚 >= 5
+	LOCAL:8 = 9000 + ABL:Ａ感覚 * 200
+ENDIF
+
+;潤滑が低いと苦痛が入る
+IF ABL:Ａ感覚 < 3
+	IF PALAM:潤滑 < 100
+		LOCAL:10 += 50000
+	ELSEIF PALAM:潤滑 < 10000
+		LOCAL:10 += 5000
+	ELSE
+		LOCAL:10 += 500
+	ENDIF
+ELSE
+	IF PALAM:潤滑 < 100
+		LOCAL:10 += 5000
+	ELSEIF PALAM:潤滑 < 10000
+		LOCAL:10 += 500
+	ELSE
+		LOCAL:10 += 50
+	ENDIF
+ENDIF
+
+;感覚が低いと恐怖が入る
+IF ABL:Ａ感覚 == 0
+	LOCAL:11 = 10000
+ELSEIF ABL:Ａ感覚 == 1
+	LOCAL:11 = 5000
+ELSEIF ABL:Ａ感覚 == 2
+	LOCAL:11 = 2000
+ELSEIF ABL:Ａ感覚 == 3
+	LOCAL:11 = 1000
+ELSEIF ABL:Ａ感覚 == 4
+	LOCAL:11 = 500
+ELSE
+ENDIF
+
+;習得
+IF ABL:技巧 == 0
+	LOCAL:6 = 100
+ELSEIF ABL:技巧 == 1
+	LOCAL:6 = 200
+ELSEIF ABL:技巧 == 2
+	LOCAL:6 = 500
+ELSEIF ABL:技巧 == 3
+	LOCAL:6 = 1000
+ELSEIF ABL:技巧 == 4
+	LOCAL:6 = 2000
+ELSEIF ABL:技巧 >= 5
+	LOCAL:6 = 5000
+ENDIF
+
+;恭順
+IF ABL:従順 <= 2
+	LOCAL:5 = 200
+ELSEIF ABL:従順 == 3
+	LOCAL:5 = 500
+ELSEIF ABL:従順 == 4
+	LOCAL:5 = 1000
+ELSEIF ABL:従順 >= 5
+	LOCAL:5 = 2000
+ENDIF
+
+;奉仕精神に応じてボーナス
+IF ABL:奉仕精神 < 3
+ELSEIF ABL:奉仕精神 < 4
+	LOCAL:5 += 500
+	LOCAL:6 += 200
+ELSEIF ABL:奉仕精神 < 5
+	LOCAL:5 += 1000
+	LOCAL:6 += 500
+ELSE
+	LOCAL:5 += 2000
+	LOCAL:6 += 1000
+ENDIF
+
+SIF BASE:Ａ結界耐久力 > 0
+	LOCAL:10 /= 2
+SIF BASE:Ａ結界耐久力 > 0
+	LOCAL:11 /= 2
+
+;追加責め実行
+IF EX_COM
+	CALL SEX_COMEX, Ａ, 2, EX_COM | SH_COM
+	REPEAT 12
+		LOCAL:COUNT += RESULT:COUNT
+	REND
+ENDIF
+
+;性耐性が残り50%以上なら派生しにくい
+IF PERCENT_CAL_F(BASE:性耐性, MAXBASE:性耐性) >= 50 && RAND:2 == 0
+;ＶＡ挿入成功＆射精ゲージ不足なら両穴ピストン＋強拘束状態
+ELSEIF (EX_COM & Ｖ) && (EX_COM & Ａ) && FLAG:15 < FLAG:14 && BASE:Ｖ結界耐久力 == 0 && BASE:Ａ結界耐久力 == 0 && TCVAR:2 != 体勢：Ｖ防御 && FLAG:10 != 2 && TALENT:オトコ <= 0
+	TFLAG:17 = 19
+	;状態異常：強拘束
+	CALL STATE_CHANGE_PKOUSOKU, 100
+;Ａ挿入成功＆射精ゲージ不足ならアナルピストン＋強拘束状態
+ELSEIF (EX_COM & Ａ) && FLAG:15 < FLAG:14 && BASE:Ａ結界耐久力 == 0 && FLAG:10 != 2 && (TALENT:オトコ <= 0 || FILTER_CHECK_F(5) == 0)
+	TFLAG:17 = 17
+	;状態異常：強拘束
+	CALL STATE_CHANGE_PKOUSOKU, 100
+ELSE
+	;行動予約なし
+	TFLAG:17 = -1
+ENDIF
+;触手の行動を記録
+TFLAG:20 = 1002
+
+;習得基本値
+LOCAL:6 += 1500
+
+;欲情基本値
+LOCAL:7 += 0
+
+;屈服基本値
+LOCAL:8 += 2000
+
+;恥情基本値
+LOCAL:9 += 0
+
+;苦痛基本値
+LOCAL:10 += 1000
+
+;恐怖基本値
+LOCAL:11 += 1000
+
+;体力消費基本値
+LOCAL:12 += 200
+
+;計算へ
+CALL PALAM_CAL, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, LOCAL:12
+

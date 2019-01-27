@@ -1,0 +1,489 @@
+;**********************************************************
+;戦闘のサブイベント類
+;AFTERTRAIN.ERBから呼ばれるものはSUBEVENT_BATTLEENDに
+;SOURCE.ERBから呼ばれるものは各自個別の関数に
+
+@SUBEVENT_BATTLEEND
+;戦闘後自慰
+;絶頂禁止の解放
+SIF TCVAR:40 > 0
+	CALL SUBEVENT_RELEASE_ECSTASY
+;時間切れか勝利時（撤退も）に条件を満たせば自慰をする
+SIF TFLAG:98 == 0 || TFLAG:98 == 1
+	CALL SELF_BATTLEEND, TARGET
+
+;これ以降はSOURCE.ERBから呼ばれる個別イベント
+
+;----------------------------------------------------------
+;サブイベントの計算前の初期化
+@SUBEVENT_BATTLE_PRECALCRESET
+VARSET NOWEX, 0
+
+;----------------------------------------------------------
+;悪堕ちキャラに敗北して犯される
+@SUBEVENT_BATTLE_RAPED_ENEMY
+
+;パラメータの取得は暫定値（β３）
+;ベース値の明示的初期化
+REPEAT 12
+	LOCAL:COUNT = 0
+REND
+;屈服
+LOCAL:8 = 2000
+;恥情
+LOCAL:9 = 2000
+
+;地の文：レイプする側
+CALL MESSAGE_OTHER_SUBEVENT_BATTLE_RAPE_ENEMY
+
+;地の文：悪堕ちキャラに敗北して犯される
+CALL MESSAGE_SUBEVENT_BATTLE_RAPED_ENEMY
+
+
+;被姦経験を加算
+EXP:被姦経験 += 1
+
+;計算へ
+
+;サブイベントの計算前の初期化
+CALL SUBEVENT_BATTLE_PRECALCRESET
+
+CALL PALAM_CAL, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11
+
+;----------------------------------------------------------
+;触手拘束具の強制装着
+@SUBEVENT_BATTLE_SETTENTACLECLOTH
+SIF CFLAG:42 == 400
+	RETURN 0
+
+LOCAL = 0
+IF CFLAG:1 == 0
+	SIF TCVAR:21 == 0 && TCVAR:25 == 0
+		LOCAL = 1
+ELSE
+	SIF TCVAR:23 == 0 && TCVAR:25 == 0
+		LOCAL = 1
+ENDIF
+
+LOCAL:1 = 20 - MIN(FLAG:45 * 12, 12)
+IF LOCAL == 1 && RAND(100) < LOCAL:1
+	CFLAG:42 = 400
+	;地の文：触手拘束具を着せられた
+	CALL MESSAGE_SUBEVENT_BATTLE_SETTENTACLECLOTH
+ENDIF
+
+;----------------------------------------------------------
+;触手拘束具による被姦
+@SUBEVENT_BATTLE_ACTTENTACLECLOTH
+#DIM LCOUNT
+SIF CFLAG:42 != 400
+	RETURN 0
+
+;取得パラメータ計算
+;β２時点では微々たる上昇で
+;ベース値の明示的初期化
+REPEAT 12
+	LOCAL:COUNT = 0
+REND
+
+;快C
+LOCAL:0 = 200
+;快V
+LOCAL:1 = 100
+;快A
+LOCAL:2 = 100
+;快B
+LOCAL:3 = 200
+
+;地の文：触手拘束具による被姦
+CALL MESSAGE_SUBEVENT_BATTLE_ACTTENTACLECLOTH
+
+;被姦経験を加算
+EXP:被姦経験 += 1
+
+;サブイベントの計算前の初期化
+CALL SUBEVENT_BATTLE_PRECALCRESET
+
+;計算へ
+;CALL PALAM_CAL, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11
+;LOCALをPALAM補正に加算する
+FOR LCOUNT, 0, 13
+	COMMON_PALAM:LCOUNT += LOCAL:LCOUNT
+NEXT
+
+
+
+;----------------------------------------------------------
+;絶頂禁止の解放
+@SUBEVENT_RELEASE_ECSTASY
+#DIM LCOUNT
+SIF TCVAR:40 <= 0
+	RETURN 0
+
+VARSET NOWEX
+FOR LCOUNT, 0, 感覚数
+	CALL PALAM_ECSTASY, LCOUNT, 0, LCOUNT, 0
+NEXT
+
+;絶頂回数と珠の取得
+LOCAL = 0
+REPEAT 感覚数
+	SIF NOWEX:COUNT > 0
+		LOCAL += 1
+REND
+EXP:絶頂経験 += NOWEX:Ｃ絶頂 * LOCAL
+JUEL:快Ｃ += 1000 * NOWEX:Ｃ絶頂 * LOCAL
+EXP:絶頂経験 += NOWEX:Ｖ絶頂 * LOCAL
+JUEL:快Ｖ += 1000 * NOWEX:Ｖ絶頂 * LOCAL
+EXP:絶頂経験 += NOWEX:Ａ絶頂 * LOCAL
+JUEL:快Ａ += 1000 * NOWEX:Ａ絶頂 * LOCAL
+EXP:絶頂経験 += NOWEX:Ｂ絶頂 * LOCAL
+JUEL:快Ｂ += 1000 * NOWEX:Ｂ絶頂 * LOCAL
+
+EXP:露出快楽経験 += LOCAL
+
+IF NOWEX:0 + NOWEX:1 + NOWEX:2 + NOWEX:3
+	PRINTL 
+	;地の文：絶頂禁止の解放
+	SIF TFLAG:98 != 2
+		CALL MESSAGE_SUBEVENT_BATTLE_RELEASE_ECSTASY
+	;絶頂の表示
+	IF NOWEX:Ｃ絶頂 == 1
+		;地の文：C絶頂
+		CALL MESSAGE_SEX_ECSTASY_C
+	ELSEIF NOWEX:Ｃ絶頂 > 1
+		;地の文：C強絶頂
+		CALL MESSAGE_SEX_ECSTASY_C_HI, NOWEX:Ｃ絶頂
+	ENDIF
+	IF NOWEX:Ｖ絶頂 == 1
+		;地の文：V絶頂
+		CALL MESSAGE_SEX_ECSTASY_V
+	ELSEIF NOWEX:Ｖ絶頂 > 1
+		;地の文：V強絶頂
+		CALL MESSAGE_SEX_ECSTASY_V_HI, NOWEX:Ｖ絶頂
+	ENDIF
+	IF NOWEX:Ａ絶頂 == 1
+		;地の文：A絶頂
+		CALL MESSAGE_SEX_ECSTASY_A
+	ELSEIF NOWEX:Ａ絶頂 > 1
+		;地の文：A強絶頂
+		CALL MESSAGE_SEX_ECSTASY_A_HI, NOWEX:Ａ絶頂
+	ENDIF
+	IF NOWEX:Ｂ絶頂 == 1
+		;地の文：B絶頂
+		CALL MESSAGE_SEX_ECSTASY_B
+	ELSEIF NOWEX:Ｂ絶頂 > 1
+		;地の文：B強絶頂
+		CALL MESSAGE_SEX_ECSTASY_B_HI, NOWEX:Ｂ絶頂
+	ENDIF
+ENDIF
+TCVAR:40 = 0
+
+
+;---------------------------------------------------------------------------
+;オート振り解きの処理
+@AUTO_UNTANGLE
+;気絶中は不可
+IF (TCVAR:12 & 気絶)
+	TFLAG:22 = 1
+	RETURN
+ENDIF
+;恍惚中は不可
+IF (TCVAR:12 & 恍惚)
+	TFLAG:22 = 1
+	RETURN
+ENDIF
+;わざと捕まった場合は不可
+IF SELECTCOM == 69
+	TFLAG:22 = 1
+	RETURN
+ENDIF
+IF TCVAR:0 == 0
+	SIF TFLAG:22 > 0
+		RETURN
+
+	;キャラの体力＋気力の残量求める
+	LOCAL:0 = PERCENT_CAL_F(BASE:体力 * 2 + BASE:気力, MAXBASE:体力 * 2 + MAXBASE:気力)
+	;消耗度の最低値は防御力依存
+	SIF LOCAL:0 < MIN(SQRT(MAX(BASE:防御 - 100, 0)) * 4, 50)
+		LOCAL:0 = MIN(SQRT(MAX(BASE:防御 - 100, 0)) * 4, 50)
+	;SP変身中は気力体力の減少による影響を受けない
+	SIF CFLAG:1 == 2
+		LOCAL:0 = 100
+	;防御基礎値を見る
+	LOCAL:0 = MAX(LOCAL:0 * MIN(SQRT(MAX(BASE:防御 - 100, 0)) * 4, 75) / 100 - POWER(MAX(CFLAG:99,0),2), 0) + 5
+	;「EX:防」中は成功率アップ
+	SIF GETBIT(TCVAR:3, 1)
+		LOCAL:0 += 50
+
+	;確率判定
+	IF RAND:100 < LOCAL:0
+		PRINTL 
+		FONTBOLD
+		PRINTL オート振り解き
+		FONTREGULAR
+		;地の文：振り解く
+		CALL MESSAGE_BATTLE_CHARA_HURIHODOKU
+
+		TCVAR:0 = 2
+		TFLAG:4 = 0
+
+		;地の文：振り解く成功
+		CALL MESSAGE_BATTLE_CHARA_HURIHODOKU_SUCCESS
+		;地の文：洗脳/悪堕ちキャラが操作キャラに振り解かれてしまった
+		SIF FLAG:110 == 1
+			CALL MESSAGE_OTHER_BATTLE_CHARA_HURIHODOKU_SUCCESS
+
+		;自動で戦闘メニューを選択する
+		TCVAR:8 = 1
+
+		TFLAG:1 = 0
+		IF FLAG:110 == 0
+			CALL TENTACLE_ACCESS, "NAME"
+		ELSEIF FLAG:110 == 1
+			PRINTFORM %PRINT_TRANSCALLNAME(FLAG:111)%
+		ENDIF
+		PRINTL は体勢を立て直している・・・
+		PRINTL 
+	ELSE
+		PRINTL 
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はがっちり拘束されて身動きできない・・・
+		PRINTL 
+		TFLAG:22 = 1
+	ENDIF
+ELSE
+	TFLAG:22 = 0
+ENDIF
+
+
+
+
+;---------------------------------------------------------------------------
+;触手服の処理
+@SUBEVENT_BATTLE_ACTTENTACLESUIT
+#DIM LCOUNT
+SIF CFLAG:1 == 0 && CFLAG:40 != 199
+	RETURN 0
+SIF CFLAG:1 > 0 && CFLAG:41 != 199
+	RETURN 0
+VARSET LOCAL
+;テンタクルスーツの名前をLOCALSに代入
+IF CFLAG:1 == 0 && CSTR:8 != ""
+	LOCALS = %CSTR:8%
+ELSEIF CSTR:9 != ""
+	LOCALS = %CSTR:9%
+ELSE
+	LOCALS = %ITEMNAME:199%
+ENDIF
+
+IF BASE:性耐性 > 0
+	LOCAL = (BASE:性耐性 / 50) + 5 + RAND:5
+	BASE:性耐性 = MAX(BASE:性耐性 - LOCAL, 0)
+	PRINTL 
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は性耐性を{LOCAL}消費した！
+	SIF BASE:性耐性 == 0
+		PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%の性耐性が尽きてしまった！
+	PRINTW 
+ELSEIF BASE:性耐性 == 0
+	PRINTL 
+	;取得パラメータ計算
+	;ベース値の明示的初期化
+	REPEAT 12
+		LOCAL:COUNT = 0
+	REND
+
+	;快C
+	LOCAL:0 = 500
+	;快V
+	LOCAL:1 = 250
+	;快A
+	LOCAL:2 = 500
+	;快B
+	LOCAL:3 = 500
+	;潤滑
+	LOCAL:4 = 200
+
+	;地の文：触手拘束具による被姦
+	CALL MESSAGE_SUBEVENT_BATTLE_ACTTENTACLESUIT
+	IF TCVAR:0 == 0
+		TCVAR:2 = 体勢：通常
+	ELSEIF TCVAR:41 == 1
+		;快V
+		LOCAL:1 = 1000
+		;快A
+		LOCAL:2 = 1000
+		;潤滑
+		LOCAL:4 = 2000
+
+		;処女なら苦痛が大量に入る
+		IF TALENT:処女 > 0
+			LOCAL:10 = 10000
+			TALENT:処女 = -1
+			CFLAG:206 = 4
+			TCVAR:1 = 1
+		ELSE
+			LOCAL:10 = 0
+		ENDIF
+	ELSEIF TCVAR:41 == 2
+		;快V
+		LOCAL:1 = 2000
+		;快A
+		LOCAL:2 = 2000
+
+	ELSEIF TCVAR:41 == 3
+		FONTBOLD
+		PRINTL 膣内大量射精
+		FONTREGULAR
+		PRINTFORML %LOCALS%の触手と%PRINT_TRANSCALLNAME(TARGET)%の膣口の隙間から、収まりきらない精液が溢れ出した
+		TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEX_TENTACLE_SYASEI_VAGINA_HI")
+		PRINTL 
+		FONTBOLD
+		PRINTL アナル大量射精
+		FONTREGULAR
+		PRINTFORM %LOCALS%によって直腸に大量に流し込まれた精液により、%PRINT_TRANSCALLNAME(TARGET)%の
+		;服破れてる？
+		IF CLOTH_CHECK(TARGET) == 0
+			PRINT 露になった白い腹は、
+		ELSEIF TCVAR:25 > 0 && (CFLAG:42 == 305 || CFLAG:42 == 306)
+			PRINT 腹は%ITEMNAME:(CFLAG:42)%を押し上げ、
+		ELSE
+			PRINTFORM 腹は%COSTUME_NAME(TARGET)%を押し上げ、
+		ENDIF
+		PRINTFORML ぽっこりと膨らんでしまっている…
+		TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEX_TENTACLE_SYASEI_ANAL_HI")
+		PRINTL 
+		;快V
+		LOCAL:1 = 8000
+		;快A
+		LOCAL:2 = 8000
+
+		;汚れ
+		STAIN:3 |= 4
+		STAIN:4 |= 4
+		;妊娠確率 出産後の中だし回数と今までの出産経験に応じ可能性が増える
+		CALL NINSIN_HANTEI,2,3,200
+
+		EXP:精液経験 += 2
+	ELSEIF TCVAR:41 >= 4
+		FONTBOLD
+		PRINTL 膣内射精
+		FONTREGULAR
+		PRINTFORML %LOCALS%は%PRINT_TRANSCALLNAME(TARGET)%の膣内に精液を流し込んだ
+		TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEX_TENTACLE_SYASEI_VAGINA")
+		PRINTL 
+		FONTBOLD
+		PRINTL アナル射精
+		FONTREGULAR
+		PRINTFORML %LOCALS%は%PRINT_TRANSCALLNAME(TARGET)%の直腸に精液を流し込んだ
+		TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEX_TENTACLE_SYASEI_ANAL")
+		PRINTL 
+		;快V
+		LOCAL:1 = 4000
+		;快A
+		LOCAL:2 = 4000
+
+		;妊娠確率 出産後の中だし回数と今までの出産経験に応じ可能性が増える
+		CALL NINSIN_HANTEI,1,3,200
+
+		EXP:精液経験 += 1
+	ENDIF
+
+	;被姦経験を加算
+	EXP:被姦経験 += 1
+
+	IF TCVAR:0 == 0
+		TCVAR:41 = -1
+	ELSEIF TCVAR:41 == -1
+		TCVAR:41 = 1
+	ELSE
+		TCVAR:41 ++
+	ENDIF
+	;サブイベントの計算前の初期化
+	CALL SUBEVENT_BATTLE_PRECALCRESET
+
+	;計算へ
+	;LOCALをPALAM補正に加算する
+	FOR LCOUNT, 0, 13
+		COMMON_PALAM:LCOUNT += LOCAL:LCOUNT
+	NEXT
+ENDIF
+
+
+
+;---------------------------------------------------------------------------
+;発情によって排卵してしまう（現状では種族：ケモミミのみ）
+@HATUJOU_TO_HAIRAN
+SIF TALENT:ケモミミ族 == 0
+	RETURN 0
+SIF TALENT:オトコ > 0
+	RETURN 0
+SIF TALENT:妊娠 > 0
+	RETURN 0
+SIF (TCVAR:12 & 排卵) > 0
+	RETURN 0
+SIF (TCVAR:12 & 発情) == 0
+	RETURN 0
+;毎ターンの発生率10%
+SIF RAND:100 >= 10
+	RETURN 0
+
+IF TALENT:主観視点 > 0
+	PRINTFORML 激しい動悸を感じる…
+ELSE
+	PRINTFORML 突如、%PRINT_CALLNAME(TARGET)%は激しい動悸に見舞われた。
+ENDIF
+PRINTFORML 媚薬の効果により、強制的に発情期を迎えさせられたことで
+IF TFLAG:7 > 0
+	SIF TFLAG:7 >= 2
+		PRINTFORM たっぷりと
+	PRINTFORM 子種を注がれた
+ELSEIF	EXP:出産経験 >= 20
+	PRINTFORM これまで幾度となく孕まされてきた
+ENDIF
+PRINTFORM %PRINT_CALLNAME(TARGET)%の
+IF TALENT:主観視点 > 0 && TALENT:清純派 > 0
+	PRINTFORM 下腹の奥
+ELSE
+	PRINTFORM 子宮
+ENDIF
+PRINTFORM が
+SIF !(MESSAGE_BRANCH_F(TARGET) & 堕落) && !(MESSAGE_BRANCH_F(TARGET) & 快楽蕩け)
+	PRINTFORM 意思に反して
+SIF TFLAG:7 == 0 && EXP:出産経験 >= 20
+	PRINTFORM 再び
+IF TFLAG:7 == 0
+	PRINTFORM キュンキュンと切なく疼き
+	IF TALENT:主観視点 > 0
+		PRINTFORML だす。
+	ELSE
+		PRINTFORML 、
+		IF FLAG:96 == 0
+			PRINTFORM 子作り交尾の
+		ELSE
+			PRINTFORM 子孫を宿す
+		ENDIF
+		PRINTFORML 準備を始めてしまう。
+	ENDIF
+ELSE
+	PRINTFORM ジリジリと熱く火照
+	IF TALENT:主観視点 > 0
+		PRINTFORML っている。
+	ELSE
+		PRINTFORML り、
+		PRINTFORML 子孫を宿そうとしている。
+	ENDIF
+ENDIF
+PRINTW 
+PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%は発情によって
+FONTBOLD
+SETCOLOR 150,0,250
+PRINT [排卵]
+RESETCOLOR
+FONTREGULAR
+PRINTL してしまった！
+PRINTW 
+TCVAR:12 |= 排卵
+
+RETURN 1
+
+

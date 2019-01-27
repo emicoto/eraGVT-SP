@@ -1,0 +1,102 @@
+;**********************************************************
+;Šî–{ƒ‹[ƒ‹
+;‰Á•MC³‚ÍAŽ©—R‚És‚Á‚Ä‚­‚¾‚³‚¢
+;‚½‚¾‚µA‘O‚Ì•û‚ª‘‚¢‚½•¶Í‚Í¬‚é‚×‚­Á‚³‚È‚¢‚Å‚­‚¾‚³‚¢
+
+;Œûq‚Å‚Ìuãè–åv‚È‚Ì‚ÅA“f‘§‚â‹l‚Ü‚Á‚½•\Œ»‚È‚Ç‚Í‚ ‚è‚Å‚·
+;‘Ì—Í‚â”­î‚È‚ÇAƒXƒe[ƒ^ƒX‚Å‚Ç‚à‚Á‚½‚è‚·‚é—l‚É‚µ‚Ü‚µ‚å‚¤
+;‚±‚Ì•Ï”‚ðŒÄ‚Ño‚·‚Æ‚«‚ÍA‹h‚é‚±‚Æ‚àŠÜ‚ß‚Ä‚¨Žg‚¢‚­‚¾‚³‚¢
+;
+;“à•”‚Ì’¼’°‚âŒ‹’°‚È‚Ç‚Ì•\Œ»‚ÍT‚¦‚Ü‚µ‚å‚¤
+;’°‰t‚È‚Ç•ª”å‰t‚È‚Ç‚ÍA%S_SLANG_Juice(TARGET,"’°‰t")%‚Å—pˆÓ‚µ‚Ä‚¢‚Ü‚·
+;
+;‘‚â‚µ‚Ä—~‚µ‚¢‰BŒê‚ÍAƒAƒEƒgƒvƒbƒg‚µ‚ÄƒŠƒNƒGƒXƒg‚È‚è‚µ‚Ü‚µ‚å‚¤
+;–¢“o˜^‚Ì’†‚É•ú‚èž‚Þ‚È‚èAŒfŽ¦”Â‚ÉƒAƒbƒv‚·‚é‚È‚è‚·‚ê‚ÎA
+;ŽÀ‘•‚³‚ê‚é‰Â”\«‚ª‚ ‚è‚Ü‚·
+;
+;by ŽG‹›‚Ìl 2018/02/11
+;**********************************************************
+;Anal(ƒAƒiƒ‹)‚ÌˆúŒê
+;**********************************************************
+@S_SLANG_A(ARG)
+#DIMS S_SLANGWORD_A
+#FUNCTIONS
+
+;‰Šú‰»
+S_SLANGWORD_A=
+
+
+;PALAM:‰õ‚`> 2000
+
+;•”ˆÊŒÄÌ
+
+IF (TALENT:ˆúK>0) || (TALENT:ˆú—>0) || (PALAM:‰õ‚`>2000)
+	SELECTCASE RAND:4
+		CASE 3
+			S_SLANGWORD_A += "KƒIƒiƒz"
+		CASE 2
+			S_SLANGWORD_A += "ƒAƒiƒ‹"
+		CASEELSE
+			;Kƒ}ƒ“ƒR
+			SELECTCASE RAND:2
+				CASE 1
+					S_SLANGWORD_A += "K"
+				CASEELSE
+					S_SLANGWORD_A += "ƒPƒc"
+			ENDSELECT
+			S_SLANGWORD_A += "ƒ}ƒ“ƒR"
+	ENDSELECT
+ELSEIF (TALENT:´ƒ”h>0) && (PALAM:‰õ‚`<2000)
+	SELECTCASE RAND:4
+		CASE 3
+			S_SLANGWORD_A += "•sò"
+		CASE 2
+			S_SLANGWORD_A += "‚¤‚ñ‚¿"
+		CASE 1
+			S_SLANGWORD_A += "Œã‚ë"
+		CASEELSE
+			S_SLANGWORD_A += "‚¨K"
+	ENDSELECT
+	S_SLANGWORD_A += "‚ÌŒŠ"
+
+ELSE
+	SELECTCASE RAND:5
+		CASE 4
+			S_SLANGWORD_A += "”rŸ•ŠíŠ¯"
+		CASE 3
+			S_SLANGWORD_A += "ƒAƒiƒ‹"
+		CASE 2
+			S_SLANGWORD_A += "‚¨K"
+		CASE 1
+			S_SLANGWORD_A += "‹e"
+			SELECTCASE RAND:3
+				CASE 2
+					S_SLANGWORD_A += "‰Ô"
+				CASE 1
+					S_SLANGWORD_A += "–å"
+				CASEELSE
+					S_SLANGWORD_A += "ŒŠ"
+			ENDSELECT
+		CASEELSE
+	ENDSELECT
+ENDIF
+
+RETURNF S_SLANGWORD_A
+
+
+;*************yˆúŒêŠo‘i–¢“o˜^jz***********************
+;ƒAƒiƒ‹ƒ[ƒY
+;ãè‰x
+;
+;
+;
+;*************yˆúŒêŠo‘i–¢“o˜^jz***********************
+;
+;*************yˆúŒêŠo‘i•Ê‚É—pˆÓ‚·‚é—\’èjz***********************
+;SŽšŒ‹’°
+;’°”S–Œ
+;’°•Ç
+;’°“¹
+;*************yˆúŒêŠo‘i•Ê‚É—pˆÓ‚·‚é—\’èjz***********************
+
+

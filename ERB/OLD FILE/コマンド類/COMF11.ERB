@@ -1,0 +1,26 @@
+;なすがまま
+@COM11
+
+;距離表示
+CALL PRINT_DISTANCE
+PRINTL 
+
+;防御フラグ：なすがままにする
+TCVAR:2 = 体勢：なすがまま
+
+;油断度の上昇
+TFLAG:3 += 25
+
+;気絶している場合
+IF (TCVAR:12 & 気絶)
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は意識を失っている…
+	PRINTW 
+ELSE
+	;地の文：距離を取る
+	CALL MESSAGE_BATTLE_CHARA_NASUGAMAMA
+	;地の文：洗脳/悪堕ちキャラが操作キャラのなすがままを見た
+	SIF FLAG:110 == 1
+		CALL MESSAGE_OTHER_BATTLE_CHARA_NASUGAMAMA
+ENDIF
+
+RETURN 1

@@ -1,0 +1,119 @@
+﻿;--------------------------------------------------
+;ボス触手のERBの数を返す
+;今はまだ１００種類までしか作れないので注意
+@GET_BOSS_ERB_NUM
+VARSET LOCAL
+LOCAL = 1
+WHILE LOCAL:1 == 0
+	TRYCCALLFORM TENTACLE_BOSS_{LOCAL}
+		LOCAL += 1
+	CATCH
+		LOCAL:1 = 1
+	ENDCATCH
+WEND
+RETURN LOCAL - 1
+
+
+;--------------------------------------------------
+;ラスボス触手のERBの数を返す
+;今はまだ１００種類までしか作れないので注意
+@GET_LASTBOSS_ERB_NUM
+VARSET LOCAL
+LOCAL = 1
+WHILE LOCAL:1 == 0
+	TRYCCALLFORM TENTACLE_LASTBOSS_{LOCAL}
+		LOCAL += 1
+	CATCH
+		LOCAL:1 = 1
+	ENDCATCH
+WEND
+RETURN LOCAL - 1
+
+
+;--------------------------------------------------
+;ボス撃破時のフラグ処理関係
+@AFTER_KILLED_BOSS
+;ターン終了までボス出現を抑制
+FLAG:49 = 1
+CALL RESEARCH_QUOTA
+
+
+;--------------------------------------------------
+;探索ノルマ
+;ボスのレベルと同様の算出方法
+@RESEARCH_QUOTA
+#DIM LCOUNT
+CALL TENTACLE_SURVIVE, "NUM"
+LOCAL:0 = MIN(FLAG:3 - RESULT + 1, 9)
+;撃破した触手の数に応じてノルマ増加
+IF FLAG:0 == 4
+	LOCAL:4 = 18
+ELSEIF FLAG:0 == 2
+	LOCAL:4 = 6
+ELSE
+	LOCAL:4 = 12
+ENDIF
+
+;計算開始
+LOCAL:1 = LOCAL:0 * LOCAL:4 / 3 + 24
+SIF FLAG:0 == 10
+	LOCAL:1 = LOCAL:1 / 2
+SIF FLAG:0 == 2
+	LOCAL:1 -= 12
+
+;日数経過による補正をかける
+IF FLAG:0 == 10
+	LOCAL:2 = SQRT(DAY) * -2
+ELSEIF FLAG:0 == 4
+	LOCAL:2 = SQRT(DAY) * 3
+ELSE
+	LOCAL:2 = SQRT(DAY) * 2
+ENDIF
+
+LOCAL:3 = LOCAL:1 + LOCAL:2
+SIF LOCAL:3 < 10
+	LOCAL:3 = 10
+IF FLAG:0 == 2 && LOCAL:3 >= 60 + RAND:5
+	LOCAL:3 = 60
+ELSEIF LOCAL:3 >= 90 + RAND:5
+	LOCAL:3 = 90
+ENDIF
+SIF FLAG:10 == 1
+	LOCAL:3 = LOCAL:3 * 6 / 5
+
+FLAG:46 = LOCAL:3
+FLAG:47 = 0
+
+
+;--------------------------------------------------
+;雑魚撃破ノルマ
+;ボスのレベルと同様の算出方法
+@MOB_KILL_QUOTA
+CALL TENTACLE_SURVIVE, "NUM"
+LOCAL:0 = MIN(FLAG:3 - RESULT + 1, 9)
+;撃破した触手の数に応じてノルマ増加
+IF FLAG:0 == 4
+	LOCAL:4 = 3
+ELSEIF FLAG:0 == 2
+	LOCAL:4 = 1
+ELSE
+	LOCAL:4 = 2
+ENDIF
+LOCAL:1 = LOCAL:0 * LOCAL:4 / 3 + 2
+
+;日数経過による補正をかける
+IF FLAG:0 == 4
+	LOCAL:2 = 200 * DAY / FLAG:2 / 100
+ELSE
+	LOCAL:2 = 150 * DAY / FLAG:2 / 100
+ENDIF
+
+LOCAL:3 = LOCAL:1 + LOCAL:2
+SIF FLAG:10 == 1
+	LOCAL:3 /= 2
+SIF FLAG:0 == 2 && LOCAL:3 >= 8 + RAND:5
+	LOCAL:3 = 8
+SIF LOCAL:3 >= 15 + RAND:5
+	LOCAL:3 = 15
+
+RETURN LOCAL:3

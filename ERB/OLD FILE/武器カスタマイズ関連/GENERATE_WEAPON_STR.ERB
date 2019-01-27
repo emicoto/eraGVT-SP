@@ -1,0 +1,2089 @@
+
+@GENERATE_WEAPON_STR
+#DIM LEN_VAR
+#DIM NOW_NO
+#DIM RAND_NO, 2
+#DIM SELECTED_NO, 5
+#DIM PER_VAR
+#DIM PRO_VAR
+
+#DIM 長音使用済み
+#DIM 促音使用済み
+#DIM 撥音使用済み
+#DIM 濁音使用済み
+
+#DIM CONST 語頭 = 1
+#DIM CONST 語中 = 2
+#DIM CONST 語尾 = 4
+
+#DIM CONST 長音禁止 = 1
+#DIM CONST 促音禁止 = 2
+#DIM CONST 撥音禁止 = 4
+#DIM CONST 濁音禁止 = 8
+
+#DIMS NAME_STR
+#DIMS ADD_STR
+#DIMS COM_STR, 2
+#DIMS STR_ROW
+#DIMS STR_COL
+
+
+
+VARSET NOW_NO
+VARSET SELECTED_NO
+VARSET NAME_STR
+VARSET PER_VAR
+VARSET 長音使用済み
+VARSET 促音使用済み
+VARSET 撥音使用済み
+LEN_VAR = RAND:2 + 2
+SIF FLAG:999
+	VARSET RAND_NO
+RAND_NO:0 = RAND_NO:1
+
+DO
+	IF RAND_NO > 0
+		;語尾
+		IF NOW_NO == 0
+			PER_VAR = 語尾
+		;語頭
+		ELSEIF NOW_NO == LEN_VAR - 1
+			PER_VAR = 語頭
+		;語中
+		ELSE
+			PER_VAR = 語中
+		ENDIF
+	ENDIF
+
+	長音使用済み = PRO_VAR & 長音禁止
+	促音使用済み = PRO_VAR & 促音禁止
+	撥音使用済み = PRO_VAR & 撥音禁止
+	濁音使用済み = PRO_VAR & 濁音禁止
+	VARSET PRO_VAR
+
+;====================================================================================
+
+;		 /////     ア行     /////
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = アイ
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語中 + 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = アイゼン
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = アイン
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = アー
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = アーク
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = アーリ
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = アグニ
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = アキュ
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語中) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = アス
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = アル
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = イグニ
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = イリ
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = イリアス
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語中 + 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = イル
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = イルミナ
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語中) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = イン
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語中 + 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ヴァンス
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ヴァース
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ヴァール
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ヴァーン
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ヴァルト
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ウェイン
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ヴォル
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ウルト
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ウロス
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = エウロス
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = エン
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			IF RAND:6 == 0
+				ADD_STR = エクサ
+			ELSEIF RAND:5 == 0
+				ADD_STR = エクシード
+			ELSEIF RAND:4 == 0
+				ADD_STR = エクス
+			ELSEIF RAND:3 == 0
+				ADD_STR = エクセ
+			ELSEIF RAND:2
+				ADD_STR = エグゼ
+			ELSE
+				ADD_STR = エグゾ
+			ENDIF
+
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = エリュ
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語中 + 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = オー
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = オン
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = オロス
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;		 /////     カ行     /////
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = カー
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = カッツェ
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語中 + 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ガルム
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語中 + 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ガング
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = カリス
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ギア
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語中 + 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ギオン
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = キドゥ
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = キュロス
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ギル
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = グラン
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語中) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = グラ
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = クリス
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語中) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = グリン
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = クロス
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = クロム
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語中) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = クー
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ゲー
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ゲイザー
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ゲシュ
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語中) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ゲル
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ゴーリア
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語中) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ゴル
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;		 /////     サ行     /////
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			IF RAND:2 == 0
+				ADD_STR = サヴィ
+			ELSE
+				ADD_STR = サヴァ
+			ENDIF
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = サタ
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = サテラ
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = サリア
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語中) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = シ
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語中 + 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = シア
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = シエル
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = シオン
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = シス
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = シャール
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語中) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = シュ
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = シューラ
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = シルト
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語中) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ジン
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ズィア
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = スト
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = スレイ
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語中 + 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ゼクト
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = セラフ
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ゼリウス
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語中) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ゼル
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;		 /////     タ行     /////
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ダイト
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = タイナー
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ダイン
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語中 + 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = タズマ
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語中 + 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ックス
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語中) && 促音使用済み == 0 && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ッ
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語中 + 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			IF RAND:2 == 0
+				ADD_STR = ディアス
+			ELSE
+				ADD_STR = ディオン
+			ENDIF
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語中 + 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ディッシュ
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = テイン
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語中) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ディ
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			IF RAND:2
+				ADD_STR = ティア
+			ELSE
+				ADD_STR = ディア
+			ENDIF
+
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語中 + 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ディー
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ティリオ
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			IF RAND:2
+				ADD_STR = テル
+			ELSE
+				ADD_STR = デル
+			ENDIF
+
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = デュラン
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;		 /////     ナ行     /////
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ナハトマ
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ニクス
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ネイト
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語中) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ネファ
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語中) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ネフェ
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ネリス
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ニール
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ニム
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ノエル
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;		 /////     ハ行     /////
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語中) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ハーシェ
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語中) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = バル
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = バルト
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語中) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ファー
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ファーラム
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語中) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ファル
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語中) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = フェラム
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語中) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = フェルノス
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語中) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = フェン
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語中 + 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = フォート
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			IF RAND:2
+				ADD_STR = フリート
+			ELSE
+				ADD_STR = フリード
+			ENDIF
+
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			IF RAND:2
+				ADD_STR = ブラン
+			ELSE
+				ADD_STR = フラン
+			ENDIF
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語中) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ブルト
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ベルト
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語中 + 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ベルク
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ペン
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ボルト
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ホーン
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;		 /////     マ行     /////
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = マイラ
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語中 + 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ミア
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語中 + 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ミネル
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ミッシュ
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語中 + 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = メア
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = メナス
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;		 /////     ヤ行     /////
+
+;		 /////     ラ行     /////
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ライヴ
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			IF RAND:2
+				ADD_STR = ライト
+			ELSE
+				ADD_STR = ライド
+			ENDIF
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = リウス
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = リュオン
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語中) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = リグ
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語中 + 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = リッド
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語中) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = リディル
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = リム
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭 + 語中) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = リュ
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = リュート
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語中) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = リル
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = リルニム
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = リング
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語中 + 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ルク
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ルクス
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ルディ
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語中) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ルド
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語中 + 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ルト
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語中 + 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = レア
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = レイヴ
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語中 + 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = レイド
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = レギア
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = レット
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = レーヴァ
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語頭) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = レーゼ
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語中) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = レン
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ロア
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語中) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ロウ
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語中 + 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ロック
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語中 + 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ロン
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;		 /////     ワ行     /////
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語中 + 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ワール
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語中) && 撥音使用済み == 0 && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ン
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ング
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;		 /////     記号     /////
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語中) && 長音使用済み == 0 && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ー
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ーヴァ
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ーヴォ
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ーシェ
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ーゼ
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			IF RAND:2
+				ADD_STR = ータ
+			ELSE
+				ADD_STR = ーダ
+			ENDIF
+
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			IF RAND:2
+				ADD_STR = ート
+			ELSE
+				ADD_STR = ード
+			ENDIF
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ーファ
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ーリオ
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;------------------------------------------
+	IF RAND_NO:1 == 0
+		RAND_NO:0 += 1
+	ELSE
+		RAND_NO:0 -= 1
+		IF (PER_VAR & 語尾) && RAND:RAND_NO == 0 && SELECTED_NO:NOW_NO == 0 && SELECTED_NO:0 != RAND_NO && SELECTED_NO:1 != RAND_NO && SELECTED_NO:2 != RAND_NO
+			ADD_STR = ール
+			SELECTED_NO:NOW_NO = RAND_NO
+		ENDIF
+	ENDIF
+
+;====================================================================================
+
+;要素数決定
+	IF RAND_NO:1 == 0
+		RAND_NO:1 = RAND_NO:0 + 1
+;追加文字列決定
+	ELSEIF SELECTED_NO:NOW_NO > 0
+		RAND_NO:0 = RAND_NO:1
+;禁則処理
+;「ー」の重複使用チェック
+		STRFINDU ADD_STR, "ー"
+		SIF RESULT >= 0 && RAND:3
+			PRO_VAR |= 長音禁止
+
+;「ッ」の重複使用チェック
+		STRFINDU ADD_STR, "ッ"
+		SIF RESULT >= 0 && RAND:4
+			PRO_VAR |= 促音禁止
+
+;「ン」の重複使用チェック
+		STRFINDU ADD_STR, "ン"
+		SIF RESULT >= 0 && RAND:2
+			PRO_VAR |= 撥音禁止
+
+;「ヴ」の重複使用チェック
+		STRFINDU ADD_STR, "ヴ"
+		SIF RESULT >= 0 && RAND:3
+			PRO_VAR |= 濁音禁止
+
+		IF (PRO_VAR & 長音使用済み) || (PRO_VAR & 促音使用済み) || (PRO_VAR & 撥音使用済み) || (PRO_VAR & 濁音使用済み)
+			SELECTED_NO:NOW_NO = 0
+			CONTINUE
+		ENDIF
+
+		STRLENSU ADD_STR
+;3音節なら追加文字列は少ない方が望ましい
+		IF LEN_VAR > 2 && RESULT > (RAND:10 == 0) + (RAND:10 == 0) + (RAND:10 == 0) + 2
+			SELECTED_NO:NOW_NO = 0
+			CONTINUE
+		ENDIF
+
+;追加文字列の最後尾切り出し
+		SUBSTRINGU ADD_STR, RESULT - 1, RESULT
+		COM_STR:0 = %RESULTS%
+		SUBSTRINGU ADD_STR, 0, RESULT - 1
+		ADD_STR = %RESULTS%
+
+;追加文字列の語形変化
+
+;特に意味のないリストラが文字列を襲う！
+		IF RAND:5 == 0 && NOW_NO > 0 && (COM_STR:0 == "ン" || COM_STR:0 == "ー")
+			STRLENSU ADD_STR
+			SUBSTRINGU ADD_STR, RESULT - 1, RESULT
+			COM_STR:0 = %RESULTS%
+			SUBSTRINGU ADD_STR, 0, RESULT - 1
+			ADD_STR = %RESULTS%
+		ENDIF
+
+;既存文字列の頭切り出し
+		SUBSTRINGU NAME_STR, 0, 1
+		COM_STR:1 = %RESULTS%
+		STRLENSU NAME_STR
+		SUBSTRINGU NAME_STR, 1, RESULT
+		NAME_STR = %RESULTS%
+
+;切り出した文字列の比較
+		;同じなら削る
+		IF COM_STR:0 == COM_STR:1
+			COM_STR:1 = 
+		;「ン」と「ム」の連続なら「ン」にする
+		ELSEIF COM_STR:0 == "ン"&& COM_STR:1 == "ム"
+			COM_STR:0 = ン
+			COM_STR:1 = 
+		;「ッ」と「ン」の連続ならランダムにする
+		ELSEIF (COM_STR:0 == "ッ" || COM_STR:0 == "ン") && (COM_STR:1 == "ッ" || COM_STR:1 == "ン")
+			COM_STR:0 = ッ
+			SIF RAND:2
+				COM_STR:0 = ン
+			COM_STR:1 = 
+		;「ッ」と「ー」の連続ならランダムにする
+		ELSEIF (COM_STR:0 == "ッ" || COM_STR:0 == "ー") && (COM_STR:1 == "ッ" || COM_STR:1 == "ー")
+			COM_STR:0 = ッ
+			SIF RAND:2
+				COM_STR:0 = ー
+			COM_STR:1 = 
+		;「ン」と「ー」の連続ならランダムにする
+		ELSEIF COM_STR:0 == "ン" && COM_STR:1 == "ー"
+			COM_STR:0 = ン
+			SIF RAND:2
+				COM_STR:0 = ー
+			COM_STR:1 = 
+		;母音と「ー」の連続ならランダムにする
+		ELSEIF (COM_STR:0 == "ア" || COM_STR:0 == "イ" || COM_STR:0 == "ウ" || COM_STR:0 == "エ" || COM_STR:0 == "オ") && COM_STR:1 == "ー"
+			IF RAND:2
+				COM_STR:0 = 
+			ELSE
+				COM_STR:1 = 
+			ENDIF
+		ENDIF
+		NAME_STR = %ADD_STR%%COM_STR:0%%COM_STR:1%%NAME_STR%
+		NOW_NO += 1
+	ENDIF
+	RAND_NO:0 = RAND_NO:1
+LOOP NOW_NO != LEN_VAR
+
+
+
+
+
+
+RESULTS = %NAME_STR%
+RETURN 0

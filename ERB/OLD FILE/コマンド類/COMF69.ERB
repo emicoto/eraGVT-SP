@@ -1,0 +1,29 @@
+;何もしない
+@COM69
+
+;滞空状態なら着地
+SIF GETBIT(TCVAR:216, 1)
+	TCVAR:216 = 4
+	;FEAT効果による着地時の反動
+	SIF TALENT:有翼 > 0
+		TFLAG:99 += 1
+;距離表示
+CALL PRINT_DISTANCE
+PRINTL 
+
+;防御フラグを何もしないに変更
+TCVAR:2 = 体勢：何もしない
+
+;気絶している場合
+IF (TCVAR:12 & 気絶)
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は意識を失っている…
+	PRINTW 
+ELSE
+	;地の文：何もしない
+	CALL MESSAGE_BATTLE_CHARA_NOACTION
+	;地の文：洗脳/悪堕ちキャラが操作キャラの何もしないを見た
+	SIF FLAG:110 == 1
+		CALL MESSAGE_OTHER_BATTLE_CHARA_NOACTION
+ENDIF
+
+RETURN 1

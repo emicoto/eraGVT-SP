@@ -1,0 +1,282 @@
+;--------------------------------------------------
+;ˆêŒûƒƒbƒZ[ƒWŠÖ˜A‚Ì’n‚Ì•¶
+
+@MESSAGE_FIRST
+;Œûã
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "FIRST")
+
+@MESSAGE_TURNEND
+;Œûã
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "TURNEND")
+
+;ƒVƒ‡ƒbƒv‰æ–Ê
+@MESSAGE_HITOKUTI_SHOP
+;Œûã
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "HITOKUTI_SHOP")
+
+
+
+;’b˜BŠÖ˜A‚Ì’n‚Ì•¶
+;--------------------------------------------------
+;’b—ûŠJŽn
+@MESSAGE_TRAINING_BEGIN
+;Œûã
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "TRAINING_BEGIN")
+SIF CONFIG_CHECK_SCREEN_F(3) == 0 && RESULT == 1
+	PRINTW 
+
+;--------------------------------------------------
+;’b—ûI—¹
+@MESSAGE_TRAINING_END
+;Œûã
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "TRAINING_END")
+SIF CONFIG_CHECK_SCREEN_F(3) == 0 && RESULT == 1
+	PRINTW 
+
+;--------------------------------------------------
+;‘–‚è‚±‚Ý
+@MESSAGE_TRAINING_HASHIRI
+PRINTL 
+PRINTFORML %PRINT_CALLNAME(TARGET,1)%‚Í‘–‚è‚±‚Ý‚ðŠJŽn‚µ‚½
+;Œûã
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "TRAINING_HASHIRI")
+IF CONFIG_CHECK_SCREEN_F(3) == 0
+	PRINTW 
+ELSE
+	PRINTL 
+ENDIF
+
+;--------------------------------------------------
+;¸_’b˜B
+@MESSAGE_TRAINING_SEISHIN
+PRINTL 
+PRINTFORML %PRINT_CALLNAME(TARGET,1)%‚Í¸_’b˜B‚ðŠJŽn‚µ‚½
+;Œûã
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "TRAINING_SEISHIN")
+IF CONFIG_CHECK_SCREEN_F(3) == 0
+	PRINTW 
+ELSE
+	PRINTL 
+ENDIF
+
+;--------------------------------------------------
+;áÒ‘z
+@MESSAGE_TRAINING_MEISOU
+PRINTL 
+PRINTFORML %PRINT_CALLNAME(TARGET,1)%‚ÍáÒ‘z‚ðŠJŽn‚µ‚½
+;Œûã
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "TRAINING_MEISOU")
+IF CONFIG_CHECK_SCREEN_F(3) == 0
+	PRINTW 
+ELSE
+	PRINTL 
+ENDIF
+
+;--------------------------------------------------
+;‹ØƒgƒŒ
+@MESSAGE_TRAINING_KINTORE
+PRINTL 
+PRINTFORML %PRINT_CALLNAME(TARGET,1)%‚Í‹ØƒgƒŒ‚ðŠJŽn‚µ‚½
+;Œûã
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "TRAINING_KINTORE")
+IF CONFIG_CHECK_SCREEN_F(3) == 0
+	PRINTW 
+ELSE
+	PRINTL 
+ENDIF
+
+;--------------------------------------------------
+;Ž©‰qŒP—û
+@MESSAGE_TRAINING_JIEI
+PRINTL 
+PRINTFORML %PRINT_CALLNAME(TARGET,1)%‚ÍŽ©‰qŒP—û‚ðŠJŽn‚µ‚½
+;Œûã
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "TRAINING_JIEI")
+IF CONFIG_CHECK_SCREEN_F(3) == 0
+	PRINTW 
+ELSE
+	PRINTL 
+ENDIF
+
+;--------------------------------------------------
+;ƒ_ƒbƒVƒ…
+@MESSAGE_TRAINING_DASH
+PRINTL 
+PRINTFORML %PRINT_CALLNAME(TARGET,1)%‚Íƒ_ƒbƒVƒ…‚ðŠJŽn‚µ‚½
+;Œûã
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "TRAINING_DASH")
+IF CONFIG_CHECK_SCREEN_F(3) == 0
+	PRINTW 
+ELSE
+	PRINTL 
+ENDIF
+
+;--------------------------------------------------
+;‹ß‹——£í“¬ŒP—û
+@MESSAGE_TRAINING_SHORT
+PRINTL 
+PRINTFORML %PRINT_CALLNAME(TARGET,1)%‚Í‹ß‹——£í“¬ŒP—û‚ðŠJŽn‚µ‚½
+;Œûã
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "TRAINING_SHORT")
+IF CONFIG_CHECK_SCREEN_F(3) == 0
+	PRINTW 
+ELSE
+	PRINTL 
+ENDIF
+
+;--------------------------------------------------
+;’†‹——£í“¬ŒP—û
+@MESSAGE_TRAINING_MIDDLE
+PRINTL 
+PRINTFORML %PRINT_CALLNAME(TARGET,1)%‚Í’†‹——£í“¬ŒP—û‚ðŠJŽn‚µ‚½
+;Œûã
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "TRAINING_MIDDLE")
+IF CONFIG_CHECK_SCREEN_F(3) == 0
+	PRINTW 
+ELSE
+	PRINTL 
+ENDIF
+
+;--------------------------------------------------
+;‰“‹——£í“¬ŒP—û
+@MESSAGE_TRAINING_LONG
+PRINTL 
+PRINTFORML %PRINT_CALLNAME(TARGET,1)%‚Í‰“‹——£í“¬ŒP—û‚ðŠJŽn‚µ‚½
+;Œûã
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "TRAINING_LONG")
+IF CONFIG_CHECK_SCREEN_F(3) == 0
+	PRINTW 
+ELSE
+	PRINTL 
+ENDIF
+
+;--------------------------------------------------
+;í“¬Šî‘bŒP—û
+@MESSAGE_TRAINING_BASIS
+PRINTL 
+PRINTFORML %PRINT_CALLNAME(TARGET,1)%‚Íí“¬Šî‘bŒP—û‚ðŠJŽn‚µ‚½
+;Œûã
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "TRAINING_BASIS")
+IF CONFIG_CHECK_SCREEN_F(3) == 0
+	PRINTW 
+ELSE
+	PRINTL 
+ENDIF
+
+;--------------------------------------------------
+;ípŒ¤‹†ŒP—û
+@MESSAGE_TRAINING_TACTICS
+PRINTL 
+PRINTFORML %PRINT_CALLNAME(TARGET,1)%‚ÍípŒ¤‹†ŒP—û‚ðŠJŽn‚µ‚½
+;Œûã
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "TRAINING_TACTICS")
+IF CONFIG_CHECK_SCREEN_F(3) == 0
+	PRINTW 
+ELSE
+	PRINTL 
+ENDIF
+
+;--------------------------------------------------
+;GŽèS‘©‹ï‚ª’b˜B‚ÌŽ×–‚‚ð‚·‚é
+@MESSAGE_TRAINING_TENTACLECLOTH
+PRINTFORML ‚µ‚©‚µA•ž‚Ì‰º‚Åå¿‚­%ITEMNAME:(CFLAG:42)%‚ª‹C‚É‚È‚Á‚ÄW’†‚·‚é‚±‚Æ‚ª‚Å‚«‚È‚¢EEE
+;Œûã
+TRYCALLFORM KOJO_ROOT(CFLAG:6, "TRAINING_TENTACLECLOTH")
+IF CONFIG_CHECK_SCREEN_F(3) == 0
+	PRINTW 
+ELSE
+	PRINTL 
+ENDIF
+
+
+;--------------------------------------------------
+;‹CâŽž‚ÌŒ`—e‚ð•Ô‚·Ž®’†ŠÖ”
+@PRINT_SWOON
+#FUNCTIONS
+VARSET LOCALS
+IF (TCVAR:12 & ‹Câ)
+	IF TALENT:ŽåŠÏŽ‹“_ > 0
+		SELECTCASE RAND:10
+			CASE 9
+				LOCALS = ‹C‚ðŽ¸‚¢‚©‚¯‚Ä‚¢‚é
+			CASE 8
+				LOCALS = Q‚»‚×‚Á‚Ä‚¢‚é
+			CASE 7
+				LOCALS = •š‚¹‚Á‚Ä‚¢‚é
+			CASE 6
+				LOCALS = “|‚ê‚Ä‚¢‚é
+			CASE 5
+				LOCALS = ‹Câ‚µ‚©‚¯‚Ä‚¢‚é
+			CASE 4
+				LOCALS = ‹C‚ðŽ¸‚¢‚©‚¯‚½
+			CASE 3
+				LOCALS = Q‚»‚×‚Á‚½
+			CASE 2
+				LOCALS = ’n‚É•š‚¹‚½
+			CASE 1
+				LOCALS = “|‚êž‚ñ‚¾
+			CASE 0
+				LOCALS = žNžO‚Æ‚µ‚½ˆÓŽ¯‚Ì
+		ENDSELECT
+	ELSE
+		SELECTCASE RAND:10
+			CASE 9
+				LOCALS = ‹C‚ðŽ¸‚Á‚Ä‚¢‚é
+			CASE 8
+				LOCALS = Q‚»‚×‚Á‚Ä‚¢‚é
+			CASE 7
+				LOCALS = •š‚¹‚Á‚Ä‚¢‚é
+			CASE 6
+				LOCALS = “|‚ê‚Ä‚¢‚é
+			CASE 5
+				LOCALS = ‹Câ‚µ‚Ä‚¢‚é
+			CASE 4
+				LOCALS = ‹C‚ðŽ¸‚Á‚½
+			CASE 3
+				LOCALS = Q‚»‚×‚Á‚½
+			CASE 2
+				LOCALS = ’n‚É•š‚¹‚½
+			CASE 1
+				LOCALS = “|‚êž‚ñ‚¾
+			CASE 0
+				LOCALS = ‹Câ‚µ‚½
+		ENDSELECT
+	ENDIF
+ENDIF
+RETURNF LOCALS
+
+
+
+
+;--------------------------------------------------
+;ƒLƒƒƒ‰ƒNƒ^[‚ÌŠOŒ©‚ð‰Á–¡‚µ‚½”N—î‘Ñ‚ð•Ô‚·Ž®’†ŠÖ”
+@GET_AGEBAND(ARG)
+#FUNCTIONS
+#DIM AGE
+
+;ƒvƒƒtƒB[ƒ‹–¢Ý’è‚ÌƒLƒƒƒ‰‚Í”N—î‘Ñ‚È‚µ
+LOCALS = ‚È‚µ
+SIF CFLAG:ARG:34 == 0
+	RETURNF LOCALS
+
+IF CFLAG:ARG:1 > 0
+	AGE = MAXBASE:ARG:”N—î
+ELSE
+	AGE = BASE:ARG:”N—î
+ENDIF
+
+IF AGE < 10
+	LOCALS = —c‚¢
+ELSEIF AGE < 16
+	LOCALS = Žq‹Ÿ
+ELSEIF AGE < 25
+	LOCALS = Žá‚¢
+ELSE
+	LOCALS = ‘ål
+ENDIF
+
+RETURNF LOCALS
+
+
+
+

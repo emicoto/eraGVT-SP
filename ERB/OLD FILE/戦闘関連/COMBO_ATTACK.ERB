@@ -1,0 +1,218 @@
+;--------------------------------------------------
+;攻撃時コンボ系の処理
+
+
+;--------------------------------------------------
+
+;空中攻撃の計算
+@GET_AIR_STRIKE(ARG)
+#FUNCTION
+;回避率上昇
+IF ARG == 1
+	LOCAL = MAX(50 - CFLAG:99 / 5 * 5, 25)
+	;FEATによる空中性能強化
+	SIF TALENT:エアマスター > 0
+		LOCAL += 25
+;空中得意による直撃率ボーナス
+ELSEIF ARG == 2
+	LOCAL = 25
+;空中苦手による直撃率ペナルティ
+ELSEIF ARG == 3
+	LOCAL = 10
+ENDIF
+RETURNF LOCAL
+
+;同一距離連続実行の計算
+@GET_BRAVE_HIT(ARG)
+#FUNCTION
+IF ARG < 4
+	LOCAL = 3 + ARG * 3
+ELSEIF ARG < 7
+	LOCAL = 6 + ARG * 2
+ELSE
+	LOCAL = 12 + ARG
+ENDIF
+SIF LOCAL > 25
+	LOCAL = 25
+RETURNF LOCAL
+
+;連続ヒットコンボの計算
+@GET_CHAIN_HIT(ARG)
+#FUNCTION
+IF ARG < 6
+	LOCAL = 100 + ARG * 3
+ELSEIF LOCAL < 11
+	LOCAL = 105 + ARG * 2
+ELSE
+	LOCAL = 115 + ARG
+ENDIF
+SIF LOCAL > 200
+	LOCAL = 200
+RETURNF LOCAL
+
+;防御攻撃コンボの計算
+@GET_COUNTER_ATTACK(ARG)
+#FUNCTION
+IF ARG == 1
+	LOCAL = 6 + MIN(SQRT(MAX(BASE:防御 - 80, 0)) / 2, 15)
+ELSEIF ARG == 2
+	LOCAL = 35 + MIN(SQRT(MAX(BASE:防御 - 100, 0)), 25)
+ENDIF
+RETURNF LOCAL
+
+;連続回避コンボの計算
+@GET_EVADER_ATK(ARG)
+#FUNCTION
+IF ARG < 6
+	LOCAL = 100 + ARG * 3
+ELSEIF LOCAL < 11
+	LOCAL = 105 + ARG * 2
+ELSE
+	LOCAL = 115 + ARG
+ENDIF
+SIF LOCAL > 200
+	LOCAL = 200
+RETURNF LOCAL
+@GET_EVADER_CRT(ARG)
+#FUNCTION
+IF ARG < 6
+	LOCAL = ARG
+ELSE
+	LOCAL = -3 + ARG * 2
+ENDIF
+SIF LOCAL > 15
+	LOCAL = 15
+RETURNF LOCAL
+
+
+;--------------------------------------------------
+;コンボ系表示
+@PRINT_COMBO
+;文字間隔
+#DIM LENS
+
+LENS = 26
+
+IF GETBIT(TCVAR:216, 1)
+	;エアストライク
+	LOCALS:0 = 　＋AIR STRIKE
+	LOCALS:1 = 空中攻撃
+	CALL CLOTH_BATTLE_HOSEI, "AIRPLUS", TARGET
+	LOCAL = MIN(TALENT:空中得意 > 0, 1) * GET_AIR_STRIKE(2) + RESULT * 25 - MIN(TALENT:空中苦手 > 0, 1) * GET_AIR_STRIKE(3)
+	IF LOCAL > 0
+		LOCALS:2 = 直撃率＋{LOCAL}％　回避率＋{GET_AIR_STRIKE(1)}％
+	ELSEIF LOCAL < 0
+		;負の値を反転して表示
+		LOCAL *= -1
+		LOCALS:2 = 直撃率－{LOCAL}％　回避率＋{GET_AIR_STRIKE(1)}％
+	ELSE
+		LOCALS:2 = 回避率＋{GET_AIR_STRIKE(1)}％
+	ENDIF
+	IF TALENT:空中得意 > 0
+		LOCALS:2 += @"（空中得意）"
+	ELSEIF TALENT:空中苦手 > 0
+		LOCALS:2 += @"（空中苦手）"
+	ENDIF
+	SIF TALENT:エアマスター > 0
+		LOCALS:2 += @"（エアマスター）"
+	PRINTFORM %LOCALS:0,LENS - 4,LEFT%
+	PRINTFORM %LOCALS:1,LENS,LEFT%
+	PRINTFORM %LOCALS:2%
+	PRINTL 
+ENDIF
+IF GETBIT(TCVAR:217, 0)
+	;バースト攻撃
+	LOCALS:0 = 　＋BURST STRIKE
+	SELECTCASE FSTYLE_NAME_F(TARGET, TCVAR:0)
+		CASE "連続"
+			LOCALS:1 = バースト攻撃：連続
+			LOCALS:2 = 6回連続攻撃
+		CASE "装甲"
+			LOCALS:1 = バースト攻撃：装甲
+			LOCALS:2 = 直撃率アップ＋攻撃後にオートガード
+		CASE "撹乱"
+			LOCALS:1 = バースト攻撃：撹乱
+			LOCALS:2 = 与ダメージアップ＋怯み効果
+		CASE "重撃"
+			LOCALS:1 = バースト攻撃：重撃
+			LOCALS:2 = 直撃しにくい大ダメージ攻撃
+		CASE "広範"
+			LOCALS:1 = バースト攻撃：広範
+			LOCALS:2 = 必中攻撃＋反動で回避不能
+		CASE "全力"
+			LOCALS:1 = バースト攻撃：全力
+			LOCALS:2 = 捨て身の大ダメージ攻撃
+		CASE "知略"
+			LOCALS:1 = バースト攻撃：知略
+			LOCALS:2 = クリティカル率アップ＋見切り効果
+		CASE "設置"
+			LOCALS:1 = バースト攻撃：設置
+			LOCALS:2 = 油断効果2倍
+		CASE "使役"
+			LOCALS:1 = バースト攻撃：使役
+			LOCALS:2 = 直撃しにくい大ダメージ攻撃
+		CASE "通常"
+			LOCALS:1 = バースト攻撃：通常
+			LOCALS:2 = 与ダメージアップ＋直撃率アップ
+	ENDSELECT
+	PRINTFORM %LOCALS:0,LENS - 4,LEFT%
+	PRINTFORM %LOCALS:1,LENS,LEFT%
+	PRINTFORM %LOCALS:2%
+	PRINTL 
+ENDIF
+IF TFLAG:30 > 1
+	;ブレイブヒット
+	;同じ距離で戦い続けると加算されていく
+	;拘束された場合、または移動するか距離を取るとリセットされる
+	LOCALS:0 = 　＋BRAVE HIT
+	LOCALS:1 = 同一距離連続実行({TFLAG:30 - 1})
+	LOCALS:2 = 直撃率＋{GET_BRAVE_HIT(TFLAG:30 - 1) - 3}％　回避率－{GET_BRAVE_HIT(TFLAG:30 - 1)}％
+	PRINTFORM %LOCALS:0,LENS - 4,LEFT%
+	PRINTFORM %LOCALS:1,LENS,LEFT%
+	PRINTFORM %LOCALS:2%
+	PRINTL 
+ENDIF
+IF TFLAG:31 > 0
+	;チェインヒット
+	;連続で攻撃を命中させると加算されていく
+	;カス当たりでも加算されるが、拘束されるか距離を取るとリセットされる
+	LOCALS:0 = 　＋CHAIN HIT
+	LOCALS:1 = 連続で攻撃ヒット({TFLAG:31})
+	LOCALS:2 = 与ダメージ＋{GET_CHAIN_HIT(TFLAG:31) - 100}％
+	PRINTFORM %LOCALS:0,LENS - 4,LEFT%
+	PRINTFORM %LOCALS:1,LENS,LEFT%
+	PRINTFORM %LOCALS:2%
+	PRINTL 
+ENDIF
+IF TFLAG:32 > 0
+	;カウンターアタック
+	;防御を使った後に攻撃すると発動する、累積はしない
+	;キャラの防御力に応じて性能が強化されていく
+	LOCALS:0 = 　＋COUNTER ATTACK
+	LOCALS:1 = 防御しながら攻撃({TFLAG:32})
+	LOCALS:2 = 直撃率＋{GET_COUNTER_ATTACK(1)}％　被ダメージ－{GET_COUNTER_ATTACK(2)}％
+	PRINTFORM %LOCALS:0,LENS - 4,LEFT%
+	PRINTFORM %LOCALS:1,LENS,LEFT%
+	PRINTFORM %LOCALS:2%
+	PRINTL 
+ENDIF
+IF TFLAG:33 > 1
+	;イベーダー
+	;連続で回避を成功させると加算されていく。敵が距離を取った場合は加算されない
+	;始動が遅いが、距離を取ってもリセットされない。被弾するとリセットされる
+	LOCALS:0 = 　＋EVADER
+	LOCALS:1 = 連続で回避成功({TFLAG:33 - 1})
+	LOCALS:2 = 与ダメージ＋{(GET_EVADER_ATK(TFLAG:33 - 1) - 100) / 2}％　クリティカル率＋{GET_EVADER_CRT(TFLAG:33 - 1)}％
+	PRINTFORM %LOCALS:0,LENS - 4,LEFT%
+	PRINTFORM %LOCALS:1,LENS,LEFT%
+	PRINTFORM %LOCALS:2%
+	PRINTL 
+ENDIF
+
+
+
+
+
+
+
+

@@ -1,0 +1,1395 @@
+;よく使う関数群
+
+;--------------------------------------------------
+;ショートライン
+@SHORTLINE, ARG = 0
+PRINT ――――――――――――――――――――――――――――
+SIF ARG == 0
+	PRINTL 
+RETURN RESULT
+
+;--------------------------------------------------
+;LINEBLACKOUT
+;改行による画面切り替えの演出を行う
+@LB
+#DIM LCOUNT
+FOR LCOUNT, 0, 50
+	PRINTL 
+NEXT
+;受け取ったRESULTをそのまま返す
+RETURN RESULT
+
+;--------------------------------------------------
+;カラー付きバー@COLOR_BAR
+;ARG:1	現在値
+;ARG:2	最大値
+;ARG:3  ゲージの長さ
+;ARG:4  色・R		0xFFFFFF方式で色を指定することができないので注意。
+;ARG:5  色・G
+;ARG:6  色・B
+;ARG:7  背景色の色相差（ARGS:1 と ARGS:2の色の差）数値が大きいほど背景の色が薄くなる
+;ARG:8  グラデーション変化・R 加算値
+;ARG:9  グラデーション変化・G 加算値
+;ARG:10 グラデーション変化・B 加算値
+;ARG:11 グラデーション変化の頻度　数値が大きいほど変化が緩やかになる
+;ARGS:1 ゲージに使用する文字
+;ARGS:2 ゲージの背景文字
+@COLOR_BAR(ARG:1,ARG:2,ARG:3=20,ARG:4=160,ARG:5=160,ARG:6=160,ARG:7=-80,ARG:8,ARG:9,ARG:10,ARG:11=1,ARGS:1=UNICODE(0x2582),ARGS:2=UNICODE(0x2581))
+VARSET LOCAL
+VARSET LOCALS
+LOCAL:1 = ARG:1 * ARG:3 / ARG:2
+LOCAL:2 = ARG:3 - LOCAL:1
+LOCAL:4 = ARG:4 + ARG:7
+LOCAL:5 = ARG:5 + ARG:7
+LOCAL:6 = ARG:6 + ARG:7
+SIF LOCAL:4 < 0
+	LOCAL:4 = 0
+SIF LOCAL:4 > 255
+	LOCAL:4 = 255
+SIF LOCAL:5 < 0
+	LOCAL:5 = 0
+SIF LOCAL:5 > 255
+	LOCAL:5 = 255
+SIF LOCAL:6 < 0
+	LOCAL:6 = 0
+SIF LOCAL:6 > 255
+	LOCAL:6 = 255
+FOR LOCAL,0,ARG:3
+	IF LOCAL:1 > LOCAL
+		IF LOCAL:100 < ARG:11
+			SETCOLOR ARG:4,ARG:5,ARG:6
+			LOCAL:100 += 1
+		ELSE
+			ARG:4 += ARG:8
+			ARG:5 += ARG:9
+			ARG:6 += ARG:10
+			SIF ARG:4 < 0
+				ARG:4 = 0
+			SIF ARG:4 > 255
+				ARG:4 = 255
+			SIF ARG:5 < 0
+				ARG:5 = 0
+			SIF ARG:5 > 255
+				ARG:5 = 255
+			SIF ARG:6 < 0
+				ARG:6 = 0
+			SIF ARG:6 > 255
+				ARG:6 = 255
+			SETCOLOR ARG:4,ARG:5,ARG:6
+			LOCAL:100 = 0
+		ENDIF
+		PRINTFORM %ARGS:1%
+	ELSE
+		IF !LOCAL:101
+			SETCOLOR LOCAL:4,LOCAL:5,LOCAL:6
+			LOCAL:101 = 1
+		ENDIF
+		PRINTFORM %ARGS:2%
+	ENDIF
+NEXT
+RESETCOLOR
+VARSET LOCAL
+RETURN 1
+
+
+;--------------------------------------------------
+;カラー表示する文章 キャラの体力バーなど
+@COLORSENTENCE_BAR, ARGS, ARG:0, ARG:1, ARG:2, ARG:3
+SIF ARGS != "射精" && ARGS != "噴乳"
+	CALL COLORSENTENCE_BARCOLOR, ARG:1, ARG:2
+
+PRINTFORM %ARGS,ARG:0,LEFT%　  
+;CALL PRINT_COLORBAR(ARG:1,ARG:2,ARG:3, UNICODE(0x2584), UNICODE(0x2584))
+;BAR ARG:1,ARG:2,ARG:3
+IF ARGS == "体力"
+	ARG:4 = 215
+	ARG:5 = 105
+	ARG:6 = 30
+ELSEIF ARGS == "気力"
+	ARG:4 = 60
+	ARG:5 = 75
+	ARG:6 = 215
+ELSEIF ARGS == "性耐性"
+	ARG:4 = 255
+	ARG:5 = 90
+	ARG:6 = 120
+ELSEIF ARGS == "射精"
+	ARG:4 = 215
+	ARG:5 = 180
+	ARG:6 = 105
+ELSEIF ARGS == "噴乳"
+	ARG:4 = 255
+	ARG:5 = 220
+	ARG:6 = 205
+ENDIF
+PRINTFORM %UNICODE(0x208D)%
+CALL COLOR_BAR(ARG:1,ARG:2,ARG:3,ARG:4,ARG:5,ARG:6,-160,10,18,6,2,UNICODE(0x25AE),UNICODE(0x25AE))
+SIF ARGS != "射精" && ARGS != "噴乳"
+	CALL COLORSENTENCE_BARCOLOR, ARG:1, ARG:2
+PRINTFORM %UNICODE(0x208E)%
+PRINTFORM （{ARG:1, 5}/{ARG:2, 5}）
+RESETCOLOR
+
+
+;--------------------------------------------------
+;カラー表示する文章 キャラの体力バーなど（SHOP画面の非操作キャラ用）
+@COLORSENTENCE_MINIBAR, ARGS, ARG:0, ARG:1, ARG:2, ARGS:1, ARG:3
+CALL COLORSENTENCE_BARCOLOR, ARG:0, ARG:1
+
+PRINTFORM %ARGS%
+;CALL PRINT_COLORBAR(ARG:0,ARG:1,ARG:2, UNICODE(0x2584), UNICODE(0x2584))
+;BAR ARG:0,ARG:1,ARG:2
+IF ARGS == "体力"
+	ARG:4 = 245
+	ARG:5 = 135
+	ARG:6 = 60
+ELSEIF ARGS == "気力"
+	ARG:4 = 90
+	ARG:5 = 105
+	ARG:6 = 245
+ELSEIF ARGS == "性耐性"
+	ARG:4 = 255
+	ARG:5 = 120
+	ARG:6 = 150
+ENDIF
+PRINTFORM %UNICODE(0x208D)%
+CALL COLOR_BAR(ARG:0,ARG:1,ARG:2,ARG:4,ARG:5,ARG:6,-160,10,18,6,1,UNICODE(0x2582),UNICODE(0x2581))
+CALL COLORSENTENCE_BARCOLOR, ARG:1, ARG:2
+PRINTFORM %UNICODE(0x208E)%
+PRINTFORM ({ARG:0}/{ARG:1})%ARGS:1, ARG:3%
+RESETCOLOR
+
+;--------------------------------------------------
+;カラー表示する文章 敵の体力バーなど
+@COLORSENTENCE_ENEMYBAR, ARGS, ARG:0, ARG:1, ARG:2
+
+SIF ARGS == "敵体力"
+	CALL COLORSENTENCE_BARCOLOR, ARG:1, ARG:2
+IF FLAG:110 == 0 && ARGS == "敵体力"
+	PRINTFORM %STR:2500%体力
+ELSEIF FLAG:110 == 1 && ARGS == "敵体力"
+	PRINTFORM 敵体力
+ENDIF
+
+;CALL PRINT_COLORBAR(ARG:0,ARG:1,ARG:2, UNICODE(0x2584), UNICODE(0x2584))
+;BAR ARG:0,ARG:1,ARG:2
+IF ARGS == "敵体力"
+	ARG:4 = 215
+	ARG:5 = 105
+	ARG:6 = 30
+ELSEIF ARGS == "敵射精"
+	ARG:4 = 215
+	ARG:5 = 180
+	ARG:6 = 105
+ELSEIF ARGS == "敵絶頂"
+	ARG:4 = 250
+	ARG:5 = 120
+	ARG:6 = 250
+ENDIF
+PRINTFORM %UNICODE(0x208D)%
+CALL COLOR_BAR(ARG:0,ARG:1,ARG:2,ARG:4,ARG:5,ARG:6,-160,10,18,6,2,UNICODE(0x25AE),UNICODE(0x25AE))
+SIF ARGS == "触手体力"
+	CALL COLORSENTENCE_BARCOLOR, ARG:1, ARG:2
+PRINTFORM %UNICODE(0x208E)%
+;解析度が足りていない場合は数値が表示されない
+IF FLAG:999 == 1 || FLAG:20 >= 50 || FLAG:110 == 1
+	PRINTFORM （{ARG:0, 5}/
+ELSE
+	PRINTFORM （？？？/
+ENDIF
+IF FLAG:999 == 1 || FLAG:20 >= 25 || FLAG:110 == 1
+	PRINTFORM {ARG:1, 5}）
+ELSE
+	PRINTFORM ？？？）
+ENDIF
+RESETCOLOR
+
+;--------------------------------------------------
+;カラー表示する文章 色の判定
+@COLORSENTENCE_BARCOLOR, ARG:0 ,ARG:1
+IF ARG:0 == 0
+	SETCOLOR 255, 0, 0
+ELSE
+	LOCAL = PERCENT_CAL_F(ARG:0, ARG:1)
+	IF LOCAL < 25
+		SETCOLOR 255, 123, 0
+	ELSEIF LOCAL < 50
+		SETCOLOR 255, 255, 0
+	ENDIF
+ENDIF
+
+;--------------------------------------------------
+;数値列の文字数を返す式中関数
+@INTLEN, ARG
+#FUNCTION
+LOCALS = %TOSTR(ARG)%
+LOCAL = STRLENSU(LOCALS)
+RETURNF LOCAL
+
+;--------------------------------------------------
+;パーセント計算 百分率を返す
+@PERCENT_CAL, ARG:0, ARG:1
+SIF ARG:0 == 0 || ARG:1 == 0
+	RETURN 0
+LOCAL = ARG:0*100 / ARG:1
+RETURN LOCAL
+
+;--------------------------------------------------
+;パーセント計算の式中関数バージョン
+@PERCENT_CAL_F, ARG:0, ARG:1
+#FUNCTION
+SIF ARG:0 == 0 || ARG:1 == 0
+	RETURNF 0 
+LOCAL = ARG:0*100 / ARG:1
+RETURNF LOCAL
+
+;--------------------------------------------------
+;文字列を初期化する式中関数
+;「LOCALS =」と同じ役割
+@STRCLEAR
+#FUNCTIONS
+RETURNF LOCALS
+
+;--------------------------------------------------
+;生存中キャラの総数を返す式中関数
+@CHARANUM_ALIVE
+#FUNCTION
+LOCAL = CHARANUM
+FOR LOCAL:1, 0, CHARANUM
+	SIF CFLAG:(LOCAL:1):0 == 1 || CFLAG:(LOCAL:1):0 == 2 || CFLAG:(LOCAL:1):0 == 3 || CFLAG:(LOCAL:1):0 == 9 || (LOCAL:1) == MASTER
+		LOCAL -= 1
+NEXT
+RETURNF LOCAL
+
+;--------------------------------------------------
+;生存中かつ管理状態が当てはまるキャラの総数を返す式中関数
+@CHARANUM_ALIVE_PARTYCHECK, ARG
+#FUNCTION
+LOCAL = CHARANUM
+FOR LOCAL:1, 0, CHARANUM
+	SIF CFLAG:(LOCAL:1):0 == 1 || CFLAG:(LOCAL:1):0 == 2 || CFLAG:(LOCAL:1):0 == 3 || CFLAG:(LOCAL:1):0 == 9 || (LOCAL:1) == MASTER || CFLAG:(LOCAL:1):999 != ARG
+		LOCAL -= 1
+NEXT
+RETURNF LOCAL
+
+;--------------------------------------------------
+;操作可能なキャラの総数を返す式中関数
+@CHARANUM_ACTIVE
+#FUNCTION
+LOCAL = CHARANUM
+FOR LOCAL:1, 0, CHARANUM
+	SIF CFLAG:(LOCAL:1):0 == 1 || CFLAG:(LOCAL:1):0 == 2 || CFLAG:(LOCAL:1):0 == 3 || CFLAG:(LOCAL:1):0 == 9 || CFLAG:(LOCAL:1):0 == 10 || CFLAG:(LOCAL:1):0 == 11 || (LOCAL:1) == MASTER || CFLAG:(LOCAL:1):999 == 0
+		LOCAL -= 1
+NEXT
+RETURNF LOCAL
+
+;--------------------------------------------------
+;管理状態が当てはまるキャラの総数を返す式中関数
+@CHARANUM_PARTYCHECK, ARG
+#FUNCTION
+LOCAL = CHARANUM
+FOR LOCAL:1, 0, CHARANUM
+	SIF (LOCAL:1) == MASTER || CFLAG:(LOCAL:1):999 != ARG
+		LOCAL -= 1
+NEXT
+RETURNF LOCAL
+
+;--------------------------------------------------
+;変身後名を返す式中関数
+@PRINT_TRANSNAME, ARG
+#FUNCTIONS
+IF CFLAG:ARG:3 == 1 && CFLAG:ARG:1 != 0
+	LOCALS = %CSTR:ARG:0%
+ELSE
+	LOCALS = %CALLNAME:ARG%
+ENDIF
+RETURNF LOCALS
+
+;--------------------------------------------------
+;変身後呼び名を返す式中関数
+@PRINT_TRANSCALLNAME, ARG
+#FUNCTIONS
+;あなた口上選択時
+IF CFLAG:ARG:6 == 3
+	LOCALS = あなた
+ELSEIF CFLAG:ARG:3 == 1 && CFLAG:ARG:1 != 0
+	LOCALS = %CSTR:ARG:1%
+ELSE
+	LOCALS = %CALLNAME:ARG%
+ENDIF
+RETURNF LOCALS
+
+;--------------------------------------------------
+;あなた口上に対応した呼び名を返す式中関数
+@PRINT_CALLNAME, ARG, ARG:1 = 0
+#FUNCTIONS
+;地の文用
+IF ARG:1 == 0
+	;あなた口上選択時
+	IF CFLAG:ARG:6 == 3
+		LOCALS = あなた
+	ELSE
+		LOCALS = %CALLNAME:ARG%
+	ENDIF
+;システム表示用
+ELSE
+	LOCALS = %CALLNAME:ARG%
+	;あなた口上選択時
+	SIF CFLAG:ARG:6 == 3
+		LOCALS += "(あなた)"
+ENDIF
+RETURNF LOCALS
+
+
+;--------------------------------------------------
+;キャラのリスト表示
+;ARG=1ならCFLAG:0=0のキャラ（仲間状態で生きているキャラ）からしか選択できない、ARG=2なら全キャラ表示する、ARG=3なら一時離脱しているキャラのみ表示する
+;ARG:1は表示オプション
+;ARG:1=1	生存状態
+;ARG:1=2	修練Ｐ
+;ARG:2=1	キャンセル不可
+@CHARA_LIST, ARG, ARG:1, ARG:2 = 0
+#DIM LCOUNT
+PRINTL 誰を選びますか？
+FOR LCOUNT, 0, CHARANUM
+	SIF LCOUNT == MASTER
+		CONTINUE
+	SIF ARG != 2 && ARG != 3 && CFLAG:LCOUNT:999 == 0
+		CONTINUE
+	SIF ARG == 3 && CFLAG:LCOUNT:0 != 1 && CFLAG:LCOUNT:0 != 2 && CFLAG:LCOUNT:0 != 3 && CFLAG:LCOUNT:0 != 4
+		CONTINUE
+
+	IF (ARG == 0 && CFLAG:LCOUNT:0 != 9) || CFLAG:LCOUNT:0 == 0 || ARG == 2 || ARG == 3
+		PRINTFORM [{LCOUNT}] %CALLNAME:LCOUNT,24,LEFT%
+		IF ARG:1 == 1
+			SIF CFLAG:LCOUNT:0 == 1
+				PRINT （幽閉中）
+			SIF CFLAG:LCOUNT:0 == 2
+				PRINT （洗脳）
+			SIF CFLAG:LCOUNT:0 == 3
+				PRINT （悪堕ち）
+			SIF CFLAG:LCOUNT:0 == 5
+				PRINT （引きこもり中）
+			SIF CFLAG:LCOUNT:0 == 4
+				PRINT （誘拐監禁中）
+			SIF CFLAG:LCOUNT:0 == 9
+				PRINT （取り込まれ）
+			SIF CFLAG:LCOUNT:0 == 10
+				PRINT （出産に備えて入院中）
+			SIF CFLAG:LCOUNT:0 == 11
+				PRINT （育児中）
+		ENDIF
+		SIF ARG:1 == 2
+			PRINTFORM （修練Ｐ：{JUEL:LCOUNT:修練P}）
+		PRINTL 
+	ENDIF
+NEXT
+SIF ARG:2 == 0
+	PRINTFORML [999]キャラ選択をやめる
+$INPUT_LOOP_CHARA_LIST
+INPUT
+IF RESULT == 999 && ARG:2 == 0
+	RETURN 999
+ELSEIF RESULT < 1 || RESULT >= CHARANUM || ((ARG == 0 && CFLAG:RESULT:0 == 9) || (ARG == 1 && CFLAG:RESULT:0 != 0)) || (ARG != 2 && ARG != 3 && CFLAG:RESULT:999 == 0) || (ARG == 3 && CFLAG:RESULT:0 != 1 && CFLAG:RESULT:0 != 2 && CFLAG:RESULT:0 != 3&& CFLAG:RESULT:0 != 4)
+	PRINTL 正しい値を入力してください
+	GOTO INPUT_LOOP_CHARA_LIST
+ELSE
+	RETURN RESULT
+ENDIF
+PRINTL 
+
+;--------------------------------------------------
+;キャラ名の変更
+@NAME_CHANGE ,ARG
+PRINTL 
+PRINTL どんな名前にしますか？
+$INPUT_LOOP_NAME_CHANGE
+INPUTS
+IF RESULTS == ""
+	GOTO INPUT_LOOP_NAME_CHANGE
+ELSE
+	CALLNAME:ARG = %RESULTS%
+	PRINTFORML 「%RESULTS%」に変更しました
+ENDIF
+
+;--------------------------------------------------
+;戦闘の経験値算出
+@GET_EXP_BATTLE
+;雑魚敵戦
+IF (SAVESTR:13 == "MOB")
+	CALL TENTACLE_LEVEL
+	LOCAL = 8 * (RESULT + 2)/ABL:レベル + RAND(15)
+
+	SIF LOCAL < 1
+		LOCAL = 1
+
+	;###空撮ドローンによる上昇
+	SIF CFLAG:43 == 505
+		TIMES LOCAL, 1.10
+
+	CALL GET_EXP,min(LOCAL,75)
+;ボス戦
+ELSEIF (SAVESTR:13 == "BOSS")
+	CALL TENTACLE_LEVEL
+	LOCAL = 50 * (RESULT + 2)/ABL:レベル + RAND(15) + 25
+
+	SIF LOCAL < 10
+		LOCAL = 10
+
+	;###空撮ドローンによる上昇
+	SIF CFLAG:43 == 505
+		TIMES LOCAL, 1.10
+
+	CALL GET_EXP,min(LOCAL,150)
+;いずれでもない時
+ELSE
+	PRINTW ERROR NO EXP DATA
+ENDIF
+
+;--------------------------------------------------
+;経験値の取得
+@GET_EXP, ARG
+;内向的
+SIF TALENT:内向的 > 0
+	TIMES ARG, 1.10
+;自分勝手
+SIF TALENT:自分勝手 > 0
+	TIMES ARG, 1.10
+JUEL:経験値 += ARG
+PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は経験値を{ARG}％得た
+;レベルアップするか確認
+CALL CHECK_LEVELUP
+
+;--------------------------------------------------
+;修練P取得
+@GET_SYUREN, ARG
+JUEL:修練P += ARG
+PRINTFORML %PALAMNAME:20%を{ARG}P手に入れた
+
+;--------------------------------------------------
+;資金取得
+@GET_MONEY, ARG
+MONEY += ARG
+PRINTFORML {ARG}＄を手に入れた
+
+;--------------------------------------------------
+;触手の欠片取得
+@GET_KAKERA, ARG
+FLAG:200 += ARG
+PRINTFORML 触手の欠片を{ARG}個を手に入れた
+
+;--------------------------------------------------
+;処女喪失
+@LOSTVIRGIN, ARG:0 = 0
+TALENT:処女 = -1
+SIF ARG:0 != 0
+	ARG:0 = 1
+CFLAG:206 = 2 + ARG:0
+;地の文：処女喪失
+CALL MESSAGE_SEX_LOSTVIRGIN
+SIF (MESSAGE_BRANCH_F(TARGET) & 堕落) == 0
+	CALL SHINKYOU_CHANGE, "TOUSAKU"
+
+;--------------------------------------------------
+;BASE値算出
+;ARGS=計算モード, ARG:0=対象, ARG:1=元値
+@BASEUP, ARGS, ARG:0, ARG:1 
+
+CALL SEIKAKU_CHECK, "GET_TALENT_VALUE", ARG:0
+IF RESULT != 0
+	SELECTCASE ARGS
+		CASE "ALL"
+			;性耐性、攻撃、防御、敏捷の元値は1/10
+			LOCAL:0= ARG:1 / 10
+
+			;BASE値の計算 対象,元値,性格
+			;体力計算
+			;上昇値にランダム性を付与
+			LOCAL:2 = BASEUP_CAL_RANDAM(ARG:1)
+			CALL BASEUP_CAL_TAIRYOKU, ARG:0, LOCAL:2, RESULT
+			;気力計算
+			LOCAL:3 = BASEUP_CAL_RANDAM(ARG:1)
+			CALL BASEUP_CAL_KIRYOKU, ARG:0, LOCAL:3, RESULT
+			;性耐性計算
+			LOCAL:4 = BASEUP_CAL_RANDAM(ARG:1)
+			CALL BASEUP_CAL_SEITAISEI, ARG:0, LOCAL:4, RESULT
+			;攻撃計算
+			LOCAL:5 = BASEUP_CAL_RANDAM(ARG:1)
+			CALL BASEUP_CAL_KOUGEKI, ARG:0, LOCAL:5, RESULT
+			;防御計算
+			LOCAL:6 = BASEUP_CAL_RANDAM(ARG:1)
+			CALL BASEUP_CAL_BOUGYO, ARG:0, LOCAL:6, RESULT
+			;敏捷計算
+			LOCAL:7 = BASEUP_CAL_RANDAM(ARG:1)
+			CALL BASEUP_CAL_BINSYOU, ARG:0, LOCAL:7, RESULT
+			;知性計算
+			LOCAL:8 = BASEUP_CAL_RANDAM(ARG:1)
+			CALL BASEUP_CAL_CHISEI, ARG:0, LOCAL:8, RESULT
+
+		CASE "TAIRYOKU"
+			ARG:1 = BASEUP_CAL_RANDAM(ARG:1)
+			;体力計算
+			CALL BASEUP_CAL_TAIRYOKU, ARG:0, ARG:1, RESULT
+			SIF RESULT > 0
+				PRINTFORML %BASENAME:0%の基礎値が{RESULT}上がった
+
+		CASE "KIRYOKU"
+			ARG:1 = BASEUP_CAL_RANDAM(ARG:1)
+			;気力計算
+			CALL BASEUP_CAL_KIRYOKU, ARG:0, ARG:1, RESULT
+			SIF RESULT > 0
+				PRINTFORML %BASENAME:1%の基礎値が{RESULT}上がった
+			
+		CASE "SEITAISEI"
+			ARG:1 = BASEUP_CAL_RANDAM(ARG:1)
+			;性耐性計算
+			CALL BASEUP_CAL_SEITAISEI, ARG:0, ARG:1, RESULT
+			SIF RESULT > 0
+				PRINTFORML %BASENAME:2%の基礎値が{RESULT}上がった
+			
+		CASE "KOUGEKI"
+			ARG:1 = BASEUP_CAL_RANDAM(ARG:1)
+			;攻撃計算
+			CALL BASEUP_CAL_KOUGEKI, ARG:0, ARG:1, RESULT
+			SIF RESULT > 0
+				PRINTFORML %BASENAME:10%の基礎値が{RESULT}上がった
+			
+		CASE "BOUGYO"
+			ARG:1 = BASEUP_CAL_RANDAM(ARG:1)
+			;防御計算
+			CALL BASEUP_CAL_BOUGYO, ARG:0, ARG:1, RESULT
+			SIF RESULT > 0
+				PRINTFORML %BASENAME:11%の基礎値が{RESULT}上がった
+			
+		CASE "BINSYOU"
+			ARG:1 = BASEUP_CAL_RANDAM(ARG:1)
+			;敏捷計算
+			CALL BASEUP_CAL_BINSYOU, ARG:0, ARG:1, RESULT
+			SIF RESULT > 0
+				PRINTFORML %BASENAME:12%の基礎値が{RESULT}上がった
+		CASE "CHISEI"
+			ARG:1 = BASEUP_CAL_RANDAM(ARG:1)
+			;知性計算
+			CALL BASEUP_CAL_CHISEI, ARG:0, ARG:1, RESULT
+			SIF RESULT > 0
+				PRINTFORML %BASENAME:13%の基礎値が{RESULT}上がった
+			
+	ENDSELECT
+	
+	;ステータスの再計算
+	CALL LEVELSTATUS, ARG:0
+	;部位結界の設定
+	CALL BASEUP_CAL_SHIELD, ARG:0
+ENDIF
+
+;--------------------------------------------------
+;BASE値へのランダム性付与に関する式中関数
+@BASEUP_CAL_RANDAM, ARG
+#FUNCTION
+LOCAL = RAND:100 + FLAG:50 * 5
+SIF LOCAL < FLAG:50 * 10
+	LOCAL = FLAG:50 * 10
+IF LOCAL < 20
+	LOCAL:1 = 70
+ELSEIF LOCAL < 30
+	LOCAL:1 = 75
+ELSEIF LOCAL < 40
+	LOCAL:1 = 80
+ELSEIF LOCAL < 50
+	LOCAL:1 = 85
+ELSEIF LOCAL < 60
+	LOCAL:1 = 90
+ELSEIF LOCAL < 70
+	LOCAL:1 = 95
+ELSEIF LOCAL < 80
+	LOCAL:1 = 100
+ELSEIF LOCAL < 95
+	LOCAL:1 = 105
+ELSE
+	LOCAL:1 = 110
+ENDIF
+SIF TALENT:回復早い > 0
+	LOCAL:1 -= 5
+SIF TALENT:回復遅い > 0
+	LOCAL:1 += 5
+ARG = ARG * LOCAL:1 / 100
+RETURNF ARG
+
+;--------------------------------------------------
+;BASE値計算詳細:体力
+;ARG:0=対象,ARG:1=元値,ARG:2=性格
+@BASEUP_CAL_TAIRYOKU, ARG:0, ARG:1, ARG:2
+BASE:(ARG:0):体力基礎 += SEIKAKU_HOSEI_F(ARG:2, 0, ARG:1)
+RETURN SEIKAKU_HOSEI_F(ARG:2, 0, ARG:1)
+
+;--------------------------------------------------
+;BASE値計算詳細:気力
+;ARG:0=対象,ARG:1=元値,ARG:2=性格
+@BASEUP_CAL_KIRYOKU, ARG:0, ARG:1, ARG:2
+BASE:(ARG:0):気力基礎 += SEIKAKU_HOSEI_F(ARG:2, 1, ARG:1)
+RETURN SEIKAKU_HOSEI_F(ARG:2, 1, ARG:1)
+
+;--------------------------------------------------
+;BASE値計算詳細:性耐性
+;ARG:0=対象,ARG:1=元値,ARG:2=性格
+@BASEUP_CAL_SEITAISEI, ARG:0, ARG:1, ARG:2
+BASE:(ARG:0):性耐性基礎 += SEIKAKU_HOSEI_F(ARG:2, 2, ARG:1)
+RETURN SEIKAKU_HOSEI_F(ARG:2, 2, ARG:1)
+
+;--------------------------------------------------
+;BASE値計算詳細:攻撃
+;ARG:0=対象,ARG:1=元値,ARG:2=性格
+@BASEUP_CAL_KOUGEKI, ARG:0, ARG:1, ARG:2
+BASE:(ARG:0):攻撃 += SEIKAKU_HOSEI_F(ARG:2, 10, ARG:1)
+RETURN SEIKAKU_HOSEI_F(ARG:2, 10, ARG:1)
+
+;--------------------------------------------------
+;BASE値計算詳細:防御
+;ARG:0=対象,ARG:1=元値,ARG:2=性格
+@BASEUP_CAL_BOUGYO, ARG:0, ARG:1, ARG:2
+BASE:(ARG:0):防御 += SEIKAKU_HOSEI_F(ARG:2, 11, ARG:1)
+RETURN SEIKAKU_HOSEI_F(ARG:2, 11, ARG:1)
+
+;--------------------------------------------------
+;BASE値計算詳細:敏捷
+;ARG:0=対象,ARG:1=元値,ARG:2=性格
+@BASEUP_CAL_BINSYOU, ARG:0, ARG:1, ARG:2
+BASE:(ARG:0):敏捷 += SEIKAKU_HOSEI_F(ARG:2, 12, ARG:1)
+RETURN SEIKAKU_HOSEI_F(ARG:2, 12, ARG:1)
+
+;--------------------------------------------------
+;BASE値計算詳細:知性
+;ARG:0=対象,ARG:1=元値,ARG:2=性格
+@BASEUP_CAL_CHISEI, ARG:0, ARG:1, ARG:2
+BASE:(ARG:0):知性 += SEIKAKU_HOSEI_F(ARG:2, 13, ARG:1)
+RETURN SEIKAKU_HOSEI_F(ARG:2, 13, ARG:1)
+
+;---------------------------------------------------------
+;BASE値計算詳細部位結界
+@BASEUP_CAL_SHIELD, ARG
+#DIM LCOUNT
+#DIM UP_VAR
+FOR LCOUNT, 0, 感覚数
+	IF TALENT:ARG:(LCOUNT + 190) > 0
+		UP_VAR = MAX(CAL_SHIELD_F(ARG) - MAXBASE:ARG:(LCOUNT + 30),0)
+		MAXBASE:ARG:(LCOUNT + 30) = CAL_SHIELD_F(ARG)
+		SIF BASE:ARG:(LCOUNT + 30) > 0 || DAY == 0
+			BASE:ARG:(LCOUNT + 30) = LIMIT(BASE:ARG:(LCOUNT + 30) + UP_VAR, 0, MAXBASE:ARG:(LCOUNT + 30))
+	ENDIF
+NEXT
+
+;結界耐久最大値の計算式
+@CAL_SHIELD_F(ARG)
+#FUNCTION
+LOCAL = SQRT(MAXBASE:ARG:気力 * MAXBASE:ARG:性耐性 * MAXBASE:ARG:防御 * MAXBASE:ARG:防御 / 160) / 2 + 1500 + MIN(ABL:ARG:レベル * 1000, 50000)
+RETURNF LOCAL
+
+;全キャラの部位結界をチェック
+@CHECK_SHIELD_ALL
+#DIM LCOUNT
+#DIM CCOUNT
+FOR CCOUNT, 0, CHARANUM
+	SIF CCOUNT == MASTER
+		CONTINUE
+	FOR LCOUNT, 0, 感覚数
+		SIF TALENT:CCOUNT:(LCOUNT + 190) == 0
+			MAXBASE:CCOUNT:(LCOUNT + 30) = 0
+		BASE:CCOUNT:(LCOUNT + 30) = LIMIT(BASE:CCOUNT:(LCOUNT + 30), 0,MAXBASE:CCOUNT:(LCOUNT + 30))
+	NEXT
+NEXT
+
+;--------------------------------------------------
+;戦技LVの上昇
+;ARG:0=対象, ARG:1=近OR中OR遠
+@SENGIUP, ARG:0, ARG:1
+
+IF ARG:1 == 0
+	LOCAL:0 = 30
+	LOCAL:1 = 5
+ELSEIF ARG:1 == 1
+	LOCAL:0 = 31
+	LOCAL:1 = 6
+ELSEIF ARG:1 == 2
+	LOCAL:0 = 32
+	LOCAL:1 = 7
+ELSEIF ARG:1 == 3
+	LOCAL:0 = 33
+	LOCAL:1 = 8
+ENDIF
+
+;レベルアップに必要な経験数の確認
+IF ABL:ARG:(LOCAL:0) == 0
+	LOCAL:2 = 25
+ELSEIF ABL:ARG:(LOCAL:0) == 1
+	LOCAL:2 = 60
+ELSEIF ABL:ARG:(LOCAL:0) == 2
+	LOCAL:2 = 105
+ELSEIF ABL:ARG:(LOCAL:0) == 3
+	LOCAL:2 = 160
+ELSEIF ABL:ARG:(LOCAL:0) == 4
+	LOCAL:2 = 225
+ELSEIF ABL:ARG:(LOCAL:0) == 5
+	LOCAL:2 = 300
+ELSEIF ABL:ARG:(LOCAL:0) == 6
+	LOCAL:2 = 470
+ELSEIF ABL:ARG:(LOCAL:0) == 7
+	LOCAL:2 = 660
+ELSEIF ABL:ARG:(LOCAL:0) == 8
+	LOCAL:2 = 870
+ENDIF
+
+;素質による経験数への補正
+;得意な距離があると他の距離はやや不利になる、苦手な距離があると他の距離はやや有利になる
+SIF TALENT:ARG:近距離得意 == 1 && ARG:1 == 0 || TALENT:ARG:中距離得意 == 1 && ARG:1 == 1 || TALENT:ARG:遠距離得意 == 1 && ARG:1 == 2
+	TIMES LOCAL:2, 0.9
+SIF TALENT:ARG:近距離苦手 == 1 && ARG:1 == 0 || TALENT:ARG:中距離苦手 == 1 && ARG:1 == 1 || TALENT:ARG:遠距離苦手 == 1 && ARG:1 == 2
+	TIMES LOCAL:2, 1.1
+SIF TALENT:ARG:近距離得意 == 1 && ARG:1 != 0
+	TIMES LOCAL:2, 1.05
+SIF TALENT:ARG:中距離得意 == 1 && ARG:1 != 1
+	TIMES LOCAL:2, 1.05
+SIF TALENT:ARG:遠距離得意 == 1 && ARG:1 != 2
+	TIMES LOCAL:2, 1.05
+SIF TALENT:ARG:近距離苦手 == 1 && ARG:1 != 0
+	TIMES LOCAL:2, 0.95
+SIF TALENT:ARG:中距離苦手 == 1 && ARG:1 != 1
+	TIMES LOCAL:2, 0.95
+SIF TALENT:ARG:遠距離苦手 == 1 && ARG:1 != 2
+	TIMES LOCAL:2, 0.95
+
+;レベルアップ可能かどうか
+IF EXP:ARG:(LOCAL:1) >= LOCAL:2 && ABL:ARG:(LOCAL:0) < 9
+	ABL:ARG:(LOCAL:0) += 1
+	PRINTFORML %PRINT_TRANSCALLNAME(ARG)%の%ABLNAME:(LOCAL:0)%Lvが上がった
+
+	;戦闘基礎Lv5で変身能力が身につく
+	IF TALENT:ARG:変身能力 == -1 && ABL:ARG:(LOCAL:0) >= 5 && LOCAL:0 == 33
+		PRINTL 
+		PRINTFORML %PRINT_TRANSCALLNAME(ARG)%は戦闘の基礎を完全にマスターした！
+		IF TALENT:ARG:変身能力獲得 > 0
+			PRINTW
+			RESULT = 1
+		ELSEIF TALENT:ARG:変身能力獲得 < 0
+			PRINTW
+			RESULT = 0
+		ELSE
+			PRINTFORML %PRINT_TRANSCALLNAME(ARG)%に変身能力を設定しますか？
+			PRINTL  [0]いいえ
+			PRINTL  [1]はい
+			$INPUT_LOOP_0
+			INPUT
+		ENDIF
+		IF RESULT == 0
+			TALENT:ARG:変身能力 = 0
+			TALENT:ARG:変身時ＴＳ = 0
+			PRINTL 
+			PRINTFORML %PRINT_TRANSCALLNAME(ARG)%に変身能力を設定しませんでした
+		ELSEIF RESULT == 1
+			TALENT:ARG:変身能力 = 1
+
+			;プロフィール設定済のキャラでなければ詳細なサイズは生成しないようにしておく
+			IF CFLAG:34
+				CALL GENERATE_CHAR_SIZE, ARG:0, 1
+				MAXBASE:ARG:身長 = RESULT:2
+				MAXBASE:ARG:体重 = RESULT:3
+				MAXBASE:ARG:胸囲 = RESULT:4
+				MAXBASE:ARG:胴囲 = RESULT:5
+				MAXBASE:ARG:腰囲 = RESULT:6
+			ENDIF
+
+			PRINTL 
+			PRINTFORML %PRINT_TRANSCALLNAME(ARG)%に変身能力を設定しました
+			PRINTFORML 変身後名を設定しますか？
+			PRINTL  [0]いいえ
+			PRINTL  [1]はい
+			$INPUT_LOOP_1
+			INPUT
+			IF RESULT == 0
+				PRINTL 
+			ELSEIF RESULT == 1
+				PRINTL 
+				CALL FIRSTSETTING_CHARA_TRANSAFTERNAME, ARG
+				IF CSTR:ARG:0 != ""
+					CFLAG:ARG:3 = 1
+					CALL FIRSTSETTING_CHARA_TRANSAFTERCALLNAME, ARG
+				ENDIF
+			ELSE
+				GOTO INPUT_LOOP_1
+			ENDIF
+		ELSE
+			GOTO INPUT_LOOP_0
+		ENDIF
+	ENDIF
+
+	PRINTL 
+	;実績
+	CALL GET_STATE_TROPHY,ARG
+ENDIF
+
+;--------------------------------------------------
+;フィートによるステータスボーナス
+@FEAT_BONUS_F, ARG, ARG:1
+#FUNCTION
+#DIM FEAT_BONUS,7
+VARSET FEAT_BONUS
+IF TALENT:ARG:超反応 > 0
+	FEAT_BONUS:3 -= 5
+ENDIF
+IF TALENT:ARG:神器の担い手 > 0
+	FEAT_BONUS:2 -= 10
+	FEAT_BONUS:3 += 5
+	FEAT_BONUS:4 += 5
+	FEAT_BONUS:5 += 5
+ENDIF
+IF TALENT:ARG:闘争本能 > 0
+	FEAT_BONUS:2 -= 5
+	FEAT_BONUS:3 += 10
+ENDIF
+IF TALENT:ARG:溢れる生命力 > 0
+	FEAT_BONUS:6 -= 15
+ENDIF
+IF TALENT:ARG:精霊交信 > 0
+	FEAT_BONUS:3 -= 5
+	FEAT_BONUS:4 -= 5
+	FEAT_BONUS:5 -= 5
+	FEAT_BONUS:6 += 10
+ENDIF
+IF TALENT:ARG:獣性の証 > 0
+	FEAT_BONUS:6 -= 10
+ENDIF
+IF TALENT:ARG:夜魔の貴族 > 0
+	FEAT_BONUS:0 += 100
+	FEAT_BONUS:1 += 100
+	FEAT_BONUS:2 += 10
+	FEAT_BONUS:3 += 10
+	FEAT_BONUS:4 += 10
+	FEAT_BONUS:5 += 10
+	FEAT_BONUS:6 += 10
+ENDIF
+IF TALENT:ARG:秘められし力 > 0
+	FEAT_BONUS:3 -= 5
+	FEAT_BONUS:4 -= 5
+	FEAT_BONUS:5 -= 5
+	FEAT_BONUS:6 -= 5
+ENDIF
+IF TALENT:ARG:ラッキーチャーム > 0
+	FEAT_BONUS:3 -= 5
+	FEAT_BONUS:4 -= 5
+	FEAT_BONUS:5 -= 5
+	FEAT_BONUS:6 -= 5
+ENDIF
+IF TALENT:ARG:剛腕 > 0
+	FEAT_BONUS:3 += 5
+ENDIF
+IF TALENT:ARG:有翼 > 0
+	FEAT_BONUS:4 += 5
+ENDIF
+IF TALENT:ARG:小さな体躯 > 0
+	FEAT_BONUS:5 += 5
+ENDIF
+IF TALENT:ARG:叡智の冠 > 0
+	FEAT_BONUS:0 -= 50
+	FEAT_BONUS:1 -= 50
+	FEAT_BONUS:2 -= 5
+	FEAT_BONUS:6 += 10
+ENDIF
+IF TALENT:ARG:狩人の勘 > 0
+	FEAT_BONUS:6 -= 5
+ENDIF
+IF TALENT:ARG:心眼 > 0
+	FEAT_BONUS:4 -= 5
+	FEAT_BONUS:5 -= 5
+ENDIF
+RETURNF FEAT_BONUS:(ARG:1)
+
+;--------------------------------------------------
+;ステータスをレベルで倍数する
+@LEVELSTATUS, ARG = 0
+SIF ARG == 0
+	ARG = TARGET
+MAXBASE:ARG:体力 = LEVELSTATUS_UP(BASE:ARG:体力基礎+FEAT_BONUS_F(ARG,0),ABL:ARG:レベル,400+(BASE:ARG:体力基礎-1000)/5,99999)
+MAXBASE:ARG:気力 = LEVELSTATUS_UP(BASE:ARG:気力基礎+FEAT_BONUS_F(ARG,1),ABL:ARG:レベル,400+(BASE:ARG:気力基礎-1000)/5,99999)
+MAXBASE:ARG:性耐性 = LEVELSTATUS_UP(BASE:ARG:性耐性基礎+FEAT_BONUS_F(ARG,2),ABL:ARG:レベル/3+1,10+(BASE:ARG:性耐性基礎-100)/2,9999)
+MAXBASE:ARG:攻撃 = LEVELSTATUS_UP(BASE:ARG:攻撃+FEAT_BONUS_F(ARG,3),ABL:ARG:レベル,50,9999)
+MAXBASE:ARG:防御 = LEVELSTATUS_UP(BASE:ARG:防御+FEAT_BONUS_F(ARG,4),ABL:ARG:レベル,50,9999)
+MAXBASE:ARG:敏捷 = LEVELSTATUS_UP(BASE:ARG:敏捷+FEAT_BONUS_F(ARG,5),ABL:ARG:レベル,50,9999)
+MAXBASE:ARG:知性 = LEVELSTATUS_UP(BASE:ARG:知性+FEAT_BONUS_F(ARG,6),ABL:ARG:レベル,50,9999)
+CALL BASEUP_CAL_SHIELD, ARG
+
+;--------------------------------------------------
+;ステータスのレベル倍率計算
+;BASEの値×レベルでステータスを算出する　　　　
+;式 ((√(220 * Lv) + 95) * BASE + 5.2 * Lv + 95) / 100
+@LEVELSTATUS_UP, ARG:0, ARG:1, ARG:2,ARG:3 = 0
+#FUNCTION
+LOCAL:0 = SQRT(220 * ARG:1)
+
+LOCAL:1 = 52 * ARG:1
+TIMES LOCAL:1, 0.1
+
+LOCAL:2 = (LOCAL:1 + 95) * ARG:2
+LOCAL:2 += (LOCAL:0 + 95) * ARG:0
+LOCAL:2 /= 100
+
+SIF LOCAL:2 > ARG:3 && ARG:3
+	LOCAL:2 = ARG:3
+SIF LOCAL:2 < 1
+	LOCAL:2 = 1
+
+RETURNF LOCAL:2
+
+;--------------------------------------------------
+;レベルアップのチェックを行う
+@CHECK_LEVELUP
+LOCAL = 0
+WHILE JUEL:経験値 > 100 && ABL:レベル < 998
+	JUEL:経験値 -= 100
+	LOCAL += 1
+WEND
+IF LOCAL > 0
+	ABL:レベル += LOCAL
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%はレベルが{LOCAL}上がった
+	CALL LEVELSTATUS,TARGET
+	;実績
+	CALL GET_STATE_TROPHY,TARGET
+ENDIF
+SIF ABL:レベル >= 999
+	JUEL:経験値 = 0
+
+;--------------------------------------------------
+;消費体力から行動可能かどうかを返す、可能なら１、不可能なら０
+;ARGS	行動の種類
+;ARG	行動者が誰か
+@CHECK_ACTION(ARGS, ARG)
+SELECTCASE ARGS
+	CASE "出撃"
+		;体力500以下は行動不可
+		SIF BASE:ARG:体力 <= 500
+			RETURN 0
+		;FEAT効果でによるコマンド制限
+		SIF TALENT:ARG:夜魔の貴族 > 0 && TIME == 0
+			RETURN 0
+
+	CASE "鍛練"
+		;体力500以下は行動不可
+		SIF BASE:ARG:体力 <= 500
+			RETURN 0
+		;基本の体力減少量
+		CALL TRAINING_DOWNTAIRYOKU,ARG
+		LOCAL = RESULT
+		SIF BASE:ARG:体力 < LOCAL
+			RETURN 0
+
+	CASE "活動"
+		;体力500以下は行動不可
+		SIF BASE:ARG:体力 <= 500
+			RETURN 0
+		;FEAT効果によるコマンド制限
+		SIF TALENT:ARG:夜魔の貴族 > 0 && TIME == 0
+			RETURN 0
+		SIF TALENT:ARG:生粋の戦士 > 0
+			RETURN 0
+
+	CASE "防衛"
+		;体力500以下は行動不可
+		SIF BASE:ARG:体力 <= 500
+			RETURN 0
+		;FEAT効果でによるコマンド制限
+		SIF TALENT:ARG:夜魔の貴族 > 0 && TIME == 0
+			RETURN 0
+
+	CASE "支援"
+		;体力500以下は行動不可
+		SIF BASE:ARG:体力 <= 500
+			RETURN 0
+		SIF TALENT:ARG:生粋の戦士 > 0
+			RETURN 0
+
+	CASE "情報"
+		;体力500以下は行動不可
+		SIF BASE:ARG:体力 <= 500
+			RETURN 0
+		;FEAT効果でによるコマンド制限
+		SIF TALENT:ARG:夜魔の貴族 > 0 && TIME == 0
+			RETURN 0
+
+	CASE "息抜"
+		;FEAT効果でによるコマンド制限
+		SIF TALENT:ARG:夜魔の貴族 > 0 && TIME == 0
+			RETURN 0
+ENDSELECT
+RETURN 1
+
+
+;--------------------------------------------------
+;BASEの消費値に対する基礎値補正
+;ARG = 参照するキャラ
+;ARG:1 = 消費量
+;ARG:2 = 体力か気力か
+@SYOUHI_KEIGEN,ARG,ARG:1,ARG:2
+#FUNCTION
+LOCAL = ARG:1
+ARG:2 += 50
+IF ARG:2 == 50 || ARG:2 == 51
+	LOCAL:1 = 1000
+ELSE
+	LOCAL:1 = 100
+ENDIF
+IF BASE:ARG:(ARG:2) > LOCAL:1
+	LOCAL:2 = (BASE:ARG:(ARG:2) - LOCAL:1)
+	LOCAL = MAX(LOCAL - (LOCAL * LOCAL:2 / 2500),LOCAL / 2)
+ENDIF
+RETURNF LOCAL
+
+
+
+;--------------------------------------------------
+;CSV参照系の式中関数版
+@CSVBASE_F,ARG,ARG:1
+#FUNCTION
+CSVBASE ARG,ARG:1
+RETURNF RESULT
+
+@CSVCSTR_F,ARG,ARG:1
+#FUNCTIONS
+CSVCSTR ARG,ARG:1
+RETURNF RESULTS
+
+@CSVABL_F,ARG,ARG:1
+#FUNCTION
+CSVABL ARG,ARG:1
+RETURNF RESULT
+
+@CSVTALENT_F,ARG,ARG:1
+#FUNCTION
+CSVTALENT ARG,ARG:1
+RETURNF RESULT
+
+@CSVMARK_F,ARG,ARG:1
+#FUNCTION
+CSVMARK ARG,ARG:1
+RETURNF RESULT
+
+@CSVEXP_F,ARG,ARG:1
+#FUNCTION
+CSVEXP ARG,ARG:1
+RETURNF RESULT
+
+@CSVJUEL_F,ARG,ARG:1
+#FUNCTION
+CSVJUEL ARG,ARG:1
+RETURNF RESULT
+
+@CSVCFLAG_F,ARG,ARG:1
+#FUNCTION
+CSVCFLAG ARG,ARG:1
+RETURNF RESULT
+
+
+
+;--------------------------------------------------
+;PALAMLVを返す式中関数
+@PALAMLV_F, ARG
+#FUNCTION
+
+IF PALAM:LOCAL < 100
+	LOCAL = 0 
+ELSEIF PALAM:LOCAL < 300
+	LOCAL = 1 
+ELSEIF PALAM:LOCAL < 600
+	LOCAL = 2 
+ELSEIF PALAM:LOCAL < 1500
+	LOCAL = 3 
+ELSEIF PALAM:LOCAL < 3000
+	LOCAL = 4 
+ELSEIF PALAM:LOCAL < 6000
+	LOCAL = 5 
+ELSEIF PALAM:LOCAL < 10000
+	LOCAL = 6 
+ELSEIF PALAM:LOCAL < 30000
+	LOCAL = 7 
+ELSEIF PALAM:LOCAL < 60000
+	LOCAL = 8 
+ELSEIF PALAM:LOCAL < 150000
+	LOCAL = 9 
+ELSEIF PALAM:LOCAL < 300000
+	LOCAL = 10 
+ELSE
+	LOCAL = 11
+ENDIF
+
+RETURNF LOCAL
+
+
+
+
+;--------------------------------------------------
+;探索度の上昇
+@RESEARCH_PROGRESS, ARG
+SIF FLAG:47 < FLAG:46 && FLAG:47 + ARG >= FLAG:46
+	PRINTW ボス触手の居場所を特定した！
+FLAG:47 += ARG
+RETURN
+
+
+
+;--------------------------------------------------
+;固有番号検索
+@CHARAID_F, ARG
+#FUNCTION
+FOR LOCAL, 0, CHARANUM
+	SIF LOCAL == MASTER
+		CONTINUE
+	SIF CFLAG:LOCAL:240 == ARG
+		RETURNF LOCAL
+NEXT
+RETURNF 0
+
+
+
+;-------------------------------------------------
+;素質値取得
+;ARG   対象キャラ
+;ARG:1 変身状態 0=通常 1=変身時
+;ARGS  素質名
+@CHARATALENT_F, ARG, ARG:1, ARGS
+#FUNCTION
+VARSET LOCALS
+;変身時
+IF CFLAG:ARG:1 > 0
+	IF ARG:1 > 0
+		IF ARGS == "小柄" || ARGS == "長身"
+			IF TALENT:ARG:小柄 > 0
+				LOCALS = 小柄
+			ELSEIF TALENT:ARG:長身 > 0
+				LOCALS = 長身
+			ENDIF
+		ELSEIF ARGS == "絶壁" || ARGS == "貧乳" || ARGS == "巨乳" || ARGS == "爆乳" || ARGS == "超乳" || ARGS == "魔乳" || ARGS == "奇乳"
+			IF TALENT:ARG:貧乳 == 2
+				LOCALS = 絶壁
+			ELSEIF TALENT:ARG:貧乳 == 1
+				LOCALS = 貧乳
+			ELSEIF TALENT:ARG:巨乳 == 5
+				LOCALS = 奇乳
+			ELSEIF TALENT:ARG:巨乳 == 4
+				LOCALS = 魔乳
+			ELSEIF TALENT:ARG:巨乳 == 3
+				LOCALS = 超乳
+			ELSEIF TALENT:ARG:巨乳 == 2
+				LOCALS = 爆乳
+			ELSEIF TALENT:ARG:巨乳 == 1
+				LOCALS = 巨乳
+			ENDIF
+		ELSEIF ARGS == "オトコ"
+			SIF TALENT:ARG:オトコ > 0
+				LOCALS = オトコ
+		ELSEIF ARGS == "ふたなり"
+			SIF TALENT:ARG:ふたなり > 0
+				LOCALS = ふたなり
+		ELSEIF ARGS == "安産型" || ARGS == "むちむち" || ARGS == "イカ腹" || ARGS == "スレンダー"
+			IF TALENT:ARG:変身時外見 == 1
+				LOCALS = 安産型
+			ELSEIF TALENT:ARG:変身時外見 == 2
+				LOCALS = むちむち
+			ELSEIF TALENT:ARG:変身時外見 == 3
+				LOCALS = イカ腹
+			ELSEIF TALENT:ARG:変身時外見 == 4
+				LOCALS = スレンダー
+			ENDIF
+		ENDIF
+	ELSE
+		IF ARGS == "小柄" || ARGS == "長身"
+			IF TALENT:ARG:小柄 < 0
+				LOCALS = 小柄
+			ELSEIF TALENT:ARG:長身 < 0
+				LOCALS = 長身
+			ELSEIF TALENT:ARG:変身時体格変動 == 0
+				IF TALENT:ARG:小柄 > 0
+					LOCALS = 小柄
+				ELSEIF TALENT:ARG:長身 > 0
+					LOCALS = 長身
+				ENDIF
+			ENDIF
+		ELSEIF ARGS == "絶壁" || ARGS == "貧乳" || ARGS == "巨乳" || ARGS == "爆乳" || ARGS == "超乳" || ARGS == "魔乳" || ARGS == "奇乳"
+			IF TALENT:ARG:貧乳 == -2
+				LOCALS = 絶壁
+			ELSEIF TALENT:ARG:貧乳 == -1
+				LOCALS = 貧乳
+			ELSEIF TALENT:ARG:巨乳 == -3
+				LOCALS = 超乳
+			ELSEIF TALENT:ARG:巨乳 == -2
+				LOCALS = 爆乳
+			ELSEIF TALENT:ARG:巨乳 == -1
+				LOCALS = 巨乳
+			ELSEIF TALENT:ARG:変身時胸サイズ変動 == 0
+				IF TALENT:ARG:貧乳 == 2
+					LOCALS = 絶壁
+				ELSEIF TALENT:ARG:貧乳 == 1
+					LOCALS = 貧乳
+				ELSEIF TALENT:ARG:巨乳 == 5
+					LOCALS = 奇乳
+				ELSEIF TALENT:ARG:巨乳 == 4
+					LOCALS = 魔乳
+				ELSEIF TALENT:ARG:巨乳 == 3
+					LOCALS = 超乳
+				ELSEIF TALENT:ARG:巨乳 == 2
+					LOCALS = 爆乳
+				ELSEIF TALENT:ARG:巨乳 == 1
+					LOCALS = 巨乳
+				ENDIF
+			ENDIF
+		ELSEIF ARGS == "オトコ"
+			IF TALENT:ARG:オトコ <= 0
+				SIF TALENT:ARG:変身時ＴＳ > 0
+					LOCALS = オトコ
+			ELSEIF TALENT:ARG:変身時ＴＳ == 0
+					LOCALS = オトコ
+			ENDIF
+		ELSEIF ARGS == "ふたなり"
+			SIF TALENT:ARG:変身時ふたなり > 0
+				LOCALS = ふたなり
+		ELSEIF ARGS == "安産型" || ARGS == "むちむち" || ARGS == "イカ腹" || ARGS == "スレンダー"
+			IF TALENT:ARG:外見 == 1
+				LOCALS = 安産型
+			ELSEIF TALENT:ARG:外見 == 2
+				LOCALS = むちむち
+			ELSEIF TALENT:ARG:外見 == 3
+				LOCALS = イカ腹
+			ELSEIF TALENT:ARG:外見 == 4
+				LOCALS = スレンダー
+			ENDIF
+		ENDIF
+	ENDIF
+;通常時
+ELSE
+	IF ARG:1 > 0
+		IF ARGS == "小柄" || ARGS == "長身"
+			LOCAL = TALENT:ARG:長身 - TALENT:ARG:小柄 + TALENT:ARG:変身時体格変動
+			IF LOCAL < 0
+				LOCALS = 小柄
+			ELSEIF LOCAL > 0
+				LOCALS = 長身
+			ENDIF
+		ELSEIF ARGS == "絶壁" || ARGS == "貧乳" || ARGS == "巨乳" || ARGS == "爆乳" || ARGS == "超乳" || ARGS == "魔乳" || ARGS == "奇乳"
+			LOCAL = TALENT:ARG:巨乳 - TALENT:ARG:貧乳 + TALENT:ARG:変身時胸サイズ変動
+			IF TALENT:ARG:オトコ > 0
+				SIF TALENT:ARG:変身時ＴＳ == 0
+					LOCAL = 0
+			ELSEIF TALENT:ARG:変身時ＴＳ > 0
+					LOCAL = 0
+			ENDIF
+			IF LOCAL < -1
+				LOCALS = 絶壁
+			ELSEIF LOCAL < 0
+				LOCALS = 貧乳
+			ELSEIF LOCAL > 4
+				LOCALS = 奇乳
+			ELSEIF LOCAL > 3
+				LOCALS = 魔乳
+			ELSEIF LOCAL > 2
+				LOCALS = 超乳
+			ELSEIF LOCAL > 1
+				LOCALS = 爆乳
+			ELSEIF LOCAL > 0
+				LOCALS = 巨乳
+			ENDIF
+		ELSEIF ARGS == "オトコ"
+			IF TALENT:ARG:オトコ > 0
+				SIF TALENT:ARG:変身時ＴＳ == 0
+					LOCALS = オトコ
+			ELSEIF TALENT:ARG:変身時ＴＳ > 0
+					LOCALS = オトコ
+			ENDIF
+		ELSEIF ARGS == "ふたなり"
+			SIF TALENT:ARG:変身時ふたなり > 0
+				LOCALS = ふたなり
+		ELSEIF ARGS == "安産型" || ARGS == "むちむち" || ARGS == "イカ腹" || ARGS == "スレンダー"
+			IF TALENT:ARG:変身時外見 == 1
+				LOCALS = 安産型
+			ELSEIF TALENT:ARG:変身時外見 == 2
+				LOCALS = むちむち
+			ELSEIF TALENT:ARG:変身時外見 == 3
+				LOCALS = イカ腹
+			ELSEIF TALENT:ARG:変身時外見 == 4
+				LOCALS = スレンダー
+			ENDIF
+		ENDIF
+	ELSE
+		IF ARGS == "小柄" || ARGS == "長身"
+			IF TALENT:ARG:小柄 > 0
+				LOCALS = 小柄
+			ELSEIF TALENT:ARG:長身 > 0
+				LOCALS = 長身
+			ENDIF
+		ELSEIF ARGS == "絶壁" || ARGS == "貧乳" || ARGS == "巨乳" || ARGS == "爆乳" || ARGS == "超乳" || ARGS == "魔乳" || ARGS == "奇乳"
+			IF TALENT:ARG:貧乳 == 2
+				LOCALS = 絶壁
+			ELSEIF TALENT:ARG:貧乳 == 1
+				LOCALS = 貧乳
+			ELSEIF TALENT:ARG:巨乳 == 5
+				LOCALS = 奇乳
+			ELSEIF TALENT:ARG:巨乳 == 4
+				LOCALS = 魔乳
+			ELSEIF TALENT:ARG:巨乳 == 3
+				LOCALS = 超乳
+			ELSEIF TALENT:ARG:巨乳 == 2
+				LOCALS = 爆乳
+			ELSEIF TALENT:ARG:巨乳 == 1
+				LOCALS = 巨乳
+			ENDIF
+		ELSEIF ARGS == "オトコ"
+			SIF TALENT:ARG:オトコ > 0
+				LOCALS = オトコ
+		ELSEIF ARGS == "ふたなり"
+			SIF TALENT:ARG:ふたなり > 0
+				LOCALS = ふたなり
+		ELSEIF ARGS == "安産型" || ARGS == "むちむち" || ARGS == "イカ腹" || ARGS == "スレンダー"
+			IF TALENT:ARG:外見 == 1
+				LOCALS = 安産型
+			ELSEIF TALENT:ARG:外見 == 2
+				LOCALS = むちむち
+			ELSEIF TALENT:ARG:外見 == 3
+				LOCALS = イカ腹
+			ELSEIF TALENT:ARG:外見 == 4
+				LOCALS = スレンダー
+			ENDIF
+		ENDIF
+	ENDIF
+ENDIF
+IF (LOCALS == ARGS) > 0
+	RETURNF 1
+ELSE
+	RETURNF 0
+ENDIF
+
+
+;-------------------------------------------------
+;素質差判定
+;変身前と変身後の素質に差が無ければ0を返す
+@TALENT_CHANGE_F, ARG
+#FUNCTION
+SIF TALENT:ARG:変身時体格変動 != 0
+	RETURNF 1
+SIF TALENT:ARG:変身時胸サイズ変動 != 0
+	RETURNF 1
+SIF TALENT:ARG:変身時ＴＳ != 0
+	RETURNF 1
+SIF TALENT:ARG:外見 != TALENT:ARG:変身時外見
+	RETURNF 1
+RETURNF 0
+
+
+
+;-------------------------------------------------
+;ペニス判定
+;ARG番目のキャラがペニスを持っていれば1を返す
+@HAVE_PENIS_F, ARG = -999
+#FUNCTION
+SIF ARG == -999
+	ARG = TARGET
+SIF TALENT:ARG:オトコ > 0 || TALENT:ARG:ふたなり > 0
+	RETURNF 1
+RETURNF 0
+
+
+

@@ -1,0 +1,480 @@
+
+;**********************************************************
+;子触手襲来の判定
+;********************************************
+;----------------------------
+;子触手襲来判定
+;----------------------------
+@SMALL_TENTACLE_HANTEI
+#DIM CCOUNT
+;襲えるキャラがいない場合判定しない
+SIF CHARANUM_ACTIVE() == 0
+	RETURN 0
+
+;男女平等のオプション
+IF FILTER_CHECK_F(5)
+	;キャラが全員オトコの場合は判定しない
+	LOCAL = 0
+	FOR CCOUNT, 0, CHARANUM
+		SIF CCOUNT == MASTER
+			CONTINUE
+		SIF CFLAG:CCOUNT:999 == 0
+			CONTINUE
+		SIF TALENT:CCOUNT:オトコ <= 0
+			LOCAL ++
+	NEXT
+	SIF LOCAL < 1
+		RETURN 0
+ENDIF
+;夜でなければ判定しない
+SIF TIME != 1
+	RETURN 0
+;育児済みの触手の数をLOCALに
+LOCAL = FLAG:44
+FOR CCOUNT, 0, CHARANUM
+	LOCAL -= CFLAG:CCOUNT:220
+NEXT
+;処理を変更、育児済みの子触手が居れば襲来判定へ
+SIF LOCAL < 1
+	RETURN 0
+LOCAL:1 = TARGET
+;防衛力に応じた確率でイベント発生
+IF FLAG:852 < 1000 + LOCAL * 50
+	LOCAL:2 = RAND:3
+ELSEIF FLAG:852 < 2500 + LOCAL * 50
+	LOCAL:2 = RAND:4
+ELSEIF FLAG:852 < 5000 + LOCAL * 50
+	LOCAL:2 = RAND:8
+ELSEIF FLAG:852 < 10000 + LOCAL * 50
+	LOCAL:2 = RAND:16
+ELSEIF FLAG:852 < 15000 + LOCAL * 50
+	LOCAL:2 = RAND:32
+ELSEIF FLAG:852 < 20000 + LOCAL * 50
+	LOCAL:2 = RAND:64
+ELSE
+	LOCAL:2 = RAND:128
+ENDIF
+IF LOCAL:2 == 0 && RAND:(12 - FLAG:52 * 2) != 0
+	CALL SMALL_TENTACLE_ATTACK
+;最低でも5%で発生する
+ELSEIF RAND:20 == 10
+	CALL SMALL_TENTACLE_ATTACK
+;判定失敗時に10匹以上要るならランダムで数が減少する
+ELSE
+	IF RAND:LOCAL >= 9
+		FLAG:44 -= 1
+		DRAWLINE
+		IF FLAG:52 && (RAND:(FLAG:52) != 0 || LOCAL:2 != 0)
+			PRINTW 子触手は防衛システムに引っかかって黒焦げにされた...
+		ELSEIF RAND:2 == 0
+			PRINTW 子触手は何かの動物に襲われた...
+		ELSE
+			PRINTW 子触手は迷子になった...
+		ENDIF
+	ENDIF
+ENDIF
+
+TARGET = LOCAL:1
+
+;----------------------------
+;子触手襲来 ターゲット選択
+;----------------------------
+@SMALL_TENTACLE_ATTACK
+LOCAL = RAND:100
+LOCAL:1 = 0
+DRAWLINE
+;1/4の確率で見つかって処分
+IF LOCAL < 25
+	CALL MESSAGE_SMALL_ATTACK_FAILED
+	FLAG:44 -= 1
+;ターゲットを決める
+ELSE
+	$LOOP
+	IF LOCAL:1 >= 99
+		PRINTW 子触手は迷子になった...
+		FLAG:44 -= 1
+		DRAWLINE
+		RETURN
+	ENDIF
+	LOCAL = RAND:(CHARANUM - 1) + 1
+	LOCAL:1 ++
+	SIF CFLAG:LOCAL:999 == 0
+		GOTO LOOP
+	SIF CFLAG:LOCAL:0 != 0
+		GOTO LOOP
+	SIF TALENT:LOCAL:オトコ > 0 && FILTER_CHECK_F(5) > 0
+		GOTO LOOP
+
+	TARGET = LOCAL
+	CALL SMALL_PRISON_EVENT
+ENDIF
+
+
+;**********************************************************
+;子触手襲来の内容選択
+;********************************************
+@SMALL_PRISON_EVENT
+;襲う相手が居なければ中断
+SIF CHARANUM_ACTIVE() == 0
+	RETURN
+
+DRAWLINE
+CALL MESSAGE_SMALL_ATTACK
+CALL MESSAGE_SMALL_ATTACK_SUCCESS
+;幽閉コマンドの選択
+;汎用行動の種類　幽閉処理関連のフォルダ内のPRISON_COMX,ERBの数を記述
+LOCAL:1 = RAND:7
+;フタナリならばＣ襲来の確率がアップ
+SIF TALENT:ふたなり > 0 && RAND:10 == 0
+	LOCAL:1 = 0
+;処女を失っていればＶ襲来の確率がアップ
+SIF TALENT:処女 < 1 && RAND:11 == 0
+	LOCAL:1 = 1
+;母乳体質ならばＢ襲来の確率がアップ
+SIF TALENT:母乳体質 > 0 && RAND:12 == 0
+	LOCAL:1 = 3
+;ふたなりフィルタ×ならＣ襲来をＶ襲来に変更
+SIF FILTER_CHECK_F(1) > 0 && LOCAL:1 == 0
+	LOCAL:1 = 1
+;オトコならＶ襲来をＣ襲来に変更
+SIF TALENT:オトコ > 0 && LOCAL:1 == 1
+	LOCAL:1 = 0
+;オトコならＢ襲来をＣ襲来に変更
+SIF TALENT:オトコ > 0 && LOCAL:1 == 3
+	LOCAL:1 = 0
+CALL SMALL_PRISON_COM,LOCAL:1
+PRINTW 
+
+;********************************************
+;子触手襲来
+;********************************************
+@SMALL_PRISON_COM,ARG
+#DIM CCOUNT
+VARSET LOCAL
+IF ARG == 0
+	;Ｃ襲来
+
+	;快C
+	IF ABL:Ｃ感覚 == 0
+		LOCAL:0 = 6
+	ELSEIF ABL:Ｃ感覚 == 1
+		LOCAL:0 = 50
+	ELSEIF ABL:Ｃ感覚 == 2
+		LOCAL:0 = 200
+	ELSEIF ABL:Ｃ感覚 == 3
+		LOCAL:0 = 600
+	ELSEIF ABL:Ｃ感覚 == 4
+		LOCAL:0 = 900
+	ELSE
+		LOCAL:0 = 1200
+	ENDIF
+
+	;地の文
+	CALLFORM MESSAGE_SMALL_PRISON_COM_0
+
+	IF BASE:Ｃ結界耐久力
+
+	ELSE
+		;寄生ふたなりにする
+		IF TALENT:ふたなり < 1 && TALENT:オトコ <= 0
+			TALENT:ふたなり = 2
+			SIF TALENT:変身時ふたなり < 1
+				TALENT:変身時ふたなり = 2
+		ELSE
+			;射精経験
+			LOCAL:153 += 5
+			LOCAL:0 *= 3
+		ENDIF
+	ENDIF
+ELSEIF ARG == 1
+	;Ｖ襲来
+
+	IF ABL:Ｖ感覚 == 0
+		LOCAL:1 = 10
+	ELSEIF ABL:Ｖ感覚 == 1
+		LOCAL:1 = 20
+	ELSEIF ABL:Ｖ感覚 == 2
+		LOCAL:1 = 40
+	ELSEIF ABL:Ｖ感覚 == 3
+		LOCAL:1 = 100
+	ELSEIF ABL:Ｖ感覚 == 4
+		LOCAL:1 = 200
+	ELSE
+		LOCAL:1 = 400
+	ENDIF
+
+	;地の文
+	CALLFORM MESSAGE_SMALL_PRISON_COM_1
+
+	IF BASE:Ｖ結界耐久力
+
+	ELSE
+		;Ｖ経験
+		LOCAL:120 = 4 + RAND:5
+
+		;処女膜があれば射精はしない
+		IF TALENT:処女 < 1
+			;精液経験
+			LOCAL:123 = 15 + RAND:16
+			;フェラ経験
+			LOCAL:124 = 1 + RAND:2
+		ENDIF
+
+		IF TALENT:処女 > 0
+			TALENT:処女 = -1
+			CFLAG:206 = 1
+			LOCAL:120 = 1
+			LOCAL:10 = 500
+		ELSE
+			LOCAL:1 *= 3
+		ENDIF
+		;アフターピル
+		CALL AFTER_PILL, TARGET, 35, 200
+		;妊娠確率 出産後の中だし回数と今までの出産経験に応じ可能性が増える
+		CALL NINSIN_HANTEI, LOCAL:123, 30, 200
+	ENDIF
+ELSEIF ARG == 2
+	;Ａ襲来
+
+	;快A
+	IF ABL:Ａ感覚 == 0
+		LOCAL:2 = 6
+	ELSEIF ABL:Ａ感覚 == 1
+		LOCAL:2 = 50
+	ELSEIF ABL:Ａ感覚 == 2
+		LOCAL:2 = 200
+	ELSEIF ABL:Ａ感覚 == 3
+		LOCAL:2 = 600
+	ELSEIF ABL:Ａ感覚 == 4
+		LOCAL:2 = 900
+	ELSE
+		LOCAL:2 = 1200
+	ENDIF
+
+	;地の文
+	CALLFORM MESSAGE_SMALL_PRISON_COM_2
+
+	IF BASE:Ａ結界耐久力
+
+	ELSE
+		;Ａ経験
+		LOCAL:121 = 4 + RAND:5
+
+		;精液経験
+		LOCAL:123 = 15 + RAND:16
+	ENDIF
+ELSEIF ARG == 3
+	;Ｂ襲来
+
+	;快B
+	IF ABL:Ｂ感覚 == 0
+		LOCAL:3 = 6
+	ELSEIF ABL:Ｂ感覚 == 1
+		LOCAL:3 = 50
+	ELSEIF ABL:Ｂ感覚 == 2
+		LOCAL:3 = 200
+	ELSEIF ABL:Ｂ感覚 == 3
+		LOCAL:3 = 600
+	ELSEIF ABL:Ｂ感覚 == 4
+		LOCAL:3 = 900
+	ELSE
+		LOCAL:3 = 1200
+	ENDIF
+
+	;地の文
+	CALLFORM MESSAGE_SMALL_PRISON_COM_3
+
+	IF BASE:Ｂ結界耐久力
+
+	ELSE
+		;精液経験
+		LOCAL:123 = 5 + RAND:11
+
+		IF FILTER_CHECK_F(2)
+		ELSEIF TALENT:母乳体質 == 0
+			TALENT:母乳体質 = 1
+		ELSE
+			LOCAL:154 += 5
+			LOCAL:ARG *= 3
+		ENDIF
+	ENDIF
+ELSEIF ARG == 4
+	;苦痛襲来
+
+	;ベース
+	;屈服　マゾっ気で変化
+	IF ABL:マゾっ気 == 0
+		LOCAL:8 = 50
+	ELSEIF ABL:マゾっ気 == 1
+		LOCAL:8 = 100
+	ELSEIF ABL:マゾっ気 == 2
+		LOCAL:8 = 200
+	ELSEIF ABL:マゾっ気 == 3
+		LOCAL:8 = 500
+	ELSEIF ABL:マゾっ気 == 4
+		LOCAL:8 = 1000
+	ELSEIF ABL:マゾっ気 == 5
+		LOCAL:8 = 2000
+	ENDIF
+	
+	;苦痛　とりあえず固定
+	LOCAL:10 = 5000
+	
+	;恐怖　従順とマゾっ気で大まかに
+	IF ABL:従順 < 3
+		IF ABL:マゾっ気 < 3
+			LOCAL:11 = 1000
+		ELSE
+			LOCAL:11 = 500
+		ENDIF
+	ELSE
+		IF ABL:マゾっ気 < 3
+			LOCAL:11 = 200
+		ELSE
+			LOCAL:11 = 100
+		ENDIF
+	ENDIF
+
+	;精液経験
+	LOCAL:123 = 30 + RAND:31
+	;フェラ経験
+	LOCAL:124 = 5 + RAND:11
+
+	;苦痛快楽経験
+	IF ABL:マゾっ気 == 0
+		LOCAL:132 = 1
+	ELSEIF ABL:マゾっ気 == 1
+		LOCAL:132 = 2
+	ELSEIF ABL:マゾっ気 == 2
+		LOCAL:132 = 4
+	ELSEIF ABL:マゾっ気 == 3
+		LOCAL:132 = 8
+	ELSEIF ABL:マゾっ気 == 4
+		LOCAL:132 = 14
+	ELSEIF ABL:マゾっ気 == 5
+		LOCAL:132 = 25
+	ENDIF
+	CALL MESSAGE_SMALL_PRISON_COM_4
+
+ELSEIF ARG == 5
+;奉仕襲来
+
+	;恭順
+	IF ABL:従順 <= 2
+		LOCAL:5 = 200
+	ELSEIF ABL:従順 == 3
+		LOCAL:5 = 500
+	ELSEIF ABL:従順 == 4
+		LOCAL:5 = 1000
+	ELSEIF ABL:従順 == 5
+		LOCAL:5 = 2000
+	ENDIF
+
+
+	;習得
+	IF ABL:技巧 == 0
+		LOCAL:6 = 100
+	ELSEIF ABL:技巧 == 1
+		LOCAL:6 = 200
+	ELSEIF ABL:Ｃ感覚 == 2
+		LOCAL:6 = 500
+	ELSEIF ABL:技巧 == 3
+		LOCAL:6 = 1000
+	ELSEIF ABL:技巧 == 4
+		LOCAL:6 = 2000
+	ELSEIF ABL:技巧 == 5
+		LOCAL:6 = 4000
+	ENDIF
+
+	;屈服
+	IF ABL:従順 == 0
+		LOCAL:8 = 100
+	ELSEIF ABL:従順 == 1
+		LOCAL:8 = 200
+	ELSEIF ABL:従順 == 2
+		LOCAL:8 = 500
+	ELSEIF ABL:従順 == 3
+		LOCAL:8 = 1000
+	ELSEIF ABL:従順 == 4
+		LOCAL:8 = 2000
+	ELSEIF ABL:従順 == 5
+		LOCAL:8 = 5000
+	ENDIF
+
+	;奉仕精神に応じてボーナス
+	IF ABL:奉仕精神 < 3
+	ELSEIF ABL:奉仕精神 < 4
+		LOCAL:5 += 200
+		LOCAL:6 += 50
+	ELSEIF ABL:奉仕精神 < 5
+		LOCAL:5 += 500
+		LOCAL:6 += 100
+	ELSE
+		LOCAL:5 += 1000
+		LOCAL:6 += 200
+	ENDIF
+
+	;精液経験
+	LOCAL:123 = 10 + RAND:11
+	;フェラ経験
+	LOCAL:124 = 5 + RAND:11
+	;奉仕快楽経験
+	LOCAL:131 += 1
+	CALL MESSAGE_SMALL_PRISON_COM_5
+
+ELSEIF ARG == 6
+	;羞恥襲来
+
+	;恥情　露出癖が高くなると多くなる
+	IF ABL:露出癖 == 0
+		LOCAL:9 = 100
+	ELSEIF ABL:露出癖 == 1
+		LOCAL:9 = 200
+	ELSEIF ABL:露出癖 == 2
+		LOCAL:9 = 500
+	ELSEIF ABL:露出癖 == 3
+		LOCAL:9 = 1000
+	ELSEIF ABL:露出癖 == 4
+		LOCAL:9 = 2000
+	ELSEIF ABL:露出癖 == 5
+		LOCAL:9 = 5000
+	ENDIF
+
+	;露出癖が高いと欲情にボーナス
+	IF ABL:露出癖 == 1
+		LOCAL:7 = 100
+	ELSEIF ABL:露出癖 == 2
+		LOCAL:7 = 200
+	ELSEIF ABL:露出癖 == 3
+		LOCAL:7 = 500
+	ELSEIF ABL:露出癖 == 4
+		LOCAL:7 = 1000
+	ELSEIF ABL:露出癖 == 5
+		LOCAL:7 = 2000
+	ENDIF
+
+	;露出快楽経験	
+	POWER LOCAL:130,ABL:露出癖,2
+	LOCAL:130 += 1
+	;自慰経験
+	LOCAL:140 += 5
+
+	;精液経験
+	LOCAL:123 = 5 + RAND:11
+
+	;地の文
+	CALLFORM MESSAGE_SMALL_PRISON_COM_6
+ENDIF
+
+;幽閉中パラメータ変動共通処理へ
+CALL COMMON_PRISON, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11
+
+;経験数の増加
+FOR CCOUNT, 100, 200
+	CALL COMMON_PRISON_EXP, CCOUNT, LOCAL:CCOUNT
+NEXT
+
+PRINTL 
+
+;珠の取得へ
+CALL _ABLUP, 1

@@ -1,0 +1,506 @@
+
+;--------------------------------
+;触手襲来
+;--------------------------------
+@MESSAGE_SMALL_ATTACK
+IF CONFIG_CHECK_SCREEN_F(3) == 0
+	PRINTW ――
+	PRINTW ――――
+	PRINTW ――――――
+ELSE
+	PRINTL ――
+	PRINTL ――――
+	PRINTL ――――――
+ENDIF
+PRINTL
+PRINTL 誰もが寝静まった頃――
+PRINTL 夜のトバリの中でナニカが蠢いている・・・
+PRINTW 
+
+@MESSAGE_SMALL_ATTACK_FAILED
+IF CONFIG_CHECK_SCREEN_F(3) == 0
+	PRINTW ――――――
+	PRINTW ――――――
+ELSE
+	PRINTL ――――――
+	PRINTL ――――――
+ENDIF
+PRINTL ある組織で夜間警備を行っていた隊員が見回りしていると怪しげな物質を発見した。
+PRINTL 動きは鈍く体は小さいため脅威はなさそうだ。
+PRINTL ためしに持っていたライトでそれを照らすと気持ちの悪い触手が地面を這っていた。
+PRINTL 隊員は驚愕し、思わず持っていた武器で触手を潰した・・・
+PRINTW 
+
+@MESSAGE_SMALL_ATTACK_SUCCESS
+IF CONFIG_CHECK_SCREEN_F(3) == 0
+	PRINTW ――――――
+	PRINTW ――――――
+ELSE
+	PRINTL ――――――
+	PRINTL ――――――
+ENDIF
+PRINTL ある建物の周囲をナニカは見回しながら偵察している・・・
+PRINTW 野外につながっている通風孔を目ざとく見つけると、その中に入って行く・・・
+IF CONFIG_CHECK_SCREEN_F(3) == 0
+	PRINTW ――――――
+	PRINTW ――――――
+	PRINTW ――――――
+	PRINTW ――――――
+ELSE
+	PRINTL ――――――
+	PRINTL ――――――
+	PRINTL ――――――
+	PRINTL ――――――
+ENDIF
+PRINTL やがてナニカは天井の通風孔からお目当ての相手を見つけたようだ。
+PRINTL 音をたてないように自身の触手を使って通風孔の蓋を外すと
+PRINTL ズ ル リ とその全身を取り出しながら、気持ちの悪い粘液をしたたらせ、
+;主観持ちは意識ありで犯される
+IF TALENT:主観視点 > 0
+	PRINTFORML 自室でぐっすりと寝ている%PRINT_CALLNAME(TARGET)%に近づいてきた・・・
+	PRINTW 
+	PRINTFORML ―――深夜
+	PRINTFORML ふと目が覚めた%PRINT_CALLNAME(TARGET)%の鼻腔に、甘ったるい香りが飛び込んでくる。
+	PRINTFORML 同時に自分に近づいてくる触手の塊を目の端に捉え、思わず飛び起きようとするが、	
+	PRINTFORML 連日の疲れのせいか、それとも眠っている間に、触手に何かされてしまったのか、
+	PRINTFORML まるで金縛りにあったように、%PRINT_CALLNAME(TARGET)%の全身はピクリとも動かない。
+	PRINTW 
+	PRINTFORML ゆっくりと迫る触手から目を逸らすことはおろか、自分の意思でまぶたを閉じることもできず・・・
+	PRINTFORML 体を動かせない恐怖と、これから無抵抗なまま触手に嬲られるであろう事実に、
+	PRINTFORML %PRINT_CALLNAME(TARGET)%はパニックに陥ってしまう。
+ELSE
+	PRINTFORML 自室でぐっすりと寝ている%PRINT_CALLNAME(TARGET)%に近づいて行った・・・
+	PRINTW 
+	PRINTFORML %PRINT_CALLNAME(TARGET)%は自分に近づいてくる触手の塊に気付かずむにゃむにゃと寝言を言っている・・・
+ENDIF
+PRINTW
+
+@MESSAGE_SMALL_PRISON_COM_0
+IF BASE:Ｃ結界耐久力
+	PRINTFORML %STR:2500%はそっと近づいて、%CALLNAME:TARGET%のパジャマを脱がしていく。
+	PRINTFORML 先端から粘液を分泌させながらそのまま股間に取り付こうとしたそのとき、
+	PRINTFORML まばゆい光を放ったＣ結界に阻まれ、
+	IF RAND:2 == 0
+		PRINTFORML %STR:2500%は吹き飛ばされて壁に叩きつけられた！
+		PRINTW 
+		PRINTFORML 次の朝、%CALLNAME:TARGET%が目を覚ますと
+		PRINTFORML 無残な肉塊になった%STR:2500%を自動清掃装置が片づけていった・・・
+	ELSE
+		PRINTFORML %STR:2500%は消し炭にされてしまった！
+		PRINTW 
+		PRINTFORML 次の朝、%CALLNAME:TARGET%が目を覚ますと
+		PRINTFORML 何やら肉が焦げたような異臭がしたので換気機能を最大に上げた・・・
+	ENDIF
+	PRINTW 
+ELSE
+	IF TALENT:ふたなり < 1 && TALENT:オトコ <= 0
+		PRINTFORML %STR:2500%は気付かれないように、
+		PRINTFORML %CALLNAME:TARGET%の全身を愛撫しながらその股間に取り付いた。
+		PRINTFORML 吸いつくようにして触手が%CALLNAME:TARGET%のクリトリスと一体化していく。
+		PRINTFORML 次の日、%CALLNAME:TARGET%が目を覚ますと自分の股間から有り得ない物が屹立していることに気づいて、
+		PRINTFORML しばらく鏡の前で錯乱していた・・・
+		PRINTW 
+		PRINTFORML %CALLNAME:TARGET%は[%TALENTNAME:300%]にされた
+	ELSE
+		PRINTFORML 寝間着を脱がされたにもかかわらずぐっすりと眠る%CALLNAME:TARGET%の陽物に、
+		PRINTFORML ぬるりと触手が絡みつく。
+		IF RAND:8 == 0
+			PRINTFORML すると触手が複雑に絡み合い、貫通式オナホールに変化した。
+			PRINTFORML ずちゅんっ、と強烈な勢いで動き始めたオナホールによって余りにも強烈な悦楽を与えられて、
+			PRINTFORML %CALLNAME:TARGET%が完全に目を覚ます。
+			PRINTFORML いつの間にか全身に絡みついた触手で身動きがとれない%CALLNAME:TARGET%を、
+			PRINTFORML 触手がさらに責め立てる・・・
+			PRINTW 
+			PRINTFORML ぐちゅんぬりゅんとオナホが上下するたび、
+			PRINTFORML 腰から下が蕩けるほどの悦楽が昇ってくるのだ。
+			PRINTFORML その激しさに我慢できず、射精する%CALLNAME:TARGET%。
+			PRINTFORML 開いた先端から飛び出した精液が、自身の腹や胸を白く汚していく・・・
+			PRINTW 
+			PRINTFORML 息を荒くしながらも行為が終わったことに安堵した瞬間、
+			PRINTFORML オナホがさらに激しく上下し、内部が前後左右と有り得ない変化で動き始める。
+			PRINTFORML 悦鳴を漏らす%CALLNAME:TARGET%を余所に、触手がさらに動きを激しくする。
+			PRINTFORML さほどの間を置かず、また精を吐き出す%CALLNAME:TARGET%。
+			PRINTFORML しかし、それは終わりではなく、またもや触手オナホが動き始めた・・・
+			PRINTW 
+		ELSEIF RAND:2 == 0
+			PRINTFORML 亀頭をゆっくりと撫で回されるたびに、ひくんひくんと陽物が揺れ、
+			PRINTFORML %CALLNAME:TARGET%が吐息を漏らす。
+			PRINTFORML さらに枝分かれした触手が竿に絡みつき、上下させ始めた。
+			PRINTFORML 蕩けるような快楽に、口からよだれをこぼしながら%CALLNAME:TARGET%がうっすらと目を開くと、
+			PRINTFORML まるで触手がタイミング合わせるかのように、一気に激しく竿をシゴきはじめた・・・
+			PRINTW 
+		ELSE
+			PRINTFORML すると触手の先端が粘液の糸を引きながら左右に大きく開き、
+			PRINTFORML 勃起しきった%CALLNAME:TARGET%のペニスを飲み込むと、
+			PRINTFORML 音を立てて吸引しはじめた・・・
+			PRINTW 
+		ENDIF
+		IF CHARANUM_ALIVE() == 1
+			IF TALENT:触手の虜 || ABL:従順 >= 3 || ABL:欲望 >= 3
+				PRINTFORML 快楽に流されて無抵抗の%CALLNAME:TARGET%は
+				PRINTFORML 覆いかぶさった%STR:2500%を跳ね除けようとするどころか受け入れてしまう。
+				PRINTFORML ペニスを激しく吸引される%CALLNAME:TARGET%の目には理性の光が見えず、
+				PRINTFORML ただ欲望を吐き出すことに夢中になってしまっている。
+			ELSE
+				PRINTFORML 何とか抵抗しようとする%CALLNAME:TARGET%だが、
+				PRINTFORML 快楽に流され力の入らない体では自らに覆いかぶさる%STR:2500%を跳ね除けられない。
+				PRINTFORML %STR:2500%はそんな%CALLNAME:TARGET%を意にも介さず、
+				PRINTFORML %CALLNAME:TARGET%自身の精液で%CALLNAME:TARGET%を白く染め上げていく。
+			ENDIF
+			PRINTFORML 早朝になって触手が立ち去るまで、
+			PRINTFORML %CALLNAME:TARGET%は己の精液を搾り取られ続けた・・・
+			PRINTW 
+		ELSE
+			PRINTW ――――――
+			PRINTW ――――
+			PRINTW ――
+			PRINTFORML 朝、普段ならとっくに起きてくる筈の%CALLNAME:TARGET%を心配したのだろう、
+			PRINTFORML 仲間が部屋の戸をノックする音が響いても、
+			PRINTFORML 腰が抜けるほど精液を搾り取られ続けている%CALLNAME:TARGET%には応える余裕がない。
+			PRINTW 
+			PRINTFORML 腹と言わず胸と言わず、顔にまで己の白濁を浴びせかけられ、
+			PRINTFORML かぴかぴに乾いた精液の上からまた、触手に搾り取られた精液が降りかかってくる。
+			PRINTFORML その瞬間に思わず漏れた呻き声に気づいたのだろう、
+			PRINTFORML 仲間がドアを蹴り開けて入ってくるのが見えた・・・
+			PRINTW 
+			PRINTFORML 青臭い精液の匂いが充満する部屋の中、一瞬凍り付く仲間。
+			PRINTFORML はっと、我に返った仲間が%STR:2500%を滅ぼす。
+			PRINTFORML やっと股間からの悦楽が消えて、安堵の吐息と共に、
+			PRINTFORML %CALLNAME:TARGET%は気を失った・・・
+			PRINTW 
+		ENDIF
+	ENDIF
+ENDIF
+
+;-----------------------
+;触手襲来Ｖ
+;-----------------------
+@MESSAGE_SMALL_PRISON_COM_1
+IF BASE:Ｖ結界耐久力
+	PRINTFORML %STR:2500%は気付かれないように%CALLNAME:TARGET%に近づき、パジャマを脱がしていった。
+	PRINTFORML 脚を広げて無防備に晒されたワレメに自らの先端をあてがい、勢いを付けて挿入しようとしたそのとき、
+	PRINTFORML まばゆい光を放ったＶ結界に阻まれ、
+	IF RAND:2 == 0
+		PRINTFORML %STR:2500%は吹き飛ばされて壁に叩きつけられた！
+		PRINTW 
+		PRINTFORML 次の朝、%CALLNAME:TARGET%が目を覚ますと
+		PRINTFORML 無残な肉塊になった%STR:2500%を自動清掃装置が片づけていった・・・
+	ELSE
+		PRINTFORML %STR:2500%は消し炭にされてしまった！
+		PRINTW 
+		PRINTFORML 次の朝、%CALLNAME:TARGET%が目を覚ますと
+		PRINTFORML 何やら肉が焦げたような異臭がしたので換気機能を最大に上げた・・・
+	ENDIF
+	PRINTW 
+ELSE
+	IF TALENT:処女 > 0
+		PRINTFORML %STR:2500%は、気付かれないように%CALLNAME:TARGET%に近づき、パジャマを脱がしていった。
+		PRINTFORM そして、%CALLNAME:TARGET%の
+		SIF EXP:Ｖ経験 == 0
+			PRINT 穢れを知らない
+		PRINTFORM 割れ目を幾度かなぞると、
+		PRINTFORM 勢いをつけて自らをその
+		IF TALENT:小柄
+			PRINT 小さな秘裂
+		ELSE
+			PRINT うっすら濡れた秘裂
+		ENDIF
+		PRINTFORML に叩き込んだ！
+		IF TALENT:触手の虜 || ABL:触手中毒
+			PRINTFORML %CALLNAME:TARGET%の締め付けを味わうかのように、
+			PRINTFORML %STR:2500%はゆっくりと膣奥まで挿入し、そこで堪え切れずに射精してしまった。
+			PRINTFORML %CALLNAME:TARGET%が起きる様子はなく、%STR:2500%は再びピストンを叩きつけ始める・・・
+			PRINTW 
+			PRINTFORML 朝になって%CALLNAME:TARGET%が目を覚ますと、
+			PRINTFORML 股間に違和感を感じて触れた手にヌメヌメした精液の感触が伝った。
+			PRINTFORML %CALLNAME:TARGET%は寝ている間に処女が奪われてしまったことに気付いて愕然とした・・・
+		ELSE
+			IF TALENT:小柄
+				PRINTFORML %CALLNAME:TARGET%は突然の激痛に跳ね起きようとするが、
+				PRINTFORML 体格に対して%STR:2500%のサイズが大きすぎて組み伏せられた体勢から起き上がれない。
+				PRINTFORML もがいている間にもピストンを叩きつけられてしまい、痛みで声すら出ない・・・
+			ELSE
+				PRINTFORML %CALLNAME:TARGET%は突然の激痛に跳ね起き、
+				PRINTFORML 自分の下半身にしがみついている%STR:2500%に気付くと何とか引き摺り出そうとするが、
+				PRINTFORML 痛みでうまく掴めずさらに奥に侵入されてしまう・・・
+			ENDIF
+			PRINTW 
+			PRINTFORML 半狂乱になりながら%CALLNAME:TARGET%が何度も%STR:2500%を殴りつけていると動きが鈍くなり、
+			PRINTFORML 数度目の殴打でようやく止めを刺すことに成功した。
+			PRINTW 
+			PRINTFORML 慌てて%STR:2500%の死骸を蹴り飛ばして引き剥がす。
+			PRINTFORML しばらくして気持ちが落ち着いてくると、
+			PRINTFORML %CALLNAME:TARGET%は自分の処女が奪われてしまったことに気付いて愕然とした・・・
+		ENDIF
+		PRINTL 
+		PRINTW 睡眠中処女喪失
+		PRINTL 
+		;口上
+		TRYCALLFORM KOJO_ROOT(CFLAG:6, "SEX_LOSTVIRGIN")
+	ELSE
+		PRINTFORML 触手に寝間着を脱がされた%CALLNAME:TARGET%は、
+		PRINTFORML 脚を広げられてワレメを晒されても目を覚ます様子はない。
+		IF RAND:8 == 0
+			PRINTFORML 一拍おいて、ぬりゅんと細い触手が膣腔に潜り込み、
+			PRINTFORML くちゅぬちゅと音を立てながら膣内の襞にまんべんなく淫液を塗り込んでいく。
+			PRINTFORML 突然の快感に身体を震わせた%CALLNAME:TARGET%の口がわずかに開き、
+			PRINTFORML 吐息が漏れたその瞬間を狙って口の中へと触手が潜り込み、
+			PRINTFORML 間髪入れず、下の口にも太い触手が挿入された・・・
+			PRINTW 
+			PRINTFORML 悦楽と衝撃に目を醒ました%CALLNAME:TARGET%の、
+			PRINTFORML 喉の奥から漏れる悲鳴は口内を蹂躙する触手に遮られた。
+			PRINTFORML 声が上げられない事を理解しているのか、膣内を思うままに触手が蹂躙していく。
+			PRINTFORML どちゅぬじゅと膣奥を強く叩かれ、膣内の襞の隅々までこすり立てられ、
+			PRINTFORML あっという間に上り詰める%CALLNAME:TARGET%。
+			PRINTFORML ぼこりと、畝の様にふくらむ下腹が、膣腔を蹂躙する触手の太さと数を思わせる。
+			PRINTFORML 不意に、触手の動きが変わったことに気づいた%CALLNAME:TARGET%が必死に首を左右に振るが、
+			PRINTFORML それを知ってか知らずか%STR:2500%は構わずに、大量の白濁を膣内と口内に吐き出した・・・
+			PRINTW 
+			PRINTFORML 声にならない声をあげながら、全身を震わせる%CALLNAME:TARGET%。
+			PRINTFORML ほんの一瞬、これで終わると安堵の色を目に浮かべた%CALLNAME:TARGET%だが、
+			PRINTFORML その思いを無視する様に、さらに激しく触手が膣内を犯し始めた・・・
+		ELSE
+			PRINTFORML 何度か練習するようにヴァギナに先端を擦りつけながら、
+			PRINTFORML 絡みついた触手がＭ字回脚の形で%CALLNAME:TARGET%の姿勢を固定する。
+			PRINTFORML 軽く回転を加えながらゆっくりと奥まで挿入し、しばらく膣内の感触を楽しむように静止したのち、
+			PRINTFORML 触手は勢いを付けてピストン運動を開始した・・・
+			PRINTW 
+			PRINTFORML 寝たまま揺さぶられていた%CALLNAME:TARGET%は、
+			PRINTFORML 何度目かの射精を膣内で受け止める感触でようやく目を覚まし、周囲の状況に驚愕した。
+			PRINTFORML 触手を振り解こうともがいても拘束はビクともせず、
+			PRINTFORML 何とか叫び声を上げようとしても口から漏れるのは嬌声ばかり。
+			IF TALENT:触手の虜 || ABL:欲望 >= 3 || ABL:触手中毒
+				PRINTFORM 押し倒されて無理やり犯されているのに快楽に逆らえない
+			ELSE
+				PRINTFORM おぞましい触手に押し倒されて犯されるままにするしかない
+			ENDIF
+			PRINTFORML 無力なメスとなった%CALLNAME:TARGET%の膣内に、
+			PRINTFORML ここぞとばかりに触手が更なる子種を注ぎ込んでいく・・・
+			PRINTW 
+		ENDIF
+		IF CHARANUM_ALIVE() == 1
+			PRINTFORML 早朝になって触手が立ち去るまで、%CALLNAME:TARGET%は犯され続けた・・・
+			PRINTW
+		ELSE
+			PRINTW ――――――
+			PRINTW ――――
+			PRINTW ――
+			PRINTFORML 朝、普段ならとっくに起きてくる筈の%CALLNAME:TARGET%を心配したのだろう、
+			PRINTFORML 仲間が部屋の戸をノックする音が聞こえたが、
+			PRINTFORML 全身を縛り上げられ、口中まで占領されている%CALLNAME:TARGET%は応えることが出来ない・・・
+			PRINTW 
+			PRINTFORML 大量の精液を注がれて、妊婦の様に膨らんだ腹。
+			PRINTFORML 触手の精液や粘液だけではなく、愛蜜に濡れそぼった秘処。
+			PRINTFORML 汗みどろになりながらも艶やかさを増した、赤く火照った肌。
+			PRINTFORML 「こんなところを仲間に見られたくない」
+			PRINTFORML そう願う%CALLNAME:TARGET%の思いを無にする様に、ドアが開いた。
+			PRINTW 
+			PRINTFORML むわっとした性臭に仲間が一瞬顔をしかめ、こちらを見て凍り付いた。
+			PRINTFORML 一拍おいて、我に返った仲間が%STR:2500%を滅ぼす。
+			PRINTFORML 助け出されたことにようやく安堵しながら、
+			PRINTFORML %CALLNAME:TARGET%はそのまま気を失った・・・
+			PRINTW 
+		ENDIF
+	ENDIF
+ENDIF
+
+;-----------------------
+;触手襲来Ａ
+;-----------------------
+@MESSAGE_SMALL_PRISON_COM_2
+IF BASE:Ａ結界耐久力
+	PRINTFORML %STR:2500%は%CALLNAME:TARGET%の身体をうつぶせにして腰だけを持ち上げた。
+	PRINTFORML 細い触手で器用に寝間着とパンツをずりおろし、そのままアナルに挿入しようとしたそのとき、
+	PRINTFORML まばゆい光を放ったＡ結界に阻まれ、
+	IF RAND:2 == 0
+		PRINTFORML %STR:2500%は吹き飛ばされて壁に叩きつけられた！
+		PRINTW 
+		PRINTFORML 次の朝、%CALLNAME:TARGET%が目を覚ますと
+		PRINTFORML 無残な肉塊になった%STR:2500%を自動清掃装置が片づけていった・・・
+	ELSE
+		PRINTFORML %STR:2500%は消し炭にされてしまった！
+		PRINTW 
+		PRINTFORML 次の朝、%CALLNAME:TARGET%が目を覚ますと
+		PRINTFORML 何やら肉が焦げたような異臭がしたので換気機能を最大に上げた・・・
+	ENDIF
+	PRINTW 
+ELSE
+	IF RAND:8 == 0
+		PRINTFORML 触手は%CALLNAME:TARGET%の身体をうつぶせにして腰だけを持ち上げた。
+		PRINTFORML 指よりも細い触手が、器用に寝間着とパンツをずりおろし、
+		PRINTFORML %CALLNAME:TARGET%の桃尻をあらわにする。
+		PRINTFORML 盛りのついた雌猫の様な姿勢によって%CALLNAME:TARGET%は菊座を曝け出さざるを得ない・・・
+		PRINTW 
+		PRINTFORML 何本ものぬめりきった細い触手がしわを伸ばす様に菊座をなで回していく。
+		PRINTFORML ぴくんぴくんと尻を小さく振るわせ、
+		PRINTFORML どことなく苦しげに眉をひそめる%CALLNAME:TARGET%が吐息を漏らすと、
+		PRINTFORML 口元に待ち構えていた触手が強引に唇の奥に入り込み、同時に男性器の形状をした触手がずぶりとアヌスに挿入される。
+		PRINTFORML その衝撃に%CALLNAME:TARGET%が目を覚ますが、それはほんの手始めだった・・・
+		PRINTW 
+		PRINTFORML ソレまで尻をなで回していた触手が、一斉にアナルへと入り込み始めたのだ。
+		PRINTFORML 既に男性器触手を受け入れていた尻穴がさらに拡張されていく。
+		PRINTFORML 口を塞がれ喉の奥から苦鳴を漏らして目を見開く%CALLNAME:TARGET%には構わず、
+		PRINTFORML 指よりも細い触手が幾本となく%CALLNAME:TARGET%の肛門をくぐり抜けていく・・・
+		PRINTW 
+		PRINTFORML 悦楽に肩を震わせ。
+		PRINTFORML 目を蕩けさせ。男根触手を咥えているだけでは溢れない涎を口元からこぼし。
+		PRINTFORML 触れられてもいない秘処から愛蜜を垂れ流す%CALLNAME:TARGET%。
+		PRINTFORML いつの間にか自ら受け入れる様に腰を振りはじめた%CALLNAME:TARGET%に合わせて触手の動きが速度を増し、
+		PRINTFORML そしてついには腸内に精液を注がれると同時に、%CALLNAME:TARGET%が上り詰めた。
+		PRINTFORML 一拍の間を置いて触手はさらに猛烈に動き始めた・・・
+		PRINTW 
+	ELSE
+		PRINTFORML 細い触手の一本が寝ている%CALLNAME:TARGET%の尻穴の中へと潜り込んでいく。
+		PRINTFORML 細さとぬめり故に痛みを与えることはないが、
+		PRINTFORML それでも異物感を覚えさせる触手にきゅっと尻穴がすぼみ、しりたぶが引き締まる。
+		PRINTFORML 幾本かの触手が尻穴の周囲を撫でほぐしていくと
+		PRINTFORML 徐々に血色がよくなって気をそそられる色へと変わっていき、
+		PRINTFORML %CALLNAME:TARGET%の口から明らかな喘ぎ声が上がり始める・・・
+		PRINTW 
+		PRINTFORML そうして唇が開いた瞬間を逃さず、待ち構えていた男性器触手が強引に口内に入り込む。
+		PRINTFORML 突然の息苦しさに目を覚ました%CALLNAME:TARGET%を抑えつけると、
+		PRINTFORML 残りの触手が勢いをつけて%CALLNAME:TARGET%の直腸内にもぐりこんでいった・・・
+		PRINTW 
+	ENDIF
+	IF CHARANUM_ALIVE() == 1
+		PRINTFORML 強烈な排泄感に襲われた%CALLNAME:TARGET%は跳ね起きようとするも、
+		PRINTFORML 体の内側から暴れられ、即座に体勢を崩されてしまう。
+		IF TALENT:触手の虜
+			PRINTFORM 目をとろんと蕩けさせて快楽に溺れる
+		ELSE
+			PRINTFORM 屈辱に涙を浮かべながらベッドのシーツを掴む
+		ENDIF
+		PRINTFORML %CALLNAME:TARGET%の尻穴に、
+		PRINTFORML ここぞとばかりに触手が精液を注ぎ込んでいく・・・
+		PRINTW 
+		PRINTFORML 早朝になって触手が立ち去るまで
+		PRINTFORML %CALLNAME:TARGET%はアナルで%STR:2500%をくわえ込んでいた・・・
+		PRINTW 
+	ELSE
+		PRINTW ――――――
+		PRINTW ――――
+		PRINTW ――
+		PRINTFORML 朝、普段ならとっくに起きてくる筈の%CALLNAME:TARGET%を心配したのだろう、
+		PRINTFORML 仲間が部屋の戸をノックする音が聞こえた。
+		PRINTFORML その音に反応することもせず、%CALLNAME:TARGET%は妊婦の様に膨らんだ腹を濁った目で見つめている。
+		PRINTW 
+		PRINTFORML しゅもくぞりの様に、触手の上に乗せられてドアへ向けて足を広げさせられた%CALLNAME:TARGET%。
+		PRINTFORML わずかに残った理性が状況を理解して羞恥に染まった直後、ドアがガチャリと開かれ、
+		PRINTFORML その瞬間、手首ほどの広さになった外縁を残して、触手が引き抜かれた・・・
+		PRINTW 
+		PRINTFORML びゅるっとたまりにたまった精液を、%CALLNAME:TARGET%は尻穴からひり出す。
+		PRINTFORML ヒトとしての尊厳を根こそぎ破壊する様な羞恥と悦楽にそまり、%CALLNAME:TARGET%はただ身体を震わせる。
+		PRINTFORML その光景を呆然と見ていた仲間が、はっと我に返り触手へと攻撃を始める。
+		PRINTW 
+		PRINTFORML 最期のあがきとでも言う様に、
+		PRINTFORML ソレまでで最大の太さの触手がアナルに突き込まれ、大量射精した。
+		PRINTFORML 同時に仲間が触手を滅ぼしたが、触手が放った最後の一撃のあまりの衝撃と悦楽と苦痛に、
+		PRINTFORML %CALLNAME:TARGET%は意識を断ち切られた・・・
+		PRINTW 
+	ENDIF
+ENDIF
+
+;-----------------------
+;触手襲来Ｂ
+;-----------------------
+@MESSAGE_SMALL_PRISON_COM_3
+IF BASE:Ｂ結界耐久力
+	PRINTFORML %STR:2500%はそっと近づいて%CALLNAME:TARGET%のパジャマをはだけて、
+	PRINTFORML ぬちゃりと開いた先端部の口で乳房に取り付き、吸引しようとしたそのとき、
+	PRINTFORML まばゆい光を放ったＢ結界に阻まれ、
+	IF RAND:2 == 0
+		PRINTFORML %STR:2500%は吹き飛ばされて壁に叩きつけられた！
+		PRINTW 
+		PRINTFORML 次の朝、%CALLNAME:TARGET%が目を覚ますと
+		PRINTFORML 無残な肉塊になった%STR:2500%を自動清掃装置が片づけていった・・・
+	ELSE
+		PRINTFORML %STR:2500%は消し炭にされてしまった！
+		PRINTW 
+		PRINTFORML 次の朝、%CALLNAME:TARGET%が目を覚ますと
+		PRINTFORML 何やら肉が焦げたような異臭がしたので換気機能を最大に上げた・・・
+	ENDIF
+	PRINTW 
+ELSE
+	IF FILTER_CHECK_F(2)
+		PRINTFORML %CALLNAME:TARGET%の衣服をはがし乳房に取り付くと、音を立てて吸引していく。
+		PRINTFORML 安眠中、突如強烈な脱力感に襲われた%CALLNAME:TARGET%は跳ね起きようとするも、
+		PRINTFORML 母乳を強く吸われると全身の力が抜け%STR:2500%を跳ね除けられない・・・
+		PRINTW 
+		PRINTFORML 早朝になって触手が立ち去るまで、%CALLNAME:TARGET%は胸を弄られ続けた・・・
+	ELSEIF TALENT:母乳体質 == 0
+		PRINTFORML %STR:2500%は気付かれないように%CALLNAME:TARGET%の全身を愛撫しながらその乳房に覆いかぶさった。
+		PRINTFORML %CALLNAME:TARGET%の両乳首に狙いを定めるように二本の針を取り出し、
+		PRINTFORML 相手を起こしてしまわないように、ゆっくりと針を沈めていく。
+		PRINTFORML 針が根元まで入ると%STR:2500%は全身を一度ブルリと震わせ、怪しげな粘液を注入していった・・・
+		PRINTW 
+		PRINTFORML 次の朝、%CALLNAME:TARGET%が胸元にむず痒さを感じて目を覚ますと、
+		PRINTFORML 自分の乳首から母乳が出ていることに気付き、我を忘れて愕然としていた・・・
+		PRINTW 
+		PRINTFORML %CALLNAME:TARGET%は[%TALENTNAME:1%]にされた
+	ELSE
+		PRINTFORML %CALLNAME:TARGET%の衣服をはがし乳房に取り付くと、音を立てて吸引していく。
+		PRINTFORML 安眠中、突如強烈な脱力感に襲われた%CALLNAME:TARGET%は跳ね起きようとするも、
+		PRINTFORML 母乳を強く吸われると全身の力が抜け%STR:2500%を跳ね除けられない・・・
+		PRINTW 
+		PRINTFORML 天高く噴出する%CALLNAME:TARGET%の母乳で自身の上半身を白く染め上げながら、
+		PRINTFORML 早朝になって触手が立ち去るまで、%CALLNAME:TARGET%は牛のように搾乳され続けた・・・
+	ENDIF
+	PRINTW 
+ENDIF
+
+;-----------------------
+;触手襲来苦痛
+;-----------------------
+@MESSAGE_SMALL_PRISON_COM_4
+PRINTFORML %STR:2500%はささくれ立った全身を%CALLNAME:TARGET%に巻き付け、
+PRINTFORML 口をふさぎながら締め上げた。
+PRINTFORML 息苦しさと肌に食い込む痛みに%CALLNAME:TARGET%は飛び起きて目を白黒させてもがくが、
+PRINTFORML 触手が離れるどころか締め付けは強くなる一方で、やがて意識が混濁としてくる・・・
+PRINTW 
+PRINTFORML 苦痛の限界に達しようとしたそのとき、喉奥に突き込まれた触手が射精した。
+PRINTFORML その射精量は尋常ではなく、
+PRINTFORML %CALLNAME:TARGET%が飲み込もうとするより早く精液が食道や気管に一気に流れ込み、
+PRINTFORML 口や鼻から噴水のように白濁液を撒き散らしながら%CALLNAME:TARGET%は気絶した・・・
+PRINTW 
+PRINTFORML 気が付くと既に早朝になっており、周囲にもう触手の姿はなかった・・・
+PRINTW 
+
+;-----------------------
+;触手襲来奉仕
+;-----------------------
+@MESSAGE_SMALL_PRISON_COM_5
+PRINTFORML ぐっすりと眠っている%CALLNAME:TARGET%の部屋に栗の花のにおいが漂いだした。
+IF TALENT:触手の虜 || ABL:欲望 >= 3 || ABL:奉仕精神 >= 3 || ABL:触手中毒
+	PRINTFORML 仲間の前では平静を装わなければならないが、夢の中なら存分に触手と戯れられる。
+	PRINTFORM そう思い、
+ELSE
+	PRINTFORML 普段なら嫌悪感を感じる触手が、なぜだか夢の中ではとても愛おしく感じられて、
+ENDIF
+PRINTFORML %CALLNAME:TARGET%は自分から触手に口で奉仕を始めた・・・
+PRINTW 
+PRINTFORML 現実ではベッドに眠る%CALLNAME:TARGET%の口に、触手がペニスのような形状の先端を挿入している。
+PRINTFORML その感触に%CALLNAME:TARGET%は寝たまま反応し、口に含んでじゅぽじゅぽと吸い上げはじめた。
+PRINTFORML やがて触手が射精すると、%CALLNAME:TARGET%はそれを美味しそうに全て飲み干してしまった・・・
+PRINTW 
+PRINTFORML 朝になると触手の姿はどこにもない。目が覚めて夢の内容を忘れてしまった%CALLNAME:TARGET%は、
+PRINTFORM 自分の触手に対する
+IF TALENT:触手の虜
+	PRINT 渇望がさらに強くなっていることに
+ELSE
+	PRINT 嫌悪感が無意識のうちに薄れていることに
+ENDIF
+PRINTFORML 気付かなかった・・・
+PRINTW
+
+;-----------------------
+;触手襲来羞恥
+;-----------------------
+@MESSAGE_SMALL_PRISON_COM_6
+PRINTFORML ぐっすりと眠っている%CALLNAME:TARGET%の部屋に不思議な匂いが充満すると、
+PRINTFORML %CALLNAME:TARGET%の体が見る見るうちに紅潮していく。
+PRINTFORML 眠りながらも%CALLNAME:TARGET%は自らの体を揉み解し、身を捩っている・・・
+PRINTW 
+PRINTFORML 次の日の朝起きても尽きぬ性欲に悩まされ、
+PRINTFORML どうしても耐え切れなくなった%CALLNAME:TARGET%は自分の手で果ててしまった・・・
+PRINTW 
+

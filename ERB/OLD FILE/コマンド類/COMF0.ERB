@@ -1,0 +1,105 @@
+;変身する
+@COM0
+#DIM MOVESELECT
+;刻印による行動制限判定　１で行動できない
+CALL ACT_LIMIT
+SIF RESULT == 1
+	RETURN 1
+
+CALL TRANSFORM_MOVESELECT
+MOVESELECT = RESULT
+
+;空中攻撃フラグを進める
+CALL ATTACK_AIR_FLAG
+;距離表示
+CALL PRINT_DISTANCE
+PRINTL 
+
+;地の文：変身　変身時かけ声がある場合はこの中で処理
+CALL MESSAGE_BATTLE_CHARA_TRANSFORMCALL
+
+;この戦闘で二度目に変身した場合、名乗り口上を出さない
+IF TCVAR:10 == 1
+ELSE
+	CALL MESSAGE_BATTLE_CHARA_NANORI
+	TCVAR:10 = 1
+ENDIF
+PRINTW 
+
+;ＴＳ男性化するキャラが妊娠中、かつ発覚していない場合
+IF CHARATALENT_F(TARGET,0,"オトコ") == 0 && CHARATALENT_F(TARGET,1,"オトコ") > 0 && TALENT:妊娠 > 0
+	PRINTL
+	PRINTFORML しかし、なぜか男性化できない！
+	PRINTFORMW %PRINT_TRANSCALLNAME(TARGET)%は無防備な体制のまま変身に失敗してしまった！
+	TCVAR:2 = 体勢：何もしない
+	RETURN 1
+ENDIF
+
+IF FLAG:45 && TALENT:変身時ＴＳ && TFLAG:0 < 3
+PRINTFORML しかし、急の襲撃で身体が変身準備に入れない！（変身チャージ完了まで：{3-TFLAG:0}ターン）
+PRINTFORMW %PRINT_TRANSCALLNAME(TARGET)%は無防備な体制のまま変身に失敗してしまった！
+TCVAR:2 = 体勢：何もしない
+RETURN 1
+ENDIF
+;変身
+CALL TRANSFORM, 1
+
+;アウター（変身後）のダメージが少し回復する
+SIF CFLAG:41 != 0 && TCVAR:23 == 0
+	TCVAR:23 = 10
+
+;ゲージが増加
+IF MOVESELECT == 1
+	IF CFLAG:99 < 5
+		TCVAR:6 += 30 + RAND:16
+	ELSEIF CFLAG:99 < 15
+		TCVAR:6 += 20 + RAND:11
+	ELSE
+		TCVAR:6 += 10 + RAND:6
+	ENDIF
+ENDIF
+
+;見切りフラグを立てる
+SIF MOVESELECT == 2
+	TFLAG:25 = 1
+
+;体力20%回復
+;回復早いなら+2%
+;回復遅いなら-2%
+LOCAL:0 = MAXBASE:体力
+IF TALENT:回復早い == 1
+	TIMES LOCAL:0, 0.22
+ELSEIF TALENT:回復遅い == 1
+	TIMES LOCAL:0, 0.18
+ELSE
+	TIMES LOCAL:0, 0.20
+ENDIF
+;距離を取った場合
+SIF MOVESELECT == 3
+	TIMES LOCAL:0, 1.50
+SIF BASE:体力 + LOCAL:0 >= MAXBASE:体力
+	LOCAL:0 = MAXBASE:体力 - BASE:体力
+;体力が尽きている場合、体力が回復しない
+SIF BASE:体力 == 0
+	LOCAL:0 = 0
+BASE:体力 += LOCAL:0
+
+;気力20%回復
+;回復早いなら+2%
+;回復遅いなら-2%
+LOCAL:1 = MAXBASE:体力
+IF TALENT:回復早い == 1
+	TIMES LOCAL:1, 0.22
+ELSEIF TALENT:回復遅い == 1
+	TIMES LOCAL:1, 0.18
+ELSE
+	TIMES LOCAL:1, 0.20
+ENDIF
+;距離を取った場合
+SIF MOVESELECT == 3
+	TIMES LOCAL:0, 1.50
+SIF BASE:気力 + LOCAL:1 >= MAXBASE:気力
+	LOCAL:1 = MAXBASE:気力 - BASE:気力
+BASE:気力 += LOCAL:1
+
+RETURN 1

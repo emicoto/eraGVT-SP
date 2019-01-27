@@ -1,0 +1,397 @@
+;**********************************************************
+;キャラの行動予定に関する処理
+
+;----------------------------------------------------------
+;全員分の行動を行う
+@SHOP_ACTION
+#DIM CCOUNT
+
+IF FLAG:799 == 0
+	FLAG:798 = TARGET
+	FLAG:799 = 1
+	PRINTL 
+	PRINTL 行動開始！
+ENDIF
+;戦闘支援人数をカウント
+FLAG:43 = 0
+FOR CCOUNT, 0, CHARANUM
+	SIF CCOUNT == MASTER
+		CONTINUE
+	CALL CHECK_ACTION("支援",CCOUNT)
+	SIF RESULT == 0
+		CONTINUE
+	SIF CFLAG:CCOUNT:0 == 0 && CFLAG:CCOUNT:100 == 106
+		FLAG:43 ++
+NEXT
+SIF FLAG:43 >= CHARANUM_ACTIVE()
+	FLAG:43 = 0
+IF FLAG:799 >= CHARANUM
+	FLAG:799 += 1
+	BEGIN SHOP
+ELSE
+	IF CFLAG:(FLAG:799):0 == 0 
+		;キャラの入れ替え
+		TARGET = FLAG:799
+
+		SIF CFLAG:999 == 0
+			GOTO REST
+
+		;予定が入ってない場合は休憩にする
+		SIF CFLAG:100 == 0
+			CFLAG:100 = 103
+		;行動ごとに改行を入れる
+		PRINTL 
+		PRINTL 
+		PRINTL 
+		PRINTFORM 【%CALLNAME%の行動：
+		IF CFLAG:100 == 101
+			PRINTL 出撃】
+			DRAWLINE
+			
+			;体力が残り少ない場合は強制的に休憩にする
+			CALL CHECK_ACTION("出撃",TARGET)
+			IF RESULT == 0
+				PRINTL 
+				IF TALENT:夜魔の貴族 > 0 && TIME == 0
+					PRINTFORML %CALLNAME%は昼間に外出できないため休憩します
+				ELSE
+					PRINTFORML %CALLNAME%は残り体力が少ないため休憩します
+				ENDIF
+				CALL REST
+				
+				BEGIN TURNEND
+			ENDIF
+
+			;同時出撃人数をカウント
+			FLAG:41 ++
+
+			;エンカウント判定
+			CALL ENCOUNT
+
+			SIF FLAG:999 == 1
+				PRINTFORMW エンカウント番号 == {RESULT}
+			
+			;ザコ
+			SIF RESULT == 0
+				CALL MOB_TENTACLE_RESULT
+			IF RESULT == 0
+				IF CONFIG_CHECK_SCREEN_F(3) == 0
+					PRINTW 
+				ELSE
+					PRINTL 
+				ENDIF
+				BEGIN TURNEND
+			;ボス/ラスボス/対キャラ
+			ELSEIF RESULT == 1
+				BEGIN TRAIN
+			ENDIF
+		ELSEIF CFLAG:100 == 102
+			PRINTL 鍛錬】
+			DRAWLINE
+			
+			;体力が残り少ない場合は強制的に休憩にする
+			CALL CHECK_ACTION("鍛練",TARGET)
+			IF RESULT == 0
+				PRINTL 
+				PRINTFORML %CALLNAME%は残り体力が少ないため休憩します
+				CALL REST
+				BEGIN TURNEND
+			ENDIF			
+			
+			CALL TRAINING
+			BEGIN TURNEND
+		ELSEIF CFLAG:100 == 103
+			PRINTL 休憩】
+			DRAWLINE
+			$REST
+			CALL REST
+			BEGIN TURNEND
+		ELSEIF CFLAG:100 == 104
+			PRINTL 特別活動】
+			DRAWLINE
+			;体力が残り少ない場合は強制的に休憩にする
+			CALL CHECK_ACTION("活動",TARGET)
+			IF RESULT == 0
+				PRINTL 
+				IF TALENT:夜魔の貴族 > 0 && TIME == 0
+					PRINTFORML %CALLNAME%は昼間に外出できないため休憩します
+				ELSE
+					PRINTFORML %CALLNAME%は残り体力が少ないため休憩します
+				ENDIF
+				CALL REST
+				BEGIN TURNEND
+			ENDIF
+			CALL SEISAN
+			BEGIN TURNEND
+		ELSEIF CFLAG:100 == 105
+			PRINTL 拠点防衛】
+			DRAWLINE
+			
+			;体力が残り少ない場合は強制的に休憩にする
+			CALL CHECK_ACTION("防衛",TARGET)
+			IF RESULT == 0
+				PRINTL 
+				IF TALENT:夜魔の貴族 > 0 && TIME == 0
+					PRINTFORML %CALLNAME%は昼間に外出できないため休憩します
+				ELSE
+					PRINTFORML %CALLNAME%は残り体力が少ないため休憩します
+				ENDIF
+				CALL REST
+				
+				BEGIN TURNEND
+			ENDIF
+
+			;同時出撃人数をカウント
+			FLAG:41 ++
+
+			PRINTL 
+			PRINTFORML %CALLNAME%はパトロールを行っている……
+
+
+			;エンカウント判定
+			CALL ENCOUNT
+
+			SIF FLAG:999 == 1
+				PRINTFORMW エンカウント番号 == {RESULT}
+
+			;遭遇なし
+			IF RESULT == 2
+				LOCAL = MAXBASE:体力
+				TIMES LOCAL, 0.12
+				BASE:体力 = LIMIT(BASE:体力 - SYOUHI_KEIGEN(TARGET,LOCAL,体力), 0 , BASE:体力)
+
+				LOCAL = MAXBASE:気力
+				TIMES LOCAL, 0.12
+				BASE:気力 = LIMIT(BASE:気力 - SYOUHI_KEIGEN(TARGET,LOCAL,気力), 0 , BASE:気力)
+
+				LOCAL = 125 + ABL:レベル * 2 + RAND:26
+				FLAG:852 += LOCAL
+				PRINTFORM 防衛力が{LOCAL}上昇した
+				IF CONFIG_CHECK_SCREEN_F(3) == 0
+					PRINTW 
+				ELSE
+					PRINTL 
+				ENDIF
+				BEGIN TURNEND
+			ELSE
+				;ザコ
+				SIF RESULT == 0
+					CALL MOB_TENTACLE_RESULT
+				IF RESULT == 0
+					BEGIN TURNEND
+				;ボス/ラスボス/対キャラ
+				ELSEIF RESULT == 1
+					BEGIN TRAIN
+				ENDIF
+			ENDIF
+		ELSEIF CFLAG:100 == 106
+			PRINTL 戦闘支援】
+			DRAWLINE
+
+			;戦闘に参加するキャラが居ない場合は休憩する
+			CALL SORTIE_CHECK
+			IF RESULT == 0 && FLAG:41 == 0
+				PRINTL 
+				PRINTL 戦闘を行うメンバーが居ないため、休憩にします
+				CALL REST
+				FLAG:43 --
+				BEGIN TURNEND
+			;体力が残り少ない場合は強制的に休憩にする
+			ELSE
+				CALL CHECK_ACTION("支援",TARGET)
+				IF RESULT == 0
+					PRINTL 
+					PRINTL 体力が残り少ないため、休憩にします
+					CALL REST
+					BEGIN TURNEND
+				ENDIF
+			ENDIF
+
+			PRINTL 
+			PRINTFORML %CALLNAME%はオペレーション業務に専念している……
+			LOCAL = MAXBASE:体力
+			IF FLAG:43 == 1
+				TIMES LOCAL, 0.24
+			ELSEIF FLAG:43 == 2
+				TIMES LOCAL, 0.18
+			ENDIF
+			;献身的だと消費が増加
+			SIF TALENT:献身的 > 0
+				TIMES LOCAL, 1.10
+			BASE:体力 = LIMIT(BASE:体力 - SYOUHI_KEIGEN(TARGET,LOCAL,体力), 0 , BASE:体力)
+
+			LOCAL = MAXBASE:気力
+			IF FLAG:43 == 1
+				TIMES LOCAL, 0.24
+			ELSEIF FLAG:43 == 2
+				TIMES LOCAL, 0.18
+			ENDIF
+			;献身的だと消費が増加
+			SIF TALENT:献身的 > 0
+				TIMES LOCAL, 1.10
+			BASE:気力 = LIMIT(BASE:気力 - SYOUHI_KEIGEN(TARGET,LOCAL,気力), 0 , BASE:気力)
+
+			CALL GET_SYUREN, (15 + RAND:11)
+			CALL TENTACLE_LEVEL
+			LOCAL = (RESULT - 3)/ABL:レベル * 10 + RAND:5
+			CALL GET_EXP,min(LOCAL,150)
+
+			IF RAND:3 == 0
+				BASE:知性 += 2
+				PRINTFORML 知性の基礎値が2上がった
+			ELSEIF RAND:3 < 2
+				BASE:知性 += 1
+				PRINTFORML 知性の基礎値が1上がった
+			ENDIF
+
+			IF CONFIG_CHECK_SCREEN_F(3) == 0
+				PRINTW 
+			ELSE
+				PRINTL 
+			ENDIF
+
+			BEGIN TURNEND
+		ELSEIF CFLAG:100 == 107
+			PRINTL 情報収集】
+			DRAWLINE
+
+			;体力が残り少ない場合は強制的に休憩にする
+			CALL CHECK_ACTION("情報",TARGET)
+			IF RESULT == 0
+				PRINTL 
+				IF TALENT:夜魔の貴族 > 0 && TIME == 0
+					PRINTFORML %CALLNAME%は昼間に外出できないため休憩します
+				ELSE
+					PRINTL 体力が残り少ないため、休憩にします
+				ENDIF
+				CALL REST
+				BEGIN TURNEND
+			ENDIF
+
+			CALL GATHER_INFORMATION
+			BEGIN TURNEND
+		ELSEIF CFLAG:100 == 108
+			PRINTL 自由行動】
+			DRAWLINE
+			;フィートで外出不可の場合は強制的に休憩にする
+			CALL CHECK_ACTION("自由",TARGET)
+			IF RESULT == 0
+				PRINTL 
+				IF TALENT:夜魔の貴族 > 0 && TIME == 0
+					PRINTFORML %CALLNAME%は昼間に外出できないため休憩します
+				ENDIF
+				CALL REST
+				BEGIN TURNEND
+			ENDIF
+			CALL PASTIME
+			BEGIN TURNEND
+		ENDIF
+	ELSE
+		BEGIN TURNEND
+	ENDIF
+ENDIF
+
+;----------------------------------------------------------
+;行動予定を表示する関数
+@SHOP_ACTION_PLANDISP(ARG = 0)
+#DIM CCOUNT
+VARSET LOCAL
+PRINTL 【行動予定】
+FOR CCOUNT, 0, CHARANUM
+	SIF CCOUNT == MASTER
+		CONTINUE
+	SIF CFLAG:CCOUNT:999 == 0
+		CONTINUE
+
+	IF CFLAG:CCOUNT:0 != 0
+		LOCAL += 1
+		CONTINUE
+	ENDIF
+
+	IF CFLAG:CCOUNT:0 == 0
+		SIF LOCAL:2 % 3 == 0 && LOCAL:2 != 0
+			PRINTL 
+		LOCAL:1 = 0
+		IF CCOUNT == TARGET && FLAG:9 == 0 && ARG == 0
+			LOCAL:1 = 1
+			FONTBOLD
+			SETCOLOR 0, 255, 150
+		ENDIF
+		IF ARG == 0
+			PRINTFORM [{CCOUNT}]%CALLNAME:CCOUNT%：%PRINT_SHOPACTION(CFLAG:CCOUNT:100, LOCAL:1)%  
+		ELSE
+			PRINTPLAINFORM [{CCOUNT}]%CALLNAME:CCOUNT%：%PRINT_SHOPACTION(CFLAG:CCOUNT:100, LOCAL:1)%  
+		ENDIF
+		FONTREGULAR
+		RESETCOLOR
+		IF ARG != 0
+			IF CFLAG:CCOUNT:100 == 101
+				LOCALS = 出撃
+			ELSEIF CFLAG:CCOUNT:100 == 102
+				LOCALS = 鍛練
+			ELSEIF CFLAG:CCOUNT:100 == 104
+				LOCALS = 活動
+			ELSEIF CFLAG:CCOUNT:100 == 105
+				LOCALS = 防衛
+			ELSEIF CFLAG:CCOUNT:100 == 106
+				LOCALS = 支援
+			ELSEIF CFLAG:CCOUNT:100 == 107
+				LOCALS = 情報
+			ELSEIF CFLAG:CCOUNT:100 == 108
+				LOCALS = 自由
+			ENDIF
+			RESETCOLOR
+			CALL CHECK_ACTION(LOCALS,CCOUNT)
+			SIF RESULT == 0
+				PRINT （体力不足）
+		ENDIF
+		
+		LOCAL:2 += 1
+
+	ENDIF
+NEXT
+FONTREGULAR
+RESETCOLOR
+
+RETURN 0
+
+;----------------------------------------------------------
+;行動コマンド名を返す式中関数
+;ARG:0 行動コマンドの実数
+@PRINT_SHOPACTION, ARG:0, ARG:1
+#FUNCTIONS
+LOCALS = %STRCLEAR()%
+IF ARG:0 == 101
+	SIF ARG:1 == 0
+		SETCOLOR 255, 170, 170
+	LOCALS = *出撃*
+ELSEIF ARG:0 == 102
+	SIF ARG:1 == 0
+		SETCOLOR 255, 255, 170
+	LOCALS = *鍛錬*
+ELSEIF ARG:0 == 103
+	SIF ARG:1 == 0
+		SETCOLOR 170, 170, 255
+	LOCALS = *休憩*
+ELSEIF ARG:0 == 104
+	SIF ARG:1 == 0
+		SETCOLOR 170, 255, 255
+	LOCALS = *活動*
+ELSEIF ARG:0 == 105
+	SIF ARG:1 == 0
+		SETCOLOR 255, 170, 255
+	LOCALS = *防衛*
+ELSEIF ARG:0 == 106
+	SIF ARG:1 == 0
+		SETCOLOR 170, 255, 170
+	LOCALS = *支援*
+ELSEIF ARG:0 == 107
+	SIF ARG:1 == 0
+		SETCOLOR 255, 200, 50
+	LOCALS = *情報*
+ELSEIF ARG:0 == 108
+	SIF ARG:1 == 0
+		SETCOLOR 50, 200, 255
+	LOCALS = *自由*
+ENDIF
+RETURNF LOCALS

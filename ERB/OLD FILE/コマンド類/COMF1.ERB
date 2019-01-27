@@ -1,0 +1,45 @@
+;近距離攻撃
+@COM1
+VARSET LOCAL
+
+;刻印による行動制限判定　１で行動できない
+CALL ACT_LIMIT
+SIF RESULT == 1
+	RETURN 1
+;空中攻撃フラグを進める
+CALL ATTACK_AIR_FLAG
+;異なる距離からの場合、べとべと中だと失敗することがある
+IF (TCVAR:12 & べとべと) && (RAND:100 < 10 && TCVAR:0 != 1) && GETBIT(TCVAR:216, 1) == 0
+	CALL PRINT_DISTANCE
+	PRINTL 
+	PRINTFORML %PRINT_TRANSCALLNAME(TARGET)%は脚を滑らせてしまった！
+	PRINTFORML 移動を伴う行動が失敗した！
+	PRINTW 
+	RETURN 1
+ENDIF
+
+;同一距離連続実行
+IF TCVAR:0 == 1 && TFLAG:30
+	TFLAG:30 += 1
+ELSE
+	TFLAG:30 = 1
+ENDIF
+;距離を近にする
+TCVAR:0 = 1
+
+;通常攻撃共通処理
+CALL COM_ATTACK_COMMON
+
+;近距離戦闘経験
+IF TALENT:変身能力 != -1
+	EXP:近距離戦闘経験 += RAND:5 + 1
+	CALL SENGIUP, TARGET, 0
+ELSE
+	EXP:戦闘基礎経験 += RAND:5 + 1
+	CALL SENGIUP, TARGET, 3
+ENDIF
+
+;行動ポイントを+2
+EX:行動ポイント += 2
+
+RETURN 1

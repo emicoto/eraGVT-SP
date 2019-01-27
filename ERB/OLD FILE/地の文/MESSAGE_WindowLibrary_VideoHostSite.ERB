@@ -1,0 +1,1265 @@
+;================================================================
+; 動画サイトにアップロード
+;================================================================
+@MESSAGE_SEX_VIDEO_SITE_Window(ARGS)
+#DIM nWndId, 10
+#DIM nLocX, 10
+#DIM nLocY, 10
+#DIM nWidth, 10
+#DIM nHeigth, 10
+#DIM nExFlag, 10
+#DIM nTestMode
+#DIM nViewCount
+#DIM nEjaculateCount
+
+#DIM LCOUNT
+
+#DIMS nCountMovies
+#DIMS strInputResult
+
+#DIMS strVSWBrowser, 7, 8
+#DIMS strVSWText, 3,10, 15
+
+;;初期化
+nViewCount = RAND(2,30)
+nEjaculateCount = 0
+nTestMode = 0
+nCountMovies = 0
+
+
+;=================================================
+;ブラウザの表現
+;=================================================
+;Window番号0：ブラウザ
+strVSWBrowser:0:0=
+strVSWBrowser:0:1=
+strVSWBrowser:0:2=Upload by %NAME%
+strVSWBrowser:0:3=
+IF TALENT:オトコ > 0
+	IF EXP:魅了経験 > 199
+		strVSWBrowser:0:4=【タグ】：人気アイドルの激白　自撮り
+	ELSEIF EXP:魅了経験 > 99
+		strVSWBrowser:0:4=【タグ】：駆け出しアイドルの秘密　自撮り
+	ELSE
+		strVSWBrowser:0:4=【タグ】：秘密の告白　素人自撮り　痴漢
+	ENDIF
+ELSE
+	IF EXP:魅了経験 > 199
+		strVSWBrowser:0:4=【タグ】：人気アイドルの激白　自撮り
+	ELSEIF EXP:魅了経験 > 99
+		strVSWBrowser:0:4=【タグ】：駆け出しアイドルの秘密　自撮り
+	ELSE
+		strVSWBrowser:0:4=【タグ】：秘密の告白　素人自撮り　痴女
+	ENDIF
+ENDIF
+strVSWBrowser:0:5=
+
+
+
+;Window番号1：メニュー
+strVSWBrowser:1:0=ファイル（Ｆ）｜編集（Ｖ）｜お気に入り（Ａ）｜ツール（Ｔ）｜ヘルプ（Ｈ）
+
+;Window番号2：文字１
+strVSWBrowser:2:0=コメント：
+strVSWBrowser:2:1=［＿＿＿＿＿＿＿＿］
+
+
+;Window番号5：コマンド
+strVSWBrowser:5:0=@B:0@[ 0] 自己紹介@/B@　　　@B:1@[ 1] 恋愛経験@/B@
+strVSWBrowser:5:1=@B:2@[ 2] 性感帯@/B@　　　　@B:3@[ 3] 性経験@/B@
+strVSWBrowser:5:2=@B:4@[ 4] 異常性体験@/B@　　
+strVSWBrowser:5:3=
+strVSWBrowser:5:4=@B:99@[99] 再生終了@/B@
+
+
+
+;=================================================
+;動画・コメント・地の文「初期」
+;=================================================
+
+;Window番号7：動画
+strVSWText:0:0:0=
+strVSWText:0:0:1=
+strVSWText:0:0:2=
+strVSWText:0:0:3=
+strVSWText:0:0:4=
+strVSWText:0:0:5=
+strVSWText:0:0:6=
+strVSWText:0:0:7=　　　【Ｎｏｗ Ｌｏａｄｉｎｇ】
+strVSWText:0:0:8=
+strVSWText:0:0:9=
+strVSWText:0:0:10=
+strVSWText:0:0:11=
+strVSWText:0:0:12=
+strVSWText:0:0:13=
+
+;Window番号8：コメント
+strVSWText:1:0:0=おっ？新作か？
+strVSWText:1:0:1=2get
+strVSWText:1:0:2=
+strVSWText:1:0:3=パンツ脱いだ
+strVSWText:1:0:4=
+strVSWText:1:0:5=
+strVSWText:1:0:6=
+strVSWText:1:0:7=
+strVSWText:1:0:8=
+strVSWText:1:0:9=
+strVSWText:1:0:10=
+strVSWText:1:0:11=
+strVSWText:1:0:12=
+strVSWText:1:0:13=
+
+;Window番号9：地の文
+strVSWText:2:0:0=有名なサイトの動画を読み込んでいる
+strVSWText:2:0:1=配信者名が%NAME%の名前でアップロードされていた
+strVSWText:2:0:2=
+strVSWText:2:0:3=読み込みも間もなく終わりを告げ、
+strVSWText:2:0:4=恥辱に満ちた映像が再生され始めた
+
+
+
+;=================================================
+;動画・コメント・地の文「自己紹介」
+;=================================================
+;Window番号7：動画
+IF TALENT:オトコ > 0
+ELSE
+	strVSWText:0:1:0=
+	strVSWText:0:1:1=%SELF_CALL()%は%NAME%、{BASE:実年齢}才です
+
+	IF  EXP:魅了経験 > 99
+		strVSWText:0:1:2=アイドルをやっています
+	ELSE
+		strVSWText:0:1:2=
+	ENDIF
+
+	strVSWText:0:1:3=身長は{BASE:身長 / 10}.{BASE:身長 % 10}cmで、体重が{BASE:体重 / 10}.{BASE:体重 % 10}kgです。
+
+	IF BASE:胸囲 > 0 && BASE:胴囲 > 0 && BASE:腰囲 > 0
+		strVSWText:0:1:4=スリーサイズが、Ｂ{BASE:胸囲 /10}.{BASE:胸囲 % 10}－Ｗ{BASE:胴囲 /10}.{BASE:胴囲 % 10}－Ｈ{BASE:腰囲 /10}.{BASE:腰囲 % 10}
+	ELSE
+		strVSWText:0:1:4=スリーサイズはナ・イ・ショです♪
+	ENDIF
+	
+	strVSWText:0:1:5=
+	IF TALENT:処女 > 0
+		strVSWText:0:1:6=純潔を保った乙女です。
+		strVSWText:0:1:7=
+	ELSE
+		strVSWText:0:1:6=非処女の中古ビッチです。
+		IF CFLAG:206 == 1
+			strVSWText:0:1:7=寝ているときに子触手に初めてを奪われました。
+		ELSEIF CFLAG:206 == 2 || CFLAG:206 == 4
+			strVSWText:0:1:7=触手との戦いの最中に、初めてを奪われました。
+		ELSEIF CFLAG:206 == 3
+			strVSWText:0:1:7=触手に捕まったときに初めてを奪われました。
+		ELSEIF CFLAG:206 == 5
+			strVSWText:0:1:7=純潔は好きな男の人に捧げました。
+		ELSEIF CFLAG:206 == 6
+			strVSWText:0:1:7=仲間とのエッチで純潔を失いました。
+		ELSEIF CFLAG:206 == 7
+			strVSWText:0:1:7=初めてのエッチの相手はアイドル業界の偉い人です。
+		ELSEIF CFLAG:206 == 8
+			strVSWText:0:1:7=援交のおじさんが初めての人です。
+		ELSEIF CFLAG:206 == 9
+			strVSWText:0:1:7=初めては……名も知らぬ浮浪者が相手でした。
+		ELSEIF CFLAG:206 == 10
+		strVSWText:0:1:7=初めては……野良犬が相手でした。
+		ELSE
+			strVSWText:0:1:7=初めてのエッチの相手は……覚えていません
+		ENDIF
+	ENDIF
+	strVSWText:0:1:8=
+	strVSWText:0:1:9=
+	strVSWText:0:1:10=
+	strVSWText:0:1:11=
+	strVSWText:0:1:12=
+	strVSWText:0:1:13=
+ENDIF
+
+;Window番号8：コメント
+IF TALENT:オトコ > 0
+	FOR LCOUNT, 0, 13
+		SELECTCASE RAND:7
+		CASE 6
+			strVSWText:1:1:LCOUNT=
+		CASE 5
+			strVSWText:1:1:LCOUNT=
+		CASE 4
+			strVSWText:1:1:LCOUNT=パンツ脱いだ！
+		CASE 3
+			strVSWText:1:1:LCOUNT=ちんネクタイ全裸待機
+		CASE 2
+			strVSWText:1:1:LCOUNT=もっこり
+		CASE 1
+			strVSWText:1:1:LCOUNT=めちゃしこ！！
+		CASEELSE
+			strVSWText:1:1:LCOUNT=ウホッ、イイ男！
+		ENDSELECT
+	NEXT
+ELSE
+	FOR LCOUNT, 0, 13
+		SELECTCASE RAND:7
+		CASE 6
+			strVSWText:1:1:LCOUNT=
+		CASE 5
+			strVSWText:1:1:LCOUNT=
+		CASE 4
+			strVSWText:1:1:LCOUNT=パンツ脱いだ！
+		CASE 3
+			strVSWText:1:1:LCOUNT=ちんネクタイ全裸待機
+		CASE 2
+			strVSWText:1:1:LCOUNT=脱げ！脱げ！
+		CASE 1
+			strVSWText:1:1:LCOUNT=めちゃしこ！！
+		CASEELSE
+			strVSWText:1:1:LCOUNT=うはっ、可愛い！！
+		ENDSELECT
+	NEXT
+ENDIF
+
+;Window番号9：地の文
+strVSWText:2:1:0=そこには、
+IF TALENT:変身能力 > 0
+	strVSWText:2:1:0+="変身後の"
+ELSE
+	strVSWText:2:1:0+="武装した"
+ENDIF
+strVSWText:2:1:0+=@"%NAME%の立ち姿を写していた。"
+IF TALENT:オトコ > 0
+	strVSWText:2:1:1=
+	strVSWText:2:1:2=
+	strVSWText:2:1:3=
+	strVSWText:2:1:4=
+ELSE
+	strVSWText:2:1:1=
+	strVSWText:2:1:2=
+	strVSWText:2:1:3=
+	strVSWText:2:1:4=
+ENDIF
+
+
+
+;=================================================
+;動画・コメント・地の文「恋愛経験」
+;=================================================
+;Window番号7：動画
+IF TALENT:オトコ > 0
+	strVSWText:0:2:0=
+	SELECTCASE TALENT:交際相手
+		CASE 1
+			strVSWText:0:2:1=まだ告白できてない片思い中です。
+		CASE 2
+			strVSWText:0:2:1=実は、恋人が居ます。
+		CASE 3
+			strVSWText:0:2:1=プロポーズした相手が居ます。
+		CASE 4
+			strVSWText:0:2:1=既婚者です。
+		CASE 5
+			strVSWText:0:2:1=連れには先立たれてしまいました。
+		CASEELSE
+			strVSWText:0:2:1=恋愛経験は……ありません
+	ENDSELECT
+	strVSWText:0:2:2=
+	strVSWText:0:2:3=
+	strVSWText:0:2:4=
+	strVSWText:0:2:5=
+	strVSWText:0:2:6=
+	strVSWText:0:2:7=
+	strVSWText:0:2:8=
+	strVSWText:0:2:9=
+	strVSWText:0:2:10=
+	strVSWText:0:2:11=
+	strVSWText:0:2:12=
+	strVSWText:0:2:13=
+ELSE
+	strVSWText:0:2:0=
+	SELECTCASE TALENT:交際相手
+		CASE 1
+			strVSWText:0:2:1=気になる人が居ます。片思い中です。
+		CASE 2
+			strVSWText:0:2:1=実は、恋人が居ます。
+		CASE 3
+			strVSWText:0:2:1=将来を誓ったフィアンセが居ます。
+		CASE 4
+			strVSWText:0:2:1=ラブラブの既婚者です。
+		CASE 5
+			strVSWText:0:2:1=連れには先立たれてしまいました。
+		CASEELSE
+			strVSWText:0:2:1=恋愛経験は……ありません
+	ENDSELECT
+	strVSWText:0:2:2=
+	strVSWText:0:2:3=
+	strVSWText:0:2:4=
+	strVSWText:0:2:5=
+	strVSWText:0:2:6=
+	strVSWText:0:2:7=
+	strVSWText:0:2:8=
+	strVSWText:0:2:9=
+	strVSWText:0:2:10=
+	strVSWText:0:2:11=
+	strVSWText:0:2:12=
+	strVSWText:0:2:13=
+ENDIF
+
+;Window番号8：コメント
+IF TALENT:オトコ > 0
+	FOR LCOUNT, 0, 13
+		SELECTCASE RAND:7
+		CASE 6
+			strVSWText:1:2:LCOUNT=よし、男だ
+		CASE 5
+			strVSWText:1:2:LCOUNT=何だ男か
+		CASE 4
+			strVSWText:1:2:LCOUNT=パンツ脱いだ！
+		CASE 3
+			strVSWText:1:2:LCOUNT=ちんネクタイ全裸待機
+		CASE 2
+			strVSWText:1:2:LCOUNT=もっこり
+		CASE 1
+			strVSWText:1:2:LCOUNT=めちゃしこ！！
+		CASEELSE
+			strVSWText:1:2:LCOUNT=ウホッ、イイ男！
+		ENDSELECT
+	NEXT
+ELSE
+	FOR LCOUNT, 0, 13
+		SELECTCASE RAND:7
+		CASE 6
+			strVSWText:1:2:LCOUNT=
+		CASE 5
+			strVSWText:1:2:LCOUNT=
+		CASE 4
+			strVSWText:1:2:LCOUNT=パンツ脱いだ！
+		CASE 3
+			strVSWText:1:2:LCOUNT=ちんネクタイ全裸待機
+		CASE 2
+			strVSWText:1:2:LCOUNT=脱げ！脱げ！
+		CASE 1
+			strVSWText:1:2:LCOUNT=めちゃしこ！！
+		CASEELSE
+			strVSWText:1:2:LCOUNT=うはっ、可愛い！！
+		ENDSELECT
+	NEXT
+ENDIF
+
+;Window番号9：地の文
+strVSWText:2:2:0=画面の中の%NAME%は恥ずかしげに心を打ち明けていた
+IF TALENT:オトコ > 0
+	strVSWText:2:2:1=
+	strVSWText:2:2:2=
+	strVSWText:2:2:3=
+	strVSWText:2:2:4=
+ELSE
+	strVSWText:2:2:1=
+	strVSWText:2:2:2=
+	strVSWText:2:2:3=
+	strVSWText:2:2:4=
+ENDIF
+
+
+;=================================================
+;動画・コメント・地の文「性感帯」
+;=================================================
+;Window番号7：動画
+IF TALENT:オトコ > 0
+	strVSWText:0:3:0=
+	strVSWText:0:3:1=性感帯は
+	strVSWText:0:3:2=
+	SELECTCASE ABL:Ｃ感覚
+		CASE 0
+			strVSWText:0:3:3=クリトリスはまだ気持ちよくない程度
+		CASE 1
+			strVSWText:0:3:3=クリトリスをいじられると気持ちよくなる
+		CASE 2
+			strVSWText:0:3:3=クリトリスでイキ癖がつき始めた
+		CASE 3
+			strVSWText:0:3:3=クリトリスが弱点
+		CASE 4
+			strVSWText:0:3:3=クリトリスは布が擦れるたびにじんじんして
+		CASEELSE
+			strVSWText:0:3:3=クリトリスは風が吹くだけでイくほど敏感
+		ENDSELECT
+
+	;オトコはＶ感覚描写なし
+	strVSWText:0:3:4=
+
+	SELECTCASE ABL:Ａ感覚
+		CASE 0
+			strVSWText:0:3:5=アナルはただの排泄器官
+		CASE 1
+			strVSWText:0:3:5=アナルの気持ちよさが分かりはじめた
+		CASE 2
+			strVSWText:0:3:5=アナルをいじられると気持ちよくなる
+		CASE 3
+			strVSWText:0:3:5=アナルに夢中
+		CASE 4
+			strVSWText:0:3:5=アナルをほじられるのが何よりの喜び
+		CASEELSE
+			strVSWText:0:3:5=アナルは入れるものを求めて疼いている
+		ENDSELECT
+	SELECTCASE ABL:Ｂ感覚
+		CASE 0
+			strVSWText:0:3:6=おっぱいは何も快感を感じない
+		CASE 1
+			strVSWText:0:3:6=おっぱいをいじられると気持ちよくなる
+		CASE 2
+			strVSWText:0:3:6=おっぱいですぐにイく
+		CASE 3
+			strVSWText:0:3:6=おっぱいが敏感すぎてあまり動けない
+		CASE 4
+			strVSWText:0:3:6=おっぱいは布が擦れるたびにじんじんして
+		CASEELSE
+			strVSWText:0:3:6=おっぱいは触れるだけで絶頂して腰砕け
+		ENDSELECT
+	strVSWText:0:3:7=
+	SELECTCASE ABL:触手中毒
+		CASE 0
+			strVSWText:0:3:8=触手には嫌悪感しかない
+		CASE 1
+			strVSWText:0:3:8=触手に違和感を感じる
+		CASE 2
+			strVSWText:0:3:8=触手への罵倒にイラっとする
+		CASE 3
+			strVSWText:0:3:8=触手を見ると胸がときめく
+		CASE 4
+			strVSWText:0:3:8=触手のためなら仲間も裏切れそう
+		CASEELSE
+			strVSWText:0:3:8=触手にドハマりしている
+		ENDSELECT
+	SELECTCASE ABL:自慰中毒
+		CASE 0
+			strVSWText:0:3:9=オナニーの良さを知らない
+		CASE 1
+			strVSWText:0:3:9=オナニーを気に入り始めた
+		CASE 2
+			strVSWText:0:3:9=オナニーは人生
+		CASE 3
+			strVSWText:0:3:9=オナニーのことを考えながら日々を過ごしている
+		CASE 4
+			strVSWText:0:3:9=オナニーが好きすぎてたまらない
+		CASEELSE
+			strVSWText:0:3:9=オナニー以外何も考えられない
+		ENDSELECT
+	SELECTCASE ABL:精液中毒
+		CASE 0
+			strVSWText:0:3:10=精液はただの汚物
+		CASE 1
+			strVSWText:0:3:10=精液を舐めると落ち着く
+		CASE 2
+			strVSWText:0:3:10=精液がなければ落ち着かない
+		CASE 3
+			strVSWText:0:3:10=精液を舐めるだけで絶頂する
+		CASE 4
+			strVSWText:0:3:10=精液を嗅ぐと頭がとろける
+		CASEELSE
+			strVSWText:0:3:10=精液のためなら何でも言いなりになる
+		ENDSELECT
+	SELECTCASE ABL:噴乳中毒
+		CASE 0
+			strVSWText:0:3:11=
+		CASE 1
+			strVSWText:0:3:11=噴乳が止まらず対策に苦労している
+		CASE 2
+			strVSWText:0:3:11=噴乳しすぎて搾乳機を購入した
+		CASE 3
+			strVSWText:0:3:11=噴乳するたび絶頂している
+		CASE 4
+			strVSWText:0:3:11=噴乳が多すぎて母乳の匂いをいつも漂わせている
+		CASEELSE
+			strVSWText:0:3:11=噴乳が24時間続き母乳は留まることを知らない
+		ENDSELECT
+	SELECTCASE ABL:射精中毒
+		CASE 0
+			strVSWText:0:3:12=
+		CASE 1
+			strVSWText:0:3:12=射精の快感を知った
+		CASE 2
+			strVSWText:0:3:12=射精を思い出すと股間がうずく
+		CASE 3
+			strVSWText:0:3:12=射精が生きがい
+		CASE 4
+			strVSWText:0:3:12=射精することしか頭にない
+		CASEELSE
+			strVSWText:0:3:12=射精の方が大事で触手退治はどうでもいい
+		ENDSELECT
+	strVSWText:0:3:13=です
+ELSE
+	strVSWText:0:3:0=
+	strVSWText:0:3:1=性感帯は
+	strVSWText:0:3:2=
+	SELECTCASE ABL:Ｃ感覚
+		CASE 0
+			strVSWText:0:3:3=クリトリスはまだ気持ちよくない程度
+		CASE 1
+			strVSWText:0:3:3=クリトリスをいじられると気持ちよくなる
+		CASE 2
+			strVSWText:0:3:3=クリトリスでイキ癖がつき始めた
+		CASE 3
+			strVSWText:0:3:3=クリトリスが弱点
+		CASE 4
+			strVSWText:0:3:3=クリトリスは布が擦れるたびにじんじんして
+		CASEELSE
+			strVSWText:0:3:3=クリトリスは風が吹くだけでイくほど敏感
+		ENDSELECT
+	SELECTCASE ABL:Ｖ感覚
+		CASE 0
+			strVSWText:0:3:4=オマンコはまだ痛みを感じる程度
+		CASE 1
+			strVSWText:0:3:4=オマンコをいじられると気持ちよくなる
+		CASE 2
+			strVSWText:0:3:4=オマンコがうずいて仕方がない
+		CASE 3
+			strVSWText:0:3:4=オマンコは常に何か入っていないと落ち着かない
+		CASE 4
+			strVSWText:0:3:4=オマンコは気持ちよすぎて頭がおかしくなりそう
+		CASEELSE
+			strVSWText:0:3:4=オマンコをいじられるとすぐアクメ顔になる
+		ENDSELECT
+	SELECTCASE ABL:Ａ感覚
+		CASE 0
+			strVSWText:0:3:5=アナルはただの排泄器官
+		CASE 1
+			strVSWText:0:3:5=アナルの気持ちよさが分かりはじめた
+		CASE 2
+			strVSWText:0:3:5=アナルをいじられると気持ちよくなる
+		CASE 3
+			strVSWText:0:3:5=アナルに夢中
+		CASE 4
+			strVSWText:0:3:5=アナルをほじられるのが何よりの喜び
+		CASEELSE
+			strVSWText:0:3:5=アナルは入れるものを求めて疼いている
+		ENDSELECT
+	SELECTCASE ABL:Ｂ感覚
+		CASE 0
+			strVSWText:0:3:6=おっぱいは何も快感を感じない
+		CASE 1
+			strVSWText:0:3:6=おっぱいをいじられると気持ちよくなる
+		CASE 2
+			strVSWText:0:3:6=おっぱいですぐにイく
+		CASE 3
+			strVSWText:0:3:6=おっぱいが敏感すぎてあまり動けない
+		CASE 4
+			strVSWText:0:3:6=おっぱいは布が擦れるたびにじんじんして
+		CASEELSE
+			strVSWText:0:3:6=おっぱいは触れるだけで絶頂して腰砕け
+		ENDSELECT
+	strVSWText:0:3:7=
+	SELECTCASE ABL:触手中毒
+		CASE 0
+			strVSWText:0:3:8=触手には嫌悪感しかない
+		CASE 1
+			strVSWText:0:3:8=触手に違和感を感じる
+		CASE 2
+			strVSWText:0:3:8=触手への罵倒にイラっとする
+		CASE 3
+			strVSWText:0:3:8=触手を見ると胸がときめく
+		CASE 4
+			strVSWText:0:3:8=触手のためなら仲間も裏切れそう
+		CASEELSE
+			strVSWText:0:3:8=触手にドハマりしている
+		ENDSELECT
+	SELECTCASE ABL:自慰中毒
+		CASE 0
+			strVSWText:0:3:9=オナニーの良さを知らない
+		CASE 1
+			strVSWText:0:3:9=オナニーを気に入り始めた
+		CASE 2
+			strVSWText:0:3:9=オナニーは人生
+		CASE 3
+			strVSWText:0:3:9=オナニーのことを考えながら日々を過ごしている
+		CASE 4
+			strVSWText:0:3:9=オナニーが好きすぎてたまらない
+		CASEELSE
+			strVSWText:0:3:9=オナニー以外何も考えられない
+		ENDSELECT
+	SELECTCASE ABL:精液中毒
+		CASE 0
+			strVSWText:0:3:10=精液はただの汚物
+		CASE 1
+			strVSWText:0:3:10=精液を舐めると落ち着く
+		CASE 2
+			strVSWText:0:3:10=精液がなければ落ち着かない
+		CASE 3
+			strVSWText:0:3:10=精液を舐めるだけで絶頂する
+		CASE 4
+			strVSWText:0:3:10=精液を嗅ぐと頭がとろける
+		CASEELSE
+			strVSWText:0:3:10=精液のためなら何でも言いなりになる
+		ENDSELECT
+	SELECTCASE ABL:噴乳中毒
+		CASE 0
+			strVSWText:0:3:11=
+		CASE 1
+			strVSWText:0:3:11=噴乳が止まらず対策に苦労している
+		CASE 2
+			strVSWText:0:3:11=噴乳しすぎて搾乳機を購入した
+		CASE 3
+			strVSWText:0:3:11=噴乳するたび絶頂している
+		CASE 4
+			strVSWText:0:3:11=噴乳が多すぎて母乳の匂いをいつも漂わせている
+		CASEELSE
+			strVSWText:0:3:11=噴乳が24時間続き母乳は留まることを知らない
+		ENDSELECT
+	SELECTCASE ABL:射精中毒
+		CASE 0
+			strVSWText:0:3:12=
+		CASE 1
+			strVSWText:0:3:12=射精の快感を知った
+		CASE 2
+			strVSWText:0:3:12=射精を思い出すと股間がうずく
+		CASE 3
+			strVSWText:0:3:12=射精が生きがい
+		CASE 4
+			strVSWText:0:3:12=射精することしか頭にない
+		CASEELSE
+			strVSWText:0:3:12=射精の方が大事で触手退治はどうでもいい
+		ENDSELECT
+	strVSWText:0:3:13=です
+ENDIF
+
+;Window番号8：コメント
+IF TALENT:オトコ > 0
+	FOR LCOUNT, 0, 13
+		SELECTCASE RAND:7
+		CASE 6
+			strVSWText:1:3:LCOUNT=よし、男だ
+		CASE 5
+			strVSWText:1:3:LCOUNT=何だ男か
+		CASE 4
+			strVSWText:1:3:LCOUNT=パンツ脱いだ！
+		CASE 3
+			strVSWText:1:3:LCOUNT=ちんネクタイ全裸待機
+		CASE 2
+			strVSWText:1:3:LCOUNT=もっこり
+		CASE 1
+			strVSWText:1:3:LCOUNT=めちゃしこ！！
+		CASEELSE
+			strVSWText:1:3:LCOUNT=ウホッ、イイ男！
+		ENDSELECT
+	NEXT
+ELSE
+	FOR LCOUNT, 0, 13
+		SELECTCASE RAND:7
+		CASE 6
+			strVSWText:1:3:LCOUNT=たまんねえ
+		CASE 5
+			strVSWText:1:3:LCOUNT=エロすぎ！
+		CASE 4
+			strVSWText:1:3:LCOUNT=パンツ脱いだ！
+		CASE 3
+			strVSWText:1:3:LCOUNT=ちんネクタイ全裸待機
+		CASE 2
+			strVSWText:1:3:LCOUNT=脱げ！脱げ！
+		CASE 1
+			strVSWText:1:3:LCOUNT=めちゃしこ！！
+		CASEELSE
+			strVSWText:1:3:LCOUNT=うはっ、可愛い！！
+		ENDSELECT
+	NEXT
+ENDIF
+
+;Window番号9：地の文
+IF TALENT:オトコ > 0
+	strVSWText:2:3:0=顔のアップから始まり、全身を映されたと思ったら
+	strVSWText:2:3:1=両手を頭の後ろに回しスクワットの要領で下品な蹲踞をし、股間を突き出し始めた
+	strVSWText:2:3:2=突き出された男根から舐めるように映され、%PRINT_TRANSCALLNAME(TARGET)%の手で金玉を乗せて肛門まで晒している
+	strVSWText:2:3:3=興奮をし始めたのか、柔らかかった男根に硬さが出てきた所で、
+	strVSWText:2:3:4=皮をめくられ、無様な顔を晒してしまった
+ELSE
+	strVSWText:2:3:0=顔のアップから始まり、スリーサイズの順に胸から恥丘を舐めるように映され
+	strVSWText:2:3:1=大きく足を広げて持ち上げられ、%PRINT_TRANSCALLNAME(TARGET)%の手で女性器を広げさせられていた
+	strVSWText:2:3:2=
+	strVSWText:2:3:3=マンぐり返しで広げられたヴァギナは、その大陰唇を開いて
+	strVSWText:2:3:4=映し出された%PRINT_TRANSCALLNAME(TARGET)%からは、恥辱の淫蜜が光っている
+ENDIF
+
+
+
+;=================================================
+;動画・コメント・地の文「性経験」
+;=================================================
+;Window番号7：動画
+IF TALENT:オトコ > 0
+	strVSWText:0:4:0=
+	strVSWText:0:4:1=性経験は
+	strVSWText:0:4:2=
+	strVSWText:0:4:3=
+	SELECTCASE EXP:Ｖ経験
+		CASE 0
+			strVSWText:0:4:3=
+		CASEELSE
+			strVSWText:0:4:3=オマンコは {EXP:Ｖ経験} 回
+		ENDSELECT
+	SELECTCASE EXP:Ａ経験
+		CASE 0
+			strVSWText:0:4:4=
+		CASEELSE
+			strVSWText:0:4:4=アナルは {EXP:Ａ経験} 回
+		ENDSELECT
+	SELECTCASE EXP:絶頂経験
+		CASE 0
+			strVSWText:0:4:5=
+		CASEELSE
+			strVSWText:0:4:5=イった回数は {EXP:絶頂経験} 回
+		ENDSELECT
+	SELECTCASE EXP:精液経験
+		CASE 0
+			strVSWText:0:4:6=
+		CASEELSE
+			strVSWText:0:4:6=精液まみれになったのは {EXP:精液経験} 回
+		ENDSELECT
+	SELECTCASE EXP:フェラ経験
+		CASE 0
+			strVSWText:0:4:7=
+		CASEELSE
+			strVSWText:0:4:7=フェラしたのは {EXP:フェラ経験} 回
+		ENDSELECT
+	SELECTCASE EXP:露出快楽経験
+		CASE 0
+			strVSWText:0:4:8=
+		CASEELSE
+			strVSWText:0:4:8=露出で気持ちよくなった経験は {EXP:露出快楽経験} 回
+		ENDSELECT
+	SELECTCASE EXP:奉仕快楽経験
+		CASE 0
+			strVSWText:0:4:9=
+		CASEELSE
+			strVSWText:0:4:9=奉仕で気持ちよくなった経験は {EXP:奉仕快楽経験} 回
+		ENDSELECT
+	SELECTCASE EXP:苦痛快楽経験
+		CASE 0
+			strVSWText:0:4:10=
+		CASEELSE
+			strVSWText:0:4:10=痛みで気持ちよくなった経験は {EXP:苦痛快楽経験} 回
+		ENDSELECT
+	SELECTCASE EXP:自慰経験
+		CASE 0
+			strVSWText:0:4:11=
+		CASEELSE
+			strVSWText:0:4:11=オナニーした経験は {EXP:自慰経験} 回で
+		ENDSELECT
+	SELECTCASE EXP:近親交配経験
+		CASE 0
+			strVSWText:0:4:12=
+		CASEELSE
+			strVSWText:0:4:12=家族と {EXP:近親交配経験} 回セックスしちゃった♪
+		ENDSELECT
+	strVSWText:0:4:13=
+ELSE
+	strVSWText:0:4:0=
+	strVSWText:0:4:1=性経験は
+	strVSWText:0:4:2=
+	strVSWText:0:4:3=
+	SELECTCASE EXP:Ｖ経験
+		CASE 0
+			strVSWText:0:4:3=
+		CASEELSE
+			strVSWText:0:4:3=オマンコは {EXP:Ｖ経験} 回
+		ENDSELECT
+	SELECTCASE EXP:Ａ経験
+		CASE 0
+			strVSWText:0:4:4=
+		CASEELSE
+			strVSWText:0:4:4=アナルは {EXP:Ａ経験} 回
+		ENDSELECT
+	SELECTCASE EXP:絶頂経験
+		CASE 0
+			strVSWText:0:4:5=
+		CASEELSE
+			strVSWText:0:4:5=イった回数は {EXP:絶頂経験} 回
+		ENDSELECT
+	SELECTCASE EXP:精液経験
+		CASE 0
+			strVSWText:0:4:6=
+		CASEELSE
+			strVSWText:0:4:6=精液まみれになったのは {EXP:精液経験} 回
+		ENDSELECT
+	SELECTCASE EXP:フェラ経験
+		CASE 0
+			strVSWText:0:4:7=
+		CASEELSE
+			strVSWText:0:4:7=フェラしたのは {EXP:フェラ経験} 回
+		ENDSELECT
+	SELECTCASE EXP:露出快楽経験
+		CASE 0
+			strVSWText:0:4:8=
+		CASEELSE
+			strVSWText:0:4:8=露出で気持ちよくなった経験は {EXP:露出快楽経験} 回
+		ENDSELECT
+	SELECTCASE EXP:奉仕快楽経験
+		CASE 0
+			strVSWText:0:4:9=
+		CASEELSE
+			strVSWText:0:4:9=奉仕で気持ちよくなった経験は {EXP:奉仕快楽経験} 回
+		ENDSELECT
+	SELECTCASE EXP:苦痛快楽経験
+		CASE 0
+			strVSWText:0:4:10=
+		CASEELSE
+			strVSWText:0:4:10=痛みで気持ちよくなった経験は {EXP:苦痛快楽経験} 回
+		ENDSELECT
+	SELECTCASE EXP:自慰経験
+		CASE 0
+			strVSWText:0:4:11=
+		CASEELSE
+			strVSWText:0:4:11=オナニーした経験は {EXP:自慰経験} 回
+		ENDSELECT
+	SELECTCASE EXP:近親交配経験
+		CASE 0
+			strVSWText:0:4:12=
+		CASEELSE
+			strVSWText:0:4:12=家族と {EXP:近親交配経験} 回セックスしちゃった♪
+		ENDSELECT
+	strVSWText:0:4:13=
+ENDIF
+
+;Window番号8：コメント
+IF TALENT:オトコ > 0
+	FOR LCOUNT, 0, 13
+		SELECTCASE RAND:14
+		CASE 13
+			strVSWText:1:4:LCOUNT=
+		CASE 12
+			strVSWText:1:4:LCOUNT=剛直～！！
+		CASE 11
+			strVSWText:1:4:LCOUNT=左曲がり？
+		CASE 10
+			strVSWText:1:4:LCOUNT=右曲がり？
+		CASE 9
+			strVSWText:1:4:LCOUNT=ドン引き～
+		CASE 8
+			strVSWText:1:4:LCOUNT=いい形だな
+		CASE 7
+			strVSWText:1:4:LCOUNT=可愛い顔してるのにエロい
+		CASE 6
+			strVSWText:1:4:LCOUNT=よし、男だ
+		CASE 5
+			strVSWText:1:4:LCOUNT=何だ男か
+		CASE 4
+			strVSWText:1:4:LCOUNT=パンツ脱いだ！
+		CASE 3
+			strVSWText:1:4:LCOUNT=ちんネクタイ全裸待機
+		CASE 2
+			strVSWText:1:4:LCOUNT=もっこり
+		CASE 1
+			strVSWText:1:4:LCOUNT=めちゃしこ！！
+		CASEELSE
+			strVSWText:1:4:LCOUNT=ウホッ、イイ男！
+		ENDSELECT
+	NEXT
+ELSE
+	FOR LCOUNT, 0, 13
+		SELECTCASE RAND:10
+		CASE 9
+			strVSWText:1:4:LCOUNT=
+		CASE 8
+			strVSWText:1:4:LCOUNT=くぱぁ／／／
+		CASE 7
+			strVSWText:1:4:LCOUNT=ドン引き～
+		CASE 6
+			strVSWText:1:4:LCOUNT=グロマンだぁ
+		CASE 5
+			strVSWText:1:4:LCOUNT=可愛い顔してるのにエロい
+		CASE 4
+			strVSWText:1:4:LCOUNT=パンツ脱いだ！
+		CASE 3
+			strVSWText:1:4:LCOUNT=ちんネクタイ全裸待機
+		CASE 2
+			strVSWText:1:4:LCOUNT=脱げ！脱げ！
+		CASE 1
+			strVSWText:1:4:LCOUNT=めちゃしこ！！
+		CASEELSE
+			strVSWText:1:4:LCOUNT=うはっ、可愛い！！
+		ENDSELECT
+	NEXT
+ENDIF
+
+;Window番号9：地の文
+IF TALENT:オトコ > 0
+	strVSWText:2:4:0=
+	strVSWText:2:4:1=
+	strVSWText:2:4:2=
+	strVSWText:2:4:3=
+	strVSWText:2:4:4=
+ELSE
+	strVSWText:2:4:0=
+	strVSWText:2:4:1=
+	strVSWText:2:4:2=
+	strVSWText:2:4:3=
+	strVSWText:2:4:4=
+ENDIF
+
+
+;=================================================
+;動画・コメント・地の文「異常性体験」
+;=================================================
+;Window番号7：動画
+IF TALENT:オトコ > 0
+	strVSWText:0:5:0=異常性体験は
+	strVSWText:0:5:1=
+	strVSWText:0:5:2=触手に{EXP:幽閉経験}回、幽閉された
+	strVSWText:0:5:3=
+	strVSWText:0:5:4=
+	strVSWText:0:5:5=
+	strVSWText:0:5:6=寄生されること{EXP:寄生経験}
+	strVSWText:0:5:7=
+	strVSWText:0:5:8=
+	strVSWText:0:5:9=
+	strVSWText:0:5:10=
+	strVSWText:0:5:11=後ろの穴を{EXP:Ａ拡張経験}回、拡張されました
+	strVSWText:0:5:12=
+	strVSWText:0:5:13=チンポミルクを{EXP:射精経験}回絞られました
+ELSE
+	strVSWText:0:5:0=異常性体験は
+	strVSWText:0:5:1=
+	strVSWText:0:5:2=触手に{EXP:幽閉経験}回、幽閉された
+	strVSWText:0:5:3=
+	strVSWText:0:5:4=出産経験が {EXP:出産経験}回で
+	strVSWText:0:5:5=幽閉中に出産した触手の数 {CFLAG:220}匹
+	strVSWText:0:5:6=寄生されること{EXP:寄生経験}
+	strVSWText:0:5:7=
+	strVSWText:0:5:8=
+	strVSWText:0:5:9=
+	strVSWText:0:5:10=前の穴を{EXP:Ｖ拡張経験}回、拡張されて
+	strVSWText:0:5:11=後ろの穴を{EXP:Ａ拡張経験}回、拡張されました
+	strVSWText:0:5:12=
+	strVSWText:0:5:13={EXP:噴乳経験}回の母乳イキ
+ENDIF
+
+;Window番号8：コメント
+IF TALENT:オトコ > 0
+	FOR LCOUNT, 0, 13
+		SELECTCASE RAND:9
+		CASE 8
+			strVSWText:1:5:LCOUNT=おいおい、カウパー漏れてない？
+		CASE 7
+			strVSWText:1:5:LCOUNT=締りの良さそうな菊門だ
+		CASE 6
+			strVSWText:1:5:LCOUNT=よし、男だ
+		CASE 5
+			strVSWText:1:5:LCOUNT=何だ男か
+		CASE 4
+			strVSWText:1:5:LCOUNT=パンツ脱いだ！
+		CASE 3
+			strVSWText:1:5:LCOUNT=ちんネクタイ全裸待機
+		CASE 2
+			strVSWText:1:5:LCOUNT=もっこり
+		CASE 1
+			strVSWText:1:5:LCOUNT=めちゃしこ！！
+		CASEELSE
+			strVSWText:1:5:LCOUNT=ウホッ、イイ男！
+		ENDSELECT
+	NEXT
+ELSE
+	FOR LCOUNT, 0, 13
+		SELECTCASE RAND:9
+		CASE 8
+			strVSWText:1:5:LCOUNT=
+		CASE 7
+			strVSWText:1:5:LCOUNT=ドン引き～
+		CASE 6
+			strVSWText:1:5:LCOUNT=グロマンだぁ
+		CASE 5
+			strVSWText:1:5:LCOUNT=可愛い顔してるのにエロい
+		CASE 4
+			strVSWText:1:5:LCOUNT=パンツ脱いだ！
+		CASE 3
+			strVSWText:1:5:LCOUNT=ちんネクタイ全裸待機
+		CASE 2
+			strVSWText:1:5:LCOUNT=脱げ！脱げ！
+		CASE 1
+			strVSWText:1:5:LCOUNT=めちゃしこ！！
+		CASEELSE
+			strVSWText:1:5:LCOUNT=うはっ、可愛い！！
+		ENDSELECT
+	NEXT
+ENDIF
+
+;Window番号9：地の文
+IF TALENT:オトコ > 0
+	strVSWText:2:5:0=
+	strVSWText:2:5:1=
+	strVSWText:2:5:2=
+	strVSWText:2:5:3=
+	strVSWText:2:5:4=
+ELSE
+	strVSWText:2:5:0=
+	strVSWText:2:5:1=
+	strVSWText:2:5:2=
+	strVSWText:2:5:3=
+	strVSWText:2:5:4=
+ENDIF
+
+
+;=================================================
+;ウィンドウの位置
+;=================================================
+;--------------------------------
+; ブラウザの外枠
+;--------------------------------
+nWndId:0  = 0
+nLocX:0   = 1
+nLocY:0   = 6
+nWidth:0  = 80
+nHeigth:0 = 25
+nExFlag:0 = 0x01
+CALL WINDOW_CREATE( nWndId:0, nLocX:0, nLocY:0, nWidth:0, nHeigth:0, nExFlag:0 )
+
+;--------------------------------
+; ブラウザのメニュー
+;--------------------------------
+nWndId:1  = 1
+nLocX:1   = 1
+nLocY:1   = 5
+nWidth:1  = 80
+nHeigth:1 = 3
+nExFlag:1 = 0x01
+CALL WINDOW_CREATE( nWndId:1, nLocX:1, nLocY:1, nWidth:1, nHeigth:1, nExFlag:1 )
+
+;--------------------------------
+; サイトの文字１
+;--------------------------------
+nWndId:2  = 2
+nLocX:2   = 52
+nLocY:2   = 10
+nWidth:2  = 20
+nHeigth:2 = 3
+nExFlag:2 = 0x00
+CALL WINDOW_CREATE( nWndId:2, nLocX:2, nLocY:2, nWidth:2, nHeigth:2, nExFlag:2 )
+
+;--------------------------------
+; サイトの文字２
+;--------------------------------
+nWndId:3  = 3
+nLocX:3   = 5
+nLocY:3   = 28
+nWidth:3  = 60
+nHeigth:3 = 2
+nExFlag:3 = 0x00
+CALL WINDOW_CREATE( nWndId:3, nLocX:3, nLocY:3, nWidth:3, nHeigth:3, nExFlag:3 )
+
+;--------------------------------
+; コマンド
+;--------------------------------
+nWndId:5  = 5
+nLocX:5   = 0
+nLocY:5   = 0
+nWidth:5  = 80
+nHeigth:5 = 5
+nExFlag:5 = 0x00
+CALL WINDOW_CREATE( nWndId:5, nLocX:5, nLocY:5, nWidth:5, nHeigth:5, nExFlag:5 )
+
+;--------------------------------
+; 動画の中身
+;--------------------------------
+nWndId:7  = 7
+nLocX:7   = 3
+nLocY:7   = 12
+nWidth:7  = 48
+nHeigth:7 = 16
+nExFlag:7 = 0x01
+CALL WINDOW_CREATE( nWndId:7, nLocX:7, nLocY:7, nWidth:7, nHeigth:7, nExFlag:7 )
+
+;--------------------------------
+; 動画サイトのコメント欄
+;--------------------------------
+nWndId:8  = 8
+nLocX:8   = 52
+nLocY:8   = 12
+nWidth:8  = 24
+nHeigth:8 = 16
+nExFlag:8 = 0x01
+CALL WINDOW_CREATE( nWndId:8, nLocX:8, nLocY:8, nWidth:8, nHeigth:8, nExFlag:8 )
+
+;--------------------------------
+; 地の文
+;--------------------------------
+nWndId:9  = 9
+nLocX:9   = 0
+nLocY:9   = 32
+nWidth:9  = 80
+nHeigth:9 = 5
+nExFlag:9 = 0x00
+CALL WINDOW_CREATE( nWndId:9, nLocX:9, nLocY:9, nWidth:9, nHeigth:9, nExFlag:9 )
+
+
+
+;=================================================
+;ウィンドウの初期値表示
+;=================================================
+FOR LCOUNT, 0, 5
+	CALL WINDOW_SETTEXT( nWndId:0, LCOUNT, @"%strVSWBrowser:0:LCOUNT%" )
+NEXT
+
+FOR LCOUNT, 0, 1
+	CALL WINDOW_SETTEXT( nWndId:1, LCOUNT, @"%strVSWBrowser:1:LCOUNT%")
+NEXT
+
+FOR LCOUNT, 0, 2
+	CALL WINDOW_SETTEXT( nWndId:2, LCOUNT, @"%strVSWBrowser:2:LCOUNT%" )
+NEXT
+
+CALL WINDOW_SETTEXT( nWndId:3, 0, @"再生数：{nViewCount}" )
+CALL WINDOW_SETTEXT( nWndId:3, 1, @"抜いた！：{nEjaculateCount}" )
+
+FOR LCOUNT, 0, 5
+	CALL WINDOW_SETTEXT( nWndId:5, LCOUNT, @"%strVSWBrowser:5:LCOUNT%" )
+NEXT
+
+FOR LCOUNT, 0, 14
+	CALL WINDOW_SETTEXT( nWndId:7, LCOUNT, @"%strVSWText:0:0:LCOUNT%" )
+NEXT
+
+FOR LCOUNT, 0, 14
+	CALL WINDOW_SETTEXT( nWndId:8, LCOUNT, @"%strVSWText:1:0:LCOUNT%" )
+NEXT
+
+FOR LCOUNT, 0, 5
+	CALL WINDOW_SETTEXT( nWndId:9, LCOUNT, @"%strVSWText:2:0:LCOUNT%" )
+NEXT
+
+
+;=================================================
+; プログラム部分
+;=================================================
+$PRINT_LOOP
+DRAWLINEFORM ―
+IF nTestMode == 0
+	CALL WINDOW_DISPLAY()					; ウィンドウ１,２,３の順に描画する（ウィンドウが重なった時に後に描画したものほど上に描画される）
+ELSE
+	LOCAL = 9, 8, 7, 6, 5, 4, 3, 2, 1, 0
+	CALL WINDOW_DISPLAY_EX( 3, LOCAL )		; ウィンドウ３,２,１の順に描画する（ウィンドウが重なった時に後に描画したものほど上に描画される）
+ENDIF
+
+INPUTS
+strInputResult = %RESULTS%
+
+SIF !(strInputResult == "0") && !(strInputResult == "1")&& !(strInputResult == "2")&& !(strInputResult == "3")&& !(strInputResult == "4")&& !(strInputResult == "99")
+	strInputResult = %nCountMovies%
+
+SELECTCASE strInputResult
+	CASE "0","1", "2", "3", "4"
+		SELECTCASE strInputResult
+			;=================================================
+			;自己紹介
+			;=================================================
+			CASE "0"
+				;;動画の内容
+				FOR LCOUNT, 0, 14
+					CALL WINDOW_SETTEXT( nWndId:7, LCOUNT, @"%strVSWText:0:1:LCOUNT%" )
+				NEXT
+				;;コメント
+				FOR LCOUNT, 0, 14
+					CALL WINDOW_SETTEXT( nWndId:8, LCOUNT, @"%strVSWText:1:1:LCOUNT%" )
+				NEXT
+				;;地の文
+				FOR LCOUNT, 0, 5
+					CALL WINDOW_SETTEXT( nWndId:9, LCOUNT, @"%strVSWText:2:1:LCOUNT%" )
+				NEXT
+				nCountMovies = 1
+				nViewCount += RAND(100000)
+				nEjaculateCount += RAND(50000)
+				CALL WINDOW_SETTEXT( nWndId:3, 0, @"再生数：{nViewCount}" )
+				CALL WINDOW_SETTEXT( nWndId:3, 1, @"抜いた！：{nEjaculateCount}" )
+			;=================================================
+			;恋愛経験
+			;=================================================
+			CASE "1"
+				;;動画の内容
+				FOR LCOUNT, 0, 14
+					CALL WINDOW_SETTEXT( nWndId:7, LCOUNT, @"%strVSWText:0:2:LCOUNT%" )
+				NEXT
+				;;コメント
+				FOR LCOUNT, 0, 14
+					CALL WINDOW_SETTEXT( nWndId:8, LCOUNT, @"%strVSWText:1:2:LCOUNT%" )
+				NEXT
+				;;地の文
+				FOR LCOUNT, 0, 5
+					CALL WINDOW_SETTEXT( nWndId:9, LCOUNT, @"%strVSWText:2:2:LCOUNT%" )
+				NEXT
+				nCountMovies = 2
+				nViewCount += RAND(100000)
+				nEjaculateCount += RAND(50000)
+				CALL WINDOW_SETTEXT( nWndId:3, 0, @"再生数：{nViewCount}" )
+				CALL WINDOW_SETTEXT( nWndId:3, 1, @"抜いた！：{nEjaculateCount}" )
+			;=================================================
+			;性感帯
+			;=================================================
+			CASE "2"
+				;;動画の内容
+				FOR LCOUNT, 0, 14
+					CALL WINDOW_SETTEXT( nWndId:7, LCOUNT, @"%strVSWText:0:3:LCOUNT%" )
+				NEXT
+				;;コメント
+				FOR LCOUNT, 0, 14
+					CALL WINDOW_SETTEXT( nWndId:8, LCOUNT, @"%strVSWText:1:3:LCOUNT%" )
+				NEXT
+				;;地の文
+				FOR LCOUNT, 0, 5
+					CALL WINDOW_SETTEXT( nWndId:9, LCOUNT, @"%strVSWText:2:3:LCOUNT%" )
+				NEXT
+				nCountMovies = 3
+				nViewCount += RAND(100000)
+				nEjaculateCount += RAND(50000)
+				CALL WINDOW_SETTEXT( nWndId:3, 0, @"再生数：{nViewCount}" )
+				CALL WINDOW_SETTEXT( nWndId:3, 1, @"抜いた！：{nEjaculateCount}" )
+			;=================================================
+			;性経験
+			;=================================================
+			CASE "3"
+				;;動画の内容
+				FOR LCOUNT, 0, 14
+					CALL WINDOW_SETTEXT( nWndId:7, LCOUNT, @"%strVSWText:0:4:LCOUNT%" )
+				NEXT
+				;;コメント
+				FOR LCOUNT, 0, 14
+					CALL WINDOW_SETTEXT( nWndId:8, LCOUNT, @"%strVSWText:1:4:LCOUNT%" )
+				NEXT
+				;;地の文
+				FOR LCOUNT, 0, 5
+					CALL WINDOW_SETTEXT( nWndId:9, LCOUNT, @"%strVSWText:2:4:LCOUNT%" )
+				NEXT
+				nCountMovies = 4
+				nViewCount += RAND(100000)
+				nEjaculateCount += RAND(50000)
+				CALL WINDOW_SETTEXT( nWndId:3, 0, @"再生数：{nViewCount}" )
+				CALL WINDOW_SETTEXT( nWndId:3, 1, @"抜いた！：{nEjaculateCount}" )
+			;=================================================
+			;異常経験
+			;=================================================
+			CASE "4"
+				;;動画の内容
+				FOR LCOUNT, 0, 14
+					CALL WINDOW_SETTEXT( nWndId:7, LCOUNT, @"%strVSWText:0:5:LCOUNT%" )
+				NEXT
+				;;コメント
+				FOR LCOUNT, 0, 14
+					CALL WINDOW_SETTEXT( nWndId:8, LCOUNT, @"%strVSWText:1:5:LCOUNT%" )
+				NEXT
+				;;地の文
+				FOR LCOUNT, 0, 5
+					CALL WINDOW_SETTEXT( nWndId:9, LCOUNT, @"%strVSWText:2:5:LCOUNT%" )
+				NEXT
+				nCountMovies = 99
+				nViewCount += RAND(100000)
+				nEjaculateCount += RAND(50000)
+				CALL WINDOW_SETTEXT( nWndId:3, 0, @"再生数：{nViewCount}" )
+				CALL WINDOW_SETTEXT( nWndId:3, 1, @"抜いた！：{nEjaculateCount}" )
+		ENDSELECT
+		
+	;=================================================
+	;終了動作
+	;=================================================
+	CASE "99"
+		FOR LOCAL, 0, 10
+			CALL WINDOW_DESTROY( nWndId:(LOCAL) )			; ウィンドウを破棄する
+		NEXT
+		RETURN
+ENDSELECT
+
+CLEARLINE LINECOUNT
+GOTO PRINT_LOOP
+
+
+

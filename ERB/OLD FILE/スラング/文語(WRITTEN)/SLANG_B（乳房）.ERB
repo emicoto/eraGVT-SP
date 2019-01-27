@@ -1,0 +1,151 @@
+;**********************************************************
+;基本ルール
+;加筆修正は、自由に行ってください
+;ただし、前の方が書いた文章は出来る限り消さないでください
+;
+;書き込む順番は、クドくなり過ぎないように3要素と部位で表現します
+;【実況】汁に濡れている、寄生されている、触手拘束具などを装着など
+;【形状】大きさ、深さなど、
+;【動作】開閉している、うごめいているなど、動きを表現
+;【部位呼称】淫乱や発情や性格で下品な書き方に
+;
+;Nipple(乳首)は別に表現する物があります
+;乳輪や乳首は成るべく表現しないで、地の文で補ってください
+;
+;増やして欲しい隠語は、アウトプットしてリクエストなりしましょう
+;未登録の中に放り込むなり、掲示板にアップするなりすれば、
+;実装される可能性があります
+;
+;by 雑魚の人 2018/02/11
+;**********************************************************
+;Bust(バスト)の淫語
+;**********************************************************
+@SLANG_B(ARG)
+#DIMS SLANGWORD_B
+#FUNCTIONS
+
+;初期化
+SLANGWORD_B=
+
+;第一形容詞：状況（汁など）
+IF (STAIN:2 & 4)
+	SLANGWORD_B=%SLANGWORD_B%%SLANG_Semen(TARGET)%を塗られた
+ENDIF
+
+
+;第二形容詞：形状表現
+
+
+;第三形容詞：動作表現
+IF TALENT:貧乳 > 0
+	SELECTCASE RAND:3
+		CASE 2
+			SLANGWORD_B+="ぷにぷにな"
+		CASE 1
+			SLANGWORD_B+="ささやかな"
+		CASE 0
+			SLANGWORD_B+="ちいさな"
+	ENDSELECT
+ELSEIF TALENT:巨乳 > 0
+	SELECTCASE RAND:3
+		CASE 2
+			SLANGWORD_B+="ゆっさゆっさに"
+		CASE 1
+			SLANGWORD_B+="ぶるんぶるんに"
+		CASEELSE
+			SLANGWORD_B+="たゆんたゆんと"
+	ENDSELECT
+	SELECTCASE RAND:2
+		CASE 1
+			SLANGWORD_B+="揺れる"
+		CASEELSE
+			SLANGWORD_B+="弾む"
+	ENDSELECT
+ELSE
+	SELECTCASE RAND:3
+		CASE 2
+			SLANGWORD_B+="ぷるぷるな"
+		CASE 1
+			SLANGWORD_B+="ふるふるな"
+		CASEELSE
+			SLANGWORD_B+="ゆらゆらな"
+	ENDSELECT
+ENDIF
+
+
+
+;部位呼称
+IF TALENT:淫乳 > 0
+	IF TALENT:貧乳 > 0
+		SELECTCASE RAND:3
+			CASE 2
+				SLANGWORD_B += "快楽に蕩けるちいさな胸"
+			CASE 1
+				SLANGWORD_B += "快楽に蕩ける淫乱な貧乳"
+			CASEELSE
+				SLANGWORD_B += "快楽に焼き焦げたちっぱい"
+		ENDSELECT
+	ELSEIF TALENT:巨乳 > 0
+		SELECTCASE RAND:3
+			CASE 2
+				SLANGWORD_B += "快楽に蕩ける豊満な胸"
+			CASE 1
+				SLANGWORD_B += "快楽が弾ける淫乱な鞠乳"
+			CASEELSE
+				SLANGWORD_B += "快楽に焦げるでっぱい"
+		ENDSELECT
+	ELSE
+		SELECTCASE RAND:4
+			CASE 3
+				SLANGWORD_B += "快楽に燃え上がる胸"
+			CASE 2
+				SLANGWORD_B += "快楽に焦がされたバスト"
+			CASE 1
+				SLANGWORD_B += "快楽に蕩ける淫乱な胸"
+			CASEELSE
+				SLANGWORD_B += "快楽に蕩ける淫乱なおっぱい"
+		ENDSELECT
+	ENDIF
+ELSE
+	IF TALENT:貧乳 > 0
+		SLANGWORD_B += "ちっぱい"
+	ELSEIF TALENT:巨乳 > 0
+		SELECTCASE RAND:3
+			CASE 2
+				SLANGWORD_B += "バスト"
+			CASE 1
+				SLANGWORD_B += "でっぱい"
+			CASEELSE
+				SLANGWORD_B += "巨乳"
+		ENDSELECT
+	ELSE
+		SELECTCASE RAND:4
+			CASE 3
+				SLANGWORD_B += "胸"
+			CASE 2
+				SLANGWORD_B += "バスト"
+			CASE 1
+				SLANGWORD_B += "おっぱい"
+			CASEELSE
+				SLANGWORD_B += "普乳"
+		ENDSELECT
+	ENDIF
+ENDIF
+
+RETURNF SLANGWORD_B
+
+
+;*************【淫語覚書（未登録）】***********************
+;双乳
+;乳輪
+;乳風船
+;乳果
+;豊乳
+;乳鞠
+;乳塊
+;乳房
+;たわわに実った
+;*************【淫語覚書（未登録）】***********************
+
+
+

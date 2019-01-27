@@ -1,0 +1,128 @@
+;**********************************************************
+;ARG:0‚ÅF‚ÌŽw’è
+;ARG:1‚Å•\Ž¦‚·‚é•¶Žš—ñ‚ÌŽw’è
+;
+;HTML 3.0‚¨‚æ‚ÑWindows•W€16F‚ð‰ŠúÝ’è
+;
+;XV—š—ð
+;2018.02.14 ŠÖ”ì¬A•W€16F“o˜^ by ŽG‹›‚Ìl
+;**********************************************************
+@PRINT_RGBTEXT(ARGS:0,ARGS:1)
+#DIMS PRINT_CTEXT
+#DIM BGCOLOR_NOW
+#DIM TEXTCOLOR_NOW
+
+PRINT_CTEXT=%ARGS:1%
+
+SELECTCASE ARGS:0
+	;****************yHTML 3.0Žd—l•Windows•W€16Fz****************
+	;********************************
+	CASE "Ô" , "ƒŒƒbƒh" , "Red" , "RED" , "‚q‚…‚„" , "‚q‚d‚c"
+		SETCOLOR 0xFF0000
+	CASE "ŒIF" , "‚¦‚Ñ’ƒF" , "ƒ}ƒ‹[ƒ“" , "Maroon", "MAROON" , "‚l‚‚’‚‚‚Ž" , ""
+		SETCOLOR 0x800000
+	CASE "ƒIƒŠ[ƒu" , "ƒIƒŠ[ƒuF" , "Olive" , "OLIVE"
+		SETCOLOR 0x808000
+	CASE "‰©" , "ƒCƒGƒ[" , "Yellow" , "YELLOW" , "‚x‚…‚Œ‚Œ‚‚—" , "‚x‚d‚k‚k‚n‚v"
+		SETCOLOR 0xFFFF00
+	CASE "ƒ‰ƒCƒ€" , "Lime" , "LIME" , "‚k‚‰‚‚…" , "‚k‚h‚l‚d"
+		SETCOLOR 0x00FF00
+	CASE "—Î" , "ƒOƒŠ[ƒ“"  , "Green" , "GREEN" , "‚f‚’‚…‚…‚Ž" , "‚f‚q‚d‚d‚m"
+		SETCOLOR 0x008000
+	CASE "…F" , "ƒAƒNƒA" , "Aqua" , "AQUA" , "‚`‚‘‚•‚" , "‚`‚p‚t‚`"
+		SETCOLOR 0x00FFFF
+	CASE "Š›‚Ì‰HF" , "Š›‚ÌF" ,"^Š›F" , "Teal" , "TEAL" , "‚s‚…‚‚Œ" , "‚s‚d‚`‚k"
+		SETCOLOR 0x008080
+	CASE "Â" , "ƒuƒ‹[" , "Blue" , "BLUE"  , "‚a‚Œ‚•‚…" , "‚a‚k‚t‚d"
+		SETCOLOR 0x0000FF
+	CASE "ƒlƒCƒr[" , "ƒlƒCƒr[F" , "®F" , "”Z®" , "ƒlƒCƒr[ƒuƒ‹[" , "Navy" , "NAVY" , "‚m‚‚–‚™" , "‚m‚`‚u‚x"
+		SETCOLOR 0x008080
+	CASE "ÔŽ‡" , "ƒ}ƒ[ƒ“ƒ^" , "ƒtƒNƒVƒA" , "ƒtƒ…[ƒVƒƒ" , "Fuchsia" , "FUCHSIA" , "Magenta" , "MAGENTA"
+		SETCOLOR 0xFF00FF
+	CASE "Ž‡" ,  "ƒp[ƒvƒ‹" , "Purple" , "PURPLE" , "‚o‚•‚’‚‚Œ‚…" , "‚o‚t‚q‚o‚k‚d"
+		SETCOLOR 0x800080
+	CASE "“§–¾" , "ƒ”’" , "ƒzƒƒCƒg" , "White" , "WHITE" , "‚v‚ˆ‚‰‚”‚…" , "‚v‚g‚h‚s‚d"
+		SETCOLOR 0xFFFFFF
+	CASE "ŠDF" , "ŠD" , "ƒOƒŒƒC" , "Gray"
+		SETCOLOR 0x808080
+	CASE "Silver"
+		SETCOLOR 0xC0C0C0
+	CASE "•" , "Ž½•" , "ƒ•" , "^‚Á•" , "ƒuƒ‰ƒbƒN" , "Black" , "BLACK" ,"‚a‚Œ‚‚ƒ‚‹" , "‚a‚k‚`‚b‚j"
+		SETCOLOR 0x000000
+
+
+
+	;****************yX11‚ÌF–¼Ìz****************
+
+
+
+	;****************y‚»‚Ì‘¼z****************
+	CASE "åKåNF"
+		SETCOLOR 0xFF0037
+	CASE "	‹âŽé"
+		SETCOLOR 0xF80606
+	CASE "ƒ[ƒY"
+		SETCOLOR 0xFF0037
+	CASE "ƒCƒ`ƒS" , "‚¢‚¿‚²" , "ä•" , "ƒXƒgƒƒxƒŠ["
+		SETCOLOR 0xE50031
+	CASE "‰²’OF"
+		SETCOLOR 0xE100B2
+	CASE "gF"
+		SETCOLOR 0xDB0015
+	CASE "ƒJ[ƒ}ƒCƒ“"
+		SETCOLOR 0xCC000A
+	CASE "”Zg"
+		SETCOLOR 0xB40926
+	CASE "ƒƒCƒ“ƒŒƒbƒh"
+		SETCOLOR 0xA8002F
+
+
+	CASE "ƒsƒ“ƒN","ƒsƒ“ƒNF"
+		SETCOLOR 0xEF8F9C
+	CASE "ƒ[ƒYƒsƒ“ƒN"
+		SETCOLOR 0xEF7598
+	CASE "“F", "“"
+		SETCOLOR 0xEF7585
+	CASE "÷F", "÷"
+		SETCOLOR 0xFCEEEB
+	CASE "ƒT[ƒ‚ƒ“ƒsƒ“ƒN"
+		SETCOLOR 0xFF9E8C
+
+	CASE "ˆÃgF"
+		SETCOLOR 0x890F65
+	CASE "•’“¸ŽðF" , "ƒƒCƒ“" , "ƒƒCƒ“ƒJƒ‰[" , "ƒƒCƒ“F"
+		SETCOLOR 0x7B3746
+
+
+	CASEELSE
+		;Žw’è‚È‚µ‚È‚çGhostWite‚Å•Ô‚·
+		SETCOLOR 0xF8F8FF
+ENDSELECT
+
+;Œ»Ý‚Ì•¶ŽšF‚ðTEXTCOLOR_NOW‚É‘ã“ü
+GETCOLOR
+TEXTCOLOR_NOW=RESULT:0
+;Œ»Ý‚Ì”wŒiF‚ðBGCOLOR_NOW‚É‘ã“ü
+GETBGCOLOR
+BGCOLOR_NOW=RESULT:0
+
+;”wŒiF‚Æ•¶ŽšF‚ªˆê’v
+IF TEXTCOLOR_NOW == BGCOLOR_NOW
+	RESETCOLOR
+	;‹P“x‚ÅŽZo((R*299)+(G*587)+ (B*144))/1000
+	IF ((BGCOLOR_NOW/0x10000*299)+((BGCOLOR_NOW%0x10000)/0x100*587)+(BGCOLOR_NOW%0x100*144))/1000 > 127
+		SETCOLOR 0x000000
+	ELSE
+		SETCOLOR 0xFFFFFF
+	ENDIF
+ENDIF
+
+PRINTFORM %PRINT_CTEXT%
+
+
+RESETCOLOR
+
+
+
+
+

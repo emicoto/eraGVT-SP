@@ -1,0 +1,588 @@
+;**********************************************************
+;自慰関連の処理
+
+;夜間自慰
+@SELF_NIGHT
+VARSET LOCAL
+SIF TIME != 1
+	RETURN
+
+LOCAL:2 = TARGET
+FOR LOCAL, 0, CHARANUM
+	SIF LOCAL == MASTER
+		CONTINUE
+	SIF CFLAG:LOCAL:999 == 0
+		CONTINUE
+
+	TARGET = LOCAL
+
+	;キャラが生存中でなければ発生しない
+	SIF CFLAG:0 != 0
+		CONTINUE
+
+	;処女でなく、かつ交際相手が居る場合は自慰しにくい
+	SIF TALENT:交際相手 >= 2 && TALENT:交際相手 <= 4 && TALENT:処女 < 1 && RAND:4 != 0
+		CONTINUE
+	;自慰確率判定値を初期化
+	LOCAL:1 = 0
+	;欲望を見る
+	LOCAL:1 += ABL:欲望 * 5
+	;触手中毒を見る
+	LOCAL:1 += ABL:触手中毒 * 2
+	;自慰中毒を見る
+	IF ABL:自慰中毒 >= 5
+		LOCAL:1 += 35
+	ELSEIF ABL:自慰中毒 == 4
+		LOCAL:1 += 30
+	ELSEIF ABL:自慰中毒 == 3
+		LOCAL:1 += 25
+	ELSEIF ABL:自慰中毒 == 2
+		LOCAL:1 += 20
+	ELSEIF ABL:自慰中毒 == 1
+		LOCAL:1 += 15
+	ENDIF
+	IF RAND:100 < LOCAL:1
+		;地の文：夜間自慰
+		SIF LOCAL:3 == 0
+			DRAWLINE
+		CALL MESSAGE_SELF_NIGHT
+		CALL SELF_KIND, TARGET, 0
+		CALL _ABLUP,0
+		PRINTW 
+		VARSET PALAM
+		LOCAL:3 = 1
+	ENDIF
+NEXT
+TARGET = LOCAL:2
+
+
+;戦闘後自慰
+@SELF_BATTLEEND, ARG
+CALL SELF_CHECK, ARG
+IF RESULT == 1
+	;地の文：戦闘後自慰
+	CALL MESSAGE_SELF_BATTLEEND
+	CALL SELF_KIND, ARG, 1
+	CALL _ABLUP,0
+ENDIF
+
+
+;----------------------------------------------------------
+;自慰をするかのチェック
+@SELF_CHECK, ARG
+
+LOCAL = 0
+LOCAL:1 = 0
+LOCAL:2 = 0
+
+;欲情の値を基本にする
+IF PALAM:ARG:欲情 == 0
+	LOCAL = 0
+ELSEIF PALAM:ARG:欲情 < 100
+	LOCAL = 1
+ELSEIF PALAM:ARG:欲情 < 300
+	LOCAL = 2
+ELSEIF PALAM:ARG:欲情 < 600
+	LOCAL = 4
+ELSEIF PALAM:ARG:欲情 < 1500
+	LOCAL = 6
+ELSEIF PALAM:ARG:欲情 < 3000
+	LOCAL = 8
+ELSEIF PALAM:ARG:欲情 < 6000
+	LOCAL = 10
+ELSEIF PALAM:ARG:欲情 < 10000
+	LOCAL = 12
+ELSEIF PALAM:ARG:欲情 < 30000
+	LOCAL = 15
+ELSEIF PALAM:ARG:欲情 < 60000
+	LOCAL = 18
+ELSEIF PALAM:ARG:欲情 < 150000
+	LOCAL = 21
+ELSEIF PALAM:ARG:欲情 < 300000
+	LOCAL = 25
+ELSE
+	LOCAL = 30
+ENDIF
+
+;補正
+;欲望
+IF ABL:ARG:欲望 == 0
+	TIMES LOCAL, 0.25
+ELSEIF ABL:ARG:欲望 == 1
+	TIMES LOCAL, 0.50
+ELSEIF ABL:ARG:欲望 == 2
+	TIMES LOCAL, 0.75
+ELSEIF ABL:ARG:欲望 == 3
+	TIMES LOCAL, 1.00
+ELSEIF ABL:ARG:欲望 == 4
+	TIMES LOCAL, 1.25
+ELSEIF ABL:ARG:欲望 >= 5
+	TIMES LOCAL, 1.50
+ENDIF
+
+;露出癖
+IF ABL:ARG:露出癖 == 0
+	TIMES LOCAL, 0.25
+ELSEIF ABL:ARG:露出癖 == 1
+	TIMES LOCAL, 0.50
+ELSEIF ABL:ARG:露出癖 == 2
+	TIMES LOCAL, 0.75
+ELSEIF ABL:ARG:露出癖 == 3
+	TIMES LOCAL, 1.00
+ELSEIF ABL:ARG:露出癖 == 4
+	TIMES LOCAL, 1.25
+ELSEIF ABL:ARG:露出癖 >= 5
+	TIMES LOCAL, 1.50
+ENDIF
+
+;自慰中毒
+IF ABL:ARG:自慰中毒 == 1
+	TIMES LOCAL, 1.25
+ELSEIF ABL:ARG:自慰中毒 == 2
+	TIMES LOCAL, 1.50
+ELSEIF ABL:ARG:自慰中毒 == 3
+	TIMES LOCAL, 2.00
+ELSEIF ABL:ARG:自慰中毒 == 4
+	TIMES LOCAL, 2.50
+ELSEIF ABL:ARG:自慰中毒 >= 5
+	TIMES LOCAL, 4.00
+ENDIF
+
+;淫乱
+SIF TALENT:ARG:淫乱 == 1
+	TIMES LOCAL, 2.00
+
+;ランダム性付与
+LOCAL:1 = RAND:100
+IF LOCAL:1 < 20
+	TIMES LOCAL, 0.80
+ELSEIF LOCAL:1 < 40
+	TIMES LOCAL, 0.90
+ELSEIF LOCAL:1 < 60
+	TIMES LOCAL, 1.00
+ELSEIF LOCAL:1 < 80
+	TIMES LOCAL, 1.10
+ELSE
+	TIMES LOCAL, 1.20
+ENDIF
+
+;一定値以上で自慰をする
+IF LOCAL >= 15
+	LOCAL:2 = 1
+ENDIF
+RETURN LOCAL:2
+
+;----------------------------------------------------------
+;自慰の種類を決める
+@SELF_KIND, ARG, ARG:1
+LOCAL:0 = 0
+LOCAL:1 = 0
+
+;絶頂回数一度目のリセット
+VARSET NOWEX
+
+;淫○系の素質があればそれを優先
+IF TALENT:ARG:淫尻 > 0
+	CALL SELF_A, ARG, ARG:1
+ELSEIF TALENT:ARG:淫乳 > 0
+	CALL SELF_B, ARG, ARG:1
+ENDIF
+
+;追加で自慰が発生した場合に備えて二度目のリセット
+VARSET NOWEX
+
+;A感覚が2以上ならアナニーできる
+SIF ABL:ARG:Ａ感覚 > 1
+	LOCAL:0 = 1
+
+IF LOCAL:0 == 0
+	LOCAL:1 = RAND:100
+	IF LOCAL:1 < 50
+		CALL SELF_N, ARG, ARG:1
+	ELSE
+		CALL SELF_B, ARG, ARG:1
+	ENDIF
+ELSEIF LOCAL:0 == 1
+	LOCAL:1 = RAND:99
+	IF LOCAL:1 < 33
+		CALL SELF_N, ARG, ARG:1
+	ELSEIF LOCAL:1 < 66
+		CALL SELF_B, ARG, ARG:1
+	ELSE
+		CALL SELF_A, ARG, ARG:1
+	ENDIF
+ENDIF
+
+;----------------------------------------------------------
+;普通の自慰
+@SELF_N, ARG, ARG:1
+;地の文：普通の自慰
+CALL MESSAGE_SELF_N
+
+;ARG:1 == 1で戦闘中の自慰
+;地の文：洗脳/悪堕ちキャラが操作キャラの普通の自慰を見た
+SIF FLAG:110 == 1 && ARG:1 == 1
+	CALL MESSAGE_OTHER_SELF_N
+
+;ベース値の明示的初期化
+REPEAT 12
+	LOCAL:COUNT = 0
+REND
+
+;ベース
+EXP:ARG:自慰経験 += 1
+;快C
+IF ABL:ARG:Ｃ感覚 == 0
+	LOCAL:0 = 200
+ELSEIF ABL:ARG:Ｃ感覚 == 1
+	LOCAL:0 = 1000
+ELSEIF ABL:ARG:Ｃ感覚 == 2
+	LOCAL:0 = 2000
+ELSEIF ABL:ARG:Ｃ感覚 == 3
+	LOCAL:0 = 4000
+ELSEIF ABL:ARG:Ｃ感覚 == 4
+	LOCAL:0 = 10000
+ELSEIF ABL:ARG:Ｃ感覚 >= 5
+	LOCAL:0 = 20000
+ENDIF
+
+;快B
+IF ABL:ARG:Ｂ感覚 == 0
+	LOCAL:3 = 200
+ELSEIF ABL:ARG:Ｂ感覚 == 1
+	LOCAL:3 = 400
+ELSEIF ABL:ARG:Ｂ感覚 == 2
+	LOCAL:3 = 1000
+ELSEIF ABL:ARG:Ｂ感覚 == 3
+	LOCAL:3 = 2000
+ELSEIF ABL:ARG:Ｂ感覚 == 4
+	LOCAL:3 = 4000
+ELSEIF ABL:ARG:Ｂ感覚 >= 5
+	LOCAL:3 = 10000
+ENDIF
+
+;処女でなければVも使う
+IF TALENT:ARG:処女 < 1 && TALENT:ARG:オトコ <= 0
+	EXP:ARG:Ｖ経験 += 1
+	IF ABL:ARG:Ｖ感覚 == 0
+		LOCAL:1 = 200
+	ELSEIF ABL:ARG:Ｖ感覚 == 1
+		LOCAL:1 = 400
+	ELSEIF ABL:ARG:Ｖ感覚 == 2
+		LOCAL:1 = 1000
+	ELSEIF ABL:ARG:Ｖ感覚 == 3
+		LOCAL:1 = 4000
+	ELSEIF ABL:ARG:Ｖ感覚 == 4
+		LOCAL:1 = 10000
+	ELSEIF ABL:ARG:Ｖ感覚 >= 5
+		LOCAL:1 = 20000
+	ENDIF
+ENDIF
+
+;技巧の値に応じて快感度のボーナス
+IF ABL:ARG:技巧 == 0
+ELSEIF ABL:ARG:技巧 == 1
+ELSEIF ABL:ARG:技巧 == 2
+	TIMES LOCAL:0, 1.10
+	TIMES LOCAL:1, 1.10
+	TIMES LOCAL:3, 1.10
+ELSEIF ABL:ARG:技巧 == 3
+	TIMES LOCAL:0, 1.25
+	TIMES LOCAL:1, 1.25
+	TIMES LOCAL:3, 1.25
+ELSEIF ABL:ARG:技巧 == 4
+	TIMES LOCAL:0, 1.50
+	TIMES LOCAL:1, 1.50
+	TIMES LOCAL:3, 1.50
+ELSEIF ABL:ARG:技巧 >= 5
+	TIMES LOCAL:0, 2.00
+	TIMES LOCAL:1, 2.00
+	TIMES LOCAL:3, 2.00
+ENDIF
+
+;屈服　露出癖が高くなると多くなる
+IF ABL:ARG:露出癖 == 0
+	LOCAL:8 = 50
+ELSEIF ABL:ARG:露出癖 == 1
+	LOCAL:8 = 100
+ELSEIF ABL:ARG:露出癖 == 2
+	LOCAL:8 = 200
+ELSEIF ABL:ARG:露出癖 == 3
+	LOCAL:8 = 500
+ELSEIF ABL:ARG:露出癖 == 4
+	LOCAL:8 = 1000
+ELSEIF ABL:ARG:露出癖 >= 5
+	LOCAL:8 = 2000
+ENDIF
+
+;恥情　露出癖が高くなると多くなる
+IF ABL:ARG:露出癖 == 0
+	LOCAL:9 = 50
+ELSEIF ABL:ARG:露出癖 == 1
+	LOCAL:9 = 100
+ELSEIF ABL:ARG:露出癖 == 2
+	LOCAL:9 = 200
+ELSEIF ABL:ARG:露出癖 == 3
+	LOCAL:9 = 500
+ELSEIF ABL:ARG:露出癖 == 4
+	LOCAL:9 = 1000
+ELSEIF ABL:ARG:露出癖 >= 5
+	LOCAL:9 = 2000
+ENDIF
+
+;自慰中毒があると欲情にボーナス
+IF ABL:ARG:自慰中毒 == 1
+	LOCAL:7 = 1000
+ELSEIF ABL:ARG:自慰中毒 == 2
+	LOCAL:7 = 2000
+ELSEIF ABL:ARG:自慰中毒 == 3
+	LOCAL:7 = 5000
+ELSEIF ABL:ARG:自慰中毒 == 4
+	LOCAL:7 = 10000
+ELSEIF ABL:ARG:自慰中毒 >= 5
+	LOCAL:7 = 20000
+ENDIF
+
+;習得
+;自慰中毒に応じて上昇
+IF ABL:ARG:自慰中毒 == 0
+	LOCAL:6 = 200
+ELSEIF ABL:ARG:自慰中毒 == 1
+	LOCAL:6 = 400
+ELSEIF ABL:ARG:自慰中毒 == 2
+	LOCAL:6 = 800
+ELSEIF ABL:ARG:自慰中毒 == 3
+	LOCAL:6 = 1000
+ELSEIF ABL:ARG:自慰中毒 == 4
+	LOCAL:6 = 2000
+ELSEIF ABL:ARG:自慰中毒 >= 5
+	LOCAL:6 = 4000
+ENDIF
+
+;体力消費基本値
+LOCAL:12 = 150
+
+;計算へ
+CALL PALAM_CAL, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, LOCAL:12
+
+;----------------------------------------------------------
+;胸自慰
+@SELF_B, ARG, ARG:1
+;地の文：胸自慰
+CALL MESSAGE_SELF_B
+
+;ARG:1 == 1で戦闘中の自慰
+;地の文：洗脳/悪堕ちキャラが操作キャラの胸自慰を見た
+SIF FLAG:110 == 1 && ARG:1 == 1
+	CALL MESSAGE_OTHER_SELF_B
+
+;ベース値の明示的初期化
+REPEAT 12
+	LOCAL:COUNT = 0
+REND
+
+;ベース
+EXP:ARG:自慰経験 += 1
+
+;快B
+IF ABL:ARG:Ｂ感覚 == 0
+	LOCAL:3 = 200
+ELSEIF ABL:ARG:Ｂ感覚 == 1
+	LOCAL:3 = 400
+ELSEIF ABL:ARG:Ｂ感覚 == 2
+	LOCAL:3 = 1000
+ELSEIF ABL:ARG:Ｂ感覚 == 3
+	LOCAL:3 = 2000
+ELSEIF ABL:ARG:Ｂ感覚 == 4
+	LOCAL:3 = 4000
+ELSEIF ABL:ARG:Ｂ感覚 >= 5
+	LOCAL:3 = 10000
+ENDIF
+
+
+;技巧の値に応じて快感度のボーナス
+IF ABL:ARG:技巧 == 0
+ELSEIF ABL:ARG:技巧 == 1
+ELSEIF ABL:ARG:技巧 == 2
+	TIMES LOCAL:3, 1.10
+ELSEIF ABL:ARG:技巧 == 3
+	TIMES LOCAL:3, 1.25
+ELSEIF ABL:ARG:技巧 == 4
+	TIMES LOCAL:3, 1.50
+ELSEIF ABL:ARG:技巧 >= 5
+	TIMES LOCAL:3, 2.00
+ENDIF
+
+;屈服　露出癖が高くなると多くなる
+IF ABL:ARG:露出癖 == 0
+	LOCAL:8 = 50
+ELSEIF ABL:ARG:露出癖 == 1
+	LOCAL:8 = 100
+ELSEIF ABL:ARG:露出癖 == 2
+	LOCAL:8 = 200
+ELSEIF ABL:ARG:露出癖 == 3
+	LOCAL:8 = 500
+ELSEIF ABL:ARG:露出癖 == 4
+	LOCAL:8 = 1000
+ELSEIF ABL:ARG:露出癖 >= 5
+	LOCAL:8 = 2000
+ENDIF
+
+;恥情　露出癖が高くなると多くなる
+IF ABL:ARG:露出癖 == 0
+	LOCAL:9 = 100
+ELSEIF ABL:ARG:露出癖 == 1
+	LOCAL:9 = 200
+ELSEIF ABL:ARG:露出癖 == 2
+	LOCAL:9 = 500
+ELSEIF ABL:ARG:露出癖 == 3
+	LOCAL:9 = 1000
+ELSEIF ABL:ARG:露出癖 == 4
+	LOCAL:9 = 2000
+ELSEIF ABL:ARG:露出癖 >= 5
+	LOCAL:9 = 4000
+ENDIF
+
+;自慰中毒があると欲情にボーナス
+IF ABL:ARG:自慰中毒 == 1
+	LOCAL:7 = 1000
+ELSEIF ABL:ARG:自慰中毒 == 2
+	LOCAL:7 = 2000
+ELSEIF ABL:ARG:自慰中毒 == 3
+	LOCAL:7 = 5000
+ELSEIF ABL:ARG:自慰中毒 == 4
+	LOCAL:7 = 10000
+ELSEIF ABL:ARG:自慰中毒 >= 5
+	LOCAL:7 = 20000
+ENDIF
+
+;習得
+;自慰中毒に応じて上昇
+IF ABL:ARG:自慰中毒 == 0
+	LOCAL:6 = 200
+ELSEIF ABL:ARG:自慰中毒 == 1
+	LOCAL:6 = 400
+ELSEIF ABL:ARG:自慰中毒 == 2
+	LOCAL:6 = 800
+ELSEIF ABL:ARG:自慰中毒 == 3
+	LOCAL:6 = 1000
+ELSEIF ABL:ARG:自慰中毒 == 4
+	LOCAL:6 = 2000
+ELSEIF ABL:ARG:自慰中毒 >= 5
+	LOCAL:6 = 4000
+ENDIF
+
+;体力消費基本値
+LOCAL:12 = 100
+
+;計算へ
+CALL PALAM_CAL, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, LOCAL:12
+
+;----------------------------------------------------------
+;アナニー
+@SELF_A, ARG, ARG:1
+;地の文：アナニー
+CALL MESSAGE_SELF_A
+
+;ARG:1 == 1で戦闘中の自慰
+;地の文：洗脳/悪堕ちキャラが操作キャラのアナニーを見た
+SIF FLAG:110 == 1 && ARG:1 == 1
+	CALL MESSAGE_OTHER_SELF_A
+
+;ベース値の明示的初期化
+REPEAT 12
+	LOCAL:COUNT = 0
+REND
+
+;ベース
+EXP:ARG:自慰経験 += 1
+EXP:ARG:Ａ経験 += 1
+;快A
+IF ABL:ARG:Ａ感覚 == 2
+	LOCAL:2 = 2000
+ELSEIF ABL:ARG:Ａ感覚 == 3
+	LOCAL:2 = 4000
+ELSEIF ABL:ARG:Ａ感覚 == 4
+	LOCAL:2 = 10000
+ELSEIF ABL:ARG:Ａ感覚 >= 5
+	LOCAL:2 = 20000
+ENDIF
+
+;技巧の値に応じて快感度のボーナス
+IF ABL:ARG:技巧 == 0
+ELSEIF ABL:ARG:技巧 == 1
+ELSEIF ABL:ARG:技巧 == 2
+	TIMES LOCAL:2, 1.10
+ELSEIF ABL:ARG:技巧 == 3
+	TIMES LOCAL:2, 1.25
+ELSEIF ABL:ARG:技巧 == 4
+	TIMES LOCAL:2, 1.50
+ELSEIF ABL:ARG:技巧 >= 5
+	TIMES LOCAL:2, 2.00
+ENDIF
+
+;屈服　露出癖が高くなると多くなる
+IF ABL:ARG:露出癖 == 0
+	LOCAL:8 = 100
+ELSEIF ABL:ARG:露出癖 == 1
+	LOCAL:8 = 200
+ELSEIF ABL:ARG:露出癖 == 2
+	LOCAL:8 = 500
+ELSEIF ABL:ARG:露出癖 == 3
+	LOCAL:8 = 1000
+ELSEIF ABL:ARG:露出癖 == 4
+	LOCAL:8 = 2000
+ELSEIF ABL:ARG:露出癖 >= 5
+	LOCAL:8 = 4000
+ENDIF
+
+;恥情　露出癖が高くなると多くなる
+IF ABL:ARG:露出癖 == 0
+	LOCAL:9 = 100
+ELSEIF ABL:ARG:露出癖 == 1
+	LOCAL:9 = 200
+ELSEIF ABL:ARG:露出癖 == 2
+	LOCAL:9 = 500
+ELSEIF ABL:ARG:露出癖 == 3
+	LOCAL:9 = 1000
+ELSEIF ABL:ARG:露出癖 == 4
+	LOCAL:9 = 2000
+ELSEIF ABL:ARG:露出癖 >= 5
+	LOCAL:9 = 4000
+ENDIF
+
+;自慰中毒があると欲情にボーナス
+IF ABL:ARG:自慰中毒 == 1
+	LOCAL:7 = 1000
+ELSEIF ABL:ARG:自慰中毒 == 2
+	LOCAL:7 = 2000
+ELSEIF ABL:ARG:自慰中毒 == 3
+	LOCAL:7 = 5000
+ELSEIF ABL:ARG:自慰中毒 == 4
+	LOCAL:7 = 10000
+ELSEIF ABL:ARG:自慰中毒 >= 5
+	LOCAL:7 = 20000
+ENDIF
+
+;習得
+;自慰中毒に応じて上昇
+IF ABL:ARG:自慰中毒 == 0
+	LOCAL:6 = 200
+ELSEIF ABL:ARG:自慰中毒 == 1
+	LOCAL:6 = 400
+ELSEIF ABL:ARG:自慰中毒 == 2
+	LOCAL:6 = 800
+ELSEIF ABL:ARG:自慰中毒 == 3
+	LOCAL:6 = 1000
+ELSEIF ABL:ARG:自慰中毒 == 4
+	LOCAL:6 = 2000
+ELSEIF ABL:ARG:自慰中毒 >= 5
+	LOCAL:6 = 4000
+ENDIF
+
+;体力消費基本値
+LOCAL:12 = 150
+
+;計算へ
+CALL PALAM_CAL, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, LOCAL:12
+

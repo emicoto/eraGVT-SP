@@ -1,0 +1,219 @@
+;---------------------------------------------------------------------
+;解放されたキャラの寄生触手が味方を襲う
+@PARASITE
+#DIM CCOUNT
+;寄生フィルタ×なら判定しない
+SIF FILTER_CHECK_F(3)
+	RETURN
+FOR CCOUNT, 0, CHARANUM
+	FLAG:799 = CCOUNT
+	SIF CCOUNT == MASTER
+		CONTINUE
+	SIF CFLAG:CCOUNT:999 == 0
+		CONTINUE
+
+	;寄生されているなら寄生経験が増加
+	IF TALENT:(FLAG:799):寄生
+		EXP:(FLAG:799):寄生経験 += 1
+
+		;寄生触手の暴走判定、軽量化のためなるべく条件を分散して判定
+		SIF CFLAG:(FLAG:799):0 != 0
+			CONTINUE
+
+		;昼間は暴走しない
+		SIF TIME == 0
+			CONTINUE
+
+		;確率判定
+		LOCAL = MIN(EXP:(FLAG:799):寄生経験 * EXP:(FLAG:799):寄生経験 * 200 / EXP:(FLAG:799):寄生経験, 2500)
+		SIF RAND:10000 < LOCAL
+			CALL PARASITE_EVENT
+		
+		;実績
+		CALL GET_STATE_EXPUP,TARGET
+	ELSE
+		CONTINUE
+	ENDIF
+NEXT
+
+;---------------------------------------------------------------------
+;暴走イベントの制御
+@PARASITE_EVENT
+;本来はTALENT:寄生での判定が必要だが呼び出し時点で判定済みなので省略
+$LOOP
+;誰を襲うのか決める
+SIF CHARANUM_ACTIVE() == 0
+	RETURN
+IF RAND:4 == 0
+	LOCAL = FLAG:799
+ELSE
+	LOCAL = RAND:(CHARANUM - 1) + 1
+ENDIF
+SIF CHARANUM < 3
+	LOCAL = FLAG:799
+SIF CFLAG:LOCAL:0 != 0 || CFLAG:LOCAL:999 == 0
+	GOTO LOOP	
+
+TARGET = LOCAL
+SIF LOCAL:2 == 0
+	DRAWLINE
+LOCAL:2 = 1
+PRINTL 
+FONTBOLD
+PRINTL 寄生触手の暴走
+FONTREGULAR
+PRINTL 
+PRINTFORML 深夜になると不気味な影が動き出す・・・
+;触手が自分を襲う
+IF LOCAL == FLAG:799
+	PRINTFORMW %PRINT_CALLNAME(FLAG:799)%は自身に寄生する触手を抑えきれずに、暴走を許してしまった！
+	CALL PARASITE_ACTION,0
+;触手が他のキャラを襲う
+ELSE
+	PRINTFORMW %PRINT_CALLNAME(FLAG:799)%に寄生している触手が暴走し、本人の意志とは無関係に隣室の%CALLNAME:TARGET%に襲いかかった！
+	CALL PARASITE_ACTION,1
+ENDIF
+
+;---------------------------------------------------------------------
+;暴走イベントの実行
+@PARASITE_ACTION, ARG
+#DIM CCOUNT
+VARSET LOCAL
+;快C
+IF ABL:Ｃ感覚 == 0
+	LOCAL:0 = 100
+ELSEIF ABL:Ｃ感覚 == 1
+	LOCAL:0 = 200
+ELSEIF ABL:Ｃ感覚 == 2
+	LOCAL:0 = 500
+ELSEIF ABL:Ｃ感覚 == 3
+	LOCAL:0 = 1000
+ELSEIF ABL:Ｃ感覚 == 4
+	LOCAL:0 = 2000
+ELSE
+	LOCAL:0 = 5000
+ENDIF
+
+;快V
+IF ABL:Ｖ感覚 == 0
+	LOCAL:120 = 2
+	LOCAL:1 = 100
+ELSEIF ABL:Ｖ感覚 == 1
+	LOCAL:120 = 5
+	LOCAL:1 = 200
+ELSEIF ABL:Ｖ感覚 == 2
+	LOCAL:120 = 8
+	LOCAL:1 = 500
+ELSEIF ABL:Ｖ感覚 == 3
+	LOCAL:120 = 11
+	LOCAL:1 = 1000
+ELSEIF ABL:Ｖ感覚 == 4
+	LOCAL:120 = 15
+	LOCAL:1 = 2000
+ELSE
+	LOCAL:120 = 20
+	LOCAL:1 = 5000
+ENDIF
+
+;快Ａ
+IF ABL:Ａ感覚 == 0
+	LOCAL:121 = 2
+	LOCAL:2 = 100
+ELSEIF ABL:Ａ感覚 == 1
+	LOCAL:121 = 5
+	LOCAL:2 = 200
+ELSEIF ABL:Ａ感覚 == 2
+	LOCAL:121 = 8
+	LOCAL:2 = 500
+ELSEIF ABL:Ａ感覚 == 3
+	LOCAL:121 = 11
+	LOCAL:2 = 1000
+ELSEIF ABL:Ａ感覚 == 4
+	LOCAL:121 = 15
+	LOCAL:2 = 2000
+ELSE
+	LOCAL:121 = 20
+	LOCAL:2 = 5000
+ENDIF
+
+;快B
+IF ABL:Ｂ感覚 == 0
+	LOCAL:3 = 100
+ELSEIF ABL:Ｃ感覚 == 1
+	LOCAL:3 = 200
+ELSEIF ABL:Ｃ感覚 == 2
+	LOCAL:3 = 500
+ELSEIF ABL:Ｃ感覚 == 3
+	LOCAL:3 = 1000
+ELSEIF ABL:Ｃ感覚 == 4
+	LOCAL:3 = 2000
+ELSE
+	LOCAL:3 = 5000
+ENDIF
+
+;処女であれば処女を破る
+IF TALENT:処女 > 0
+	LOCAL:10 = 500
+	PRINTL 
+	PRINTL 処女喪失
+	PRINTL 
+	TALENT:処女 = -1
+	CFLAG:206 = 4
+ENDIF
+
+;屈服　とりあえず一定で
+LOCAL:8 = 500
+
+;V感覚が低いと恐怖が入る
+IF ABL:Ｖ感覚 == 0
+	LOCAL:11 = 800
+ELSEIF ABL:Ｖ感覚 == 1
+	LOCAL:11 = 400
+ELSEIF ABL:Ｖ感覚 == 2
+	LOCAL:11 = 200
+ELSEIF ABL:Ｖ感覚 == 3
+	LOCAL:11 = 100
+ELSE
+ENDIF
+
+;精液経験
+LOCAL:123 = 10
+;フェラ経験
+LOCAL:123 = 2
+;異常経験
+LOCAL:150 = 1
+
+;地の文
+PRINTL 
+IF ARG == 0
+	PRINTFORML 触手の粘液に媚薬効果でもあるのか、
+	PRINTFORML %PRINT_CALLNAME(TARGET)%の秘部は本人の意志とは無関係にしっとりと濡れている。
+	PRINTFORML 完全に独立した意志を見せる触手がヴァギナと尻穴に潜り込み、
+	PRINTFORML 口まで犯された%PRINT_CALLNAME(TARGET)%はくぐもった悲鳴を上げるしかない。
+	PRINTW 
+	PRINTFORML 抵抗できないと見るや触手は更にその数を増やし、
+	PRINTFORML %PRINT_CALLNAME(TARGET)%が気絶するまで一方的な行為は続いた・・・
+ELSE
+	PRINTFORML 蠢く触手の不意打ちに%PRINT_CALLNAME(TARGET)%は咄嗟に反応できずに捕まってしまい、全身を愛撫されている。
+	PRINTFORML %PRINT_CALLNAME(FLAG:799)%は仲間のピンチに何とか秘部とアナルを貫こうとする触手を止めようとするが、
+	PRINTFORML 逆に触手に絡め取られてしまう。
+	PRINTW 
+	PRINTFORML 触手の粘液に媚薬効果でもあるのか、
+	PRINTFORML 翻弄される二人は絡み合い、どちらともなく唇を重ね合った・・・
+ENDIF
+PRINTW 
+
+;幽閉中パラメータ変動共通処理へ
+CALL COMMON_PRISON, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11
+
+;経験数の増加
+FOR CCOUNT, 100, 200
+	CALL COMMON_PRISON_EXP, CCOUNT, LOCAL:CCOUNT
+NEXT
+
+PRINTL 
+
+;珠の取得へ
+CALL _ABLUP, 1
+PRINTW 
+

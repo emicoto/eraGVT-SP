@@ -1,0 +1,174 @@
+﻿@SHOW_SAVETIME(NUM)
+#DIM NUM
+TEMP = 0
+TEMPS =
+
+	
+	; セーブスロットよりも大きい数字で呼び出された場合は空白表示で帰る(AutoSaveのNUM==99は除く)
+	SAVENOS TEMP
+	IF NUM > (TEMP - 1) && NUM != 98 && NUM != 99
+		PRINTFORM %"", 50, LEFT%
+		RETURN
+	ENDIF
+	; セーブデータが読み込めない
+	CHKDATA NUM
+	IF RESULT:0 != 0
+		SETCOLOR 0x444444
+		TEMPS = ----/--/-- --:--:--
+		PRINTBUTTON @" [NO.{NUM, 2, RIGHT}]"+"―"*13+@"|%TEMPS,20,RIGHT% |－",NUM
+        PRINTFORM 　
+		RESETCOLOR
+		RETURN
+	ENDIF
+	
+	; EX拡張フォーマットではない
+	IF SAVE_ARRAY:0 != "SP"
+		TEMPS = 　 互換セーブデータ　
+		PRINTBUTTON @" [NO.{NUM, 2, RIGHT}]"+"―"*13+@"|%TEMPS,20,RIGHT% |－",NUM
+        PRINTFORM 　
+		RETURN
+	ENDIF
+
+	PRINTBUTTON @" [NO.{NUM, 2, RIGHT}]"+"―"*13+@"|%SAVE_ARRAY:1,20,RIGHT% |－",NUM
+    PRINTFORM 　
+
+RETURN
+
+@SHOW_SAVEINFO_1(NUM)
+#DIM NUM
+TEMP = 0
+TEMPS =
+
+	; セーブスロットよりも大きい数字で呼び出された場合は空白表示で帰る(AutoSaveのARG==99は除く)
+	SAVENOS TEMP
+	IF NUM > (TEMP - 1) && NUM != 98 && NUM != 99
+		PRINTFORM %"", 50, LEFT%
+		RETURN
+	ENDIF
+
+    	; セーブデータが読み込めない
+	CHKDATA NUM
+	IF RESULT:0 != 0
+		SETCOLOR 0x444444
+        TEMPS = 　　　　　　　　☆　ＮＯ　ＤＡＴＡ　☆　　　　　　　　　
+        PRINTBUTTON @"　%TEMPS,58%",NUM
+		RESETCOLOR
+        PRINTFORM 　
+        RETURN
+	ENDIF
+
+    ; EX拡張フォーマットではない
+	; 旧型の表示を行う
+	IF SAVE_ARRAY:0 != "SP"
+		SETCOLOR COLOR_AQUA
+        TEMPS = 　　　　　　　　！　ＯＬＤ　ＤＡＴＡ　！　　　　　　　　
+		PRINTBUTTON @"　%TEMPS,58%",NUM
+		RESETCOLOR
+        PRINTFORM 　
+        RETURN
+	ENDIF
+
+    PRINTFORM 　
+    ;ゲーム内時間	
+    PRINTBUTTON @"%INDENT(3)%%SAVE_ARRAY:2,12,RIGHT%%INDENT(7)%",NUM
+    ;ゲーム進行状況   
+    SIF SAVE_ARRAY:3 == "★GAME CLEAR★"
+    SETCOLOR COLOR_ORANGE
+    PRINTBUTTON @"%SAVE_ARRAY:3,17,RIGHT%",NUM
+
+    ;バージョン表示   
+    SETCOLOR COLOR_GRAY
+    SIF SAVE_ARRAY:4 == "< DEBUG >"
+    SETCOLOR COLOR_AQUA
+    PRINTBUTTON @"%INDENT(4)%%SAVE_ARRAY:4,12,RIGHT%　",NUM
+    RESETCOLOR
+    PRINTFORM 　
+
+RETURN
+
+@SHOW_SAVEINFO_2(NUM)
+#DIM NUM
+TEMP = 0
+TEMPS =
+
+	; セーブスロットよりも大きい数字で呼び出された場合は空白表示で帰る(AutoSaveのARG==99は除く)
+	SAVENOS TEMP
+	IF NUM > (TEMP - 1) && NUM != 98 && NUM != 99
+		PRINTFORM %"", 50, LEFT%
+		RETURN
+	ENDIF
+
+    ; セーブデータが読み込めない
+	CHKDATA NUM
+	IF RESULT:0 != 0
+		SETCOLOR 0x444444
+        TEMPS = 　　　　　　　　☆　ＮＯ　ＤＡＴＡ　☆　　　　　　　　　
+        PRINTBUTTON @"　%TEMPS,58%",NUM
+		RESETCOLOR
+        PRINTFORM 　
+        RETURN
+	ENDIF
+
+    ; EX拡張フォーマットではない
+	; 旧型の表示を行う
+	IF SAVE_ARRAY:0 != "SP"
+		SETCOLOR COLOR_AQUA
+		CHKDATA NUM
+        SUBSTRING RESULTS:0, 20, 70
+		PRINTBUTTON @"　%RESULTS:0,58,RIGHT%",NUM
+        RESETCOLOR
+        PRINTFORM 　
+		RETURN
+	ENDIF
+
+    PRINTBUTTON @"%INDENT(5)%%SAVE_ARRAY:5,50,RIGHT%　　",NUM
+    PRINTFORM 　
+
+RETURN
+
+@SHOW_SAVEMODE(NUM)
+#DIM NUM
+TEMP = 0
+TEMPS =
+	; セーブスロットよりも大きい数字で呼び出された場合は空白表示で帰る(AutoSaveのARG==99は除く)
+	SAVENOS TEMP
+	IF NUM > (TEMP - 1) && NUM != 98 && NUM != 99
+		PRINTFORM %"", 50, LEFT%
+		RETURN
+	ENDIF
+
+    ; セーブデータが読み込めない
+	CHKDATA NUM
+	IF RESULT:0 != 0
+		SETCOLOR 0x444444
+        TEMPS = 　　　　　　　　☆　ＮＯ　ＤＡＴＡ　☆　　　　　　　　　
+        PRINTBUTTON @"　%TEMPS,58%",NUM
+		RESETCOLOR
+        PRINTFORM 　
+        RETURN
+	ENDIF
+
+    ; EX拡張フォーマットではない
+	; 旧型の表示を行う
+	IF SAVE_ARRAY:0 != "SP"
+		SETCOLOR COLOR_AQUA
+		CHKDATA NUM
+		SUBSTRING RESULTS:0, 0, 20
+		PRINTBUTTON @"  %RESULTS:0,58,RIGHT%",NUM
+        RESETCOLOR
+        PRINTFORM 　
+		RETURN
+	ENDIF
+
+    PRINTFORM 　
+    SETCOLOR COLOR_AQUA
+    IF SAVE_ARRAY:6 == "☆ GAMEOVER ☆"
+    SETCOLOR COLOR_RED
+    ELSEIF SAVE_ARRAY:6 == "SAVE_ERROR"
+    SETCOLOR COLOR_YELLOW
+    ENDIF
+    PRINTFORM %INDENT(3)%
+    PRINTFORM %SAVE_ARRAY:6,50,RIGHT%　　
+    PRINTFORM 　
+
+RETURN

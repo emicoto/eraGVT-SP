@@ -1,0 +1,552 @@
+;**********************************************************
+;基本ルール
+;加筆修正は、自由に行ってください
+;ただし、前の方が書いた文章は勝手に消さないでください
+;書き込む順番は、クドくなり過ぎないように3要素と部位で表現します
+;【実況】汁に濡れている、寄生されている、触手拘束具などを装着など
+;【形状】大きさ、深さなど、
+;【動作】開閉している、うごめいているなど、動きを表現
+;【部位呼称】淫乱や発情や性格で下品な書き方に
+;
+;増やして欲しい隠語は、アウトプットしてリクエストなりしましょう
+;未登録の中に放り込むなり、掲示板にアップするなりすれば、
+;実装される可能性があります
+;
+;by 雑魚の人 2018/02/01
+;**********************************************************
+
+
+;**********************************************************
+;性格でスラングを切り替えるためテンプレ
+;**********************************************************
+;eXample(例)の淫語
+@SLANG_XXXX(ARG)
+
+IF TALENT:臆病
+	SLANGWORD_XXXX+=
+ELSEIF TALENT:恥ずかしがり屋
+	SLANGWORD_XXXX+=
+ELSEIF TALENT:勝気
+	SLANGWORD_XXXX+=
+ELSEIF TALENT:元気っ子
+	SLANGWORD_XXXX+=
+ELSEIF TALENT:おっとり
+	SLANGWORD_XXXX+=
+ELSEIF TALENT:面倒くさがり
+	SLANGWORD_XXXX+=
+ELSEIF TALENT:真面目
+	SLANGWORD_XXXX+=
+ELSEIF TALENT:楽天家
+	SLANGWORD_XXXX+=
+ELSEIF TALENT:悲観的
+	SLANGWORD_XXXX+=
+ELSEIF TALENT:素直
+	SLANGWORD_XXXX+=
+ELSEIF TALENT:ツンデレ
+	SLANGWORD_XXXX+=
+ELSEIF TALENT:ヤンデレ
+	SLANGWORD_XXXX+=
+ELSEIF TALENT:無口
+	SLANGWORD_XXXX+=
+ELSEIF TALENT:おしゃべり
+	SLANGWORD_XXXX+=
+ELSEIF TALENT:古風
+	SLANGWORD_XXXX+=
+ELSEIF TALENT:かるい性格
+	SLANGWORD_XXXX+=
+ELSEIF TALENT:意地っ張り
+	SLANGWORD_XXXX+=
+ELSEIF TALENT:乱暴者
+	SLANGWORD_XXXX+=
+ELSEIF TALENT:感情乏しい
+	SLANGWORD_XXXX+=
+ELSE
+	SLANGWORD_XXXX+=
+ENDIF
+
+
+
+
+
+
+
+
+
+
+
+
+;**********************************************************
+;敏感か鈍感かでスラングを切り替えるためテンプレ
+;**********************************************************
+IF TALENT:Ｃ敏感
+	SLANGWORD_XXXX+="Ｃ敏感"
+ENDIF
+IF TALENT:Ｃ鈍感
+	SLANGWORD_XXXX+="Ｃ鈍感"
+ENDIF
+IF TALENT:Ｖ敏感
+	SLANGWORD_XXXX+="Ｖ敏感"
+ENDIF
+IF TALENT:Ｖ鈍感
+	SLANGWORD_XXXX+="Ｖ鈍感"
+ENDIF
+IF TALENT:Ａ敏感
+	SLANGWORD_XXXX+="Ａ敏感"
+ENDIF
+IF TALENT:Ａ鈍感
+	SLANGWORD_XXXX+="Ａ鈍感"
+ENDIF
+IF TALENT:Ｂ敏感
+	SLANGWORD_XXXX+="Ｂ敏感"
+ENDIF
+IF TALENT:Ｂ鈍感
+	SLANGWORD_XXXX+="Ｂ鈍感"
+ENDIF
+
+
+
+;**********************************************************
+;敏感か鈍感かでスラングを切り替えるためテンプレ
+;**********************************************************
+IF TALENT:触手の虜
+	SLANGWORD_XXXX+="触手の虜"
+ENDIF
+IF TALENT:淫乱
+	SLANGWORD_XXXX+="淫乱"
+ENDIF
+IF TALENT:淫核
+	SLANGWORD_XXXX+="淫核"
+ENDIF
+IF TALENT:淫壷
+	SLANGWORD_XXXX+="淫壷"
+ENDIF
+IF TALENT:淫尻
+	SLANGWORD_XXXX+="淫尻"
+ENDIF
+IF TALENT:淫乳
+	SLANGWORD_XXXX+="淫乳"
+ENDIF
+
+
+;**********************************************************
+;変身の有無と戦闘員かどうかでスラングを切り替えるためテンプレ
+;**********************************************************
+IF TALENT:変身能力==1
+	SLANGWORD_XXXX+=""
+ELSEIF TALENT:変身能力==0
+	SLANGWORD_XXXX+=""
+ELSE
+	SLANGWORD_XXXX+=""
+ENDIF
+
+
+
+;**********************************************************
+;変身の有無と戦闘員かどうかでスラングを切り替えるためテンプレ
+;**********************************************************
+IF TALENT:人間
+	SLANGWORD_XXXX+="人間"
+ENDIF
+IF TALENT:異能力者
+	SLANGWORD_XXXX+="異能力者"
+ENDIF
+IF TALENT:魔法使い
+	SLANGWORD_XXXX+="魔法使い"
+ENDIF
+IF TALENT:ロボっ子
+	SLANGWORD_XXXX+="ロボっ子"
+ENDIF
+IF TALENT:天使
+	SLANGWORD_XXXX+="天使"
+ENDIF
+IF TALENT:魔族
+	SLANGWORD_XXXX+="魔族"
+ENDIF
+
+
+
+;**********************************************************
+;ふたなりの有無でスラングを切り替えるためテンプレ
+;**********************************************************
+IF TALENT:ふたなり > 0
+	IF TALENT:ふたなり==3
+		SLANGWORD_XXXX+="天然ふたなり"
+	ELSEIF TALENT:ふたなり==2
+		SLANGWORD_XXXX+="寄生ふたなり"
+	ELSE
+		SLANGWORD_XXXX+="後天ふたなり"
+	ENDIF
+ENDIF
+
+
+
+;**********************************************************
+;オトコ・ＴＳの有無でスラングを切り替えるためテンプレ
+;**********************************************************
+IF TALENT:オトコ
+	SLANGWORD_XXXX+="オトコ"
+ENDIF
+IF TALENT:変身時ＴＳ
+	SLANGWORD_XXXX+="変身時ＴＳ"
+ENDIF
+IF TALENT:変身時非処女
+	SLANGWORD_XXXX+="変身時非処女"
+ENDIF
+IF TALENT:女体受容
+	SLANGWORD_XXXX+="女体受容"
+ENDIF
+IF TALENT:変身時ふたなり
+	SLANGWORD_XXXX+="変身時ふたなり"
+ENDIF
+
+
+
+
+;**********************************************************
+;清純派の有無でスラングを切り替えるためテンプレ
+;**********************************************************
+IF TALENT:清純派
+	SLANGWORD_XXXX+="清純派"
+ENDIF
+
+
+
+;**********************************************************
+;清純派の有無でスラングを切り替えるためテンプレ
+;**********************************************************
+IF TALENT:内向的
+	SLANGWORD_XXXX+="内向的"
+ENDIF
+IF TALENT:社交的
+	SLANGWORD_XXXX+="社交的"
+ENDIF
+IF TALENT:自分勝手
+	SLANGWORD_XXXX+="自分勝手"
+ENDIF
+IF TALENT:献身的
+	SLANGWORD_XXXX+="献身的"
+ENDIF
+IF TALENT:小心者
+	SLANGWORD_XXXX+="小心者"
+ENDIF
+IF TALENT:プライド高い
+	SLANGWORD_XXXX+="プライド高い"
+ENDIF
+IF TALENT:保守的
+	SLANGWORD_XXXX+="保守的"
+ENDIF
+IF TALENT:好奇心
+	SLANGWORD_XXXX+="好奇心"
+ENDIF
+IF TALENT:サド気質
+	SLANGWORD_XXXX+="サド気質"
+ENDIF
+IF TALENT:マゾ気質
+	SLANGWORD_XXXX+="マゾ気質"
+ENDIF
+IF TALENT:快楽に弱い
+	SLANGWORD_XXXX+="快楽に弱い"
+ENDIF
+IF TALENT:快楽の否定
+	SLANGWORD_XXXX+="快楽の否定"
+ENDIF
+IF TALENT:争いを好まない
+	SLANGWORD_XXXX+="争いを好まない"
+ENDIF
+IF TALENT:喧嘩上等
+	SLANGWORD_XXXX+="喧嘩上等"
+ENDIF
+IF TALENT:恥じらい
+	SLANGWORD_XXXX+="恥じらい"
+ENDIF
+IF TALENT:度胸
+	SLANGWORD_XXXX+="度胸"
+ENDIF
+IF TALENT:人間不信
+	SLANGWORD_XXXX+="人間不信"
+ENDIF
+IF TALENT:両刀
+	SLANGWORD_XXXX+="両刀"
+ENDIF
+IF TALENT:男性苦手
+	SLANGWORD_XXXX+="男性苦手"
+ENDIF
+IF TALENT:女性苦手
+	SLANGWORD_XXXX+="女性苦手"
+ENDIF
+IF TALENT:母性的
+	SLANGWORD_XXXX+="母性的"
+ENDIF
+IF TALENT:小悪魔
+	SLANGWORD_XXXX+="小悪魔"
+ENDIF
+IF TALENT:目立ちたがり
+	SLANGWORD_XXXX+="目立ちたがり"
+ENDIF
+IF TALENT:上品
+	SLANGWORD_XXXX+="上品"
+ENDIF
+IF TALENT:泣き虫
+	SLANGWORD_XXXX+="泣き虫"
+ENDIF
+
+
+
+
+;**********************************************************
+;刻印の場合
+;**********************************************************
+IF MARK:屈服刻印
+	SLANGWORD_XXXX+=""
+ENDIF
+IF MARK:恐怖刻印
+	SLANGWORD_XXXX+=""
+ENDIF
+IF MARK:快楽刻印
+	SLANGWORD_XXXX+=""
+ENDIF
+
+IF MARK:恐怖刻印
+	SLANGWORD_XXXX+=""
+ENDIF
+IF MARK:恐怖刻印
+	SLANGWORD_XXXX+=""
+ENDIF
+IF MARK:恐怖刻印
+	SLANGWORD_XXXX+=""
+ENDIF
+
+
+
+
+;**********************************************************
+;中毒の場合
+;**********************************************************
+IF ABL:自慰中毒
+	SLANGWORD_XXXX+=""
+ENDIF
+IF ABL:触手中毒
+	SLANGWORD_XXXX+=""
+ENDIF
+IF ABL:精液中毒
+	SLANGWORD_XXXX+=""
+ENDIF
+IF ABL:噴乳中毒
+	SLANGWORD_XXXX+=""
+ENDIF
+IF ABL:射精中毒
+	SLANGWORD_XXXX+=""
+ENDIF
+IF ABL:欲望
+	SLANGWORD_XXXX+=""
+ENDIF
+IF ABL:露出癖
+	SLANGWORD_XXXX+=""
+ENDIF
+IF ABL:マゾっ気
+	SLANGWORD_XXXX+=""
+ENDIF
+
+
+
+
+;**********************************************************
+;感覚の場合
+;**********************************************************
+IF ABL:Ｃ感覚
+	SLANGWORD_XXXX+=""
+ENDIF
+IF ABL:Ｖ感覚
+	SLANGWORD_XXXX+=""
+ENDIF
+IF ABL:Ａ感覚
+	SLANGWORD_XXXX+=""
+ENDIF
+IF ABL:Ｂ感覚
+	SLANGWORD_XXXX+=""
+ENDIF
+IF ABL:Ｖ感覚
+	SLANGWORD_XXXX+=""
+ENDIF
+
+
+
+
+
+;**********************************************************
+;絶頂の場合
+;**********************************************************
+IF (EX:Ｃ絶頂+EX:Ｖ絶頂+EX:Ａ絶頂+EX:Ｂ絶頂) > 9
+	SLANGWORD_XXXX+=""
+ELSEIF (EX:Ｃ絶頂+EX:Ｖ絶頂+EX:Ａ絶頂+EX:Ｂ絶頂) > 4
+	SLANGWORD_XXXX+=""
+ELSEIF (EX:Ｃ絶頂+EX:Ｖ絶頂+EX:Ａ絶頂+EX:Ｂ絶頂) > 2
+	SLANGWORD_XXXX+=""
+ELSE
+	SLANGWORD_XXXX+=""
+ENDIF
+
+
+
+;**********************************************************
+;ステータスの場合
+;**********************************************************
+IF BASE:体力 == 0
+	SLANGWORD_XXXX+=""
+ELSEIF BASE:体力 < MAXBASE:体力 / 2
+	SLANGWORD_XXXX+=""
+ELSE
+	SLANGWORD_XXXX+=""
+ENDIF
+
+
+IF BASE:気力 == 0
+	SLANGWORD_XXXX+=""
+ELSE
+	SLANGWORD_XXXX+=""
+ENDIF
+
+
+IF BASE:性耐性 == 0
+	SLANGWORD_XXXX+=""
+ELSE
+	SLANGWORD_XXXX+=""
+ENDIF
+
+
+
+
+IF PALAM:恥辱 >= 2000
+	SLANGWORD_XXXX+=""
+ELSEIF PALAM:恥辱 < 2000
+	SLANGWORD_XXXX+=""
+ELSEIF PALAM:恥辱 < 1000
+	SLANGWORD_XXXX+=""
+ELSEIF PALAM:恥辱 < 200
+	SLANGWORD_XXXX+=""
+ELSE
+	SLANGWORD_XXXX+=""
+ENDIF
+
+
+IF PALAM:恐怖 >= 2000
+	SLANGWORD_XXXX+=""
+ELSEIF PALAM:恐怖 < 2000
+	SLANGWORD_XXXX+=""
+ELSEIF PALAM:恐怖 < 1000
+	SLANGWORD_XXXX+=""
+ELSEIF PALAM:恐怖 < 200
+	SLANGWORD_XXXX+=""
+ELSE
+	SLANGWORD_XXXX+=""
+ENDIF
+
+IF PALAM:屈服 >= 2000
+	SLANGWORD_XXXX+=""
+ELSEIF PALAM:屈服 < 2000
+	SLANGWORD_XXXX+=""
+ELSEIF PALAM:屈服 < 1000
+	SLANGWORD_XXXX+=""
+ELSEIF PALAM:屈服 < 200
+	SLANGWORD_XXXX+=""
+ELSE
+	SLANGWORD_XXXX+=""
+ENDIF
+IF PALAM:恭順 >= 2000
+	SLANGWORD_XXXX+=""
+ELSEIF PALAM:恭順 < 2000
+	SLANGWORD_XXXX+=""
+ELSEIF PALAM:恭順 < 1000
+	SLANGWORD_XXXX+=""
+ELSEIF PALAM:恭順 < 200
+	SLANGWORD_XXXX+=""
+ELSE
+	SLANGWORD_XXXX+=""
+ENDIF
+
+
+IF PALAM:欲情 >= 2000
+	SLANGWORD_XXXX+=""
+ELSEIF PALAM:欲情 < 2000
+	SLANGWORD_XXXX+=""
+ELSEIF PALAM:欲情 < 1000
+	SLANGWORD_XXXX+=""
+ELSEIF PALAM:欲情 < 200
+	SLANGWORD_XXXX+=""
+ELSE
+	SLANGWORD_XXXX+=""
+ENDIF
+
+
+
+IF PALAM:快Ｃ >= 2000
+	SLANGWORD_XXXX+=""
+ELSEIF PALAM:快Ｃ < 2000
+	SLANGWORD_XXXX+=""
+ELSEIF PALAM:快Ｃ < 1000
+	SLANGWORD_XXXX+=""
+ELSEIF PALAM:快Ｃ < 200
+	SLANGWORD_XXXX+=""
+ELSE
+	SLANGWORD_XXXX+=""
+ENDIF
+
+
+IF PALAM:快Ｖ >= 2000
+	SLANGWORD_XXXX+=""
+ELSEIF PALAM:快Ｖ < 2000
+	SLANGWORD_XXXX+=""
+ELSEIF PALAM:快Ｖ < 1000
+	SLANGWORD_XXXX+=""
+ELSEIF PALAM:快Ｖ < 200
+	SLANGWORD_XXXX+=""
+ELSE
+	SLANGWORD_XXXX+=""
+ENDIF
+
+
+IF PALAM:快Ａ >= 2000
+	SLANGWORD_XXXX+=""
+ELSEIF PALAM:快Ａ < 2000
+	SLANGWORD_XXXX+=""
+ELSEIF PALAM:快Ａ < 1000
+	SLANGWORD_XXXX+=""
+ELSEIF PALAM:快Ａ < 200
+	SLANGWORD_XXXX+=""
+ELSE
+	SLANGWORD_XXXX+=""
+ENDIF
+
+
+
+
+
+;**********************************************************
+;ステータスの場合
+;**********************************************************
+IF (TCVAR:12 & 気絶)
+	SLANGWORD_XXXX+=""
+ENDIF
+IF (TCVAR:12 & 排卵)
+	SLANGWORD_XXXX+=""
+ENDIF
+IF (TCVAR:12 & 発情)
+	SLANGWORD_XXXX+=""
+ENDIF
+IF (TCVAR:12 & 麻痺)
+	SLANGWORD_XXXX+=""
+ENDIF
+
+IF (TCVAR:12 & 腰くだけ)
+	SLANGWORD_XXXX+=""
+ENDIF
+IF (TCVAR:12 & 恍惚)
+	SLANGWORD_XXXX+=""
+ENDIF
+IF (TCVAR:12 & 強拘束)
+	SLANGWORD_XXXX+=""
+ENDIF
+IF (TCVAR:12 & 絶頂禁止)
+	SLANGWORD_XXXX+=""
+ENDIF
+

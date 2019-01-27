@@ -1,0 +1,315 @@
+;**********************************************************
+;フラッシュニュースの処理
+@FLASHNEWS
+#DIM CCOUNT
+VARSET LOCAL
+VARSET LOCALS
+;ボス触手生存数を見る
+CALL TENTACLE_SURVIVE, "NUM"
+LOCAL:1 = RESULT
+SIF FLAG:10 == 1
+	LOCAL:1 = 0
+;キャラの経験を見る
+FOR CCOUNT, 0, CHARANUM
+	SIF CCOUNT == MASTER
+		CONTINUE
+	LOCAL:2 += EXP:CCOUNT:被姦経験
+	LOCAL:3 += EXP:CCOUNT:戦闘経験
+	LOCAL:3 += EXP:CCOUNT:ボス経験
+	LOCAL:3 += EXP:CCOUNT:ラスボス経験
+	LOCAL:5 += ABL:CCOUNT:露出癖
+	LOCAL:6 += (EXP:CCOUNT:魅了経験 / 100)
+NEXT
+;表示するフラッシュニュースのＩＤ範囲を設定
+LOCAL:4 = 65
+;ニュースに優先順位をつける処理
+SIF FLAG:60 == 0 && LOCAL:6 && RAND:4 == 0
+	FLAG:60 = 65
+SIF FLAG:852 < 2500 && RAND:4 == 0
+	FLAG:60 = 6 + RAND:5
+$NEWSLOOP
+SIF FLAG:60 == 0
+	FLAG:60 = RAND:(LOCAL:4)
+IF FLAG:60 == 0 && SAVESTR:21 != ""
+	LOCALS = %SAVESTR:21%好評発売中！
+ELSEIF FLAG:60 == 1 && SAVESTR:22 != ""
+	LOCALS = %SAVESTR:22%好評発売中！
+ELSEIF FLAG:60 == 2 && SAVESTR:23 != ""
+	LOCALS = %SAVESTR:23%好評発売中！
+ELSEIF FLAG:60 == 3 && (100 * LOCAL:1/FLAG:3) == 0 && RAND:2 == 0
+	LOCALS = 強大な触手生物が出現し都市は混乱状態
+ELSEIF FLAG:60 == 4 && (100 * LOCAL:1/FLAG:3) == 0 && RAND:2 == 0
+	LOCALS = 街は厳戒態勢、自衛隊が出動するも事態は好転せず
+ELSEIF FLAG:60 == 5 && (100 * LOCAL:1/FLAG:3) < 50
+	LOCALS = 住民の一斉避難で街が一部ゴーストタウン化、都市機能への影響深刻
+ELSEIF FLAG:60 == 6 && FLAG:852 < 1250
+	LOCALS = 治安の悪化に便乗した性犯罪が横行、どさくさに紛れてレイプ被害
+ELSEIF FLAG:60 == 7 && FLAG:852 < 1250
+	LOCALS = ついに小学校で女子児童が触手被害に、保護者公認の登校拒否も
+ELSEIF FLAG:60 == 8 && FLAG:852 < 1250
+	LOCALS = 市内の女子高が触手生物に占拠され自衛隊が駆けつけるも、行方不明者多数
+ELSEIF FLAG:60 == 9 && FLAG:852 < 2500
+	LOCALS = 突如下水道から大量の小型触手が出現、白昼の街中であわやの事態に
+ELSEIF FLAG:60 == 10 && FLAG:852 < 2500
+	LOCALS = 触手生物の生息数増加に伴い治安が悪化
+ELSEIF FLAG:60 == 6 && FLAG:852 >= 5000
+	LOCALS = 頑張れ魔法少女！　街からは感謝と応援の声
+ELSEIF FLAG:60 == 7 && FLAG:852 >= 5000
+	LOCALS = 小学校で男子児童が小型触手を退治、一躍ヒーローに
+ELSEIF FLAG:60 == 8 && FLAG:852 >= 5000
+	LOCALS = ５０代男性、娘を襲おうとした触手を猟銃で撃退
+ELSEIF FLAG:60 == 9 && FLAG:852 >= 5000
+	LOCALS = 「駆逐してやる…　一匹残らず！」触手に恋人を攫われた男性、決意語る
+ELSEIF FLAG:60 == 10 && FLAG:852 >= 5000
+	LOCALS = 自治体で自警団を組織する地方が増加、被害食い止めに繋がるか
+ELSEIF FLAG:60 == 11 && (100 * LOCAL:1/FLAG:3) > 49 && (100 * LOCAL:1/FLAG:3) < 80
+	LOCALS = またも触手生物の被害報告が増大
+ELSEIF FLAG:60 == 12 && FLAG:852 < 10000
+	LOCALS = 街中に突如として触手生物が出現し一時騒然、女性数名が消息不明
+ELSEIF FLAG:60 == 13 && FLAG:852 < 10000
+	LOCALS = 数日ぶりに救出された少女が妊娠していたことが判明、緊急搬送へ
+ELSEIF FLAG:60 == 14 && FLAG:852 < 10000
+	LOCALS = 複数の女子生徒が集団下校途中で失踪、警察が行方を捜索中
+ELSEIF FLAG:60 == 15 && FLAG:852 < 10000
+	LOCALS = 瀕死の状態で倒れている女性を通行人が発見、自力で脱出か
+ELSEIF FLAG:60 == 16 && (100 * LOCAL:1/FLAG:3) > 79
+	LOCALS = 触手生物の目撃情報多数、危険な状態と専門家ら警告
+ELSEIF FLAG:60 == 17 && RAND:3 == 0
+	LOCALS = 触手生物を目撃した市民は速やかに警察へ通報を
+ELSEIF FLAG:60 == 18 && RAND:3 == 0
+	LOCALS = 女性は夜間外出を控えるよう市から要請
+ELSEIF FLAG:60 == 19 && LOCAL:2 > 60
+	LOCALS = アンケート結果  抜いた 40％  犯したい 20％  応援している 15％
+ELSEIF FLAG:60 == 20 && LOCAL:2 > 40 && LOCAL:2 < 61
+	LOCALS = アンケート結果  抜いた 30％  犯したい 10％  触手を応援している 35％
+ELSEIF FLAG:60 == 21 && LOCAL:2 > 30
+	LOCALS = 魔法少女が触手生物に凌辱される様子が全国ネットに流出。社会問題に
+ELSEIF FLAG:60 == 22 && LOCAL:2 > 30
+	LOCALS = 公衆の面前で凌辱される魔法少女「子供に見せられない」ＰＴＡが抗議
+ELSEIF FLAG:60 == 23 && LOCAL:2 > 30
+	LOCALS = 魔法少女のピンチを見て見ぬふり「野次馬オナニー」一般男性逮捕
+ELSEIF FLAG:60 == 24 && LOCAL:2 > 20 && LOCAL:2 < 41
+	LOCALS = アンケート結果 応援している 50％ 頑張ってほしい 30％ 抜いた 10％
+ELSEIF FLAG:60 == 25 && LOCAL:2 > 20 && LOCAL:2 < 41
+	LOCALS = 魔法少女が触手生物に強姦されたという噂が。安否を気遣う声多数
+ELSEIF FLAG:60 == 26 && LOCAL:2 > 10 && LOCAL:2 < 21
+	LOCALS = 触手生物と戦う魔法少女のファンが急増中
+ELSEIF FLAG:60 == 27 && LOCAL:3 > 5 && LOCAL:2 < 21
+	LOCALS = アンケート結果  魔法少女を応援している 60％  頑張ってほしい 20％
+ELSEIF FLAG:60 == 28 && LOCAL:3 && LOCAL:2 < 41
+	LOCALS = 魔法少女が触手生物を華麗に撃退。応援の声が寄せられる
+ELSEIF FLAG:60 == 29 && LOCAL:3 && LOCAL:2 < 61
+	LOCALS = 危機一髪のところを魔法少女に救われ、一般女性から感謝の声
+ELSEIF FLAG:60 == 30 && SAVESTR:24 != ""
+	LOCALS = %SAVESTR:24%好評発売中！
+ELSEIF FLAG:60 == 31 && SAVESTR:25 != ""
+	LOCALS = %SAVESTR:25%好評発売中！
+ELSEIF FLAG:60 == 32 && SAVESTR:26 != ""
+	LOCALS = %SAVESTR:26%好評発売中！
+ELSEIF FLAG:60 == 33 && RAND:2 == 0
+	LOCALS = 繊毛1本まで高精細に撮れる。超高速ズーム搭載 TENTAX SK 新発売
+ELSEIF FLAG:60 == 34 && RAND:2 == 0
+	LOCALS = 各地で人語を話す白い獣の目撃例相次ぐ。魔法少女への勧誘も
+ELSEIF FLAG:60 == 35 && RAND:2 == 0
+	LOCALS = 世界を一変させる官能的な装着感　%ITEMNAME:399%新発売
+ELSEIF FLAG:60 == 36 && RAND:2 == 0
+	LOCALS = 抜かずの10発なんのその、強力精力剤10-TACKLE あおひげ薬局より新発売
+ELSEIF FLAG:60 == 37 && RAND:2 == 0
+	LOCALS = お堅い淑女も1滴で腰くだけ、T-L Potion あおひげ薬局より新発売
+ELSEIF FLAG:60 == 38 && RAND:2 == 0
+	LOCALS = 触手対策に貞操帯の売上が急増。専門家は効果を疑問視
+ELSEIF FLAG:60 == 39 && RAND:2 == 0
+	LOCALS = 女性用コンドームが品薄に。触手対策か？専門家「紙の盾に等しい」
+ELSEIF FLAG:60 == 40 && RAND:2 == 0
+	LOCALS = 元交際女性宅に触手入りの瓶を投げ込んだ男性を逮捕。振られた腹いせか？
+ELSEIF FLAG:60 == 41 && RAND:2 == 0
+	LOCALS = 警視庁が新種の脱法ドラッグに注意を呼びかけ。触手由来の成分も
+ELSEIF FLAG:60 == 42 && RAND:2 == 0
+	LOCALS = 殺虫剤メーカーに苦情殺到、「触手に効かない、金返せ」
+ELSEIF FLAG:60 == 43 && RAND:2 == 0
+	LOCALS = 幼体触手の駆除を市民団体の抗議デモが妨害、「殺すな、可哀想だ」
+ELSEIF FLAG:60 == 44 && RAND:2 == 0
+	LOCALS = 触手の巣より救助された女性に多数の身元不明者。情報提供を呼掛け
+ELSEIF FLAG:60 == 45 && RAND:2 == 0
+	LOCALS = 水族館の入場者数が減少。タコ、イカ、イソギンチャクを隔離する館も
+ELSEIF FLAG:60 == 46 && RAND:2 == 0
+	LOCALS = 私立中学で触手生物の飼育が発覚。理事長は「生徒が喜んでいたので」と供述
+ELSEIF FLAG:60 == 47 && RAND:2 == 0
+	LOCALS = セクシー女優が触手を撃退「男優搾るより楽だった」
+ELSEIF FLAG:60 == 48 && DAY < 20 && RAND:2 == 0
+	LOCALS = EUが姫騎士部隊を設立。「触手なんかに負けない」と意気込む
+ELSEIF FLAG:60 == 48 && DAY > 21 && FLAG:852 < 2500 && RAND:2 == 0
+	LOCALS = EUの姫騎士部隊が壊滅的な被害を受け解隊へ。「触手には勝てなかった」
+ELSEIF FLAG:60 == 49 && RAND:2 == 0
+	LOCALS = 空飛ぶスパゲッティーモンスター教団、触手生物との関係を否定
+ELSEIF FLAG:60 == 50 && RAND:2 == 0
+	LOCALS = 性犯罪が急増。昨年同時期の3倍以上に。触手出現地点周辺で特に顕著
+ELSEIF FLAG:60 == 51 && RAND:2 == 0
+	LOCALS = 触手のキグルミ男を逮捕。「魔法少女に踏まれたかった」
+ELSEIF FLAG:60 == 52 && LOCAL:5 && RAND:2 == 0
+	LOCALS = 服が破けても戦い続ける魔法少女をPTAが批難。「娘が裸族になった」
+ELSEIF FLAG:60 == 53 && LOCAL:5 > 2 && RAND:2 == 0
+	LOCALS = 裸ニーソ少女が触手おとり捜査？「迷惑防止条例違反では」議論呼ぶ
+ELSEIF FLAG:60 == 54 && RAND:2 == 0
+	LOCALS = 自衛隊苦しい言い訳。「街中でミサイルは撃てない」
+ELSEIF FLAG:60 == 55 && RAND:2 == 0
+	LOCALS = 自衛官募集が迷走。男の娘枠新設へ
+ELSEIF FLAG:60 == 56 && RAND:2 == 0
+	LOCALS = 擬態型触手の被害相次ぐ。下着、性玩具、自転車のサドル等に注意
+ELSEIF FLAG:60 == 57 && RAND:2 == 0
+	LOCALS = ツノムシ化学が服だけ溶かす溶解液の合成に成功。防護服開発に期待
+ELSEIF FLAG:60 == 58 && RAND:2 == 0
+	LOCALS = 服が溶ける溶解液入りの水鉄砲で女性8人を撃った通り魔を逮捕
+ELSEIF FLAG:60 == 59 && RAND:2 == 0
+	LOCALS = 奇食愛好家主催の触手料理試食会で乱交騒ぎ。男女10人が緊急入院
+ELSEIF FLAG:60 == 60 && RAND:2 == 0
+	LOCALS = 水質汚染の影響で全国的に精製水の買占めが横行
+ELSEIF FLAG:60 == 61 && RAND:2 == 0
+	LOCALS = 過去にも触手生物がいた！？葛飾北斎「蛸と海女」に新たな解釈
+ELSEIF FLAG:60 == 62 && RAND:2 == 0
+	LOCALS = 触手被害女性の中絶を市民団体が批難。「命の選別に断固反対！」
+ELSEIF FLAG:60 == 63 && RAND:2 == 0
+	LOCALS = 電力会社前で市民団体が抗議活動。「触手が出るから原発止めろ」
+ELSEIF FLAG:60 == 64 && RAND:2 == 0
+	LOCALS = 原子力委員会、触手と原発の因果関係を否定。「出現は都市部に集中」
+;アイドル関係、LOCAL:6はデビュー後の人数
+ELSEIF FLAG:60 == 65 && LOCAL:6 && RAND:4 != 0
+	;ターゲットを決める　候補をクリア
+	CALL CLEARRANDCHOOSE
+	;候補を追加
+	FOR LOCAL,0,CHARANUM
+		;魅了経験100未満はデビュー前なのでニュースにならない
+		SIF LOCAL == MASTER || EXP:LOCAL:魅了経験 < 100
+			CONTINUE
+		;魅了経験200以上なら売れっ子アイドル、注目度が1.5倍に
+		IF EXP:LOCAL:魅了経験 >= 200
+			RESULT:1 = (EXP:LOCAL:魅了経験 / 12)
+			SIF RESULT:1 >= 100
+				RESULT:1 = 100
+			REPEAT RESULT:1
+				CALL ADDRANDCHOOSE,LOCAL
+			REND
+		ELSEIF EXP:LOCAL:魅了経験 >= 100
+			RESULT:1 = (EXP:LOCAL:魅了経験 / 18)
+			REPEAT RESULT:1
+				CALL ADDRANDCHOOSE,LOCAL
+			REND
+		ENDIF
+	NEXT
+	;RANDCHOOSE実行
+	RESULT:2 = RANDCHOOSE_F()
+
+	;枕営業や動画流出回数が高いほどスキャンダルが出回りやすい
+	CALL CLEARRANDCHOOSE
+	;普通の広告
+	REPEAT 50
+		CALL ADDRANDCHOOSE,0
+	REND
+	;枕営業
+	IF CFLAG:(RESULT:2):283
+		RESULT:1 = CFLAG:(RESULT:2):283
+		SIF RESULT:1 >= 100
+			RESULT:1 = 100
+		SIF EXP:(RESULT:2):魅了経験 >= 200
+			RESULT:1 *= 2
+		REPEAT RESULT:1
+			CALL ADDRANDCHOOSE,1
+		REND
+	ENDIF
+	;動画流出
+	IF CFLAG:(RESULT:2):284
+		RESULT:1 = POWER(CFLAG:(RESULT:2):284 / 4 + 1, 2) + 10
+		SIF RESULT:1 >= 100
+			RESULT:1 = 100
+		SIF EXP:(RESULT:2):魅了経験 >= 200
+			RESULT:1 *= 2
+		REPEAT RESULT:1
+			CALL ADDRANDCHOOSE,2
+		REND
+	ENDIF
+	;RANDCHOOSE実行
+	RESULT:3 = RANDCHOOSE_F()
+
+	;表示するニュースを選択
+	IF RESULT:3 == 1
+		IF EXP:(RESULT:2):魅了経験 >= 200
+			IF RAND:2 == 0
+				LOCALS = 衝撃！人気アイドル『%CALLNAME:(RESULT:2)%』の枕営業疑惑を激写！
+			ELSE
+				LOCALS = 週刊スキャンダル　汚されたアイドル　『%CALLNAME:(RESULT:2)%』の光と影
+			ENDIF
+		ELSE
+			LOCALS = 芸能界の闇　新人アイドル『%CALLNAME:(RESULT:2)%』と枕営業の実態！
+		ENDIF
+	ELSEIF RESULT:3 == 2
+		IF EXP:(RESULT:2):魅了経験 >= 200
+			IF RAND:2 == 0
+				LOCALS = 異例の判決　人気アイドル『%CALLNAME:(RESULT:2)%』の凌辱動画流出で大手動画配信サイト閉鎖
+			ELSE
+				LOCALS = やはり『%CALLNAME:(RESULT:2)%』は魔法少女か？陵辱動画に映る特徴が完全に一致
+			ENDIF
+		ELSE
+			LOCALS = 『%NAME:(RESULT:2)%』＝魔法少女説は本当か？関係者に突撃取材
+		ENDIF
+	ELSE
+		IF EXP:(RESULT:2):魅了経験 >= 200
+			IF RAND:10 == 0
+				LOCALS = 激白！「%CALLNAME:(RESULT:2)%は魔法少女だ」首になった某アイドル元マネージャーが語る
+			ELSEIF RAND:4 == 0
+				LOCALS = 巷で話題のあの人に直撃！　人気アイドル『%NAME:(RESULT:2)%』の快進撃
+			ELSEIF RAND:3 == 0
+				LOCALS = 新作映画が異例の大ヒット！　主演は人気アイドル『%NAME:(RESULT:2)%』
+			ELSEIF RAND:2 == 0
+				LOCALS = 人気アイドル『%NAME:(RESULT:2)%』に密着！２４時
+			ENDIF
+		ELSE
+			IF RAND:3 == 0
+				LOCALS = 新人アイドル『%NAME:(RESULT:2)%』 人気急上昇中！
+			ELSEIF RAND:2 == 0
+				LOCALS = 『%NAME:(RESULT:2)%』 debut single NOW ON SALE !
+			ELSE
+				LOCALS = アイドル業界に期待の新人　『%NAME:(RESULT:2)%』鮮烈デビュー！
+			ENDIF
+		ENDIF
+	ENDIF
+ELSEIF FLAG:60 == 10013
+	LOCALS = 触手教団に破防法適用。最高裁「信仰の自由は守る。ご神体が本物だった」
+ELSEIF FLAG:60 == 10012
+	LOCALS = 某大臣が辞任。「魔法少女は触手を産む機械」発言は撤回せず
+ELSEIF FLAG:60 == 10011
+	LOCALS = 財政難で特殊自警団への援助打ち切り。「公務員を減らせ」国会荒れる
+ELSEIF FLAG:60 == 10010
+	LOCALS = 「魔法少女」のアニメが打ち切り。過激すぎる描写でネットで炎上
+ELSEIF FLAG:60 == 10009
+	LOCALS = 医療品メーカーが触手生物から新薬を開発
+ELSEIF FLAG:60 == 10008
+	LOCALS = 触手生物による経済へのダメージが深刻化。国防予算削減へ
+ELSEIF FLAG:60 == 10007
+	LOCALS = 巷で噂の「魔法少女」がアニメ化、一方では肖像権の侵害との声も
+ELSEIF FLAG:60 == 10006
+	LOCALS = 世界的規模で不況、「触手生物による経済への悪影響無視できない」
+ELSEIF FLAG:60 == 10005
+	LOCALS = 国防予算増大に伴いさらなる増税。「国民の理解を求める」と首相
+ELSEIF FLAG:60 == 10004
+	LOCALS = 政府が一転「魔法少女」の実在を公に認め、「特殊自警団」と位置づけ
+ELSEIF FLAG:60 == 10003
+	LOCALS = 国防大臣が「触手と戦う専門機関」の存在を否定、反発の声も
+ELSEIF FLAG:60 == 10002
+	LOCALS = 街の噂・触手生物と戦う「魔法少女」気になるその正体は…？
+ELSEIF FLAG:60 == 10001
+	LOCALS = 街は壊滅状態に。魔法少女はいったい何処へ…
+ELSEIF FLAG:60 == 10000
+	LOCALS = 突如現れた"天使の樹"に自ら取り込まれる被害者多数、催眠効果か
+ENDIF
+IF LOCALS == "" && LOCAL:5 < LOCAL:4 * 2
+	FLAG:60 = RAND:(LOCAL:4)
+	LOCAL:5 ++
+	GOTO NEWSLOOP
+ELSEIF LOCALS == ""
+	LOCALS = 特にめぼしいニュースは無いようです。
+ENDIF
+
+PRINTFORML FLASH NEWS：《%LOCALS%》
+
+
+

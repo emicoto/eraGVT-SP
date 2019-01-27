@@ -1,0 +1,265 @@
+;--------------------------------------------------
+;状態異常のチェック
+
+;--------------------------------------------------
+;ダメージによる気絶判定
+@STATE_CHANGE_KIZETU_DAMAGE, ARG
+SIF (TCVAR:12 & 気絶)
+	RETURN 0
+;SP変身中は状態異常無効
+SIF CFLAG:1 == 2
+	RETURN 0
+;FEAT効果による状態異常無効
+SIF TALENT:生粋の戦士 > 0
+	RETURN 0
+SIF TALENT:祝福 > 0 && ARG < 100 && RAND:2 == 0
+	RETURN 0
+LOCAL:0 = 0
+CALL PERCENT_CAL, ARG, MAXBASE:体力
+SIF RESULT >= 30
+	LOCAL:0 += MAX(RESULT - 30, 0) / 4
+IF CFLAG:99 >= 20
+	LOCAL:0 += MAX(CFLAG:99 - 20, 0) * 2 + 10
+ELSEIF CFLAG:99 >= 10
+	LOCAL:0 += MAX(CFLAG:99 - 10, 0)
+ENDIF
+LOCAL:0 = LIMIT(LOCAL:0,0,50)
+IF RAND:150 < LOCAL:0
+	PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%は大きすぎるダメージによって
+	FONTBOLD
+	SETCOLOR 250,180,50
+	PRINT [気絶]
+	RESETCOLOR
+	FONTREGULAR
+	PRINTL した！
+	PRINTW 
+	TCVAR:12 |= 気絶
+ENDIF
+
+;--------------------------------------------------
+;絶頂した場合
+@STATE_CHANGE_EX, ARG
+VARSET LOCAL
+;SP変身中は状態異常無効
+SIF CFLAG:1 == 2
+	RETURN 0
+FOR LOCAL, 0, 4
+	LOCAL:1 += ABL:LOCAL
+NEXT
+;FEAT効果による状態異常無効
+SIF TALENT:闘争本能 > 0
+	GOTO SKIP_1
+SIF TALENT:祝福 > 0 && ARG < 100 && RAND:2 == 0
+	GOTO SKIP_1
+IF (RAND:100 < MIN(ARG * ARG * 4 + LOCAL:1 * 4, 75) || (TCVAR:12 & 発情)) && (TCVAR:12 & 気絶) == 0 && (TCVAR:12 & 恍惚) == 0
+	PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%は絶頂の余韻で
+	FONTBOLD
+	SETCOLOR 255,182,193
+	PRINT [恍惚]
+	RESETCOLOR
+	FONTREGULAR
+	PRINTL としている！
+	TCVAR:12 |= 恍惚
+	LOCAL ++
+ENDIF
+$SKIP_1
+
+;FEAT効果による状態異常無効
+SIF TALENT:祝福 > 0 && ARG < 100 && RAND:2 == 0
+	GOTO SKIP_2
+CALL TENTACLE_ACCESS, "GETNAME"
+IF RAND:100 < ARG * ARG * 8 && (TCVAR:12 & 気絶) == 0 && (TCVAR:12 & 恍惚) == 0 && RESULTS != "Ｈ触手"
+	PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%は激しい絶頂によって
+	FONTBOLD
+	SETCOLOR 250,180,50
+	PRINT [気絶]
+	RESETCOLOR
+	FONTREGULAR
+	PRINTL した！
+	TCVAR:12 |= 気絶
+	LOCAL ++
+ENDIF
+$SKIP_2
+
+;FEAT効果による状態異常無効
+SIF TALENT:祝福 > 0 && ARG < 100 && RAND:2 == 0
+	GOTO SKIP_3
+IF RAND:100 < ARG * ARG * 12 + 5 && (TCVAR:12 & 腰くだけ) == 0
+	PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%は
+	FONTBOLD
+	SETCOLOR 50,0,150
+	PRINT [腰くだけ]
+	RESETCOLOR
+	FONTREGULAR
+	PRINTL になってしまった！
+	TCVAR:12 |= 腰くだけ
+	LOCAL ++
+ENDIF
+$SKIP_3
+SIF LOCAL > 0
+	PRINTW 
+
+
+;--------------------------------------------------
+;電流を受けた場合
+@STATE_CHANGE_DENGEKI
+LOCAL = 0
+;SP変身中は状態異常無効
+SIF CFLAG:1 == 2
+	RETURN 0
+;FEAT効果による状態異常無効
+SIF TALENT:生粋の戦士 > 0
+	GOTO SKIP_1
+SIF TALENT:祝福 > 0 && RAND:2 == 0
+	GOTO SKIP_2
+IF RAND:100 < 10 && (TCVAR:12 & 気絶) == 0
+	PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%は電流のショックで
+	FONTBOLD
+	SETCOLOR 250,180,50
+	PRINT [気絶]
+	RESETCOLOR
+	FONTREGULAR
+	PRINTL した！
+	TCVAR:12 |= 気絶
+	LOCAL ++
+ENDIF
+$SKIP_1
+
+;FEAT効果による状態異常無効
+SIF TALENT:祝福 > 0 && RAND:2 == 0
+	GOTO SKIP_2
+IF RAND:100 < 75 && (TCVAR:12 & 麻痺) == 0
+	PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%は全身が
+	FONTBOLD
+	SETCOLOR 250,250,0
+	PRINT [麻痺]
+	RESETCOLOR
+	FONTREGULAR
+	PRINTL した！
+	TCVAR:12 |= 麻痺
+	LOCAL ++
+ENDIF
+$SKIP_2
+SIF LOCAL > 0
+	PRINTW 
+
+;--------------------------------------------------
+;気絶
+@STATE_CHANGE_KIZETU, ARG
+SIF (TCVAR:12 & 気絶)
+	RETURN 0
+;SP変身中は状態異常無効
+SIF CFLAG:1 == 2
+	RETURN 0
+;FEAT効果による状態異常無効
+SIF TALENT:祝福 > 0 && ARG < 100 && RAND:2 == 0
+	RETURN 0
+SIF RAND:100 > ARG
+	RETURN 0
+PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%は
+FONTBOLD
+SETCOLOR 250,180,50
+PRINT [気絶]
+RESETCOLOR
+FONTREGULAR
+PRINTL してしまった！
+PRINTW 
+TCVAR:12 |= 気絶
+
+;--------------------------------------------------
+;排卵
+@STATE_CHANGE_HAIRAN, ARG
+SIF TALENT:妊娠 > 0
+	RETURN 0
+SIF (TCVAR:12 & 排卵)
+	RETURN 0
+;SP変身中は状態異常無効
+SIF CFLAG:1 == 2
+	RETURN 0
+SIF TALENT:オトコ > 0
+	RETURN 0
+;FEAT効果による状態異常無効
+SIF TALENT:祝福 > 0 && ARG < 100 && RAND:2 == 0
+	RETURN 0
+SIF RAND:100 > ARG
+	RETURN 0
+PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%は強制的に
+FONTBOLD
+SETCOLOR 150,0,250
+PRINT [排卵]
+RESETCOLOR
+FONTREGULAR
+PRINTL 状態にされてしまった！
+PRINTW 
+TCVAR:12 |= 排卵
+
+;--------------------------------------------------
+;発情
+@STATE_CHANGE_HATUJOU, ARG
+SIF (TCVAR:12 & 発情)
+	RETURN 0
+;SP変身中は状態異常無効
+SIF CFLAG:1 == 2
+	RETURN 0
+;FEAT効果による状態異常無効
+SIF TALENT:祝福 > 0 && ARG < 100 && RAND:2 == 0
+	RETURN 0
+SIF RAND:100 > ARG
+	RETURN 0
+PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%は媚薬の効果で
+FONTBOLD
+SETCOLOR 250,0,150
+PRINT [発情]
+RESETCOLOR
+FONTREGULAR
+PRINTL してしまった！
+PRINTW 
+TCVAR:12 |= 発情
+
+;--------------------------------------------------
+;べとべと
+@STATE_CHANGE_BETOBETO, ARG
+SIF (TCVAR:12 & べとべと)
+	RETURN 0
+;SP変身中は状態異常無効
+SIF CFLAG:1 == 2
+	RETURN 0
+;FEAT効果による状態異常無効
+SIF TALENT:祝福 > 0 && ARG < 100 && RAND:4 != 0
+	RETURN 0
+SIF RAND:100 > ARG
+	RETURN 0
+PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%は粘液で全身が
+FONTBOLD
+SETCOLOR 0,250,150
+PRINT [べとべと]
+RESETCOLOR
+FONTREGULAR
+PRINTL になってしまった！
+PRINTW 
+TCVAR:12 |= べとべと
+
+;--------------------------------------------------
+;強拘束
+@STATE_CHANGE_PKOUSOKU, ARG
+SIF (TCVAR:12 & 強拘束)
+	RETURN 0
+;SP変身中は状態異常無効
+SIF CFLAG:1 == 2
+	RETURN 0
+SIF RAND:100 > ARG
+	RETURN 0
+PRINTFORM %PRINT_TRANSCALLNAME(TARGET)%は
+FONTBOLD
+SETCOLOR 200,50,50
+PRINT [強拘束]
+RESETCOLOR
+FONTREGULAR
+PRINTL 状態になってしまった！
+PRINTW 
+TCVAR:12 |= 強拘束
+;防御体勢をリセット
+TCVAR:2 = 体勢：通常
+
+
+

@@ -1,0 +1,145 @@
+;イラマチオ
+
+;性コマンド分類
+@SEX_TYPE_COM12
+RETURN フェラ
+
+@SEX_COM12,ARG = 0,ARG:1 = 0
+;追加責め
+EX_COM = 0
+SH_COM = 0
+
+;射精部位フラグ:口と胸を立てる
+TFLAG:4 = TFLAG:4 | 口
+TFLAG:4 = TFLAG:4 | 胸
+;我慢：確率で射精部位フラグを折る
+SIF RAND:100 < 25
+	TFLAG:4 = 0
+
+;悪堕ちキャラのペニス位置をセット
+SIF FLAG:110 == 1 && (TALENT:(FLAG:111):オトコ > 0 || TALENT:(FLAG:111):ふたなり > 0)
+	TFLAG:18 = 口
+
+;取得パラメータ計算
+;ベース値の明示的初期化
+REPEAT 12
+	LOCAL:COUNT = 0
+REND
+
+;油断度の上昇
+TFLAG:3 += 50
+
+;射精値 350
+CALL TENTACLE_SYASEI_UP, 350
+
+;触手サイズの設定
+CALL SET_TENTACLE_SIZE, FLAG:10, FLAG:11, FLAG:110, FLAG:111, 12
+
+IF FLAG:10 == 2
+	CALLFORM MESSAGE_MOB_{ARG}_COM12, EX_COM, SH_COM
+ELSE
+	;地の文：洗脳/悪堕ちキャラが操作キャラにイラマチオをさせた
+	SIF FLAG:110 == 1
+		CALL MESSAGE_OTHER_SEX_COM12
+	;地の文：COM12
+	CALL MESSAGE_SEX_COM12
+ENDIF
+
+;結界による触手本数の変動
+CALL SET_TENTACLE_POOL
+;服へのダメージ
+CALL CLOTH_BATTLE_DAMAGE, 5
+
+;ベース
+EXP:フェラ経験 += 2
+SIF ABL:マゾっ気 >= 2
+	EXP:苦痛快楽経験 += 1
+SIF ABL:奉仕精神 >= 2
+	EXP:奉仕快楽経験 += 1
+
+;恭順
+IF ABL:従順 <= 2
+	LOCAL:5 = 200
+ELSEIF ABL:従順 == 3
+	LOCAL:5 = 500
+ELSEIF ABL:従順 == 4
+	LOCAL:5 = 1000
+ELSEIF ABL:従順 >= 5
+	LOCAL:5 = 2000
+ENDIF
+
+;習得
+IF ABL:奉仕精神 == 0
+	LOCAL:6 = 100
+ELSEIF ABL:奉仕精神 == 1
+	LOCAL:6 = 200
+ELSEIF ABL:奉仕精神 == 2
+	LOCAL:6 = 500
+ELSEIF ABL:奉仕精神 == 3
+	LOCAL:6 = 1000
+ELSEIF ABL:奉仕精神 == 4
+	LOCAL:6 = 2000
+ELSEIF ABL:奉仕精神 >= 5
+	LOCAL:6 = 5000
+ENDIF
+
+;屈服
+IF ABL:従順 == 0
+	LOCAL:8 = 100
+ELSEIF ABL:従順 == 1
+	LOCAL:8 = 200
+ELSEIF ABL:従順 == 2
+	LOCAL:8 = 500
+ELSEIF ABL:従順 == 3
+	LOCAL:8 = 1000
+ELSEIF ABL:従順 == 4
+	LOCAL:8 = 2000
+ELSEIF ABL:従順 >= 5
+	LOCAL:8 = 5000
+ENDIF
+
+;奉仕精神に応じてボーナス
+IF ABL:奉仕精神 < 3
+ELSEIF ABL:奉仕精神 < 4
+	LOCAL:5 += 500
+	LOCAL:6 += 200
+ELSEIF ABL:奉仕精神 < 5
+	LOCAL:5 += 1000
+	LOCAL:6 += 500
+ELSE
+	LOCAL:5 += 2000
+	LOCAL:6 += 1000
+ENDIF
+
+;従順が低いと恐怖が入る　とりあえず固定
+SIF ABL:従順 < 3
+	LOCAL:11 = 500
+
+;行動予約なし
+TFLAG:17 = -1
+;触手の行動を記録
+TFLAG:20 = 12
+
+;習得基本値
+LOCAL:6 += 4000
+
+;欲情基本値
+LOCAL:7 += 400
+
+;屈服基本値
+LOCAL:8 += 2500
+
+;恥情基本値
+LOCAL:9 += 00
+
+;苦痛基本値
+LOCAL:10 += 8500
+
+;恐怖基本値
+LOCAL:11 += 1000
+
+;体力消費基本値
+LOCAL:12 += 300
+
+;計算へ
+CALL PALAM_CAL, LOCAL:0, LOCAL:1, LOCAL:2, LOCAL:3, LOCAL:4, LOCAL:5, LOCAL:6, LOCAL:7, LOCAL:8, LOCAL:9, LOCAL:10, LOCAL:11, LOCAL:12
