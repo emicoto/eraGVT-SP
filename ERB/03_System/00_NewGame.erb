@@ -19,7 +19,8 @@ FLAG:100 = 0
 FLAG:101 = 0
 
 CALL MODE_SELECT
-
+SIF RESULT == 101
+BEGIN TITLE
 
 ;選択したモードに応じて初期設定を行う
 SELECTCASE FLAG:0
@@ -66,5 +67,465 @@ SETBIT FLAG:101, 0
 ;(ボス触手の総数*１体当たりの制限日数)＋(ラスボス触手の総数*10)で算出
 SIF FLAG:0 != 10
 	FLAG:1 = (FLAG:3 * FLAG:2) + (FLAG:4 * 10)
+
+
+;**********************************************************
+;キャラメイキング
+LCOUNT_CHARAMAKE = LINECOUNT
+$MASTER_LOOP_CHARAMAKE
+IF FLAG:0 == 2
+	LOCAL = 1
+ELSE
+	LOCAL = 3
+	IF (GLOBAL:100 + GLOBAL:101 + GLOBAL:102) > 0
+		PRINTL 
+		PRINTFORML 周回クリアボーナス：
+		PRINTFORML ゲーム開始時の人数を増減できます
+		PRINTFORML [-1] １人減らす　　　　　　　　　　（2人で開始）
+		PRINTFORML [ 0] デフォルト　　　　　　　　　　（3人で開始）
+		PRINTFORML [ 1] １人増やす　　　　　　　　　　（4人で開始）
+		PRINTFORML [ 2] ２人増やす　　　　　　　　　　（5人で開始）
+		PRINTFORML [ 3] ３人増やす　　　　　　　　　　（6人で開始）
+		PRINTFORML [10]初期セットから選ぶ
+		PRINTL 
+		PRINTFORML [99]ゲームモード選択に戻る
+		$INPUT_LOOP_CHARA_NUM
+		INPUT
+		IF RESULT >= -1 && RESULT <= 3
+			LOCAL = RESULT + 3
+			PRINTFORML {LOCAL}人で開始します
+		ELSEIF RESULT == 10
+			GOTO SELECTED_SHOKISET
+		ELSEIF RESULT == 99
+			CLEARLINE LINECOUNT - LCOUNT_MODE_SELECT
+			GOTO MASTER_LOOP
+		ELSE
+			GOTO INPUT_LOOP_CHARA_NUM
+		ENDIF
+	ELSE
+
+	ENDIF
+ENDIF
+;ソロモード以外でデフォルト人数でなかった場合は制限日数が変動する
+IF FLAG:0 != 2
+	FLAG:2 -= LOCAL - 3
+	SIF FLAG:0 != 10
+		FLAG:1 = (FLAG:3 * FLAG:2) + (FLAG:4 * 10)
+ENDIF
+PRINTL 
+PRINTL キャラメイキングを行いますか？
+PRINTL [0]いいえ
+PRINTL [1]はい
+SIF (GLOBAL:100 + GLOBAL:101 + GLOBAL:102) == 0 && FLAG:0 != 2
+	PRINTL [2]初期セットから選ぶ
+PRINTL 
+PRINTL [99]ゲームモード選択に戻る
+RESETCOLOR
+$INPUT_LOOP_CHARA_MAKE
+INPUT
+IF RESULT == 0
+	REPEAT LOCAL
+		ADDCHARA 0
+		FLAG:8 ++
+	REND
+	PRINTL デフォルト設定で遊びます
+	;相性データのコンバート
+	CALL CONVERT_RELATION
+ELSEIF RESULT == 1
+	REPEAT LOCAL
+		ADDCHARA 0
+		FLAG:8 ++
+	REND
+	PRINTL キャラメイキングを行います
+	PRINTL 
+	CALL CHARA_MAKE_MAIN, 0
+ELSEIF RESULT == 2 && (GLOBAL:100 + GLOBAL:101 + GLOBAL:102) == 0 && FLAG:0 != 2
+	$SELECTED_SHOKISET
+	TRYCALL CHARA_MAKE_DEFAULT_KAI
+	IF RESULT < 0
+		CLEARLINE LINECOUNT - LCOUNT_CHARAMAKE
+		GOTO MASTER_LOOP_CHARAMAKE
+	ENDIF
+ELSEIF RESULT == 99
+	CLEARLINE LINECOUNT - LCOUNT_MODE_SELECT
+	GOTO MASTER_LOOP
+ELSE
+	GOTO INPUT_LOOP_CHARA_MAKE
+ENDIF
+PRINTL 
+
+;**********************************************************
+;キャラクターデフォルト設定
+CALL CHARA_MAKE_DEFAULT
+
+;**********************************************************
+;全キャラ共通処理
+
+;専用口上の番号を設定
+FOR CCOUNT, 0, CHARANUM
+	SIF CCOUNT == MASTER
+		CONTINUE
+	CFLAG:CCOUNT:6 = NO:CCOUNT
+	SIF NO:CCOUNT == 0 && TALENT:CCOUNT:オトコ > 0
+		CFLAG:CCOUNT:6 = 1
+	SIF NO:CCOUNT == 0 && TALENT:CCOUNT:ロボっ子 > 0
+		CFLAG:CCOUNT:6 = 2
+	IF TALENT:CCOUNT:口上設定 == -2
+		CFLAG:CCOUNT:6 = -2
+	ELSEIF TALENT:CCOUNT:口上設定 == 0 && TALENT:CCOUNT:オトコ > 0
+		CFLAG:CCOUNT:6 = 1
+	ELSEIF TALENT:CCOUNT:口上設定 == 0
+		CFLAG:CCOUNT:6 = 0
+	ELSEIF TALENT:CCOUNT:口上設定 == 1
+		CFLAG:CCOUNT:6 = 2
+	ELSEIF TALENT:CCOUNT:口上設定 == 2
+		CFLAG:CCOUNT:6 = 3
+	ENDIF
+NEXT
+
+;**********************************************************
+;プロローグ
+PRINTL プロローグを表示しますか？
+PRINTL [0]いいえ
+PRINTL [1]はい
+$INPUT_LOOP_PRO
+INPUT
+IF RESULT < 0 || RESULT > 1
+	GOTO INPUT_LOOP_PRO
+ELSEIF RESULT == 0
+	PRINTL 
+ELSEIF RESULT == 1
+	DRAWLINE
+	PRINTW 　…
+	PRINTW 　……
+	PRINTW 　…………
+	PRINTW 　“それ”がいつから現れるようになったのかは定かではなかった。
+	PRINTL 　怪奇小説やホラー映画、あるいは紳士の淫猥な妄想の中でしか存在して
+	PRINTL いなかったはずの、おぞましく奇怪な物体――いや、“それ”は明らかに
+	PRINTW 生命体と呼ぶべき特質を備えていた。
+	PRINTL 
+	PRINTL 　人間を襲い、捕食し、そして繁殖のための苗床とする『触手の怪物』。
+	PRINTL 　初めのうちはただの都市伝説として語られていただけの“それ”だった
+	PRINTW が、やがて転機となる事件が起こった。
+	PRINTL 
+	PRINTFORML 　ある晩、とある地方都市で、十数人の女性が%STR:2500%に襲われたのだ。
+	PRINTL 　塾帰りの少女が、仕事を終えたＯＬが、夫の帰宅を待つ主婦が、すべて
+	PRINTW 同じ晩に――被害者の共通点は若い女性だという、ただ一点のみ。
+	PRINTL 　目撃者の証言と、何より幾つものカメラが捉えた映像が証拠の決め手と
+	PRINTW なり、その存在は誰の目にも疑いのない事実となった。
+	PRINTL 
+	PRINTFORML 　人間――特に若い女を襲う、怪物そのものというべき%STR:2500%。
+	PRINTFORML 　公的機関は対応に迫られたが、対策は遅々として進まず、それどころか
+	PRINTFORMW %STR:2500%に遭遇した者の中には“取り込まれ”てしまう者さえ出た。
+	PRINTL 
+	PRINTFORML 　%STR:2500%の中に取り込まれた者は“種”を植えつけられ、男ならばそのまま
+	PRINTFORML %STR:2500%の末端として、女ならば新しい%STR:2500%の母胎として、ヒトではない何か
+	PRINTW へと変えられてしまうのだった。
+	PRINTL 
+	PRINTL 　ここに至って新たに出現した人類の天敵に、人々は為すすべもないかに
+	PRINTW 思われた……。
+	PRINTL 
+	DRAWLINE
+	PRINTL 
+	PRINTL 　　しかし、そんな脅威と人知れず戦い続ける者たちが存在した――。
+	PRINTW 
+ELSE
+ENDIF
+
+;口上の初期設定を呼び出しなど
+FOR LOCAL,0,CHARANUM
+	SIF LOCAL == MASTER
+		CONTINUE
+
+	TARGET = LOCAL
+
+	SIF CFLAG:0 != 0 && CFLAG:20 == 0 && CFLAG:21 == 0
+		CFLAG:21 = RAND:7 + 1
+
+	CALL MESSAGE_FIRST
+
+	SIF LOCAL <= パーティ人数最大値
+		CFLAG:999 = 1
+NEXT
+;初期セットキャラ、CSVキャラ用の衣装獲得処理
+FOR LOCAL, 0, CHARANUM -1
+	SIF ITEM:(CFLAG:(LOCAL+1):40) == 0
+		ITEM:(CFLAG:(LOCAL+1):40) = 1
+	SIF ITEM:(CFLAG:(LOCAL+1):41) == 0
+		ITEM:(CFLAG:(LOCAL+1):41) = 1
+	SIF ITEM:(CFLAG:(LOCAL+1):42) == 0
+		ITEM:(CFLAG:(LOCAL+1):42) = 1
+NEXT
+
+;防衛力減衰回避
+FLAG:41 = 1
+;探索ノルマを設定
+CALL RESEARCH_QUOTA
+
+CALL UPDATE
+BEGIN SHOP
+
+
+
+;モード選択
+@MODE_SELECT
+$MASTER_LOOP
+FLAG:852 = 5000
+FLAG:906 = 0
+PRINTL ゲームモードを選んでください
+PRINT [0] NORMAL	
+PRINTPLAIN 複数人のキャラクターで敵の全滅を目指す通常プレイです
+PRINTL 
+PRINT [1] SOLO	
+PRINTPLAIN １人のキャラクターで挑むシンプルモードです、お手軽プレイ向け
+PRINTL 
+PRINT [2] HARDCORE	
+PRINTPLAIN 難易度の高い上級者向けのチャレンジモードです
+PRINTL 
+PRINT [3] ENDLESS	
+PRINTPLAIN 無限にボスが出現するモードです、難易度はNORMAL並み
+PRINTL 
+;PRINT [4] REVERSE	
+;PRINTPLAIN 触手となって襲い来る女の子を撃退していくモードです
+;PRINTL 
+[IF_DEBUG]
+	PRINTL 
+	PRINT [-1] ☆口上の色	
+	PRINTPLAIN 口上の色を比較、作成するデバックモードです、口上作者用
+	PRINTL 
+[ENDIF]
+PRINTL 
+PRINT [99] ゲームの説明　　　　　　　　
+PRINT [100] タイトルに戻る
+PRINTL 
+$INPUT_LOOP_MODE
+INPUT
+IF RESULT == 0
+	FLAG:0 = 1
+	PRINTL NORMALモードでプレイします
+ELSEIF RESULT == 1
+	FLAG:0 = 2
+	PRINTL SOLOモードでプレイします
+ELSEIF RESULT == 2
+	FLAG:0 = 4
+	PRINTL HARDCOREモードでプレイします
+ELSEIF RESULT == 3
+	FLAG:0 = 10
+	PRINTL ENDLESSモードのオプションを選択してください
+	PRINTW 
+	PRINTL 撃破成績に応じて周回プレイが可能な SURVIVAL と
+	PRINTL 周回できないが撃破期限が存在しない FREEPLAY が選択可能です
+	PRINTL [0]SURVIVAL (期限あり、周回可能)
+	PRINTL [1]FREEPLAY (期限なし、周回不可)
+	PRINTL 
+	PRINTL [100]モード選択に戻る
+	$INPUT_LOOP_MODE_3
+	INPUT
+	IF RESULT == 0
+		FLAG:906 = 0
+		PRINTL ENDLESS:SURVIVALモードでプレイします
+	ELSEIF RESULT == 1
+		FLAG:906 = 1
+		PRINTL ENDLESS:FREEPLAYモードでプレイします
+	ELSEIF RESULT == 100
+		CALL LB
+		DRAWLINE
+		GOTO MASTER_LOOP
+	ELSE
+		GOTO INPUT_LOOP_MODE_3
+	ENDIF
+;ELSEIF RESULT == 4
+;	FLAG:0 = 11
+;	PRINTL REVERSEモードでプレイします
+[IF_DEBUG]
+	ELSEIF RESULT == -1
+		ADDVOIDCHARA
+		CALL KOJO_COLOR_SETTING
+		DELALLCHARA
+		GOTO INPUT_LOOP_MODE
+[ENDIF]
+ELSEIF RESULT == 99
+	$TUTORIAL
+	PRINTL **********************************************
+	PRINTL 
+	PRINTL チュートリアルメニュー
+	PRINTL 
+	PRINTL [0]ゲームの遊び方とヒント
+	PRINTL [1]キャラが捕まってしまったら
+	PRINTL [2]資金について
+	PRINTL [3]ゲーム性を変化させるオプション
+	PRINTL [4]それでも難しいと感じたら（ネタバレ）
+	PRINTL [99]もどる
+	$INPUT_LOOP_TUTORIAL
+	INPUT
+	IF RESULT == 0
+		PRINTL **********************************************
+		PRINTL 
+		PRINTL ゲームの遊び方とヒント：
+		PRINTL 
+		PRINTL プレイヤーキャラを育成してボスを撃破し、全滅させることがゲームの目的です。
+		PRINTL ボスの戦闘力は高く、ほとんどの場合でプレイヤーキャラよりレベルが高いので、
+		PRINTL 鍛練を積んでから戦いを挑むことが基本となります。
+		PRINTL その際は能力を特化させるのも良いですが、弱点を補うことも大事です。
+		PRINTL 
+		PRINTL また、体力・気力が減るほど戦闘が不利になります（ボスも同様に弱体化していきます）。
+		PRINTL 深追いせずに、余裕があるうちに撤退する心構えも必要です。
+;		PRINTL 
+;		PRINTL なお、REVERSEモードはボスを操作して女の子を撃破していくという
+;		PRINTL 通常とは逆の内容になっています。
+		PRINTW 
+		GOTO TUTORIAL
+	ELSEIF RESULT == 1
+		PRINTL **********************************************
+		PRINTL 
+		PRINTL キャラが捕まってしまったら：
+		PRINTL 
+		PRINTL ボスとの戦闘に敗北してしまうと、捕まって幽閉されてしまいます。
+		PRINTL そのままでは心身ともに蝕まれて屈服させられてしまうでしょう。
+		PRINTL 
+		PRINTL しかし万が一キャラが幽閉されてしまった場合でも、まだ諦めるのは早いです。
+		PRINTL 捕まったキャラのレベルが高いほど日数に余裕ができるので、その間に対策を立てましょう。
+		PRINTL また、経験値を多く得られるので、助け出せれば遅れを取り戻すこともできます。
+		PRINTL 幽閉された状態からいかに巻き返すかもこのゲームの醍醐味のひとつと言えます。
+		PRINTL 
+		PRINTL なお、SOLOモードでは敗北条件が異なり、
+		PRINTL 捕まっても日数経過で自動で幽閉から脱出する代わりに、
+		PRINTL 洗脳/悪堕ち状態になってしまうとゲームオーバーになります。
+		PRINTW 
+		GOTO TUTORIAL
+	ELSEIF RESULT == 2
+		PRINTL **********************************************
+		PRINTL 
+		PRINTL 資金について：
+		PRINTL 
+		PRINTL ゲームを有利にする要素のひとつが資金です。
+		PRINTL 装備品であるコスチュームや、設備レベルの強化などには資金が必要になります。
+		PRINTL 資金はボスを撃破した際のボーナスで入手できるほか、
+		PRINTL 特別活動を行うことで稼ぐことができます。
+		PRINTL 
+		PRINTL どの特別活動を選ぶかによって入手金額に影響する能力値が変化します。
+		PRINTL 体力に自信があるなら通常のアルバイト、
+		PRINTL 知性に自信があるなら研究助手を選ぶと良いでしょう。
+		PRINTW 
+		GOTO TUTORIAL
+	ELSEIF RESULT == 3
+		PRINTL **********************************************
+		PRINTL 
+		PRINTL ゲーム性を変化させるオプション：
+		PRINTL 
+		PRINTL メインメニューから呼び出せるコンフィグ設定には、
+		PRINTL ゲーム性を変化させるオプションが幾つか存在します。
+		PRINTL これらの設定は任意で変更することができます。
+		PRINTL 
+		PRINTL 捕獲触手遭遇率アップ　　　キャラを幽閉したボスとの遭遇率が上がります。　　難易度：低下
+		PRINTL 索敵ターゲット機能　　　　一度遭遇したボスとの遭遇率が上がります。　　　　難易度：低下
+		PRINTL オート振り解き　　　　　　拘束された際に自動で振り解きを使用します。　　　難易度：低下
+		PRINTL 搾精強化機能　　　　　　　ボスの精液からパワーを吸収します。　　　　　　　難易度：低下
+		PRINTL 返り血機能　　　　　　　　ボスを撃破すると返り血で悪あがきします。　　　　難易度：上昇
+		PRINTL ラスボス強化機能　　　　　ラスボスのＨＰが大幅に増えます。　　　　　　　　難易度：上昇
+		PRINTL 力尽きても変身が解けない　気力が0になった際に変身が解けなくなります。　　 難易度：低下（大）
+		PRINTL 
+		PRINTL 娘育成　　　　　　　　　　妊娠した際に産まれた娘を仲間にできます。
+		PRINTL オトコの敗北時に女体化　　オトコが触手に敗北すると女性にＴＳさせられます。
+		PRINTL ギブアップコマンド　　　　わざと負けたいときの自爆コマンドを使用可能にします。
+		PRINTL 苗床化で産む機械に　　　　苗床化を取得している場合のみ、洗脳/悪堕ちしにくくなります。
+		PRINTL 陥落せずに取り込まれる　　洗脳/悪堕ちしなくなり、必ず取り込まれて死亡します
+		PRINTW 
+		GOTO TUTORIAL
+	ELSEIF RESULT == 4
+		PRINTL **********************************************
+		PRINTL 
+		PRINTL それでも難しいと感じたら：
+		PRINTL 
+		PRINTL まずは取扱説明書や資料ファイルを読みましょう。
+		PRINTL 
+		PRINTL 初期セットのキャラクターは基本的に強めなので、
+		PRINTL 特装戦隊かマジカルハンターでプレイすると楽に進められます。
+		PRINTL オプションで搾精攻撃機能や救出コマンド機能をオンにすると、
+		PRINTL プレイの幅が広がって難易度が低下します。
+		PRINTL 
+		PRINTL SOLOモードは時間経過で防衛力が低下しないので、
+		PRINTL 鍛練と出撃に集中することができます。
+		PRINTL 
+		PRINTL [1]ネタバレを見る
+		PRINTL [99]もどる
+		$NETABARE
+		INPUT
+		IF RESULT == 99
+			GOTO TUTORIAL
+		ELSEIF RESULT != 1
+			GOTO NETABARE
+		ENDIF
+		PRINTL 
+		PRINTL どうしても勝てない人向けのネタバレ
+		PRINTL 　＊　敏捷性を優先的に鍛えよう、次に攻撃力
+		PRINTL 　＊　戦闘スタイルを活用し、自分のステータスに合った攻撃方法を選ぼう
+		PRINTL 　＊　鍛練施設レベルを優先的に上げよう。鍛練効率が上がって日数の節約になる
+		PRINTL 　＊　ボスよりレベルが４低い程度なら余裕で勝てる。最初のボスは鍛練なしでも倒せる
+		PRINTL 　＊　戦闘支援は非常に強力、出撃時に支援すれば生還率が目に見えて高まる
+		PRINTL 　＊　距離を取るコマンドでこまめに回復しよう
+		PRINTL 　＊　拘束からの脱出確率を高めたいときは[EX防]を使おう
+		PRINTW 
+		GOTO TUTORIAL
+	ELSEIF RESULT == 99
+		RETURN 99
+	ELSE
+		GOTO INPUT_LOOP_TUTORIAL
+	ENDIF
+ELSEIF RESULT == 100
+	PRINTW タイトルに戻ります
+	RETURN 100
+ELSE
+	GOTO INPUT_LOOP_MODE
+ENDIF
+
+
+@SAVEINFO
+VARSET LOCALS
+GETTIME
+IF FLAG:0 == 0
+	LOCALS = GAMEOVERモード
+ELSEIF FLAG:0 == 1
+	LOCALS = NORMALモード
+ELSEIF FLAG:0 == 2
+	LOCALS = SOLOモード
+ELSEIF FLAG:0 == 4
+	LOCALS = HARDCOREモード
+ELSEIF FLAG:0 == 10
+	IF FLAG:906 > 0
+		LOCALS = FREEPLAYモード
+	ELSE
+		LOCALS = SURVIVALモード
+	ENDIF
+ELSEIF FLAG:0 == 11
+	LOCALS = REVERSEモード
+ENDIF
+CALL TENTACLE_SURVIVE, "NUM"
+LOCAL = RESULT
+IF FLAG:64 > 0
+	LOCALS:1 = ★GAMECLEAR
+ELSEIF FLAG:0 == 11
+	LOCALS:1 = {FLAG:3}人目
+ELSEIF FLAG:10 == 0
+	LOCALS:1 = {FLAG:3 - LOCAL + 1}体目
+ELSE
+	LOCALS:1 = {FLAG:3 + LOCAL}体目
+ENDIF
+
+LOCALS:2 = {1000 + GAMEBASE_VERSION}
+SUBSTRING LOCALS:2, 1, 3
+LOCALS:2 = {GAMEBASE_VERSION / 1000}.%RESULTS%
+
+LOCALS:3 = {DAY}日目
+
+IF FLAG:64 > 0
+	PUTFORM %LOCALS,14,LEFT% %LOCALS:3,7,RIGHT% %LOCALS:1,12,RIGHT%    ver%LOCALS:2%
+ELSEIF FLAG:0 == 11
+	PUTFORM %LOCALS,14,LEFT% %LOCALS:3,7,RIGHT% %LOCALS:1,6,RIGHT%撃退中    ver%LOCALS:2%
+ELSE
+	PUTFORM %LOCALS,14,LEFT% %LOCALS:3,7,RIGHT% %LOCALS:1,6,RIGHT%殲滅中    ver%LOCALS:2%
+ENDIF
+
+
 
 
