@@ -102,7 +102,7 @@
 #DIM CONST ドリームステージ = 32
 
 ;維持費
-#DIM MAINTECOST,2
+#DIM MAINTECOST,5
 
 ;防御体勢判定用
 #DIM CONST 体勢：何もしない = -1

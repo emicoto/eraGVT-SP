@@ -20,7 +20,7 @@ SETCOLOR 255,198,233
 ;ターン終了時の処理
 ;--------------------------------------------------
 @KOJO_0_TURNEND_29
-SIF CFLAG:0 && CFLAG:15 < 1 
+SIF CFLAG:0 == 0 && CFLAG:15 < 1 
 CALL KOJO_0_TURNEND_EVENT_29
 
 @KOJO_0_TURNEND_EVENT_29

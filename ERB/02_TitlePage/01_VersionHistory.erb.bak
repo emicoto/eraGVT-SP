@@ -8,7 +8,8 @@ PRINTFORML %INDENT(4)%・ 2019/01/26
 PRINTFORML %INDENT(4)%
 PRINTFORML %INDENT(4)%　タイトル画面とセーブシステムを新規作成しました。
 PRINTFORML %INDENT(4)%　ついでにシステム再構築及びすべての画面をデザイン直しました。
-PRINTFORML %INDENT(4)%　ver395と395+SPバージョンのセーブデータは一応使えるけど、次のバージョンになると互換性が失います
+PRINTFORML %INDENT(4)%　ver395と395+SPバージョンのセーブデータは一応使えるけど、メモ帳でセーブデータを開いて
+PRINTFORML %INDENT(4)%　一行目の数字コードをGAMEBASE.CSVファイルの一行目のコードに書き換える必要があります。
 PRINTFORML %INDENT(4)%　この際にて、eraGVT別人改造版・更に改　ｓｐエディションという長い派生バージョン名も
 PRINTFORML %INDENT(4)%　正式にeraGVT+ SP版に改名し、バージョンも0.1に更新しました。パチパチ
 PRINTFORML %INDENT(4)%　実はＳＰ版もまだ最終目標に向かっていく中継バージョンなだけです。

@@ -1,0 +1,159 @@
+﻿@TUTORIAL
+#DIM SAVELINE,5
+VARSET TEMP
+
+
+CALL COLORLINE()
+CALL CPRINT("★　チュートリアル　★",COLOR_YELLOW,,2)
+CALL COLORLINE()
+PRINTL
+$HEADER
+FIRSTLINE = LINECOUNT
+PRINTBUTTON @"%INDENT(4)%★ 1. ゲームの遊び方とヒント",1
+PRINTL
+
+IF TEMP:1 == 1
+CALL TUTORIAL_01
+ENDIF
+
+PRINTL
+
+PRINTBUTTON @"%INDENT(4)%★ 2. キャラが捕まってしまったら",2
+PRINTL
+
+IF TEMP:2 == 1
+CALL TUTORIAL_02
+ENDIF
+PRINTL
+
+PRINTBUTTON @"%INDENT(4)%★ 3. 資金について",3
+PRINTL
+
+IF TEMP:3 == 1
+CALL TUTORIAL_03
+ENDIF
+PRINTL
+
+PRINTBUTTON @"%INDENT(4)%★ 4. ゲーム性を変化させるオプション",4
+PRINTL
+IF TEMP:4 == 1
+CALL TUTORIAL_04
+ENDIF
+PRINTL
+
+PRINTBUTTON @"%INDENT(4)%★ 5. それでも難しいと感じたら（ネタバレ）",5
+PRINTL
+IF TEMP:5 == 1
+CALL TUTORIAL_05
+ENDIF
+IF TEMP:6 == 1
+CALL TUTORIAL_06
+ENDIF
+PRINTL
+
+
+CALL ADD_MAXLINE(34)
+CALL COLORLINE(2,"-")
+PRINTBUTTON @"%INDENT(2)%[10] もどる",10
+PRINTL
+
+INPUT
+IF RESULT != 10
+	IF TEMP:RESULT == 0 && RESULT > 0
+	TEMP:RESULT = 1
+	CLEARLINE LINECOUNT - FIRSTLINE
+	GOTO HEADER
+
+	ELSEIF RESULT != 9 && RESULT != 10
+	TEMP:RESULT = 0
+	CLEARLINE LINECOUNT - FIRSTLINE
+	GOTO HEADER
+	ENDIF
+
+ELSEIF RESULT == 10
+	CLEARLINE LINECOUNT
+	VARSET TEMP
+	RETURN 0
+
+ELSE
+	GOTO HEADER
+
+ENDIF
+
+GOTO HEADER
+
+@TUTORIAL_01
+PRINTFORML %INDENT(10)%プレイヤーキャラを育成してボスを撃破し、全滅させることがゲームの目的です。
+PRINTFORML %INDENT(10)%ボスの戦闘力は高く、ほとんどの場合でプレイヤーキャラよりレベルが高いので、
+PRINTFORML %INDENT(10)%鍛練を積んでから戦いを挑むことが基本となります。
+PRINTFORML %INDENT(10)%その際は能力を特化させるのも良いですが、弱点を補うことも大事です。
+PRINTFORML %INDENT(10)%また、体力・気力が減るほど戦闘が不利になります（ボスも同様に弱体化していきます）。
+PRINTFORML %INDENT(10)%深追いせずに、余裕があるうちに撤退する心構えも必要です。
+;PRINTL なお、REVERSEモードはボスを操作して女の子を撃破していくという
+;PRINTL 通常とは逆の内容になっています。
+
+@TUTORIAL_02
+PRINTFORML %INDENT(10)%ボスとの戦闘に敗北してしまうと、捕まって幽閉されてしまいます。
+PRINTFORML %INDENT(10)%そのままでは心身ともに蝕まれて屈服させられてしまうでしょう。
+PRINTFORML %INDENT(10)%しかし万が一キャラが幽閉されてしまった場合でも、まだ諦めるのは早いです。
+PRINTFORML %INDENT(10)%捕まったキャラのレベルが高いほど日数に余裕ができるので、その間に対策を立てましょう。
+PRINTFORML %INDENT(10)%また、経験値を多く得られるので、助け出せれば遅れを取り戻すこともできます。
+PRINTFORML %INDENT(10)%幽閉された状態からいかに巻き返すかもこのゲームの醍醐味のひとつと言えます。
+PRINTFORML %INDENT(10)%なお、SOLOモードでは敗北条件が異なり、
+PRINTFORML %INDENT(10)%捕まっても日数経過で自動で幽閉から脱出する代わりに、
+PRINTFORML %INDENT(10)%洗脳/悪堕ち状態になってしまうとゲームオーバーになります。
+
+@TUTORIAL_03
+PRINTFORML %INDENT(10)%ゲームを有利にする要素のひとつが資金です。
+PRINTFORML %INDENT(10)%装備品であるコスチュームや、設備レベルの強化などには資金が必要になります。
+PRINTFORML %INDENT(10)%資金はボスを撃破した際のボーナスで入手できるほか、
+PRINTFORML %INDENT(10)%特別活動を行うことで稼ぐことができます。
+PRINTFORML %INDENT(10)%どの特別活動を選ぶかによって入手金額に影響する能力値が変化します。
+PRINTFORML %INDENT(10)%体力に自信があるなら通常のアルバイト、
+PRINTFORML %INDENT(10)%知性に自信があるなら研究助手を選ぶと良いでしょう。
+
+@TUTORIAL_04
+PRINTFORML %INDENT(10)%メインメニューから呼び出せるコンフィグ設定には、
+PRINTFORML %INDENT(10)%ゲーム性を変化させるオプションが幾つか存在します。
+PRINTFORML %INDENT(10)%これらの設定は任意で変更することができます。
+PRINTFORML %INDENT(10)%捕獲触手遭遇率アップ　　　キャラを幽閉したボスとの遭遇率が上がります。　　難易度：低下
+PRINTFORML %INDENT(10)%索敵ターゲット機能　　　　一度遭遇したボスとの遭遇率が上がります。　　　　難易度：低下
+PRINTFORML %INDENT(10)%オート振り解き　　　　　　拘束された際に自動で振り解きを使用します。　　　難易度：低下
+PRINTFORML %INDENT(10)%搾精強化機能　　　　　　　ボスの精液からパワーを吸収します。　　　　　　　難易度：低下
+PRINTFORML %INDENT(10)%返り血機能　　　　　　　　ボスを撃破すると返り血で悪あがきします。　　　　難易度：上昇
+PRINTFORML %INDENT(10)%ラスボス強化機能　　　　　ラスボスのＨＰが大幅に増えます。　　　　　　　　難易度：上昇
+PRINTFORML %INDENT(10)%力尽きても変身が解けない　気力が0になった際に変身が解けなくなります。　　 難易度：低下（大）
+PRINTFORML %INDENT(10)%娘育成　　　　　　　　　　妊娠した際に産まれた娘を仲間にできます。
+PRINTFORML %INDENT(10)%オトコの敗北時に女体化　　オトコが触手に敗北すると女性にＴＳさせられます。
+PRINTFORML %INDENT(10)%ギブアップコマンド　　　　わざと負けたいときの自爆コマンドを使用可能にします。
+PRINTFORML %INDENT(10)%苗床化で産む機械に　　　　苗床化を取得している場合のみ、洗脳/悪堕ちしにくくなります。
+PRINTFORML %INDENT(10)%陥落せずに取り込まれる　　洗脳/悪堕ちしなくなり、必ず取り込まれて死亡します
+
+
+@TUTORIAL_05
+PRINTFORML %INDENT(10)%まずは取扱説明書や資料ファイルを読みましょう。
+PRINTFORML %INDENT(10)%初期セットのキャラクターは基本的に強めなので、
+PRINTFORML %INDENT(10)%特装戦隊かマジカルハンターでプレイすると楽に進められます。
+PRINTFORML %INDENT(10)%オプションで搾精攻撃機能や救出コマンド機能をオンにすると、
+PRINTFORML %INDENT(10)%プレイの幅が広がって難易度が低下します。
+PRINTL
+PRINTFORML %INDENT(10)%SOLOモードは時間経過で防衛力が低下しないので、
+PRINTFORML %INDENT(10)%鍛練と出撃に集中することができます。
+PRINTL
+PRINTFORM %INDENT(10)%
+CALL LINK("6. ネタバレを見る",6,,COLOR_DEFAULT,,1,)
+PRINTL
+
+@TUTORIAL_06
+PRINTL
+PRINTFORML %INDENT(10)%どうしても勝てない人向けのネタバレ:
+PRINTFORML %INDENT(10)%※　敏捷性を優先的に鍛えよう、次に攻撃力
+PRINTFORML %INDENT(10)%※　戦闘スタイルを活用し、自分のステータスに合った攻撃方法を選ぼう
+PRINTFORML %INDENT(10)%※　鍛練施設レベルを優先的に上げよう。鍛練効率が上がって日数の節約になる
+PRINTFORML %INDENT(10)%※　ボスよりレベルが４低い程度なら余裕で勝てる。最初のボスは鍛練なしでも倒せる
+PRINTFORML %INDENT(10)%※　戦闘支援は非常に強力、出撃時に支援すれば生還率が目に見えて高まる
+PRINTFORML %INDENT(10)%※　距離を取るコマンドでこまめに回復しよう
+PRINTFORML %INDENT(10)%※　拘束からの脱出確率を高めたいときは[EX防]を使おう
+
+
+

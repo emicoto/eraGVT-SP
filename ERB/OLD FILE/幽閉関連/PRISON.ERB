@@ -158,7 +158,8 @@ IF (CHARATALENT_F(TARGET,0,"オトコ") > 0 || CHARATALENT_F(TARGET,1,"オトコ") > 0
 	ENDIF
 
 	;男体化する女性はオトコになれなくなる
-	IF TALENT:オトコ > 0 && TALENT:変身時ＴＳ
+	IF TALENT:オトコ == 0 && TALENT:変身時ＴＳ > 0
+		TALENT:変身時ＴＳ = -1
 		MAXBASE:身長 = BASE:身長
 		MAXBASE:体重 = BASE:体重
 		MAXBASE:胸囲 = BASE:胸囲
@@ -172,10 +173,9 @@ IF (CHARATALENT_F(TARGET,0,"オトコ") > 0 || CHARATALENT_F(TARGET,1,"オトコ") > 0
 		CSTR:37 = %CSTR:36%
 	ENDIF
 	
-	;変身時ＴＳならそのまま戻れなくなる
-	IF TALENT:変身時ＴＳ > 0
+	;オトコ変身時ＴＳならそのまま戻れなくなる
+	IF GROUPMATCH(TALENT:オトコ,-1,1) && TALENT:変身時ＴＳ > 0
 		TALENT:変身時ＴＳ = -1
-		TALENT:変身時非処女 = 0
 		BASE:身長 = MAXBASE:身長
 		BASE:体重 = MAXBASE:体重
 		BASE:胸囲 = MAXBASE:胸囲
@@ -188,8 +188,9 @@ IF (CHARATALENT_F(TARGET,0,"オトコ") > 0 || CHARATALENT_F(TARGET,1,"オトコ") > 0
 		CSTR:33 = %CSTR:35%
 		CSTR:36 = %CSTR:37%
 	ENDIF
+	
 	;それ以外は元の身体がＴＳする
-	IF TALENT:変身時ＴＳ == 0
+	IF TALENT:オトコ == 1 && TALENT:変身時ＴＳ == 0
 		CALL GENERATE_CHAR_SIZE, TARGET, 0
 		BASE:身長 = RESULT:2
 		BASE:体重 = RESULT:3
@@ -208,8 +209,10 @@ IF (CHARATALENT_F(TARGET,0,"オトコ") > 0 || CHARATALENT_F(TARGET,1,"オトコ") > 0
 		ENDIF
 	ENDIF
 
-	SIF TALENT:変身時非処女 == 0
-		TALENT:処女 = 1
+	SIF TALENT:変身時非処女 == 1
+		TALENT:処女 = 0
+	SIF TALENT:変身能力 > 0
+	TALENT:変身時非処女 = 1
 	TALENT:オトコ = 0
 
 ELSEIF CFLAG:31 == 0

@@ -1,0 +1,114 @@
+﻿
+; Starts new game
+;-------------------
+@EVENTFIRST
+#DIM LCOUNT_MASTER_LOOP
+#DIM LCOUNT_MODE_SELECT
+#DIM LCOUNT_CHARAMAKE
+#DIM CCOUNT
+#DIMS SELECTS
+
+
+REDRAW 0 ;
+CLEARLINE LINECOUNT ;Clear page
+FIRSTLINE = LINECOUNT
+$MASTER_LOOP
+
+;ゲームモード再選択に備えてフラグをリセット
+FLAG:100 = 0
+FLAG:101 = 0
+FLAG:852 = 5000
+FLAG:906 = 0
+
+
+CALL MODE_SELECT
+SIF RESULT == 101
+BEGIN TITLE
+
+CALL NEWGAME_INSTALL
+
+CALL START_CHARA_MAKE
+SIF RESULT == 99
+GOTO MASTER_LOOP
+
+;**********************************************************
+;プロローグ
+PRINTL プロローグを表示しますか？
+PRINTL [0]いいえ
+PRINTL [1]はい
+$INPUT_LOOP_PRO
+INPUT
+IF RESULT < 0 || RESULT > 1
+	GOTO INPUT_LOOP_PRO
+ELSEIF RESULT == 0
+	PRINTL 
+ELSEIF RESULT == 1
+	DRAWLINE
+	PRINTW 　…
+	PRINTW 　……
+	PRINTW 　…………
+	PRINTW 　“それ”がいつから現れるようになったのかは定かではなかった。
+	PRINTL 　怪奇小説やホラー映画、あるいは紳士の淫猥な妄想の中でしか存在して
+	PRINTL いなかったはずの、おぞましく奇怪な物体――いや、“それ”は明らかに
+	PRINTW 生命体と呼ぶべき特質を備えていた。
+	PRINTL 
+	PRINTL 　人間を襲い、捕食し、そして繁殖のための苗床とする『触手の怪物』。
+	PRINTL 　初めのうちはただの都市伝説として語られていただけの“それ”だった
+	PRINTW が、やがて転機となる事件が起こった。
+	PRINTL 
+	PRINTFORML 　ある晩、とある地方都市で、十数人の女性が%STR:2500%に襲われたのだ。
+	PRINTL 　塾帰りの少女が、仕事を終えたＯＬが、夫の帰宅を待つ主婦が、すべて
+	PRINTW 同じ晩に――被害者の共通点は若い女性だという、ただ一点のみ。
+	PRINTL 　目撃者の証言と、何より幾つものカメラが捉えた映像が証拠の決め手と
+	PRINTW なり、その存在は誰の目にも疑いのない事実となった。
+	PRINTL 
+	PRINTFORML 　人間――特に若い女を襲う、怪物そのものというべき%STR:2500%。
+	PRINTFORML 　公的機関は対応に迫られたが、対策は遅々として進まず、それどころか
+	PRINTFORMW %STR:2500%に遭遇した者の中には“取り込まれ”てしまう者さえ出た。
+	PRINTL 
+	PRINTFORML 　%STR:2500%の中に取り込まれた者は“種”を植えつけられ、男ならばそのまま
+	PRINTFORML %STR:2500%の末端として、女ならば新しい%STR:2500%の母胎として、ヒトではない何か
+	PRINTW へと変えられてしまうのだった。
+	PRINTL 
+	PRINTL 　ここに至って新たに出現した人類の天敵に、人々は為すすべもないかに
+	PRINTW 思われた……。
+	PRINTL 
+	DRAWLINE
+	PRINTL 
+	PRINTL 　　しかし、そんな脅威と人知れず戦い続ける者たちが存在した――。
+	PRINTW 
+ELSE
+ENDIF
+
+;口上の初期設定を呼び出しなど
+FOR LOCAL,0,CHARANUM
+	SIF LOCAL == MASTER
+		CONTINUE
+
+	TARGET = LOCAL
+
+	SIF CFLAG:0 != 0 && CFLAG:20 == 0 && CFLAG:21 == 0
+		CFLAG:21 = RAND:7 + 1
+
+	CALL MESSAGE_FIRST
+
+	SIF LOCAL <= パーティ人数最大値
+		CFLAG:999 = 1
+NEXT
+;初期セットキャラ、CSVキャラ用の衣装獲得処理
+FOR LOCAL, 0, CHARANUM -1
+	SIF ITEM:(CFLAG:(LOCAL+1):40) == 0
+		ITEM:(CFLAG:(LOCAL+1):40) = 1
+	SIF ITEM:(CFLAG:(LOCAL+1):41) == 0
+		ITEM:(CFLAG:(LOCAL+1):41) = 1
+	SIF ITEM:(CFLAG:(LOCAL+1):42) == 0
+		ITEM:(CFLAG:(LOCAL+1):42) = 1
+NEXT
+
+;防衛力減衰回避
+FLAG:41 = 1
+;探索ノルマを設定
+CALL RESEARCH_QUOTA
+
+CALL UPDATE
+BEGIN SHOP
