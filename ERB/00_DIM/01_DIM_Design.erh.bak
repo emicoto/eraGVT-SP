@@ -11,6 +11,6 @@
 
 ; 縦ロール演出
 ;-------------------
-#DIM RCOUNT,30
+#DIM RCOUNT,10
 #DIM RSWITCH
-#DIMS RLOG,30
+#DIMS RLOG,10
