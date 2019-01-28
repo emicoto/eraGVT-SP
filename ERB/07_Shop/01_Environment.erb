@@ -1,0 +1,373 @@
+﻿;--------------------------------------------------
+;施設拡張
+@HOME_ENHANCING
+PRINTL 
+
+$INPUT_LOOP
+IF FLAG:53 != 0
+	PRINTFORML 購入済みのリラクゼーション設備
+	DRAWLINE
+	SIF (FLAG:53 & 観葉植物)
+		PRINTFORML 　観葉植物　　　　　　常に疲労度を微量回復
+	SIF (FLAG:53 & 心休まる風景画)
+		PRINTFORML 　心休まる風景画　　　常に疲労度を微量回復
+	SIF (FLAG:53 & オシャレなオブジェ)
+		PRINTFORML 　オシャレなオブジェ　常に疲労度を微量回復 
+	SIF (FLAG:53 & ゴージャスな噴水)
+		PRINTFORML 　ゴージャスな噴水　　常に疲労度を微量回復
+	SIF (FLAG:53 & 上質なベッド) && (FLAG:53 & 最高級ベッド) == 0
+		PRINTFORML 　上質なベッド　　　　夜間休憩の疲労回復量がアップ  
+	SIF (FLAG:53 & 最高級ベッド)
+		PRINTFORML 　最高級ベッド　　　　夜間休憩の疲労回復量が大アップ
+	SIF (FLAG:53 & マッサージチェア)
+		PRINTFORML 　マッサージチェア　　常に疲労度を小回復
+	SIF (FLAG:53 & シャワー設備)
+		PRINTFORML 　シャワー設備　　　　鍛錬後に疲労度を小回復
+	SIF (FLAG:53 & ゲームコーナー)
+		PRINTFORML 　ゲームコーナー　　　昼間休憩の疲労回復量がアップ
+	SIF (FLAG:53 & 大浴場) && (FLAG:53 & 美容温泉) == 0
+		PRINTFORML 　大浴場　　　　　　　休憩時の疲労回復量がアップ
+	SIF (FLAG:53 & 美容温泉)
+		PRINTFORML 　美容温泉　　　　　　休憩時の疲労回復量が大アップ
+	SIF (FLAG:53 & ビューティサロン)
+		PRINTFORML 　ビューティサロン　　休憩時の疲労回復量が超アップ
+	SIF (FLAG:54)
+		PRINTFORML 　芸能オフィス　　　　デビュー済のメンバーの魅了経験毎日自動アップ
+ELSE
+	PRINTL 何をしますか？
+ENDIF
+IF FLAG:30 > 0 && FLAG:854 > 0
+CALL GET_DAILYFEE
+DRAWLINE
+PRINTFORML   維持費明細：
+PRINTFORML 　  設備維持 {MAINTECOST:1}＄　（鍛錬施設{100 + 500 * POWER(FLAG:50,2)}＄　休憩施設{100 + 100 * POWER(FLAG:51,2)}＄　防衛施設{100 + 500 * POWER(FLAG:52,2)}＄）
+PRINTFORML 　  水道と電力 {MAINTECOST:2}＄
+PRINTFORML 　  食費 {100 + 100 * CHARANUM_ALIVE()}
+ENDIF
+DRAWLINE
+PRINTFORML [0]鍛錬設備のレベルアップ：現在の設備レベル：Lv.{FLAG:50}
+PRINTFORML [1]休憩設備のレベルアップ：現在の設備レベル：Lv.{FLAG:51}
+PRINTFORML [2]防衛設備のレベルアップ：現在の設備レベル：Lv.{FLAG:52}
+PRINTFORML [3]リラクゼーション施設の追加
+IF FLAG:54
+PRINTFORML [4]芸能オフィスに施設追加（未実装）
+ELSE
+PRINTFORML [4]芸能オフィスを設置する (必要資金：100000)
+ENDIF
+
+PRINTL [999]戻る
+INPUT
+IF RESULT == 999
+ELSEIF RESULT == 0
+	IF FLAG:50 >= 5
+		PRINTL これ以上設備レベルは上げられません
+		GOTO INPUT_LOOP
+	ELSE
+		PRINTL 
+		PRINTFORML 設備のレベルアップには{5000 * FLAG:50 + 5000}＄必要です
+		PRINTL 設備のレベルアップを行いますか？
+		
+		PRINTL [0]はい
+		PRINTL [1]いいえ
+		$INPUT_LOOP_SELECT
+		INPUT
+		IF RESULT == 0
+			IF MONEY < 5000 * FLAG:50 + 5000
+				PRINTL 所持資金が足りません
+				PRINTW 
+				GOTO INPUT_LOOP
+			ELSE
+				MONEY -= 5000 * FLAG:50 + 5000
+				FLAG:50 += 1
+				PRINTL 設備レベルが上がりました！
+				PRINTW 
+			ENDIF
+		ELSEIF RESULT == 1
+		ELSE
+			PRINTL 
+			PRINTL 正しい値を入力してください
+			GOTO INPUT_LOOP_SELECT
+		ENDIF
+	ENDIF
+ELSEIF RESULT == 1
+	IF FLAG:51 >= 5
+		PRINTL これ以上設備レベルは上げられません
+		GOTO INPUT_LOOP
+	ELSE
+		PRINTL 
+		PRINTFORML 設備のレベルアップには{1000 * FLAG:51 + 1000}＄必要です
+		PRINTL 設備のレベルアップを行いますか？
+		
+		PRINTL [0]はい
+		PRINTL [1]いいえ
+		$INPUT_LOOP_SELECT_1
+		INPUT
+		IF RESULT == 0
+			IF MONEY < 1000 * FLAG:51 + 1000
+				PRINTL 所持資金が足りません
+				PRINTW 
+				GOTO INPUT_LOOP
+			ELSE
+				MONEY -= 1000 * FLAG:51 + 1000
+				FLAG:51 += 1
+				PRINTL 設備レベルが上がりました！
+				PRINTW 
+			ENDIF
+		ELSEIF RESULT == 1
+		ELSE
+			PRINTL 
+			PRINTL 正しい値を入力してください
+			GOTO INPUT_LOOP_SELECT_1
+		ENDIF
+	ENDIF
+ELSEIF RESULT == 2
+	IF FLAG:52 >= 5
+		PRINTL これ以上設備レベルは上げられません
+		GOTO INPUT_LOOP
+	ELSE
+		PRINTL 
+		PRINTFORML 設備のレベルアップには{10000 * FLAG:52 + 10000}＄必要です
+		PRINTL 設備のレベルアップを行いますか？
+		
+		PRINTL [0]はい
+		PRINTL [1]いいえ
+		$INPUT_LOOP_SELECT_2
+		INPUT
+		IF RESULT == 0
+			IF MONEY < 10000 * FLAG:52 + 10000
+				PRINTL 所持資金が足りません
+				PRINTW 
+				GOTO INPUT_LOOP
+			ELSE
+				MONEY -= 10000 * FLAG:52 + 10000
+				FLAG:52 += 1
+				PRINTL 設備レベルが上がりました！
+				PRINTW 
+			ENDIF
+		ELSEIF RESULT == 1
+		ELSE
+			PRINTL 
+			PRINTL 正しい値を入力してください
+			GOTO INPUT_LOOP_SELECT_2
+		ENDIF
+	ENDIF
+GOTO INPUT_LOOP
+
+ELSEIF RESULT == 3
+	IF (FLAG:53 & 観葉植物) && (FLAG:53 & 心休まる風景画) && (FLAG:53 & オシャレなオブジェ) && (FLAG:53 & ゴージャスな噴水) && (FLAG:53 & 上質なベッド) && (FLAG:53 & 最高級ベッド) && (FLAG:53 & マッサージチェア) && (FLAG:53 & シャワー設備) && (FLAG:53 & ゲームコーナー) && (FLAG:53 & 大浴場) && (FLAG:53 & 美容温泉) && (FLAG:53 & ビューティサロン)
+		PRINTL もう追加できるものがありません
+		GOTO INPUT_LOOP
+	ELSE
+		CALL SHORTLINE
+		PRINTFORML 　＊　カタログ　＊
+		CALL SHORTLINE
+		SIF (FLAG:53 & 観葉植物) == 0
+			PRINTFORML [0]観葉植物　　　　　　   500＄　常に疲労度を微量回復
+		SIF (FLAG:53 & 心休まる風景画) == 0 && (FLAG:53 & 観葉植物)
+			PRINTFORML [0]心休まる風景画　　　  4500＄　常に疲労度を微量回復
+		SIF (FLAG:53 & オシャレなオブジェ) == 0 && (FLAG:53 & 心休まる風景画)
+			PRINTFORML [0]オシャレなオブジェ　  8500＄　常に疲労度を微量回復
+		SIF (FLAG:53 & ゴージャスな噴水) == 0 && (FLAG:53 & オシャレなオブジェ)
+			PRINTFORML [0]ゴージャスな噴水　　100000＄　常に疲労度を微量回復　 \@ (FLAG:30 > 0 && FLAG:854 > 0) == 1 ? 出費＋1000 #  \@
+		SIF (FLAG:53 & 上質なベッド) == 0
+			PRINTFORML [1]上質なベッド　　　　 12000＄　夜間休憩の疲労回復量がアップ　\@ (FLAG:30 > 0 && FLAG:854 > 0) == 1 ? 出費＋100 #  \@
+		SIF (FLAG:53 & 最高級ベッド) == 0 && (FLAG:53 & 上質なベッド)
+			PRINTFORML [1]最高級ベッド　　　　 95000＄　夜間休憩の疲労回復量が大アップ  \@ (FLAG:30 > 0 && FLAG:854 > 0) == 1 ? 出費＋400 #  \@
+		SIF (FLAG:53 & マッサージチェア) == 0
+			PRINTFORML [2]マッサージチェア　　 25800＄　常に疲労度を小回復  \@ (FLAG:30 > 0 && FLAG:854 > 0) == 1 ? 出費＋250 #  \@
+		SIF (FLAG:53 & シャワー設備) == 0
+			PRINTFORML [3]シャワー設備　　　　 50000＄　鍛錬後に疲労度を小回復  \@ (FLAG:30 > 0 && FLAG:854 > 0) == 1 ? 出費＋200 #  \@
+		SIF (FLAG:53 & ゲームコーナー) == 0
+			PRINTFORML [4]ゲームコーナー　　　100000＄　昼間休憩の疲労回復量がアップ  \@ (FLAG:30 > 0 && FLAG:854 > 0) == 1 ? 出費＋1000 #  \@
+		SIF (FLAG:53 & 大浴場) == 0
+			PRINTFORML [5]大浴場　　　　　　　200000＄　休憩時の疲労回復量がアップ  \@ (FLAG:30 > 0 && FLAG:854 > 0) == 1 ? 出費＋1000 #  \@
+		SIF (FLAG:53 & 美容温泉) == 0 && (FLAG:53 & 大浴場)
+			PRINTFORML [5]美容温泉　　　　　　500000＄　休憩時の疲労回復量が大アップ  \@ (FLAG:30 > 0 && FLAG:854 > 0) == 1 ? 出費＋5000 #  \@
+		SIF (FLAG:53 & ビューティサロン) == 0
+			PRINTFORML [6]ビューティサロン　 1500000＄　休憩時の疲労回復量が超アップ  \@ (FLAG:30 > 0 && FLAG:854 > 0) == 1 ? 出費＋10000 #  \@
+		PRINTFORML [99]戻る
+		$INPUT_LOOP_SELECT_3
+		INPUT
+		IF RESULT == 0 && (FLAG:53 & 観葉植物) == 0
+			IF MONEY < 500
+				PRINTL 所持資金が足りません
+				PRINTW 
+				GOTO INPUT_LOOP_SELECT_3
+			ELSE
+				MONEY -= 500
+				FLAG:53 |= 観葉植物
+				PRINTFORML 観葉植物を設置した！
+				PRINTFORML （休憩していない時でも疲労度が僅かに回復します）
+				PRINTW 
+				GOTO INPUT_LOOP
+			ENDIF
+		ELSEIF RESULT == 0 && (FLAG:53 & 心休まる風景画) == 0 && (FLAG:53 & 観葉植物)
+			IF MONEY < 4500
+				PRINTL 所持資金が足りません
+				PRINTW 
+				GOTO INPUT_LOOP_SELECT_3
+			ELSE
+				MONEY -= 4500
+				FLAG:53 |= 心休まる風景画
+				PRINTFORML 心休まる風景画を設置した！
+				PRINTFORML （休憩していない時でも疲労度が僅かに回復します）
+				PRINTW 
+				GOTO INPUT_LOOP
+			ENDIF
+		ELSEIF RESULT == 0 && (FLAG:53 & オシャレなオブジェ) == 0 && (FLAG:53 & 心休まる風景画)
+			IF MONEY < 8500
+				PRINTL 所持資金が足りません
+				PRINTW 
+				GOTO INPUT_LOOP_SELECT_3
+			ELSE
+				MONEY -= 8500
+				FLAG:53 |= オシャレなオブジェ
+				PRINTFORML オシャレなオブジェを設置した！
+				PRINTFORML （休憩していない時でも疲労度が僅かに回復します）
+				PRINTW 
+				GOTO INPUT_LOOP
+			ENDIF
+		ELSEIF RESULT == 0 && (FLAG:53 & ゴージャスな噴水) == 0 && (FLAG:53 & オシャレなオブジェ)
+			IF MONEY < 100000
+				PRINTL 所持資金が足りません
+				PRINTW 
+				GOTO INPUT_LOOP_SELECT_3
+			ELSE
+				MONEY -= 100000
+				FLAG:53 |= ゴージャスな噴水
+				PRINTFORML ゴージャスな噴水を設置した！
+				PRINTFORML （休憩していない時でも疲労度が僅かに回復します）
+				PRINTW 
+				GOTO INPUT_LOOP
+			ENDIF
+		ELSEIF RESULT == 1 && (FLAG:53 & 上質なベッド) == 0
+			IF MONEY < 12000
+				PRINTL 所持資金が足りません
+				PRINTW 
+				GOTO INPUT_LOOP_SELECT_3
+			ELSE
+				MONEY -= 12000
+				FLAG:53 |= 上質なベッド
+				PRINTFORML 上質なベッドを置いた！
+				PRINTFORML （夜間の疲労度回復量がアップします）
+				PRINTW 
+				GOTO INPUT_LOOP
+			ENDIF
+		ELSEIF RESULT == 1 && (FLAG:53 & 最高級ベッド) == 0 && (FLAG:53 & 上質なベッド)
+			IF MONEY < 95000
+				PRINTL 所持資金が足りません
+				PRINTW 
+				GOTO INPUT_LOOP_SELECT_3
+			ELSE
+				MONEY -= 95000
+				FLAG:53 |= 最高級ベッド
+				PRINTFORML 上質なベッドを置いた！
+				PRINTFORML （夜間の疲労度回復量が大きくアップします）
+					PRINTW 
+				GOTO INPUT_LOOP
+			ENDIF
+		ELSEIF RESULT == 2 && (FLAG:53 & マッサージチェア) == 0
+			IF MONEY < 25800
+				PRINTL 所持資金が足りません
+				PRINTW 
+				GOTO INPUT_LOOP_SELECT_3
+			ELSE
+				MONEY -= 25800
+				FLAG:53 |= マッサージチェア
+				PRINTFORML マッサージチェアを設置した！
+				PRINTFORML （休憩していない時でも疲労度が少し回復します）
+				PRINTW 
+				GOTO INPUT_LOOP
+			ENDIF
+		ELSEIF RESULT == 3 && (FLAG:53 & シャワー設備) == 0
+			IF MONEY < 50000
+				PRINTL 所持資金が足りません
+				PRINTW 
+				GOTO INPUT_LOOP_SELECT_3
+			ELSE
+				MONEY -= 50000
+				FLAG:53 |= シャワー設備
+				PRINTFORML 入浴設備にシャワーを追加した！
+				PRINTFORML （鍛錬後に疲労度が少し回復します）
+				PRINTW 
+				GOTO INPUT_LOOP
+			ENDIF
+		ELSEIF RESULT == 4 && (FLAG:53 & ゲームコーナー) == 0
+			IF MONEY < 100000
+				PRINTL 所持資金が足りません
+				PRINTW 
+				GOTO INPUT_LOOP_SELECT_3
+			ELSE
+				MONEY -= 100000
+				FLAG:53 |= ゲームコーナー
+				PRINTFORML ゲームコーナーを開設した！
+				PRINTFORML （昼間の疲労度回復量が大きくアップします）
+				PRINTW 
+				GOTO INPUT_LOOP
+			ENDIF
+		ELSEIF RESULT == 5 && (FLAG:53 & 大浴場) == 0
+			IF MONEY < 200000
+				PRINTL 所持資金が足りません
+				PRINTW 
+				GOTO INPUT_LOOP_SELECT_3
+			ELSE
+				MONEY -= 200000
+				FLAG:53 |= 大浴場
+				PRINTFORML 入浴設備を広々とした大浴場に改修した！
+				PRINTFORML （疲労度回復量がアップします）
+				PRINTW 
+				GOTO INPUT_LOOP
+			ENDIF
+		ELSEIF RESULT == 5 && (FLAG:53 & 美容温泉) == 0 && (FLAG:53 & 大浴場)
+			IF MONEY < 500000
+				PRINTL 所持資金が足りません
+				PRINTW 
+				GOTO INPUT_LOOP_SELECT_3
+			ELSE
+				MONEY -= 500000
+				FLAG:53 |= 美容温泉
+				PRINTFORML 美肌効果のある温泉を引いた！
+				PRINTFORML （疲労度回復量がかなり回復します）
+				PRINTW 
+				GOTO INPUT_LOOP
+			ENDIF
+		ELSEIF RESULT == 6 && (FLAG:53 & ビューティサロン) == 0
+			IF MONEY < 1500000
+				PRINTL 所持資金が足りません
+				PRINTW 
+				GOTO INPUT_LOOP_SELECT_3
+			ELSE
+				MONEY -= 1500000
+				FLAG:53 |= ビューティサロン
+				PRINTFORML メンバー専用のビューティサロンを開設した！
+				PRINTFORML （疲労度回復量がものすごくアップします）
+				PRINTW 
+				GOTO INPUT_LOOP
+			ENDIF
+		ELSEIF RESULT == 99
+			GOTO INPUT_LOOP
+		ELSE
+			PRINTL 
+			PRINTL 正しい値を入力してください
+			GOTO INPUT_LOOP_SELECT_3
+		ENDIF
+	ENDIF
+ELSEIF RESULT == 4 && FLAG:54 == 0 && MONEY >= 100000
+MONEY -= 100000
+PRINTFORML 芸能オフィスを設置した。
+PRINTFORML （既にデビューしたメンバーの魅了経験が毎日自動アップするようになった）
+PRINTW 
+FLAG:54 = 1
+GOTO INPUT_LOOP
+ELSEIF RESULT == 4 && FLAG:54 == 0 && MONEY < 100000
+PRINTFORML 所持資金が足りません
+PRINTW
+GOTO INPUT_LOOP
+ELSEIF RESULT == 4 && FLAG:54 == 1
+PRINTFORML 未実装です
+GOTO INPUT_LOOP
+ELSE
+	PRINTL 
+	PRINTL 正しい値を入力してください
+	GOTO INPUT_LOOP
+ENDIF
