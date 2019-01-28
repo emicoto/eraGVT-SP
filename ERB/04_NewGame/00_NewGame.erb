@@ -2,9 +2,6 @@
 ; Starts new game
 ;-------------------
 @EVENTFIRST
-#DIM LCOUNT_MASTER_LOOP
-#DIM LCOUNT_MODE_SELECT
-#DIM LCOUNT_CHARAMAKE
 #DIM CCOUNT
 #DIMS SELECTS
 
@@ -31,54 +28,27 @@ CALL START_CHARA_MAKE
 SIF RESULT == 99
 GOTO MASTER_LOOP
 
-;**********************************************************
 ;プロローグ
-PRINTL プロローグを表示しますか？
-PRINTL [0]いいえ
-PRINTL [1]はい
+CALL COLORLINE(1,"-")
+CALL ADD_LINE(2)
+CALL STARPRINT("プロローグを表示しますか？ ★",,1,2)
+PRINTL
+CALL INPUTYN(1,2,,2)
+CALL ADD_MAXLINE(34)
 $INPUT_LOOP_PRO
 INPUT
-IF RESULT < 0 || RESULT > 1
+SELECTCASE RESULT
+    CASE 1
+    TEMP = 1
+    ;ストーリー実装するとモードごとに違うプロローグがあります
+    ;CALLFORM PROLOUGE_{MODENUM}
+    CALL PROLOUGE_01
+    CASE 2
+    PRINTL
+    CASEELSE
 	GOTO INPUT_LOOP_PRO
-ELSEIF RESULT == 0
-	PRINTL 
-ELSEIF RESULT == 1
-	DRAWLINE
-	PRINTW 　…
-	PRINTW 　……
-	PRINTW 　…………
-	PRINTW 　“それ”がいつから現れるようになったのかは定かではなかった。
-	PRINTL 　怪奇小説やホラー映画、あるいは紳士の淫猥な妄想の中でしか存在して
-	PRINTL いなかったはずの、おぞましく奇怪な物体――いや、“それ”は明らかに
-	PRINTW 生命体と呼ぶべき特質を備えていた。
-	PRINTL 
-	PRINTL 　人間を襲い、捕食し、そして繁殖のための苗床とする『触手の怪物』。
-	PRINTL 　初めのうちはただの都市伝説として語られていただけの“それ”だった
-	PRINTW が、やがて転機となる事件が起こった。
-	PRINTL 
-	PRINTFORML 　ある晩、とある地方都市で、十数人の女性が%STR:2500%に襲われたのだ。
-	PRINTL 　塾帰りの少女が、仕事を終えたＯＬが、夫の帰宅を待つ主婦が、すべて
-	PRINTW 同じ晩に――被害者の共通点は若い女性だという、ただ一点のみ。
-	PRINTL 　目撃者の証言と、何より幾つものカメラが捉えた映像が証拠の決め手と
-	PRINTW なり、その存在は誰の目にも疑いのない事実となった。
-	PRINTL 
-	PRINTFORML 　人間――特に若い女を襲う、怪物そのものというべき%STR:2500%。
-	PRINTFORML 　公的機関は対応に迫られたが、対策は遅々として進まず、それどころか
-	PRINTFORMW %STR:2500%に遭遇した者の中には“取り込まれ”てしまう者さえ出た。
-	PRINTL 
-	PRINTFORML 　%STR:2500%の中に取り込まれた者は“種”を植えつけられ、男ならばそのまま
-	PRINTFORML %STR:2500%の末端として、女ならば新しい%STR:2500%の母胎として、ヒトではない何か
-	PRINTW へと変えられてしまうのだった。
-	PRINTL 
-	PRINTL 　ここに至って新たに出現した人類の天敵に、人々は為すすべもないかに
-	PRINTW 思われた……。
-	PRINTL 
-	DRAWLINE
-	PRINTL 
-	PRINTL 　　しかし、そんな脅威と人知れず戦い続ける者たちが存在した――。
-	PRINTW 
-ELSE
-ENDIF
+ENDSELECT
+
 
 ;口上の初期設定を呼び出しなど
 FOR LOCAL,0,CHARANUM
@@ -95,6 +65,7 @@ FOR LOCAL,0,CHARANUM
 	SIF LOCAL <= パーティ人数最大値
 		CFLAG:999 = 1
 NEXT
+
 ;初期セットキャラ、CSVキャラ用の衣装獲得処理
 FOR LOCAL, 0, CHARANUM -1
 	SIF ITEM:(CFLAG:(LOCAL+1):40) == 0
