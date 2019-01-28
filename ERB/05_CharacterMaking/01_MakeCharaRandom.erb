@@ -20,6 +20,8 @@ NEXT
 ;種族未設定のキャラが居れば確認表示
 IF SET_SYUZOKU > 0
 	ALIGNMENT CENTER
+	CALL COLORLINE(2)
+	PRINTL
 	PRINTL 種族がランダムに設定されているキャラが居ます
 	PRINTL フィートをランダムで設定しても宜しいですか？
 	PRINTL

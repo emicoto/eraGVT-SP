@@ -7,3 +7,17 @@ ELSE
 ENDIF
 
 RETURNF LOCALS:0
+
+;-------------------------------------------------
+;指定範囲内で数値をインクリメントさせる関数
+;-------------------------------------------------
+@ROUND_INCREMENT(OPERAND, MINVAL, MAXVAL)
+#FUNCTION
+#DIM OPERAND
+#DIM MINVAL
+#DIM MAXVAL
+OPERAND ++
+SIF OPERAND > MAXVAL
+	OPERAND = MINVAL
+
+RETURNF OPERAND

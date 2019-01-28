@@ -180,7 +180,7 @@ NEXT
 
 ;ボス出現停止フラグを折る
 FLAG:49 = 0
-
+CALL SYSTEM_AUTOSAVE
 ;ボス触手のダメージ蓄積値が回復
 IF FLAG:10 == 1 && FLAG:11 == 2
 ELSE
