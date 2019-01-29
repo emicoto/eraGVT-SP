@@ -2,7 +2,8 @@
 NoImage,dummy.png,  0,  0,160,160,
 
 ;汎用キャラアイコン
-Icon_0,Icon_0.png, 0, 0, 160,160,
+Icon_01,icon_01.png, 0, 0, 160,160,
+Icon_02,icon_02.png, 0, 0, 160,160,
 
 ;紅亜
-Clair_0,Icon_11.png,0,0,160,160
+Clair_0,icon_12.png,0,0,160,160
